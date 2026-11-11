@@ -130,6 +130,25 @@ describe.each(['closures', 'eval'] as const)('CSE lookup evaluation (%s)', (exec
     expect(values({ formula: 'SUM(XLOOKUP(D1:D2,A1:A3,B1:B3))', array: 'G1:G3' })).toEqual([10, 20, { error: 'NA' }])
   })
 
+  it.each([
+    ['SUM(XLOOKUP(D1:D2,A1:A3,B1:B3))', 'G5:G6', ['G5', 'G6'], [10, 20]],
+    ['SUM(XLOOKUP(D1:D2,A1:A3,B1:B3))', 'G5', ['G5'], [10]],
+    ['SUM(INDEX(B1:B3,D1:D2))', 'G5:G6', ['G5', 'G6'], [30, 10]],
+  ] as const)('%s samples range selectors relative to the CSE area %s', (formula, area, addresses, expected) => {
+    const b = book({ value: null })
+    b.sheets[0].cells.G5 = { formula, array: area }
+    const cells = compute(b, { execution, display: false }).sheets[0].cells
+    expect(addresses.map((cell) => cells[cell].value)).toEqual(expected)
+  })
+
+  it('keeps SUM reference coercion for each selected INDEX cell', () => {
+    const b = book({ formula: 'SUM(INDEX(B1:B7,SEQUENCE(7)))', array: 'G1:G7' })
+    const input: CellInput[] = [{ value: 42 }, { value: '7' }, { value: true }, { value: null }, { formula: 'NA()' }, { value: 1e-308 }, { value: -0 }]
+    input.forEach((cell, i) => { b.sheets[0].cells[`B${i + 1}`] = cell })
+    const cells = compute(b, { execution, display: false }).sheets[0].cells
+    expect(input.map((_, i) => cells[`G${i + 1}`].value)).toEqual([42, 0, 0, 0, { error: 'NA' }, 0, 0])
+  })
+
   it('keeps the matched row or column as a whole reference before SUM', () => {
     const result = compute(book({ formula: 'SUM(XLOOKUP({1;2},A1:A3,B1:C3))', array: 'G1:G2' }), { execution }).sheets[0].cells
     expect([result.G1.value, result.G2.value]).toEqual([110, 220])

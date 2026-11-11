@@ -26,7 +26,7 @@ describe('bundle size', () => {
     expect(locales(used)).toEqual([expect.stringMatching(/^en-US\.(ts|js)$/)])
     // the table of declared arguments is for the calls that check formulas without the engine (`declared-arity.ts`)
     expect(used.filter((f) => /function-arity/.test(f))).toEqual([])
-    // CSE selector contexts: 413,639 bytes of dist, 410,601 at 0.89.0; ordinary generated formula code is unchanged.
+    // CSE selector contexts: 413,695 bytes of dist, 410,601 at 0.89.0; ordinary generated formula code is unchanged.
     expect(bytes).toBeLessThan(404 * 1024)
   }, 60_000)
 
@@ -54,7 +54,7 @@ describe('bundle size', () => {
     const compute = await minified(`export { compute } from ${lib('core.js')}`)
     expect(grouped(compute.used)).toEqual([])
     expect(grouped((await minified(`export * from ${lib('core.js')}`)).used)).toEqual([])
-    // CSE selector contexts: 340,780 bytes of dist, 337,717 at 0.89.0.
+    // CSE selector contexts: 340,836 bytes of dist, 337,717 at 0.89.0.
     expect(compute.bytes).toBeLessThan(333 * 1024)
   }, 60_000)
 })

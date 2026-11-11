@@ -124,6 +124,12 @@ export class RangeAggregates {
 
   /** Undefined retains AVERAGE's existing exact fallback when the compensated sum overflows. */
   read(name: AggregateName, range: Rng, bounds: () => Bounds, cell: Cell): V | undefined {
+    // Positional CSE lookups often sum one referenced cell; a prefix cache costs more than that read.
+    if (name === 'SUM' && cellCount(range) === 1) {
+      spend(1)
+      const value = cell(range.s, range.r1, range.c1)
+      return typeof value === 'number' ? fitNumber(value) : isErr(value) ? value : 0
+    }
     return name === 'AVERAGE' ? meanAnswer(this.means.read(range, bounds, cell, addMean)) : numbersAnswer(name, this.numbers.read(range, bounds, cell, addNumber))
   }
 

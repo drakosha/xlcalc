@@ -249,7 +249,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
   // an array formula's most rows and columns, for the arrays that meet its spill (`spill/rank.ts`)
   const size = shape.get(ast) ? sizeOf(ast, shape, table) : undefined
   if (size) info.size = size
-  const many = (n: Ast) => (shape.get(n) ?? 0) > 0
+  const many = (n: Ast) => !!shape.get(n)
   const multiple = area !== undefined && (area.r2 > area.r1 || area.c2 > area.c1)
   const positional = area !== undefined && needsCse(ast, shape, resolve, s, multiple)
   let frame: { pick(value: T): T; keep(value: T, scoped?: boolean): T } | undefined

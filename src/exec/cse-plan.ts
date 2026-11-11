@@ -23,12 +23,11 @@ export function needsCse(ast: Ast, shape: Map<Ast, Shape>, name: NameRef, scope:
   type Binding = { value: Ast; full: boolean }
   let locals: (Binding | undefined)[] = []
   const inside = new Set<Ast>()
-  const many = (n: Ast) => (shape.get(n) ?? 0) > 0
   const go = (n: Ast, full: boolean, scope: number): boolean => {
     switch (n.k) {
       case 'fn': {
         const spec = FUNCTIONS[n.name]
-        if (!full && spec && cseCall(n.name) && n.args.some((a, i) => spec.mode(i) === 'lift' && many(a))) return true
+        if (!full && spec && cseCall(n.name) && n.args.some((a, i) => spec.mode(i) === 'lift' && shape.get(a))) return true
         return n.args.some((a, i) => go(a, full || cseArray(n.name, spec, i, multiple), scope))
       }
       case 'bin': {
@@ -36,9 +35,8 @@ export function needsCse(ast: Ast, shape: Map<Ast, Shape>, name: NameRef, scope:
         return go(n.a, array, scope) || go(n.b, array, scope)
       }
       case 'un':
-        return go(n.a, full || (multiple && n.op !== '+'), scope)
       case 'pct':
-        return go(n.a, full || multiple, scope)
+        return go(n.a, full || (multiple && (n.k === 'pct' || n.op !== '+')), scope)
       case 'paren':
       case 'at':
         return go(n.a, full, scope)

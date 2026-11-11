@@ -62,12 +62,8 @@ export function jsBackend(parameters?: Arg[]): Backend<string> & { source(root: 
         (value) => `CS(${value},${cursor(0)},${cursor(1)},cell)`,
         (value, local) => {
           const v = variables(1)(0)
-          if (local) {
-            kept.push(v)
-            return `(${v}??=M(()=>${value}))()`
-          }
-          kept.push(`${v}=M(()=>${value})`)
-          return `${v}()`
+          kept.push(local ? v : `${v}=M(()=>${value})`)
+          return local ? `(${v}??=M(()=>${value}))()` : `${v}()`
         },
       )
       const code = `CM(${bound(rows)},${bound(cols)},(${cursor(0)},${cursor(1)})=>${body},cell)`
