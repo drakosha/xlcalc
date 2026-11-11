@@ -4,7 +4,7 @@
 
 Fixed:
 
-- Legacy array formulas using `XLOOKUP` or `INDEX` could aggregate a complete dynamic result before fitting the CSE area. `SUM(XLOOKUP({1;2},A1:A3,A1:A3))` returned 3 where Excel calculates 1 in one CSE cell and 1, 2 in two. Selector arguments now use the legacy output position and evaluation context, including multi-column reference results, LET bindings and LAMBDA boundaries. Dynamic formulas and unaffected CSE formulas retain their calculation path. Invariant expressions are calculated once per formula evaluation, including expressions that use LET locals.
+- Legacy array formulas using `XLOOKUP`, `INDEX`, `OFFSET` or `INDIRECT` aggregated the whole dynamic result before fitting the range. `SUM(XLOOKUP({1;2},A1:A3,A1:A3))` returned 3 where Excel calculates 1 over one cell and 1, 2 over two. These functions now take an array in a single-value argument one output position at a time, inside `SUM`, `AVERAGE`, `MAX`, `COUNT` and other aggregations, LET values and LAMBDA calls. Over several cells, arithmetic, single-value arguments and the arguments of `SUMPRODUCT`, `MODE` and the functions of paired arrays evaluate the whole array first, as in Excel. Dynamic formulas and legacy array formulas without these functions calculate as before. Checked against Excel for Windows and Excel for Mac on 113 formulas (`docs/legacy.md`).
 - Removing a table or a column could leave a deleted slicer cache's global `#N/A` defined name in the workbook model. The name now goes with its cache, so `writeXlsx` and `writeKept` agree; local names, names of live caches and user names with another formula stay.
 
 ## 0.89.0 (2026-11-11)

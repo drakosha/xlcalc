@@ -42,7 +42,7 @@ const BOOKS: [string, BookInput][] = [
   ['the spill book', spillBook()],
 ]
 const TABLE_CASES = (await Promise.all(['refs', 'refs-held', 'ops', 'ops-held', 'locale', 'more'].map(async (set) => ((await import(`../bench/coverage/tables/${set}.ts`)) as TableSet).buildTableCases()))).flat()
-const SPILL_CASES = (await Promise.all(['base', 'order', 'held', 'names', 'names-held', 'at', 'at-held', 'legacy', 'legacy-held', 'cse', 'cse-held', 'cube-held'].map(async (set) => ((await import(`../bench/coverage/spill/${set}.ts`)) as { buildSpillCases: () => SpillCase[] }).buildSpillCases()))).flat()
+const SPILL_CASES = (await Promise.all(['base', 'order', 'held', 'names', 'names-held', 'at', 'at-held', 'legacy', 'legacy-held', 'cse', 'cse-held', 'cse-lookup', 'cse-lookup-held', 'cse-lookup-held-2', 'cube-held'].map(async (set) => ((await import(`../bench/coverage/spill/${set}.ts`)) as { buildSpillCases: () => SpillCase[] }).buildSpillCases()))).flat()
 
 /** Every kind of node of the compiler, lifted and not; names, an external function, a cycle, SUBTOTAL over SUBTOTAL. */
 const f = (formula: string): CellInput => ({ formula })

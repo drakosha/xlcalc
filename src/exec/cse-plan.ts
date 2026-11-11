@@ -4,14 +4,19 @@ import type { NameRef, Shape } from '../arrays/shape.js'
 import { FUNCTIONS } from '../functions.js'
 import type { Ast, BinOp } from '../syntax.js'
 
-/** Scalar arguments of the two functions whose CSE evaluation is positional (measured against Excel). */
-export const cseCall = (name: string) => name === 'XLOOKUP' || name === 'INDEX'
+/** The functions whose scalar arguments a CSE formula evaluates at each output position (measured against Excel). */
+const POSITIONAL = new Set(['XLOOKUP', 'INDEX', 'OFFSET', 'INDIRECT'])
+export const cseCall = (name: string) => POSITIONAL.has(name)
+
+/** Whole arguments Excel evaluates as arrays over several CSE cells: SUMPRODUCT, MODE and paired arrays (SUMX2PY2). */
+const WHOLE = new Set(['SUMPRODUCT', 'MODE', 'MODE.SNGL'])
 
 /** A multi-cell CSE enters array evaluation through value slots and array-producing whole slots. */
 export const cseArray = (name: string, spec: FunctionSpec | undefined, i: number, multiple: boolean) => {
   if (!multiple || !spec) return false
   const mode = spec.mode(i)
   if (mode === 'lift' && cseCall(name)) return false
+  if (mode === 'whole' && (WHOLE.has(name) || spec.kind(i) === 'C' || spec.kind(i) === 'M')) return true
   return (!spec.refs && mode === 'lift' && spec.rangeAt(i) !== 'first') || (spec.array === true && (mode === 'whole' || mode === 'pass'))
 }
 

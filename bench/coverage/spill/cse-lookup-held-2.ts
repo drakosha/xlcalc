@@ -12,6 +12,9 @@ const held = (id: string, formula: string, area: string): SpillCase => {
   return one(id, `${formula} over ${area}`, { ...DATA, [at]: arr(formula, area) } as Record<string, CellSpec>, [area], { predicted: PREDICTED[id] })
 }
 
+/** The cases whose prediction Excel answered otherwise. */
+export const MISSED: readonly string[] = ['rows-two']
+
 const KEYS = 'XLOOKUP({1;2},A1:A3,B1:B3)'
 
 export function buildSpillCases(): SpillCase[] {

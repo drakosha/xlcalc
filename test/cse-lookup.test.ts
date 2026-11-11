@@ -126,6 +126,22 @@ describe.each(['closures', 'eval'] as const)('CSE lookup evaluation (%s)', (exec
     expect(values({ formula, array: 'G1:G2' }).slice(0, 2)).toEqual(expected)
   })
 
+  // test/excel/spill/cse-lookup-held*.json
+  it.each([
+    ['SUM(OFFSET(B1,{1;2},0))', 'G1:G2', [10, 20]],
+    ['SUM(OFFSET(B1,{1;2},0))', 'G1', [10]],
+    ['SUM(OFFSET(B1,0,0,{1;2}))', 'G1:G2', [30, 40]],
+    ['SUM(INDIRECT({"B2";"B3"}))', 'G1:G2', [10, 20]],
+    ['AVERAGE(XLOOKUP({1;2},A1:A3,B1:B3))', 'G1:G2', [10, 20]],
+    ['ROWS(XLOOKUP({1;2},A1:A3,B1:B3))', 'G1:G2', [1, 1]],
+    ['SUMPRODUCT(XLOOKUP({1;2},A1:A3,B1:B3))', 'G1:G2', [30, 30]],
+    ['MODE(XLOOKUP({1;2},A1:A3,B1:B3),10)', 'G1:G2', [10, 10]],
+    ['SUMX2PY2(XLOOKUP({1;2},A1:A3,B1:B3),{0;0})', 'G1:G2', [500, 500]],
+    ['SUM(CHOOSE({1;2},B2,B3))', 'G1:G2', [30, 30]],
+  ] as const)('%s over %s selects or aggregates as Excel does', (formula, array, expected) => {
+    expect(values({ formula, array }).slice(0, expected.length)).toEqual(expected)
+  })
+
   it('pads positions past the key range with NA', () => {
     expect(values({ formula: 'SUM(XLOOKUP(D1:D2,A1:A3,B1:B3))', array: 'G1:G3' })).toEqual([10, 20, { error: 'NA' }])
   })
