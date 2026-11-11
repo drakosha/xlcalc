@@ -92,7 +92,7 @@ The other cells of the range have no input, and two ranges never overlap: a work
 
 ## Checked against Excel
 
-Tested in Excel 365: about 7,000 legacy formulas read back as Excel displays them and calculated, plus held-out sets predicted before Excel calculated them. The selection by position: 91 formulas around XLOOKUP and INDEX, then 22 held-out ones whose predictions Excel confirmed 20 times.
+Tested in Excel 365: about 7,000 legacy formulas read back as Excel displays them and calculated, plus held-out sets predicted before Excel calculated them. The selection by position: 91 formulas around XLOOKUP and INDEX, then 31 held-out ones whose predictions Excel confirmed 29 times.
 
 ## Known differences
 
