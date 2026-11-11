@@ -49,7 +49,7 @@ How each rule was checked: [Development](docs/development.md#how-the-rules-were-
 - **Errors are values.** An invalid formula never throws: its cell gets an Excel error, and `diagnostics` say why.
 - **Other languages.** Formulas use Excel syntax with English function names; [Localization](docs/locale.md) displays and parses them in another language, as Excel does.
 - **PivotTables.** Read from xlsx with their slicers and timelines, `GETPIVOTDATA` over them, created and changed in a session, and with `xlcalc/pivot` refreshed and laid out as Excel does: filters, sorting, Show Values As, grouping, calculated fields and items; written back as Excel opens them ([PivotTables](docs/pivot-tables.md)).
-- **xlsx in and out**, without dependencies and without loading the engine ([Reading and writing xlsx](docs/xlsx.md)); CSV as Excel opens and saves it ([Reading and writing CSV](docs/csv.md)). Stored filter criteria and sorts survive round trips ([Filters](docs/xlsx.md#filters)); text keeps its font runs ([Rich text](docs/edits.md#rich-text)).
+- **xlsx in and out**, without dependencies and without loading the engine ([Reading and writing xlsx](docs/xlsx.md)); CSV as Excel opens and saves it ([Reading and writing CSV](docs/csv.md)). Sessions apply and clear filters, reapply them and sort visible rows, with undo ([Filters and sorting](docs/structure.md#applying-a-filter-and-sorting)). Filter criteria, sorts, table slicers and timelines survive round trips; text keeps its font runs ([Rich text](docs/edits.md#rich-text)).
 - **Without blocking**: in slices on the same thread or in worker threads, with deadlines, cancellation and memory limits ([Asynchronous computation](docs/async.md)).
 - **Node 20.19 or newer and browsers**, no Node APIs.
 
@@ -57,28 +57,28 @@ How each rule was checked: [Development](docs/development.md#how-the-rules-were-
 
 ESM with TypeScript types, no dependencies. From CommonJS use `await import('xlcalc')`, or `require()` on Node 20.19+ and 22.12+.
 
-A bundle includes only the entry points it imports. Sizes are for the browser, bundled with esbuild and minified (07.11.2026, 0.88.0; the worker's as of 0.71.0), gzipped in brackets; `test/bundle-size.test.ts` keeps `compute` under 402 KB.
+A bundle includes only the entry points it imports. Sizes are for the browser, bundled with esbuild and minified (11.11.2026, 0.89.0 for the main entry points and xlsx; the worker's as of 0.71.0), gzipped in brackets; `test/bundle-size.test.ts` keeps `compute` under 402 KB.
 
 | import | for | size |
 |---|---|---:|
 | `compute` from `xlcalc` | calculating a workbook | 401 KB (154) |
-| `createSession` from `xlcalc` | a session: edits, structure operations, undo, AutoFit, conditional formats, data validation | 695 KB (262) |
+| `createSession` from `xlcalc` | a session: edits, structure operations, undo, AutoFit, conditional formats, data validation | 712 KB (269) |
 | `liveBook` from `xlcalc` | a session's cells as objects: `cells.A1.value = 100`, listeners ([Live objects](docs/live-objects.md)) | |
-| all of `xlcalc` | also `createInlineCalc`, `registerLocale`, `registerRegex`, `functionSignature` and `FUNCTION_CATEGORIES` for tooltips | 784 KB (292) |
-| `xlcalc/core` | the same API without five groups of rarely used functions, which `registerFunctions` loads from `xlcalc/functions` ([Groups of functions](docs/function-groups.md)) | `compute` 330 KB (125), all 709 KB (262) |
+| all of `xlcalc` | also `createInlineCalc`, `registerLocale`, `registerRegex`, `functionSignature` and `FUNCTION_CATEGORIES` for tooltips | 799 KB (298) |
+| `xlcalc/core` | the same API without five groups of rarely used functions, which `registerFunctions` loads from `xlcalc/functions` ([Groups of functions](docs/function-groups.md)) | `compute` 330 KB (125), all 724 KB (268) |
 | `xlcalc/functions` | the groups: `engineering`, `finance`, `lambda`, `statistics`, `xml`, `allFunctions` | 102 KB (41) |
-| `xlcalc/xlsx` | `readXlsx`, `writeXlsx`, `fromLegacy` | 342 KB (128) |
-| `xlcalc/xlsx/keep` | `openKept`, `writeKept`, `inspectKept`: a workbook written over the file it was read from, keeping its charts, pictures and everything else the workbook does not hold ([Writing over the original file](docs/xlsx-keep.md)) | 424 KB (158) |
-| `xlcalc/csv` | `readCsv`, `writeCsv`: a CSV file as Excel opens it, a sheet as Excel saves it ([Reading and writing CSV](docs/csv.md)) | 193 KB (71) |
+| `xlcalc/xlsx` | `readXlsx`, `writeXlsx`, `fromLegacy` | 345 KB (129) |
+| `xlcalc/xlsx/keep` | `openKept`, `writeKept`, `inspectKept`: a workbook written over the file it was read from, keeping its charts, pictures and everything else the workbook does not hold ([Writing over the original file](docs/xlsx-keep.md)) | 438 KB (163) |
+| `xlcalc/csv` | `readCsv`, `writeCsv`: a CSV file as Excel opens it, a sheet as Excel saves it ([Reading and writing CSV](docs/csv.md)) | 194 KB (72) |
 | `xlcalc/worker` | `createCalcPool`: worker threads | 35 KB (13), its worker 960 KB (330), 630 KB (238) loaded first where a bundler splits off the locales, regex levels, groups of functions and the PivotTable engine it loads |
 | `xlcalc/a1` | A1 addresses, a sheet's outline commands | 16 KB (7) |
 | `xlcalc/text` | references in typed formula text, AutoComplete, number format categories, Increase and Decrease Decimal, Find over a host's text, sort order, what a PivotTable's cells are, a value field's name and the field list's place for a field, the Accounting Number Format menu | 72 KB (28) |
 | `xlcalc/entry` | typed entries and the text a cell opens with in edit mode ([Cell entry](docs/entry.md)) | 112 KB (42) |
 | `xlcalc/function-text` | what a function does, in a line; Russian in `xlcalc/function-text/ru-RU` | |
-| `xlcalc/locales/ru-RU` | ru-RU, loaded by importing it; en-US is built in | 150 KB (23) |
+| `xlcalc/locales/ru-RU` | ru-RU, loaded by importing it; en-US is built in | 153 KB (24) |
 | `xlcalc/locales` | `loadLocale(tag)`, a package's locale by its tag | 8 KB (3), and the locale's module |
 | `xlcalc/pivot` | `pivotEngine`, which `registerPivot` loads: PivotTables refreshed and laid out ([PivotTables](docs/pivot-tables.md)) | 74 KB (27) over the root |
-| `xlcalc/regex` | `pcreSyntax` and `pcreEngine`, Excel's syntax and match limit for match mode 3 ([Regular expressions](docs/regex.md)) | 35 KB (13) |
+| `xlcalc/regex` | `pcreSyntax` and `pcreEngine`, Excel's syntax and match limit for match mode 3 ([Regular expressions](docs/regex.md)) | 36 KB (14) |
 | `xlcalc/contract` | types, and the formula limits `MAX_FORMULA_LENGTH` and `MAX_FORMULA_DEPTH` | |
 
 `xlcalc/xlsx`, `xlcalc/xlsx/keep`, `xlcalc/csv`, `xlcalc/a1`, `xlcalc/text`, `xlcalc/entry`, `xlcalc/function-text`, `xlcalc/locales` (`loadLocale`, a package locale by its tag) and `xlcalc/contract` do not load the engine.
