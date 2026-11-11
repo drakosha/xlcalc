@@ -42,8 +42,8 @@ export interface CellInput {
    * aggregation; over several cells arithmetic and some arguments evaluate the whole array first (`docs/legacy.md`).
    * The final result is fitted: a smaller array is repeated when it has one row or one column, otherwise the cells
    * beyond it are #N/A; a larger one is truncated; a single value fills every cell. Nothing spills, and nothing blocks
-   * it. `ROW()` and `COLUMN()` return the rows and columns of the range. The other cells of the range hold no input, and a session does not allow
-   * changing some of them without the rest (`Session.setCells`). Only with `formula`.
+   * it. `ROW()` and `COLUMN()` return the rows and columns of the range. The other cells of the range hold no input,
+   * and a session does not allow changing some of them without the rest (`Session.setCells`). Only with `formula`.
    */
   array?: string
   /** A note on the cell (what Excel used to call a comment). Like a style, it stays with the cell and plays no part in calculation. */
