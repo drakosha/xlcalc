@@ -37,6 +37,7 @@ A legacy formula is calculated value by value. Where a single value is expected,
 | `SUMPRODUCT(IF(A1:A10>5,1,0))` | `SUMPRODUCT(IF(@A1:A10>5,1,0))`: IF's condition stops the array |
 | `={1,2,3}*2`, `ABS({-1,-2})` | `@{1,2,3}*2`, `ABS(@{-1,-2})` |
 | `SUM(ABS({-1,-2}))` | unchanged: an array stays an array inside SUM |
+| `SUM(XLOOKUP({1;2},A1:A3,B1:B3))`, `SUMPRODUCT(INDEX(B1:B5,{2;3}))`, `SUM(VLOOKUP({1;2},A1:B3,2,FALSE))` | `SUM(XLOOKUP(@{1;2},…))` and so on: a lookup's key or place takes one value even inside SUM or SUMPRODUCT (not IF's condition, CHOOSE's index or TRANSPOSE: `SUM(IF({TRUE;FALSE},1,2))` is unchanged) |
 | `SEQUENCE(3)`, `TRANSPOSE(A1)`, `IFS(…)`, `SWITCH(…)` | `@` before the call |
 | `INDEX(A1:C3,2,2)`, `INDEX(A1:C3,2)`, `INDEX(B1,0)` | unchanged: one cell |
 | `INDEX(B1:B5,MATCH(3,A1:A5,0))`, `INDEX(A1:C3,MATCH(…),MATCH(…))` | unchanged: MATCH gives one place |

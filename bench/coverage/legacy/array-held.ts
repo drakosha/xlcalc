@@ -27,4 +27,4 @@ export function buildProbes(): Probe[] {
 export const PREDICTED_SHOWN: Readonly<Record<string, string>> = PREDICTED
 
 /** The predictions Excel did not confirm. */
-export const MISSED: readonly string[] = []
+export const MISSED: readonly string[] = ['array#15', 'array#16', 'array#17']
