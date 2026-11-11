@@ -50,11 +50,19 @@ const refused = (book: BookInput, m: Parameters<typeof sayPivot>[1]): Applied =>
 
 const cachesOf = (book: BookInput, kind: Kind): Cache[] => book[CACHES[kind]] ?? []
 
-/** The book with its caches of `kind`, none left as none. */
+/** The book with its caches of `kind`, dropping only the global #N/A names owned by caches that disappeared. */
 function withCaches(book: BookInput, kind: Kind, caches: Cache[]): BookInput {
   const out = { ...book }
   if (caches.length) (out as Record<string, unknown>)[CACHES[kind]] = caches
   else delete out[CACHES[kind]]
+  if (book.names?.length) {
+    const alive = [...(out.slicerCaches ?? []), ...(out.timelineCaches ?? [])]
+    const gone = cachesOf(book, kind).filter((c) => !alive.some((next) => caseKey(next.name) === caseKey(c.name)))
+    if (gone.length) {
+      const names = book.names.filter((n) => n.scope !== undefined || !/^=?\s*#N\/A\s*$/i.test(n.ref) || !gone.some((c) => caseKey(c.name) === caseKey(n.name)))
+      return withField(out, 'names', names.length ? names : undefined)
+    }
+  }
   return out
 }
 
