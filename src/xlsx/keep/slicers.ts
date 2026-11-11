@@ -98,7 +98,7 @@ export class KeptSlicers {
     const { book, book0, src, parts, wbRels } = this.h
     const before = caches(book0)
     const after = caches(book)
-    const byName = new Map(after.map((c) => [key(c), c]))
+    const kept = new Set(after.map(key))
     const timelines = book.timelineCaches ?? []
     for (const [i, c] of timelines.entries())
       if (
@@ -163,7 +163,7 @@ export class KeptSlicers {
           id: r.id,
           ...(this.files.tableSlicers.has(caseKey(readText(attrsAt(this.text(r.target), 'slicerCacheDefinition').name ?? ''))) ? { table: true as const } : {}),
         })
-      else if (!byName.has(key(c0))) {
+      else if (!kept.has(key(c0))) {
         this.drop(r.target)
         wbRels.remove(r.id)
         this.cacheListChanged = true
@@ -247,12 +247,10 @@ export class KeptSlicers {
       if (x) remaining.delete(x)
       return x
     }
-    const kind = (x: SlicerObject): FrameKind =>
-      book.slicerCaches?.some((c) => key(c) === caseKey(x.cache))
-        ? tableCache(book.slicerCaches.find((c) => key(c) === caseKey(x.cache))!) || this.files.tableSlicers.has(caseKey(x.cache))
-          ? 'tableSlicer'
-          : 'slicer'
-        : 'timeline'
+    const kind = (x: SlicerObject): FrameKind => {
+      const c = book.slicerCaches?.find((c) => key(c) === caseKey(x.cache))
+      return c ? c.table || this.files.tableSlicers.has(key(c)) ? 'tableSlicer' : 'slicer' : 'timeline'
+    }
     const frame = (x: SlicerObject, id: number) => {
       if (!x.place) throw new KeptRefusal({ key: 'keptSlicers' }, 'slicers')
       return frameXml(x as SlicerObject & { place: DrawingPlace }, id, kind(x))

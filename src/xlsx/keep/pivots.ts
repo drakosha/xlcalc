@@ -89,8 +89,6 @@ export interface PivotHost {
   change(): void
   /** The file's sheet of a sheet of the book, by its name. */
   fileSheet(name: string): number | undefined
-  /** The book's sheet of the file's sheet `k`, renamed or moved. */
-  bookSheet(k: number): number | undefined
 }
 
 /** A PivotTable without its place, which moves with its cells (written back by its carrier). */
