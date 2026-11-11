@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+Fixed:
+
+- Legacy array formulas using `XLOOKUP` or `INDEX` could aggregate a complete dynamic result before fitting the CSE area. `SUM(XLOOKUP({1;2},A1:A3,A1:A3))` returned 3 where Excel calculates 1 in one CSE cell and 1, 2 in two. Selector arguments now use the legacy output position and evaluation context, including multi-column reference results, LET bindings and LAMBDA boundaries. Dynamic formulas and unaffected CSE formulas retain their calculation path. Invariant expressions are calculated once per formula evaluation, including expressions that use LET locals.
+
 ## 0.89.0 (2026-11-11)
 
 Added:

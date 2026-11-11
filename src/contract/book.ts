@@ -37,7 +37,9 @@ export interface CellInput {
   /**
    * A legacy array formula (entered with Ctrl+Shift+Enter; in xlsx, `<f t="array" ref="B2:C5">` without dynamic array
    * metadata), set on the top-left cell of its range: the range (`B2:C5`, or just the cell, `B2`). The formula is
-   * calculated as an array, without implicit intersection, and fills its range without ever extending past it: a
+   * calculated in the legacy-array context and fills its range without ever extending past it. Scalar selector
+   * arguments of INDEX and XLOOKUP can be evaluated at each output position before an enclosing aggregation;
+   * arithmetic and value-argument contexts also depend on whether the CSE area has several cells. The final result is fitted: a
    * smaller array is repeated when it has one row or one column, otherwise the cells beyond it are #N/A; a larger one
    * is truncated; a single value fills every cell. Nothing spills, and nothing blocks it. `ROW()` and `COLUMN()` return
    * the rows and columns of the range. The other cells of the range hold no input, and a session does not allow

@@ -56,7 +56,17 @@ Each argument of each whitelisted function has a class: a single value, a refere
 
 ## Legacy array formulas
 
-A cell with `array: 'B2:C5'` contains an array formula entered over B2:C5. The formula is calculated as an array, without implicit intersection, and fills its range:
+Legacy-array evaluation preserves the context of nested calls. In `INDEX` and `XLOOKUP`, scalar selector arguments can select the current output position before an enclosing `SUM`. The size of the CSE area also affects array evaluation inside arithmetic and value arguments. For A1:A3 containing 3, 1, 2 and B1:B3 containing 30, 10, 20:
+
+| Formula | Dynamic formula | CSE over G1 | CSE over G1:G2 |
+|---|---|---|---|
+| `SUM(XLOOKUP({1;2},A1:A3,B1:B3))` | 30 | 10 | 10; 20 |
+| `SUM(XLOOKUP({1;2},A1:A3,B1:B3)+1)` | 32 | 11 | 32; 32 |
+
+These rules apply to `CellInput.array` in both execution modes. LET bindings retain the context in which their values are calculated; a LAMBDA body has its own array-evaluation context. `N` and `T` keep their first-value argument behavior. The formula text and its kind remain unchanged when read from or written to xlsx.
+
+
+A cell with `array: 'B2:C5'` contains an array formula entered over B2:C5. The formula is calculated in the legacy-array context and fills its range:
 
 | result | B2:C5 displays |
 |---|---|
