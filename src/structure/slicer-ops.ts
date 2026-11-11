@@ -18,6 +18,8 @@ import { DEFAULT_ROW_HEIGHT } from '../column-width.js'
 import { DEFAULT_SLICER_SIZE, DEFAULT_TIMELINE_SIZE } from '../drawing-size.js'
 import { entryAt, lines } from '../layout/spans.js'
 import { pivotArea } from '../pivot/area.js'
+import { tableKey, tablesOf } from '../tables/model.js'
+import type { Rect } from './area.js'
 import { pivotRefresh } from '../pivot/hook.js'
 import { groupedItems } from '../pivot/items.js'
 import type { Applied } from './geometry.js'
@@ -134,14 +136,21 @@ function reach(at: number, length: number, size: (k: number) => number, last: nu
   return [k, left]
 }
 
+/** The area a new slicer is placed beside: the first PivotTable its cache filters, or its table. */
+function sourceArea(book: BookInput, c: Cache): Rect | undefined {
+  if ('table' in c && c.table) return tablesOf(book).byName.get(tableKey(c.table.name))
+  const r = c.pivots[0]
+  const p = r && book.sheets[sheetIndex(book, r.sheet)]?.pivotTables?.find((q) => caseKey(q.name) === caseKey(r.name))
+  return (p && pivotArea(p)) || undefined
+}
+
 /**
- * A new slicer's or timeline's place: from two columns right of the first PivotTable it filters, at its top row, and
- * Excel's size for it (`DEFAULT_SLICER_SIZE`, `DEFAULT_TIMELINE_SIZE`) over the sheet's columns and rows. Excel's object model puts one in the middle of the
- * window, and its Insert Slicer one after another there; the workbook has no window, so the place is the library's.
+ * A new slicer's or timeline's place: from two columns right of the area of its source (`sourceArea`), at its top row,
+ * and Excel's size for it (`DEFAULT_SLICER_SIZE`, `DEFAULT_TIMELINE_SIZE`) over the sheet's columns and rows. Excel's
+ * object model puts one in the middle of the window, and its Insert Slicer one after another there; the workbook has no
+ * window, so the place is the library's.
  */
-function placeBeside(book: BookInput, kind: Kind, s: number, r: PivotRef): DrawingPlace | undefined {
-  const p = book.sheets[sheetIndex(book, r.sheet)]?.pivotTables?.find((q) => caseKey(q.name) === caseKey(r.name))
-  const x = p && pivotArea(p)
+function placeBeside(book: BookInput, kind: Kind, s: number, x: Rect | undefined): DrawingPlace | undefined {
   if (!x) return undefined
   const sheet = book.sheets[s]
   const [cols, rows] = [lines(sheet.columns, 'c'), lines(sheet.rows, 'r')]
@@ -166,9 +175,28 @@ const laidOut = (book: BookInput, refs: PivotRef[], values: ValuesIn, changed: b
 /** The book with a cache's choice as its PivotTables' filter, on `refs`. */
 const chosen = (book: BookInput, kind: Kind, c: Cache, refs?: PivotRef[]) => (kind === 'slicers' ? withSlicerChoice(book, c as SlicerCache, refs) : withTimelineChoice(book, c as TimelineCache, refs))
 
-/** A new cache of `field` over the PivotTables `pivots`, its choice the filter they hold, or the refusal. */
+/** A free name of a new cache of `field`, among the caches and defined names of the workbook. */
+function cacheName(book: BookInput, kind: Kind, field: string): string {
+  const taken = new Set([...cachesOf(book, kind), ...(book.names ?? [])].map((c) => caseKey(c.name)))
+  return free(taken, `${kind === 'slicers' ? 'Slicer' : 'NativeTimeline'}_${field.replace(/[^\p{L}\p{N}_]/gu, '_')}`, '')
+}
+
+/** A new slicer cache of a table's column, by their names, as Excel's Insert Slicer on a table makes it: its field the column's name, no PivotTables. */
+function tableCache(book: BookInput, n: Record<string, unknown>): SlicerCache {
+  onlyKeys(n, 'op.cache', ['table', 'column'])
+  const name = checkString(n.table, 'op.cache.table')
+  const t = tablesOf(book).byName.get(tableKey(name))
+  if (!t) throw new InputError('op.cache.table', `unknown table ${JSON.stringify(name)}`)
+  const want = checkString(n.column, 'op.cache.column')
+  const column = t.input.columns.find((c) => caseKey(c.name) === caseKey(want))?.name
+  if (column === undefined) throw new InputError('op.cache.column', `the table ${t.name} has no column ${JSON.stringify(want)}`)
+  return { name: cacheName(book, 'slicers', column), field: column, pivots: [], table: { name: t.name, column } }
+}
+
+/** A new cache of `field` over the PivotTables `pivots`, its choice the filter they hold, or of a table's column; or the refusal. */
 function newCache(book: BookInput, kind: Kind, v: unknown): { book: BookInput; cache: Cache } | Applied {
   const n = object(v, 'op.cache', 'a cache such as { field: "Region", pivots: [{ sheet: "P", name: "PivotTable1" }] }')
+  if (kind === 'slicers' && 'table' in n) return { book, cache: tableCache(book, n) }
   onlyKeys(n, 'op.cache', ['field', 'pivots'])
   const field = checkString(n.field, 'op.cache.field')
   const { refs, cache: id } = pivotsOf(book, n.pivots, 'op.cache.pivots')
@@ -176,8 +204,7 @@ function newCache(book: BookInput, kind: Kind, v: unknown): { book: BookInput; c
   const f = pc ? fieldIndex(pc, field) : -1
   if (!pc || f < 0) return refused(book, { key: 'slicerField', field })
   const fieldName = pc.fields[f].name
-  const taken = new Set([...cachesOf(book, kind), ...(book.names ?? [])].map((c) => caseKey(c.name)))
-  const name = free(taken, `${kind === 'slicers' ? 'Slicer' : 'NativeTimeline'}_${fieldName.replace(/[^\p{L}\p{N}_]/gu, '_')}`, '')
+  const name = cacheName(book, kind, fieldName)
   if (kind === 'timelines') {
     if (!pc.fields[f].facts?.types?.includes('date') && !pc.fields[f].items?.some((x) => x !== null && typeof x === 'object' && 'date' in x)) return refused(book, { key: 'timelineField', field: fieldName })
     const bounds = timelineBounds(pc, f)
@@ -209,7 +236,7 @@ function add(book: BookInput, kind: Kind, o: Record<string, unknown>, values: Va
   }
   const name = given.name === undefined ? free(names(out), cache.field, ' ') : givenName(out, given.name, `op.${key}.name`)
   if (typeof name !== 'string') return refused(out, name)
-  const place = given.place === undefined && cache.pivots.length ? placeBeside(out, kind, s, cache.pivots[0]) : undefined
+  const place = given.place === undefined ? placeBeside(out, kind, s, sourceArea(out, cache)) : undefined
   // Excel captions it by its field
   const item = { caption: cache.field, ...given, name, cache: cache.name, ...(place ? { place } : {}) } as Slicer & Timeline
   const sheets = [...out.sheets]
@@ -307,4 +334,23 @@ export function slicerOp(book: BookInput, o: Record<string, unknown>, values: Va
   const op = String(o.op)
   const kind: Kind = op.endsWith('Slicer') ? 'slicers' : 'timelines'
   return op.startsWith('add') ? add(book, kind, o, values) : op.startsWith('edit') ? edit(book, kind, o, values) : remove(book, kind, o, values)
+}
+
+/**
+ * The book without the table slicer caches whose table or column is gone, and their slicers, as Excel saves the book
+ * after deleting the table or the column, or converting the table to a range (the set `table-slicer`).
+ */
+export function withoutLostTableSlicers(book: BookInput): BookInput {
+  if (!book.slicerCaches?.some((c) => c.table)) return book
+  const tables = tablesOf(book)
+  const lost = new Set(
+    book.slicerCaches.flatMap((c) => {
+      if (!c.table) return []
+      const t = tables.byName.get(tableKey(c.table.name))
+      return t && t.input.columns.some((x) => caseKey(x.name) === caseKey(c.table!.column)) ? [] : [caseKey(c.name)]
+    }),
+  )
+  if (!lost.size) return book
+  const sheets = book.sheets.map((sh) => (sh.slicers?.some((x) => lost.has(caseKey(x.cache))) ? withField(sh, 'slicers', sh.slicers.filter((x) => !lost.has(caseKey(x.cache))) as never) : sh))
+  return withCaches({ ...book, sheets }, 'slicers', book.slicerCaches.filter((c) => !lost.has(caseKey(c.name))))
 }

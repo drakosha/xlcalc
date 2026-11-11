@@ -237,7 +237,17 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
   const files: { name: string; text: string }[] = []
   const contentTypes: [string, string][] = [['/xl/workbook.xml', `${TYPE}.sheet.main+xml`]]
   const wbRels: [string, string][] = []
-  const slicers = slicerPackage(book, issues)
+  // a table's slicer names its table and column by their ids: tables by their place in the book, columns from 1
+  const fileTables = new Map(
+    parts.flat().map(({ t, id }) => {
+      const column = (name: string) => {
+        const k = t.columns.findIndex((c) => caseKey(c.name) === caseKey(name))
+        return k < 0 ? undefined : k + 1
+      }
+      return [caseKey(t.name), { id, column }]
+    }),
+  )
+  const slicers = slicerPackage(book, issues, (name) => fileTables.get(caseKey(name)))
   const pivots = pivotPackage(book, styles, issues, slicers.pivotCacheIds)
   let vml = false
   sheets.forEach((s, i) => {
@@ -250,7 +260,7 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
     const sl = slicers.sheets[i]
     const add = (type: string, target: string | undefined) => (target === undefined ? undefined : `rId${sheetRels.push([type, target])}`)
     const drawing = add(`${REL}/drawing`, sl.drawing)
-    const ext = sheetSlicerExt(add(SLICER_RELS.slicer, sl.slicers), add(SLICER_RELS.timeline, sl.timelines))
+    const ext = sheetSlicerExt(add(SLICER_RELS.slicer, sl.slicers), add(SLICER_RELS.timeline, sl.timelines), add(SLICER_RELS.slicer, sl.tableSlicers))
     files.push({ name: `xl/worksheets/sheet${i + 1}.xml`, text: sheetXml(drawing || ext ? { ...s, legacyDrawing: `${drawing ? `<drawing r:id="${drawing}"/>` : ''}${s.legacyDrawing}`, ext: s.ext + ext } : s) })
     contentTypes.push([`/xl/worksheets/sheet${i + 1}.xml`, `${TYPE}.worksheet+xml`])
     wbRels.push([`${REL}/worksheet`, `worksheets/sheet${i + 1}.xml`])
@@ -270,7 +280,7 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
   const pivotCaches = pivots.caches.map((c) => `<pivotCache cacheId="${c.id}" r:id="rId${wbRels.push([`${REL}/pivotCacheDefinition`, c.target])}"/>`).join('')
   files.push(...slicers.files)
   contentTypes.push(...slicers.contentTypes)
-  const wbExt = workbookSlicerExt(slicers.caches.map((c) => ({ kind: c.kind, id: `rId${wbRels.push([SLICER_RELS[c.kind], c.target])}` })))
+  const wbExt = workbookSlicerExt(slicers.caches.map((c) => ({ kind: c.kind, id: `rId${wbRels.push([SLICER_RELS[c.kind], c.target])}`, ...(c.table ? { table: c.table } : {}) })))
   files.push({ name: 'xl/styles.xml', text: styles.xml() })
   contentTypes.push(['/xl/styles.xml', `${TYPE}.styles+xml`])
   wbRels.push([`${REL}/styles`, 'styles.xml'])

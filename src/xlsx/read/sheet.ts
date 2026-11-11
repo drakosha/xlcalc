@@ -18,7 +18,7 @@ import type { Ast } from '../../syntax/ast.js'
 import { canonical } from '../../syntax/print.js'
 import type { Issues, XlsxMessage } from '../issues.js'
 import type { XlsxCachedCell, XlsxIssueCode } from '../types.js'
-import { attributes, attrsAt, element, elements, flag, has, lastChild, ownEntry, within, type Element } from '../xml/scan.js'
+import { attributes, attrsAt, element, elements, flag, has, lastChild, ownEntry, placed, within, type Element } from '../xml/scan.js'
 import { decimal, look, outlineOf, readCells, setCell, xfAt, type CellsContext, type SheetCells } from './cells.js'
 import { readFormula, reportFormula, type FormulaOptions, type ReadFormula } from './formulas.js'
 import type { Rel } from './package.js'
@@ -422,7 +422,9 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   const tables = readTables(src.tables, name, read.cells, m, ctx.issues, src.formulas, added, filters)
   if (tables.length) sheet.tables = tables
   const filter = autoFilter(tail, sheet, ctx.issues, filters)
-  const sort = element(tail, 'sortState')
+  // the sheet's own sort, not the AutoFilter's within it
+  const af = placed(tail, 'autoFilter', true)[0]
+  const sort = element(af ? tail.slice(0, af.start) + tail.slice(af.end) : tail, 'sortState')
   if (sort) sheet.sort = readSort(sort, filters)
   if (filter) sheet.autoFilter = filter
   readCellParts({ sheet: name, head, tail, rels: src.rels, ...src.parts, looked: (x) => addressesOf(layer, x), rename: src.formulas.rename }, read.cells, ctx.issues, added)

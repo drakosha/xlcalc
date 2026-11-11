@@ -7,7 +7,7 @@ import { describe, expect, it } from 'vitest'
 import type { StoredLinks } from '../bench/coverage/links.js'
 import { buildLinksCases, SAVED, type Held } from '../bench/coverage/links/table-slicer-kept.js'
 import { createSession } from '../src/index.js'
-import { readXlsx } from '../src/xlsx.js'
+import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openKept, writeKept } from '../src/xlsx-keep.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
 import { zip } from '../src/xlsx/zip/write.js'
@@ -179,3 +179,33 @@ describe.each([['Windows', 'win/']])('Excel for %s holds what writeKept wrote', 
 
 /** The cases the committed prediction missed, by Excel: its folder of answers. */
 const MISSED: Record<string, string[]> = { 'win/': [] }
+
+describe("writeXlsx of a table's slicer", () => {
+  const state = (b: Awaited<ReturnType<typeof readXlsx>>['book']) => ({
+    caches: b.slicerCaches,
+    slicers: b.sheets.map((s) => (s.slicers ?? []).map(({ name, cache, caption, place }) => ({ name, cache, caption, place }))),
+  })
+
+  it.each(['plain', 'chosen', 'second-column', 'two-slicers', 'no-autofilter', 'sort-desc', 'cross-last'])('writes the slicers of the book %s as they are read', async (id) => {
+    const read = await readXlsx(file(id))
+    const { data, issues } = await writeXlsx({ book: read.book }, { values: 'omit' })
+    expect(issues.filter((x) => x.code === 'pivotTable')).toEqual([])
+    expect(state((await readXlsx(data)).book)).toEqual(state(read.book))
+  })
+
+  it("names its table and column by their ids, in Excel 2013's extensions of the workbook and the sheet, its frame for sle15", async () => {
+    const { data } = await writeXlsx({ book: (await readXlsx(file('plain'))).book }, { values: 'omit' })
+    expect(await text(data, CACHE)).toContain('<x15:tableSlicerCache tableId="1" column="2"/>')
+    expect(await text(data, 'xl/workbook.xml')).toContain('<ext uri="{46BE6895-7355-4a93-B00E-2C351335B9C9}"')
+    expect(await text(data, 'xl/worksheets/sheet1.xml')).toContain('<ext uri="{3A4CF648-6AED-40f4-86FF-DC5316D8AED3}"')
+    expect(await text(data, 'xl/drawings/drawing1.xml')).toContain('Requires="sle15"')
+  })
+
+  it('leaves out, reported, a slicer whose table is not in the workbook', async () => {
+    const { book } = await readXlsx(file('plain'))
+    book.slicerCaches = book.slicerCaches!.map((c) => ({ ...c, table: { name: 'Gone', column: 'Product' } }))
+    const { data, issues } = await writeXlsx({ book }, { values: 'omit' })
+    expect(issues.map((x) => x.code)).toContain('pivotTable')
+    expect((await readXlsx(data)).book.slicerCaches).toBeUndefined()
+  })
+})

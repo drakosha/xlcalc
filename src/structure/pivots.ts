@@ -217,6 +217,8 @@ export function pivotRefusal(book: BookInput, op: StructureOp): Exclude<Applied,
     }
     case 'mergeCells':
       return pivotMet(book, at(op.sheet), parseRange(op.range), 'affect')
+    case 'sortRange':
+      return pivotMet(book, at(op.sheet), typeof op.sort?.range === 'string' ? parseRange(op.sort.range) : null, 'affect')
     case 'addTable':
       return pivotMet(book, at(op.sheet), typeof op.table?.range === 'string' ? parseRange(op.table.range) : null, undefined)
     case 'moveRange': {

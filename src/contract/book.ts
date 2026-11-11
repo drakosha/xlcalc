@@ -175,11 +175,11 @@ export interface SheetInput {
   /**
    * The sheet's AutoFilter (Excel's Filter over cells outside a table, xlsx `<autoFilter>`): the filter buttons on the
    * first row of its range. It does not overlap a table of the sheet, which has a filter of its own. Whether a filter hid
-   * rows is `filtered`, and which rows it hid are the rows' `hidden`: the criteria are held, not applied. Not part of
-   * calculation or inputHash.
+   * rows is `filtered`, and which rows it hid are the rows' `hidden`: the criteria are held, and applied only by
+   * `applyFilter` and `clearFilter` (`StructureOp`). Not part of calculation or inputHash.
    */
   autoFilter?: AutoFilter
-  /** The sort of a range outside an AutoFilter, as Excel keeps its last one (xlsx `<sortState>`): held, not applied. Not part of calculation or inputHash. */
+  /** The sort of a range outside an AutoFilter, as Excel keeps its last one (xlsx `<sortState>`): held, set with the cells sorted by `sortRange` (`StructureOp`). Not part of calculation or inputHash. */
   sort?: FilterSort
   /** The sheet's tables (Excel's list objects); they do not overlap, and no merged area or multi-cell array range overlaps one. */
   tables?: TableInput[]
@@ -250,7 +250,7 @@ export interface AutoFilter {
   criteria?: FilterCriteria
 }
 
-/** A filter's criteria and sort, a sheet's (`AutoFilter.criteria`) or a table's (`TableInput.filter`), as a file holds them: the workbook holds them and does not apply them. */
+/** A filter's criteria and sort, a sheet's (`AutoFilter.criteria`) or a table's (`TableInput.filter`), as a file holds them: the workbook holds them, and `applyFilter` applies them (`StructureOp`). */
 export interface FilterCriteria {
   /** The columns with a filter or a button of their own, at most one for each. */
   columns?: FilterColumn[]
@@ -461,8 +461,8 @@ export interface TableInput {
   style?: TableStyle
   /**
    * Its filter's criteria and sort; `false` for a table without filter buttons (Table Design, Filter Button off, xlsx: no
-   * `<autoFilter>`), which a table without a header row is anyway. Held, not applied, as `AutoFilter.criteria`. Not part of
-   * calculation or inputHash.
+   * `<autoFilter>`), which a table without a header row is anyway. Held, and applied by `applyFilter`, as
+   * `AutoFilter.criteria`. Not part of calculation or inputHash.
    */
   filter?: FilterCriteria | false
 }

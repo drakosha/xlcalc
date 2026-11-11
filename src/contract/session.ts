@@ -208,8 +208,8 @@ export interface Session {
    * The range of the sheet's AutoFilter as Excel reads it (`AutoFilter.Range`): its range (`SheetInput.autoFilter`)
    * grown down over the rows right under it that hold a value or a formula in its columns or the column on either side,
    * one after another, an empty row ending it; null without an AutoFilter. The AutoFilter's own range stays as Excel
-   * saves it; a host that applies criteria filters this range but a last row of SUBTOTAL (`docs/structure.md` "The AutoFilter"). It reads the rows
-   * under the range up to the first empty one.
+   * saves it; `applyFilter` filters this range but a last row of SUBTOTAL and takes it as the AutoFilter's own
+   * (`docs/structure.md` "The AutoFilter"). It reads the rows under the range up to the first empty one.
    */
   getAutoFilterRange(sheet: string): string | null
   /**

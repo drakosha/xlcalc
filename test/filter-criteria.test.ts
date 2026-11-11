@@ -196,3 +196,13 @@ it('writes the table sort after its autoFilter, where Excel retains it', async (
   expect(xml.indexOf('<sortState')).toBeGreaterThan(xml.indexOf('</autoFilter>'))
   expect((await readXlsx(data)).book.sheets[0].tables?.[0].filter).toEqual(criteria)
 })
+
+it("reads an AutoFilter's sort once, not again as the sheet's", async () => {
+  const b = book()
+  delete b.sheets[0].autoFilter!.criteria!.columns
+  const { data } = await writeXlsx({ book: b }, { values: 'omit' })
+  expect((await partText(data, 'xl/worksheets/sheet1.xml')).match(/<sortState/g)?.length).toBe(1)
+  const read = (await readXlsx(data)).book.sheets[0]
+  expect(read.autoFilter?.criteria?.sort).toEqual(criteria.sort)
+  expect('sort' in read).toBe(false)
+})

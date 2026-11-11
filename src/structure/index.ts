@@ -42,7 +42,9 @@ import { rewriteBookTables } from '../tables/rewrite.js'
 import { placedPivots } from '../pivot/area.js'
 import { carryPivots, pivotRefusal } from './pivots.js'
 import { PIVOT_FIELDS, pivotOp, type PivotOp } from './pivot-ops.js'
-import { SLICER_FIELDS, slicerOp } from './slicer-ops.js'
+import { SLICER_FIELDS, slicerOp, withoutLostTableSlicers } from './slicer-ops.js'
+import { FILTER_FIELDS, filterOp } from '../filter/apply.js'
+import { sortOp } from '../filter/sort.js'
 
 function object(v: unknown, path: string): Record<string, unknown> {
   if (!isObject(v)) throw new InputError(path, `expected an object, got ${Array.isArray(v) ? 'an array' : String(v)}`)
@@ -78,6 +80,8 @@ const FIELDS: Record<string, string[]> = {
   setPivotCalculatedField: ['sheet', 'pivot', 'name', 'formula', 'values'],
   setPivotCalculatedItem: ['sheet', 'pivot', 'field', 'name', 'formula'],
   ...SLICER_FIELDS,
+  ...FILTER_FIELDS,
+  sortRange: ['sheet', 'sort'],
 }
 
 /** The operations on PivotTables, slicers and timelines, which place them themselves: the carriers of the others do not go through them. */
@@ -125,7 +129,7 @@ export function checkedMapCell(g: SentGeometry): (ref: CellRef) => CellRef | nul
 function lazyValues(book: BookInput): ValuesIn {
   let values: ValuesIn | undefined
   const computed = () => (values ??= stateValues(createState(book, clockOptions(currentClock()))))
-  return Object.assign((sheet: string, rect: Rect) => computed()(sheet, rect), { spills: (sheet: string, rect: Rect) => computed().spills!(sheet, rect), today: () => computed().today!() })
+  return Object.assign((sheet: string, rect: Rect) => computed()(sheet, rect), { spills: (sheet: string, rect: Rect) => computed().spills!(sheet, rect), today: () => computed().today!(), state: () => computed().state!() })
 }
 
 /**
@@ -149,7 +153,7 @@ export const applyOp = (book: BookInput, op: StructureOp, values: ValuesIn, whol
     const out = both.ok && carried ? carried.after(both) : both
     if (!out.ok) return out
     // the PivotTables it moved or laid out with their areas from their new places
-    const book2 = placedPivots(out.book, input)
+    const book2 = withoutLostTableSlicers(placedPivots(out.book, input))
     // the looks a paste laid where no entry is come as the sheet's last field, as the engine took them from entries
     return { ...out, book: loose.size ? { ...book2, sheets: book2.sheets.map((s) => (loose.has(sheetKey(s.name)) ? withLayer(s, s.cells, layerOf(s) ?? emptyLayer()) : s)) } : book2 }
   })
@@ -304,6 +308,13 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: bool
       r = edit ? edit(book, op as PivotCacheOp, values, values.today?.() ?? 0) : { ok: false, code: 'pivot', message: sayPivot(book.locale, { key: 'pivotNotLoaded' }) }
       break
     }
+    case 'applyFilter':
+    case 'clearFilter':
+      r = filterOp(book, o, values)
+      break
+    case 'sortRange':
+      r = sortOp(book, o, values)
+      break
   }
   return r
 }
