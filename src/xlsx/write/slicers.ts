@@ -9,6 +9,7 @@
  */
 import type { BookInput, DrawingPlace, Slicer, SlicerCache, Timeline, TimelineCache, TimelineLevel } from '../../contract.js'
 import { caseKey } from '../../collate.js'
+import { isCacheNameValue } from '../../slicer-cache-name.js'
 import { localeBooleans } from '../../locale/registry.js'
 import { nameProblem } from '../../syntax/check.js'
 import { sheetKey } from '../../syntax/print.js'
@@ -42,9 +43,6 @@ export interface SlicerPackage {
   /** The caches written, by name: Excel refuses a file whose framed slicer's cache no defined name holds (the set `links/slicer-names`). */
   cacheNames: string[]
 }
-
-/** The value of the name of a cache Excel writes: a name of the workbook of any other costs the file. */
-const NO_VALUE = /^=?\s*#N\/A\s*$/i
 
 /** A sheet's `sheetId` by its name: as `writeXlsx` numbers them, by place, or the file's. */
 export type TabId = (sheet: string) => number
@@ -189,7 +187,7 @@ export function slicerPackage(book: BookInput, issues: Issues, tables: FileTable
       out.cacheNames.push(c.name)
     })
   // Excel opens no file whose slicer cache's name is no name (the set `links/file-refusals`), or a name the workbook holds for anything else (`links/slicer-names`)
-  const nameFree = (name: string) => !book.names?.some((n) => n.scope === undefined && caseKey(n.name) === caseKey(name) && !NO_VALUE.test(n.ref))
+  const nameFree = (name: string) => !book.names?.some((n) => n.scope === undefined && caseKey(n.name) === caseKey(name) && !isCacheNameValue(n.ref))
   const fit = <C extends { name: string }>(c: C, ok: boolean) => {
     if (!ok || !nameFree(c.name)) issues.add('pivotTable', { key: 'pivotNotWritten' }, { name: c.name })
     return ok && nameFree(c.name)

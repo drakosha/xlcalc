@@ -28,14 +28,15 @@ async function bundle(minify = false) {
 }
 
 describe('xlsx/keep outside Node', () => {
-  it('takes no Node built-ins and no part of the engine that computes, in under 452 KB minified', async () => {
+  it('takes no Node built-ins and no part of the engine that computes, in under 453 KB minified', async () => {
     const { code, used, bytes } = await bundle(true)
     expect(code).not.toMatch(/\brequire\s*\(|\bprocess\.|\bBuffer\s*[.(]|\b(typeof|instanceof)\s+Buffer\b|["']node:/)
     const engine = used.filter((f) => /\/(functions|exec|session|spill|arrays)\/|\/(engine|evaluate|compile|runtime|functions|session|result|graph)\.(ts|js)$/.test(f) && !/\/exec\/budget\.(ts|js)$/.test(f))
     expect(engine).toEqual([])
     // Prefix repair and table slicers merged: 455,388 bytes of source. Slicer/timeline lifecycle adds about 6.6 KB:
     // cache/list/frame creation and removal, existing parts retained; no computation or new dependency.
-    expect(bytes).toBeLessThan(452 * 1024)
+    // A lookup's key with @ inside an aggregation of a legacy formula: 462,885 bytes of dist, 462,847 before.
+    expect(bytes).toBeLessThan(453 * 1024)
   }, 60_000)
 
   it('runs in an empty context given the web codecs: a file opened, a value changed, written over it', async () => {
