@@ -1,0 +1,285 @@
+{
+ "meta": {
+  "version": "16.115",
+  "seconds": 35.2,
+  "date": "2026-11-11"
+ },
+ "cases": {
+  "lookup-original": {
+   "sent": "1f53346e5c3177d4404c13a251b59d6c8f90540a90778f4532f1834cbe3ddadb",
+   "values": {
+    "C1": {
+     "error": "NAME"
+    },
+    "C2": "fallback",
+    "C3": {
+     "error": "NAME"
+    },
+    "D1": 1
+   },
+   "formulas": {
+    "C1": "XLOOKUP(2,A1:A2,B1:B2)",
+    "C2": "IFERROR(XLOOKUP(2,A1:A2,B1:B2),\"fallback\")",
+    "C3": "XLOOKUP(1,A1:A2,B1:B2)",
+    "D1": "@SORT(A1:A2)"
+   }
+  },
+  "lookup-repaired": {
+   "sent": "289ebf4743041f68cd9cbc2858528ebe429652ac54ec01eefbd7d2ce6b2ef4f0",
+   "values": {
+    "C1": 20,
+    "C2": 20,
+    "C3": 10,
+    "D1": 1
+   },
+   "formulas": {
+    "C1": "XLOOKUP(2,A1:A2,B1:B2)",
+    "C2": "IFERROR(XLOOKUP(2,A1:A2,B1:B2),\"fallback\")",
+    "C3": "XLOOKUP(1,A1:A2,B1:B2)",
+    "D1": "@SORT(A1:A2)"
+   }
+  },
+  "filter-original": {
+   "sent": "e02a9c3df44233e08ba91fff65c6d265e89a00c39ee01985a81a1d15c88bbb84",
+   "rejected": "AXDialog «We found a problem with some content in 'book.xlsx'. Do you want us to try to recover as much as we can? If you trust the source of this workbook, click Yes.»"
+  },
+  "filter-repaired": {
+   "sent": "ecf8ebf952a370cbb360a6d99c34f77a304e475333316bbbbe70a217c093e972",
+   "values": {
+    "C1": 30,
+    "C2": 70,
+    "C3": 1,
+    "C4": "none"
+   },
+   "formulas": {
+    "C1": "@FILTER(B1:B4,A1:A4>2)",
+    "C2": "SUM(FILTER(B1:B4,A1:A4>2))",
+    "C3": "@UNIQUE(A1:A4)",
+    "C4": "@IFERROR(FILTER(B1:B4,A1:A4>9),\"none\")"
+   }
+  },
+  "sort-original": {
+   "sent": "5dc350cae584aa63f8e16f9af2e8665eb34287bfe5634a3a76fa26c12d304f75",
+   "rejected": "AXDialog «We found a problem with some content in 'book.xlsx'. Do you want us to try to recover as much as we can? If you trust the source of this workbook, click Yes.»"
+  },
+  "sort-repaired": {
+   "sent": "42e3d863784efb17d489687cd0f986fd3ba771c3eeef2f4d018df3d055cfce27",
+   "values": {
+    "C2": 1,
+    "C3": 3,
+    "C4": 6
+   },
+   "formulas": {
+    "C2": "@SORT(A1:A3)",
+    "C3": "@SORT(A1:A3,1,-1)",
+    "C4": "SUM(SORTBY(A1:A3,A1:A3))"
+   }
+  },
+  "shared-original": {
+   "sent": "97140354816047c6e371ceefa4d4c5ef1fddca0e814b3dbf672f7e152af6ba1c",
+   "values": {
+    "E1": {
+     "error": "NAME"
+    },
+    "E2": {
+     "error": "NAME"
+    },
+    "E3": {
+     "error": "NAME"
+    },
+    "E4": {
+     "error": "NAME"
+    },
+    "F1": "none",
+    "F2": "none",
+    "F3": "none",
+    "F4": "none"
+   },
+   "formulas": {
+    "E1": "XLOOKUP(D1,$A$1:$A$4,$B$1:$B$4)",
+    "E2": "XLOOKUP(D2,$A$1:$A$4,$B$1:$B$4)",
+    "E3": "XLOOKUP(D3,$A$1:$A$4,$B$1:$B$4)",
+    "E4": "XLOOKUP(D4,$A$1:$A$4,$B$1:$B$4)",
+    "F1": "IFERROR(XLOOKUP(D1+1,$A$1:$A$4,$B$1:$B$4),\"none\")",
+    "F2": "IFERROR(XLOOKUP(D2+1,$A$1:$A$4,$B$1:$B$4),\"none\")",
+    "F3": "IFERROR(XLOOKUP(D3+1,$A$1:$A$4,$B$1:$B$4),\"none\")",
+    "F4": "IFERROR(XLOOKUP(D4+1,$A$1:$A$4,$B$1:$B$4),\"none\")"
+   }
+  },
+  "shared-repaired": {
+   "sent": "b5c6e85e40f16503c801be1a76b0247b3395632e59ef77f9c65a503b7a42c9a9",
+   "values": {
+    "E1": 40,
+    "E2": 30,
+    "E3": 20,
+    "E4": 10,
+    "F1": "none",
+    "F2": 40,
+    "F3": 30,
+    "F4": 20
+   },
+   "formulas": {
+    "E1": "XLOOKUP(D1,$A$1:$A$4,$B$1:$B$4)",
+    "E2": "XLOOKUP(D2,$A$1:$A$4,$B$1:$B$4)",
+    "E3": "XLOOKUP(D3,$A$1:$A$4,$B$1:$B$4)",
+    "E4": "XLOOKUP(D4,$A$1:$A$4,$B$1:$B$4)",
+    "F1": "IFERROR(XLOOKUP(D1+1,$A$1:$A$4,$B$1:$B$4),\"none\")",
+    "F2": "IFERROR(XLOOKUP(D2+1,$A$1:$A$4,$B$1:$B$4),\"none\")",
+    "F3": "IFERROR(XLOOKUP(D3+1,$A$1:$A$4,$B$1:$B$4),\"none\")",
+    "F4": "IFERROR(XLOOKUP(D4+1,$A$1:$A$4,$B$1:$B$4),\"none\")"
+   }
+  },
+  "array-original": {
+   "sent": "0d455cc188d95e639e53504328610e3d46d043ca445cca63a3d4d43e7be6cd2a",
+   "rejected": "AXDialog «We found a problem with some content in 'book.xlsx'. Do you want us to try to recover as much as we can? If you trust the source of this workbook, click Yes.»"
+  },
+  "array-repaired": {
+   "sent": "a42cf745f81ae44ab9f9b4c7c27eb4aa4742338ab27708479914b2a647201378",
+   "values": {
+    "C1": 1,
+    "C2": 2,
+    "C3": 3,
+    "E1": 10,
+    "E2": 20,
+    "E3": 30,
+    "G1": 1
+   },
+   "formulas": {
+    "C1": "SORT(A1:A3)",
+    "C2": null,
+    "C3": null,
+    "E1": "SEQUENCE(3)*10",
+    "E2": null,
+    "E3": null,
+    "G1": "SUM(XLOOKUP({1;2},A1:A3,A1:A3))"
+   }
+  },
+  "name-original": {
+   "sent": "eacc88ab649e93ead1ec21d9dd8cee78e1390ec9fb751d6e6c2a6cea84e83839",
+   "values": {
+    "C1": {
+     "error": "NAME"
+    },
+    "C2": {
+     "error": "NAME"
+    },
+    "C3": {
+     "error": "NAME"
+    }
+   },
+   "formulas": {
+    "C1": "@Pick",
+    "C2": "@Pick*2",
+    "C3": "@Local"
+   }
+  },
+  "name-repaired": {
+   "sent": "112904d5df6f7e73b773271cbb916caceeb6994e1674198268a2bd8e5f2e7ebe",
+   "values": {
+    "C1": 20,
+    "C2": 40,
+    "C3": 0
+   },
+   "formulas": {
+    "C1": "@Pick",
+    "C2": "@Pick*2",
+    "C3": "@Local"
+   }
+  },
+  "mixed-original": {
+   "sent": "3f5fc94aff347aab4e8cbac1b742ce91d2dfff2426ba355ce4f07e43b02c8085",
+   "rejected": "AXDialog «We found a problem with some content in 'book.xlsx'. Do you want us to try to recover as much as we can? If you trust the source of this workbook, click Yes.»"
+  },
+  "mixed-repaired": {
+   "sent": "939068c25254312ea168934eddb996a43b1639f88c6cad10e4670976d6f5c6fb",
+   "values": {
+    "C1": 9,
+    "C2": 40,
+    "C3": 12,
+    "C4": 4,
+    "C5": 5
+   },
+   "formulas": {
+    "C1": "IFNA(XLOOKUP(5,A1:A2,B1:B2),DAYS(10,1))",
+    "C2": "LET(x,XLOOKUP(2,A1:A2,B1:B2),x*2)",
+    "C3": "SUM(MAKEARRAY(2,2,LAMBDA(r,c,r+c)))",
+    "C4": "LET(f,LAMBDA(x,[y],IF(ISOMITTED(y),x,x+y)),f(1)+f(1,2))",
+    "C5": "SUM(A1:A2)+DAYS(3,1)"
+   }
+  },
+  "rules-original": {
+   "sent": "e965a505636b3cdabffafb8925c81274f3856e3f8e9da50941456f88692259ea",
+   "values": {
+    "C1": 1
+   },
+   "formulas": {
+    "C1": "A1"
+   }
+  },
+  "rules-repaired": {
+   "sent": "9f9251aebc67eb87f8a53e7cb18b9008605f2bd507d42c1afc61830eb5fec53c",
+   "values": {
+    "C1": 1
+   },
+   "formulas": {
+    "C1": "A1"
+   }
+  },
+  "table-original": {
+   "sent": "e569ce85e983cf274d50b9fc0fc2ce7156ee937629ff258b4d556107fb0a1dbe",
+   "values": {
+    "B2": {
+     "error": "NAME"
+    },
+    "B3": {
+     "error": "NAME"
+    }
+   },
+   "formulas": {
+    "B2": "XLOOKUP(T[[#This Row],[a]],$E$1:$E$2,$F$1:$F$2)",
+    "B3": "XLOOKUP(T[[#This Row],[a]],$E$1:$E$2,$F$1:$F$2)"
+   }
+  },
+  "table-repaired": {
+   "sent": "e63bc96256a366e3a28d797f4182fb9dede60436d95f971dfeb385a186b859c8",
+   "values": {
+    "B2": 10,
+    "B3": 20
+   },
+   "formulas": {
+    "B2": "XLOOKUP(T[[#This Row],[a]],$E$1:$E$2,$F$1:$F$2)",
+    "B3": "XLOOKUP(T[[#This Row],[a]],$E$1:$E$2,$F$1:$F$2)"
+   }
+  },
+  "pivot-original": {
+   "sent": "8e41423a3a2faf335974aa149883052f4e96c8f25ecefdad70f01b970e9c83e1",
+   "values": {
+    "E2": 1610,
+    "G1": {
+     "error": "NAME"
+    },
+    "G2": {
+     "error": "NAME"
+    }
+   },
+   "formulas": {
+    "E2": "SUM(B2:B21)",
+    "G1": "XLOOKUP(\"x\",A2:A21,B2:B21,\"none\")",
+    "G2": "XLOOKUP(A2,A2:A21,B2:B21)"
+   }
+  },
+  "pivot-repaired": {
+   "sent": "10d591efc9fc98d76effd49c869cb74c81109e53b5469b887a1c77046886fce0",
+   "values": {
+    "E2": 1610,
+    "G1": "none",
+    "G2": 14
+   },
+   "formulas": {
+    "E2": "SUM(B2:B21)",
+    "G1": "XLOOKUP(\"x\",A2:A21,B2:B21,\"none\")",
+    "G2": "XLOOKUP(A2,A2:A21,B2:B21)"
+   }
+  }
+ }
+}

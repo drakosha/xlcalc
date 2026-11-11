@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "version": "16.115"
+  },
+  "cases": {
+    "table-new-cache": {
+      "caches": [
+        "Slicer_Amount",
+        "Slicer_Product"
+      ],
+      "objects": [
+        "Data!Amounts",
+        "Data!Product"
+      ]
+    },
+    "pivot-first-slicer": {
+      "caches": [
+        "Slicer_Region"
+      ],
+      "objects": [
+        "P!First"
+      ]
+    },
+    "both-new-sheet": {
+      "caches": [
+        "Slicer_Region",
+        "Timeline_Date"
+      ],
+      "objects": [
+        "New!NewDates",
+        "New!NewRegions",
+        "P!Slicer_Region",
+        "P!Timeline_Date"
+      ]
+    },
+    "all-deleted": {
+      "caches": [],
+      "objects": []
+    }
+  }
+}

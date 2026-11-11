@@ -158,4 +158,17 @@ describe('writeKept slicer and timeline lifecycle', () => {
     expect(ext.match(/<x14:slicerCache /g)).toHaveLength(2)
     s.close()
   })
+  it('reads the four lifecycle books Mac Excel saved, including new parts and an empty drawing removed', async () => {
+    const cases = JSON.parse(readFileSync(new URL('./excel/keep/slicer-lifecycle.json', import.meta.url), 'utf8')).cases
+    for (const [id, want] of Object.entries(cases)) {
+      const b = (await readXlsx(readFileSync(new URL(`./excel/keep/slicer-lifecycle/${id}.xlsx`, import.meta.url)))).book
+      expect(
+        {
+          caches: [...(b.slicerCaches ?? []), ...(b.timelineCaches ?? [])].map((c) => c.name).sort(),
+          objects: b.sheets.flatMap((s) => [...(s.slicers ?? []), ...(s.timelines ?? [])].map((x) => `${s.name}!${x.name}`)).sort(),
+        },
+        id,
+      ).toEqual(want)
+    }
+  })
 })

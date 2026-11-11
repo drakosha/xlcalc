@@ -210,9 +210,9 @@ describe.each(PLATFORMS)('openpyxl files repaired, against %s', (platform, dir) 
     expect(refused(`${id}-repaired`)).toBe(false)
     const b = PREFIX_BOOKS.find((x) => x.id === id)!
     const got = await readCells(saved(`${id}-repaired`), b.read)
-    // The committed prediction remains 3: Windows Excel gives 1 for SUM(XLOOKUP({1;2},...)) in a legacy CSE cell.
+    // The committed prediction remains 3: Both Excel platforms give 1 for SUM(XLOOKUP({1;2},...)) in a legacy CSE cell.
     // Only this measured miss is accepted; every other value and the formula text must match the prediction.
-    const misses = windows && id === 'array' ? { G1: 1 } : {}
+    const misses = id === 'array' ? { G1: 1 } : {}
     expect(got.values).toEqual({ ...want.values, ...misses })
     expect(got.formulas).toEqual(want.formulas)
     expect(noPrefix((await readXlsx(saved(`${id}-repaired`))).issues)).toEqual([])
@@ -221,8 +221,10 @@ describe.each(PLATFORMS)('openpyxl files repaired, against %s', (platform, dir) 
   it.each(PREFIX_BOOKS.map((b) => b.id))('%s: the original as predicted', async (id) => {
     const want = predicted[`${id}-original`]
     const opens = windows && want.opensOnWindows === false ? false : want.opens
-    expect(refused(`${id}-original`)).toBe(!opens)
-    if (opens) expect((await readCells(saved(`${id}-original`), PREFIX_BOOKS.find((x) => x.id === id)!.read)).values).toEqual(want.values)
+    // Mac 16.115 also refuses the unprefixed mixed LET/LAMBDA book, contrary to the original Mac prediction.
+    const missedRefusal = !windows && id === 'mixed'
+    expect(refused(`${id}-original`)).toBe(!opens || missedRefusal)
+    if (opens && !missedRefusal) expect((await readCells(saved(`${id}-original`), PREFIX_BOOKS.find((x) => x.id === id)!.read)).values).toEqual(want.values)
   })
 
   it('keeps the rules and the table repaired', async () => {

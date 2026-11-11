@@ -29,7 +29,7 @@ export interface PrefixBook {
   read: string[]
   /** What Excel shows in the original file, by cell; `refused` where it does not open it. */
   original: { refused: true } | { values: Record<string, Shown> }
-  /** Excel for Windows refuses the original, which Excel for Mac opens: a LAMBDA's parameters `r` and `c` without their prefix read as no names there (`links/no-prefix.ts`, MAKEARRAY). */
+  /** The initial prediction expected only Windows to refuse this original; Mac 16.115 also refused it (recorded by the test): a LAMBDA's parameters `r` and `c` without their prefix read as no names there (`links/no-prefix.ts`, MAKEARRAY). */
   refusedOnWindows?: true
 }
 
