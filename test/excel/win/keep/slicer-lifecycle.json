@@ -1,0 +1,95 @@
+{
+  "predictionMatches": 15,
+  "cases": 16,
+  "miss": "Two timeline caches of one field made Excel drop the first timeline; the session now shares its cache. The corrected case was checked separately.",
+  "expected": {
+    "table-new-cache": {
+      "opened": true,
+      "caches": [
+        {
+          "name": "Slicer_Amount",
+          "source": "Amount",
+          "slicers": [
+            "Data!Amounts:Amount"
+          ]
+        },
+        {
+          "name": "Slicer_Product",
+          "source": "Product",
+          "slicers": [
+            "Data!Product:Product"
+          ]
+        }
+      ]
+    },
+    "table-replace": {
+      "opened": true,
+      "caches": [
+        {
+          "name": "Slicer_Product",
+          "source": "Product",
+          "slicers": [
+            "Data!Second:Product"
+          ]
+        }
+      ]
+    },
+    "pivot-first-slicer": {
+      "opened": true,
+      "caches": [
+        {
+          "name": "Slicer_Region",
+          "source": "Region",
+          "slicers": [
+            "P!First:Region"
+          ]
+        }
+      ]
+    },
+    "both-new-sheet": {
+      "opened": true,
+      "caches": [
+        {
+          "name": "Slicer_Region",
+          "source": "Region",
+          "slicers": [
+            "New!NewRegions:Region",
+            "P!Slicer_Region:Region"
+          ]
+        },
+        {
+          "name": "Timeline_Date",
+          "source": "Date",
+          "slicers": [
+            "New!NewDates:Date",
+            "P!Timeline_Date:Date"
+          ]
+        }
+      ]
+    },
+    "all-deleted": {
+      "opened": true,
+      "caches": []
+    },
+    "timeline-new-cache": {
+      "opened": true,
+      "caches": [
+        {
+          "name": "Slicer_Region",
+          "source": "Region",
+          "slicers": [
+            "P!Slicer_Region:Region"
+          ]
+        },
+        {
+          "name": "Timeline_Date",
+          "source": "Date",
+          "slicers": [
+            "P!MoreDates:Date",
+            "P!Timeline_Date:Date"
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,155 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "day": "2026-11-11",
+  "seconds": 29.6
+ },
+ "sent": {
+  "lookup-original": "1f53346e5c3177d4404c13a251b59d6c8f90540a90778f4532f1834cbe3ddadb",
+  "lookup-repaired": "289ebf4743041f68cd9cbc2858528ebe429652ac54ec01eefbd7d2ce6b2ef4f0",
+  "filter-original": "e02a9c3df44233e08ba91fff65c6d265e89a00c39ee01985a81a1d15c88bbb84",
+  "filter-repaired": "ecf8ebf952a370cbb360a6d99c34f77a304e475333316bbbbe70a217c093e972",
+  "sort-original": "5dc350cae584aa63f8e16f9af2e8665eb34287bfe5634a3a76fa26c12d304f75",
+  "sort-repaired": "42e3d863784efb17d489687cd0f986fd3ba771c3eeef2f4d018df3d055cfce27",
+  "shared-original": "97140354816047c6e371ceefa4d4c5ef1fddca0e814b3dbf672f7e152af6ba1c",
+  "shared-repaired": "b5c6e85e40f16503c801be1a76b0247b3395632e59ef77f9c65a503b7a42c9a9",
+  "array-original": "0d455cc188d95e639e53504328610e3d46d043ca445cca63a3d4d43e7be6cd2a",
+  "array-repaired": "a42cf745f81ae44ab9f9b4c7c27eb4aa4742338ab27708479914b2a647201378",
+  "name-original": "eacc88ab649e93ead1ec21d9dd8cee78e1390ec9fb751d6e6c2a6cea84e83839",
+  "name-repaired": "112904d5df6f7e73b773271cbb916caceeb6994e1674198268a2bd8e5f2e7ebe",
+  "mixed-original": "3f5fc94aff347aab4e8cbac1b742ce91d2dfff2426ba355ce4f07e43b02c8085",
+  "mixed-repaired": "939068c25254312ea168934eddb996a43b1639f88c6cad10e4670976d6f5c6fb",
+  "rules-original": "e965a505636b3cdabffafb8925c81274f3856e3f8e9da50941456f88692259ea",
+  "rules-repaired": "9f9251aebc67eb87f8a53e7cb18b9008605f2bd507d42c1afc61830eb5fec53c",
+  "table-original": "e569ce85e983cf274d50b9fc0fc2ce7156ee937629ff258b4d556107fb0a1dbe",
+  "table-repaired": "e63bc96256a366e3a28d797f4182fb9dede60436d95f971dfeb385a186b859c8",
+  "pivot-original": "8e41423a3a2faf335974aa149883052f4e96c8f25ecefdad70f01b970e9c83e1",
+  "pivot-repaired": "10d591efc9fc98d76effd49c869cb74c81109e53b5469b887a1c77046886fce0"
+ },
+ "answers": {
+  "lookup-original": {
+   "opened": [
+    "0.xlsx",
+    "0 - Excel",
+    []
+   ]
+  },
+  "lookup-repaired": {
+   "opened": [
+    "1.xlsx",
+    "1 - Excel",
+    []
+   ]
+  },
+  "filter-repaired": {
+   "opened": [
+    "3.xlsx",
+    "3 - Excel",
+    []
+   ]
+  },
+  "sort-repaired": {
+   "opened": [
+    "5.xlsx",
+    "5 - Excel",
+    []
+   ]
+  },
+  "shared-original": {
+   "opened": [
+    "6.xlsx",
+    "6 - Excel",
+    []
+   ]
+  },
+  "shared-repaired": {
+   "opened": [
+    "7.xlsx",
+    "7 - Excel",
+    []
+   ]
+  },
+  "array-repaired": {
+   "opened": [
+    "9.xlsx",
+    "9 - Excel",
+    []
+   ]
+  },
+  "name-original": {
+   "opened": [
+    "10.xlsx",
+    "10 - Excel",
+    []
+   ]
+  },
+  "name-repaired": {
+   "opened": [
+    "11.xlsx",
+    "11 - Excel",
+    []
+   ]
+  },
+  "mixed-repaired": {
+   "opened": [
+    "13.xlsx",
+    "13 - Excel",
+    []
+   ]
+  },
+  "rules-original": {
+   "opened": [
+    "14.xlsx",
+    "14 - Excel",
+    []
+   ]
+  },
+  "rules-repaired": {
+   "opened": [
+    "15.xlsx",
+    "15 - Excel",
+    []
+   ]
+  },
+  "table-original": {
+   "opened": [
+    "16.xlsx",
+    "16 - Excel",
+    []
+   ]
+  },
+  "table-repaired": {
+   "opened": [
+    "17.xlsx",
+    "17 - Excel",
+    []
+   ]
+  },
+  "pivot-original": {
+   "opened": [
+    "18.xlsx",
+    "18 - Excel",
+    []
+   ]
+  },
+  "pivot-repaired": {
+   "opened": [
+    "19.xlsx",
+    "19 - Excel",
+    []
+   ]
+  }
+ },
+ "rejected": {
+  "filter-original": "-2146827284 Unable to get the Open property of the Workbooks class",
+  "sort-original": "-2146827284 Unable to get the Open property of the Workbooks class",
+  "array-original": "-2146827284 Unable to get the Open property of the Workbooks class",
+  "mixed-original": "-2146827284 Unable to get the Open property of the Workbooks class"
+ }
+}

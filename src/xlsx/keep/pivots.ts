@@ -4,15 +4,13 @@
  * changed or refreshed is written again from the model as `writeXlsx` writes it, through the file's relationships; a
  * new one gets parts of its own, and one the book deleted goes with its parts and its entry in the workbook.
  */
-import type { BookInput, DrawingPlace, PivotCache, PivotTable, Slicer, SlicerCache, Timeline, TimelineCache } from '../../contract.js'
+import type { BookInput, PivotCache, PivotTable } from '../../contract.js'
 import { caseKey } from '../../collate.js'
 import type { Rel } from '../read/package.js'
 import { relsOf } from '../read/package.js'
 import { pivotRules } from '../write/pivot-parts.js'
 import { pivotCacheXml, pivotRecordsXml } from '../write/pivot-cache.js'
 import { pivotTableXml, type PivotWriting } from '../write/pivot.js'
-import { frameXml, type FrameKind, slicerCacheXml, slicersPartXml, tableSlicerCacheXml, timelineCacheXml, timelinesPartXml } from '../write/slicers.js'
-import { KeptRefusal } from './refusals.js'
 import { sheetKey } from '../../syntax/print.js'
 import type { CellFormats } from '../write/styles.js'
 import { attr, attrsAt } from '../xml/scan.js'
@@ -21,10 +19,6 @@ import { relsPath, type Source, type SourceSheet } from './source.js'
 import { attrsOf, childrenOf, Rels, relType, rootOf, TYPE, type ContentTypes, type Placed } from './xml.js'
 import type { Edit } from './carriers.js'
 
-
-/** A drawing's anchor of two cells, and the name of the slicer or timeline a frame in one shows. */
-const ANCHOR = /<((?:[\w.-]+:)?)twoCellAnchor\b[^>]*>[\s\S]*?<\/\1twoCellAnchor>/g
-const FRAME_NAME = /<(?:[\w.-]+:)?(?:slicer|timeslicer)\b[^>]*?\sname="([^"]*)"/
 
 /** A cache of the file: its id, its workbook relationship and part, and the part of its rows. */
 interface FileCache {
@@ -36,14 +30,14 @@ interface FileCache {
   relsXml?: string
 }
 
-/** The file's PivotTables' parts by name, its caches by id, its slicers' and timelines' caches by name with their parts, the drawings of its sheets with slicers or timelines by part. */
+/** The file's PivotTables' parts by name, its caches by id, its slicers' and timelines' caches by name with their parts, the text of their caches, sheet lists and drawings by part. */
 export interface PivotFiles {
   tables: Map<string, string>
   caches: FileCache[]
   slicerCaches: Map<string, string>
   /** The ids a table's slicer's cache holds, by the cache's name. */
   tableSlicers: Map<string, { tableId: string; column: string }>
-  drawings: Map<string, string>
+  texts: Map<string, string>
 }
 
 export async function pivotFiles(src: Source): Promise<PivotFiles> {
@@ -67,12 +61,15 @@ export async function pivotFiles(src: Source): Promise<PivotFiles> {
       const { tableId, column } = attrsAt(xml, 'tableSlicerCache')
       if (name !== undefined && tableId !== undefined && column !== undefined) tableSlicers.set(caseKey(readText(name)), { tableId, column })
     }
-  const drawings = new Map<string, string>()
-  for (const ss of src.sheets) {
-    const d = ss.rels.find((r) => r.kind === 'drawing' && !r.external)
-    if (d && ss.rels.some((r) => (r.kind === 'slicer' || r.kind === 'timeline') && !r.external)) drawings.set(d.target, (await src.archive.text(d.target)) ?? '')
+  const texts = new Map<string, string>()
+  const take = async (part: string) => {
+    const text = await src.archive.text(part)
+    if (text !== undefined) texts.set(part.toLowerCase(), text)
   }
-  return { tables, caches, slicerCaches, tableSlicers, drawings }
+  for (const part of slicerCaches.values()) await take(part)
+  for (const ss of src.sheets) for (const r of ss.rels)
+    if (!r.external && ['drawing', 'slicer', 'timeline'].includes(r.kind)) await take(r.target)
+  return { tables, caches, slicerCaches, tableSlicers, texts }
 }
 
 /** What the writing of the book over the file gives the PivotTables. */
@@ -127,7 +124,7 @@ export class KeptPivots {
   }
 
   /** A cache's id among the slicers' sources: the file's, else its own where a slicer or a timeline filters it. */
-  private sourceId(id: number): number | undefined {
+  sourceId(id: number): number | undefined {
     const { book } = this.h
     return this.x14.get(id) ?? ([...(book.slicerCaches ?? []), ...(book.timelineCaches ?? [])].some((c) => c.cache === id) ? id : undefined)
   }
@@ -145,7 +142,7 @@ export class KeptPivots {
       const f = this.files.caches.find((x) => x.id === c.id)
       const c0 = was.get(c.id)
       // the same but for a source its carrier moved
-      if (f && c0 && unsourced(c0) === unsourced(c) && (JSON.stringify(c0.source) === JSON.stringify(c.source) || fileSource(this.h.edited(f.part, f.xml)) === modelSource(c))) {
+      if (f && c0 && (this.x14.has(c.id) || this.sourceId(c.id) === undefined || [...(book0.slicerCaches ?? []), ...(book0.timelineCaches ?? [])].some((x) => x.cache === c.id)) && unsourced(c0) === unsourced(c) && (JSON.stringify(c0.source) === JSON.stringify(c.source) || fileSource(this.h.edited(f.part, f.xml)) === modelSource(c))) {
         this.part.set(c.id, f.part)
         continue
       }
@@ -271,71 +268,4 @@ export class KeptPivots {
     }
   }
 
-  /**
-   * The slicers and timelines: a cache the book changed (the items or dates chosen, the PivotTables it filters) written
-   * again through its part, a sheet's slicers or timelines whose fields changed their part written again; one added or
-   * deleted is refused (`keptSlicers`). Their frames move with their cells by their carriers.
-   */
-  slicers(): void {
-    const { book0, book, src } = this.h
-    const names = (b: BookInput) => JSON.stringify([...(b.slicerCaches ?? []), ...(b.timelineCaches ?? [])].map((c) => caseKey(c.name)).sort())
-    // a slicer or timeline renamed is the same one: by the caches they show
-    const own = (b: BookInput) => JSON.stringify(b.sheets.flatMap((s) => [...(s.slicers ?? []).map((x) => `s${caseKey(x.cache)}`), ...(s.timelines ?? []).map((x) => `t${caseKey(x.cache)}`)]).sort())
-    if (names(book0) !== names(book) || own(book0) !== own(book)) throw new KeptRefusal({ key: 'keptSlicers' }, 'slicers')
-    // a PivotTable's sheet by its `sheetId` in the file, which a renamed sheet keeps
-    const tabOf = (k: number | undefined) => (k === undefined ? 0 : Number(src.decls[src.sheets[k].decl].attrs.sheetId ?? 0))
-    const tab = (sheet: string) => tabOf(this.h.fileSheet(sheet))
-    const tab0 = (sheet: string) => tabOf(book0.sheets.findIndex((x) => sheetKey(x.name) === sheetKey(sheet)))
-    // a table's slicer names its table by its id in the file, which a rename leaves
-    const key = (c: { pivots: { sheet: string; name: string }[]; table?: unknown } | undefined, t: (sheet: string) => number) => JSON.stringify(c && { ...c, table: undefined, pivots: c.pivots.map((r) => [t(r.sheet), caseKey(r.name)]) })
-    for (const kind of ['slicerCaches', 'timelineCaches'] as const)
-      for (const c of book[kind] ?? []) {
-        const c0 = (book0[kind] ?? []).find((x) => caseKey(x.name) === caseKey(c.name))
-        const part = this.files.slicerCaches.get(caseKey(c.name))
-        if (!part || key(c0, tab0) === key(c, tab)) continue
-        const table = this.files.tableSlicers.get(caseKey(c.name))
-        // of an OLAP source, whose part the model does not hold
-        if (!table && c.cache === undefined) throw new KeptRefusal({ key: 'keptSlicerSource', name: c.name }, 'slicers')
-        this.h.change()
-        const id = this.sourceId(c.cache!) ?? c.cache!
-        this.h.parts.set(part, table ? tableSlicerCacheXml(c as SlicerCache, table) : kind === 'slicerCaches' ? slicerCacheXml(book, c as SlicerCache, tab, id) : timelineCacheXml(book, c as TimelineCache, tab, id))
-      }
-    // a sheet's part where a slicer or timeline changed but for its place, which its frame's carrier writes back
-    const unplaced = (list: { place?: unknown }[] | undefined) => JSON.stringify((list ?? []).map((x) => ({ ...x, place: undefined })))
-    for (const [k, ss] of src.sheets.entries()) {
-      const j = this.h.bookSheet(k)
-      if (j === undefined) continue
-      const [s0, s1] = [book0.sheets[k], book.sheets[j]]
-      for (const [kind, rel, xml] of [['slicers', 'slicer', slicersPartXml], ['timelines', 'timeline', timelinesPartXml]] as const) {
-        if (unplaced(s0[kind]) === unplaced(s1[kind])) continue
-        const r = ss.rels.find((x) => x.kind === rel && !x.external)
-        if (!r) continue
-        this.h.change()
-        this.h.parts.set(r.target, xml(s1[kind] as never))
-      }
-      this.frames(ss, s0, s1)
-    }
-  }
-
-  /** The anchors of a sheet's drawing whose slicer or timeline was renamed, or its locks changed, written again from the model at its place; the others as they are. */
-  private frames(ss: SourceSheet, s0: BookInput['sheets'][number], s1: BookInput['sheets'][number]): void {
-    const part = ss.rels.find((r) => r.kind === 'drawing' && !r.external)?.target
-    const file = part === undefined ? undefined : this.files.drawings.get(part)
-    if (file === undefined) return
-    const changed = new Map<string, { x: (Slicer | Timeline) & { place: DrawingPlace }; kind: FrameKind }>()
-    for (const kind of ['slicers', 'timelines'] as const)
-      (s1[kind] ?? []).forEach((x: Slicer | Timeline, i) => {
-        const x0: Slicer | Timeline | undefined = s0[kind]?.[i]
-        const frame = (y: Slicer | Timeline) => JSON.stringify([y.name, y.locked !== false, 'positionLocked' in y && !!y.positionLocked])
-        if (x0 && x.place && frame(x0) !== frame(x)) changed.set(caseKey(x0.name), { x: { ...x, place: x.place }, kind: kind === 'timelines' ? 'timeline' : this.files.tableSlicers.has(caseKey(x.cache)) ? 'tableSlicer' : 'slicer' })
-      })
-    if (!changed.size) return
-    const xml = this.h.edited(part!, file).replace(ANCHOR, (anchor) => {
-      const name = FRAME_NAME.exec(anchor)?.[1]
-      const c = name === undefined ? undefined : changed.get(caseKey(readText(name)))
-      return c ? frameXml(c.x, Number(/<(?:[\w.-]+:)?cNvPr\b[^>]*?\sid="(\d+)"/.exec(anchor)?.[1] ?? 0), c.kind) : anchor
-    })
-    this.h.change()
-    this.h.parts.set(part!, xml)
-  }
 }

@@ -59,7 +59,7 @@ export const KEPT_EN_MESSAGES: { readonly [K in keyof KeptMessageParams]: (p: Ke
   keptValidation: (p) => `the data validation of '${p.sheet}' changed, and the file has rules of it the workbook could not read, which writing them again would lose`,
   keptThreads: (p) => `the notes of '${p.sheet}' changed, and it has comment threads, which writeKept does not write`,
   keptTableParts: (p) => `the table ${p.table} was deleted, and it has parts the workbook does not hold (${p.path})`,
-  keptSlicers: () => 'slicers or timelines were added or deleted, which writeKept does not write yet',
+  keptSlicers: () => 'a slicer or timeline has no place, its cache name is not available, or two timeline caches filter one field of a PivotTable',
   keptSlicerSource: (p) => `the slicer cache ${p.name} of a source the workbook does not read was changed`,
   keptLinkKind: (p) => `the link [${p.link}] to another workbook changed, and its part is missing or is not a workbook's (DDE, OLE)`,
   keptLinks: () => "a link to another workbook was removed, moved or pointed at another file, which the file's formulas would read by another number",

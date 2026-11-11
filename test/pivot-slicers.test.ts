@@ -81,6 +81,19 @@ describe('slicers and timelines without xlcalc/pivot', () => {
 describe('slicers and timelines with xlcalc/pivot', () => {
   it('loads', () => registerPivot(pivotEngine))
 
+  it('a second timeline of the same field reuses its cache and keeps the first timeline and its choice', () => {
+    const s = createSession(fresh())
+    expect(s.editStructure({ op: 'addTimeline', sheet: 'P', timeline: { name: 'First' }, cache: { field: 'Date', pivots: [PT1] } }).ok).toBe(true)
+    expect(s.editStructure({ op: 'editTimeline', timeline: 'First', cache: { selection: { start: '2025-01-01', end: '2025-03-31' } } }).ok).toBe(true)
+    const before = s.getBook().timelineCaches![0]
+    expect(s.editStructure({ op: 'addTimeline', sheet: 'P', timeline: { name: 'Second' }, cache: { field: 'Date', pivots: [PT1, PT2] } }).ok).toBe(true)
+    expect(s.getBook().timelineCaches).toEqual([{ ...before, pivots: [PT1, PT2] }])
+    expect(s.getBook().sheets[1].timelines?.map((t) => [t.name, t.cache])).toEqual([['First', before.name], ['Second', before.name]])
+    s.undo()
+    expect(s.getBook().timelineCaches).toEqual([before])
+    s.close()
+  })
+
   for (const execution of ['closures', 'eval'] as const)
     it(`a slicer filters its PivotTables in a session (${execution}), undone and redone one step each`, () => {
       const s = createSession(fresh(), { execution })

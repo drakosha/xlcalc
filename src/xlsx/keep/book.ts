@@ -43,7 +43,8 @@ import { addMeta, planMeta, type MetaPlan } from './metadata.js'
 import { Formats } from './formats.js'
 import { repairNames, repairSheet, repairTable } from './prefixes.js'
 import { KeptStyles } from './styles.js'
-import { KeptPivots, pivotFiles, type PivotFiles } from './pivots.js'
+import { KeptPivots, pivotFiles, type PivotFiles, type PivotHost } from './pivots.js'
+import { KeptSlicers } from './slicers.js'
 import { fileText } from '../write/formula.js'
 import type { WriteKeptOptions } from './types.js'
 import { attrsOf, childrenOf, DOC_REL, Rels, relType, rootOf, setAttrs, TYPE, type ContentTypes, type Placed } from './xml.js'
@@ -263,6 +264,9 @@ class Kept {
   private tableId: number
   /** The file's parts removed, by name in lower case. */
   private readonly gone = new Set<string>()
+  private readonly sheetParts: string[] = []
+  private readonly tableIds = new Map<string, { id: number; columns: Map<string, number> }>()
+  private readonly slicers: KeptSlicers
   private readonly pivots: KeptPivots
 
   constructor(
@@ -286,24 +290,30 @@ class Kept {
     this.block = setup.block
     this.tableId = setup.tableId
     const styles = this.styles.of(book.styles)
-    this.pivots = new KeptPivots(
-      {
-        src,
-        book0,
-        book,
-        parts: this.parts,
-        types: this.types,
-        wbRels: this.wbRels,
-        styles,
-        useDxf: (i) => this.styles.use('dxfs', i),
-        edited: (part, text) => this.edited(part, text),
-        relative,
-        change: () => (this.changed = true),
-        fileSheet: (name) => this.id.source[book.sheets.findIndex((s) => sheetKey(s.name) === sheetKey(name))],
-        bookSheet: (k) => this.id.target.get(k),
+    const host: PivotHost = {
+      src,
+      book0,
+      book,
+      parts: this.parts,
+      types: this.types,
+      wbRels: this.wbRels,
+      styles,
+      useDxf: (i) => this.styles.use('dxfs', i),
+      edited: (part, text) => this.edited(part, text),
+      relative,
+      change: () => (this.changed = true),
+      fileSheet: (name) => this.id.source[book.sheets.findIndex((s) => sheetKey(s.name) === sheetKey(name))],
+      bookSheet: (k) => this.id.target.get(k),
+    }
+    this.pivots = new KeptPivots(host, setup.pivots)
+    this.slicers = new KeptSlicers({ ...host, parts: this.parts, sheets: this.sheetParts, tables: this.tableIds,
+      sourceId: (id) => this.pivots.sourceId(id),
+      tab: (name) => {
+        const j = book.sheets.findIndex((s) => sheetKey(s.name) === sheetKey(name))
+        const k = this.id.source[j]
+        return k === undefined ? Math.max(0, ...src.decls.map((d) => Number(d.attrs.sheetId) || 0)) + this.id.source.slice(0, j + 1).filter((k) => k === undefined).length : Number(src.decls[src.sheets[k].decl].attrs.sheetId)
       },
-      setup.pivots,
-    )
+    }, setup.pivots)
   }
 
   get styles(): KeptStyles {
@@ -340,7 +350,6 @@ class Kept {
     if (JSON.stringify(book.font ?? null) !== JSON.stringify(book0.font ?? null)) throw new KeptRefusal({ key: 'keptFont' }, 'font')
     const emptied = this.others()
     this.pivots.caches()
-    this.pivots.slicers()
     for (const [j, s1] of book.sheets.entries()) {
       const k = this.id.source[j]
       const issues = new KeptIssues()
@@ -349,6 +358,7 @@ class Kept {
         continue
       }
       const [s0, ss] = [book0.sheets[k], src.sheets[k]]
+      this.sheetParts[j] = ss.part
       const d = src.decls[ss.decl]
       this.sheetRels[j] = attr(d.attrs, 'id') ?? ''
       // the sheet's index in both writes is the file's: what a writer numbers by it (rules' ids) compares
@@ -396,6 +406,7 @@ class Kept {
     }
     // the sheets the book no longer has, with the parts of their own
     for (const [k, ss] of src.sheets.entries()) if (!this.id.target.has(k)) this.deleteSheet(ss)
+    this.slicers.write()
     this.workbook()
   }
 
@@ -594,6 +605,7 @@ class Kept {
         // its columns keep their ids, which a table's slicer and a query table name
         const ids = within(xml!, 'tableColumns', 'tableColumn').map((e) => Number(attributes(e.attrs).id))
         const ids1 = keptColumnIds(ids, t0, t1)
+        this.tableIds.set(caseKey(t1.name), { id, columns: new Map(t1.columns.map((c, i) => [caseKey(c.name), ids1[i]])) })
         const [filtered0, filtered1] = [t0.name === this.w0.filterTables[k], t1.name === this.w1.filterTables[j]]
         // compared without the criteria, written with them: their colors would add formats to styles.xml for the comparison alone
         const plain = tableXml(t1, s1, id, this.w1.names, this.issues, filtered1, ids1)
@@ -608,6 +620,7 @@ class Kept {
       this.changed = listChanged = true
       const part = this.parts.fresh('xl/tables/table', '.xml')
       const text = tableXml(t, s1, ++this.tableId, this.w1.names, this.issues, t.name === this.w1.filterTables[j], undefined, this.styles.of(this.book.styles))
+      this.tableIds.set(caseKey(t.name), { id: this.tableId, columns: new Map(t.columns.map((c, i) => [caseKey(c.name), i + 1])) })
       this.styles.useDxfs(text)
       this.parts.set(part, text)
       this.types.override(part, `${TYPE}.table+xml`)
@@ -621,11 +634,13 @@ class Kept {
   private newSheet(j: number, s: SheetInput, issues: KeptIssues): void {
     this.changed = true
     const part = this.parts.fresh('xl/worksheets/sheet', '.xml')
+    this.sheetParts[j] = part
     const rels = new Rels(undefined)
     const tableParts: string[] = []
     for (const t of s.tables ?? []) {
       const tp = this.parts.fresh('xl/tables/table', '.xml')
       const text = tableXml(t, s, ++this.tableId, this.w1.names, issues, t.name === this.w1.filterTables[j], undefined, this.styles.of(this.book.styles))
+      this.tableIds.set(caseKey(t.name), { id: this.tableId, columns: new Map(t.columns.map((c, i) => [caseKey(c.name), i + 1])) })
       this.styles.useDxfs(text)
       this.parts.set(tp, text)
       this.types.override(tp, `${TYPE}.table+xml`)
@@ -756,7 +771,7 @@ class Kept {
       const at = insertAt(BEFORE_CALC)
       edits.push({ part: src.wbPath, start: at, end: at, text: `<calcPr${full ? ' fullCalcOnLoad="1"' : ''}${it1}/>` })
     }
-    this.parts.set(src.wbPath, edited(wb, edits))
+    this.parts.set(src.wbPath, this.slicers.workbook(edited(wb, edits)))
     this.finish()
   }
 

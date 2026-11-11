@@ -70,7 +70,7 @@ describe('writeKept over a file with a PivotTable', () => {
     await expect(writeKept(file, d.getSnapshot())).rejects.toThrow('which Excel makes a link to the file by its path')
   })
 
-  it("writes a slicer's cache whose choice changed through its part, and refuses a slicer added", async () => {
+  it("writes a slicer's cache whose choice changed through its part, and another slicer of that cache", async () => {
     const data = new Uint8Array(readFileSync('test/excel/win/pivot/slicer/row-two.xlsx'))
     const { book } = await openKept(data)
     const c = book.slicerCaches![0]
@@ -82,7 +82,7 @@ describe('writeKept over a file with a PivotTable', () => {
     expect([...after.keys()].filter((k) => after.get(k) !== before.get(k)).sort()).toEqual(['[Content_Types].xml', 'xl/_rels/workbook.xml.rels', 'xl/slicerCaches/slicerCache1.xml', 'xl/workbook.xml'])
     const s = book.sheets.findIndex((x) => x.slicers)
     const more = { ...book, sheets: book.sheets.map((x, i) => (i === s ? { ...x, slicers: [...x.slicers!, { ...x.slicers![0], name: 'Another' }] } : x)) }
-    await expect(writeKept(data, { book: more })).rejects.toThrow('slicers or timelines were added or deleted')
+    expect((await readXlsx((await writeKept(data, { book: more })).data)).book.sheets[s].slicers?.map((x) => x.name)).toEqual(more.sheets[s].slicers!.map((x) => x.name))
   })
 
   it("writes a slicer's changed choice and look on a renamed sheet through the sheet's parts", async () => {

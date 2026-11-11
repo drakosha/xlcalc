@@ -216,7 +216,9 @@ export type StructureOp =
   | { op: 'editSlicer'; slicer: string; set?: SlicerPatch; cache?: SlicerCachePatch }
   /** Deletes the slicer; its cache goes with its last slicer. */
   | { op: 'deleteSlicer'; slicer: string }
-  /** Excel's Insert Timeline, as `addSlicer`, of a date field. */
+  /**
+   * Excel's Insert Timeline, as `addSlicer`, of a date field. Another timeline over the same field of a shared PivotTable reuses its cache and choice; new connections join it.
+   */
   | { op: 'addTimeline'; sheet: string; timeline: Omit<Timeline, 'name' | 'cache'> & { name?: string }; cache: string | { field: string; pivots: PivotRef[] } }
   /** Changes a timeline and its cache: the dates chosen, the PivotTables it filters, its name, level, look and place. */
   | { op: 'editTimeline'; timeline: string; set?: TimelinePatch; cache?: TimelineCachePatch }

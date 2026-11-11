@@ -71,7 +71,7 @@ const hideExt = (c: SlicerCache) => (c.noData?.hide ? `<x:ext uri="{470722E0-AAC
 
 export function slicerCacheXml(book: BookInput, c: SlicerCache, tab: TabId = tabOf(book), cacheId = c.cache!): string {
   // Excel opens no file whose slicer has no items (the set `links/file-refusals`): those of its field, each chosen
-  const field = book.pivotCaches?.find((x) => x.id === cacheId)?.fields.find((f) => caseKey(f.name) === caseKey(c.field))
+  const field = book.pivotCaches?.find((x) => x.id === c.cache)?.fields.find((f) => caseKey(f.name) === caseKey(c.field))
   const given = c.items?.length ? c.items : (field?.items ?? []).map((_, item) => ({ item }))
   const items = given.map((x: NonNullable<SlicerCache['items']>[number]) => `<i x="${x.item}"${x.selected !== false ? ' s="1"' : ''}${x.noData ? ' nd="1"' : ''}/>`)
   const hide = hideExt(c)

@@ -207,6 +207,12 @@ function newCache(book: BookInput, kind: Kind, v: unknown): { book: BookInput; c
   const name = cacheName(book, kind, fieldName)
   if (kind === 'timelines') {
     if (!pc.fields[f].facts?.types?.includes('date') && !pc.fields[f].items?.some((x) => x !== null && typeof x === 'object' && 'date' in x)) return refused(book, { key: 'timelineField', field: fieldName })
+    // One timeline cache per field of a PivotTable ([MS-XLSX] 2.3.5.1.3). Another view shares its choice.
+    const existing = book.timelineCaches?.find((c) => c.cache === id && caseKey(c.field) === caseKey(fieldName) && c.pivots.some((p) => refs.some((r) => sameRef(p, r))))
+    if (existing) {
+      const cache = { ...existing, pivots: [...existing.pivots, ...refs.filter((r) => !existing.pivots.some((p) => sameRef(p, r)))] }
+      return { book: withCaches(book, kind, cachesOf(book, kind).map((c) => c === existing ? cache : c)), cache }
+    }
     const bounds = timelineBounds(pc, f)
     return { book, cache: { name, field: fieldName, pivots: refs, cache: id, ...(bounds ? { bounds } : {}) } }
   }
@@ -232,7 +238,7 @@ function add(book: BookInput, kind: Kind, o: Record<string, unknown>, values: Va
     const made = newCache(book, kind, o.cache)
     if ('ok' in made) return made
     ;({ book: out, cache } = made)
-    fresh = true
+    fresh = !cachesOf(out, kind).some((c) => caseKey(c.name) === caseKey(cache.name))
   }
   const name = given.name === undefined ? free(names(out), cache.field, ' ') : givenName(out, given.name, `op.${key}.name`)
   if (typeof name !== 'string') return refused(out, name)
