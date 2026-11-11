@@ -1,0 +1,112 @@
+/**
+ * Array formulas of the old kind around XLOOKUP and INDEX (`run.ts spill cse-lookup`): the cases Excel for Windows and
+ * Excel for Mac computed while the positional selection of their arguments was measured (11.11.2026), with the same
+ * formulas entered as dynamic array formulas where they were measured that way. One formula a book.
+ */
+import type { CellInput } from '../../../src/contract.js'
+import { one, type CellSpec, type SpillCase } from './cases.js'
+
+export const DATA: Record<string, CellSpec> = { A1: 3, A2: 1, A3: 2, B1: 30, B2: 10, B3: 20, C1: 300, C2: 100, C3: 200, D1: 1, D2: 2 }
+export const arr = (formula: string, area: string): CellInput => ({ formula, array: area })
+
+const lookup = (id: string, cells: Record<string, CellSpec>, ranges: string[]): SpillCase => {
+  const [at, input] = Object.entries(cells)[0]
+  const about = typeof input === 'string' ? `${input.slice(1)} as a dynamic array formula at ${at}` : `${(input as CellInput).formula} over ${(input as CellInput).array}`
+  return one(id, about, { ...DATA, ...cells }, ranges)
+}
+
+export function buildSpillCases(): SpillCase[] {
+  return [
+    lookup('area-plus-one-single', { G1: arr("SUM(XLOOKUP({1;2},A1:A3,B1:B3)+1)", 'G1') }, ['G1']),
+    lookup('area-abs-single', { G1: arr("SUM(ABS(XLOOKUP({1;2},A1:A3,B1:B3)))", 'G1') }, ['G1']),
+    lookup('area-mod-three-single', { G1: arr("SUM(MOD(XLOOKUP({1;2},A1:A3,B1:B3),3))", 'G1') }, ['G1']),
+    lookup('area-plus-scalar-sum-single', { G1: arr("SUM(XLOOKUP({1;2},A1:A3,B1:B3)+SUM(A1:A3))", 'G1') }, ['G1']),
+    lookup('area-plus-array-single', { G1: arr("SUM(XLOOKUP({1;2},A1:A3,B1:B3)+{7;8})", 'G1') }, ['G1']),
+    lookup('area-plus-zero-two-rows', { G1: arr("SUM(XLOOKUP({1;2},A1:A3,B1:B3)+0)", 'G1:G2') }, ['G1:G2']),
+    lookup('area-plus-one-two-columns', { G1: arr("SUM(XLOOKUP({1;2},A1:A3,B1:B3)+1)", 'G1:H1') }, ['G1:H1']),
+    lookup('binary-lookup-plus-literal-one', { G1: arr("SUM(XLOOKUP({1;2},A1:A3,B1:B3)+1)", 'G1:G2') }, ['G1:G2']),
+    lookup('binary-lookup-plus-scalar-reference', { G1: arr("SUM(XLOOKUP({1;2},A1:A3,B1:B3)+B1)", 'G1:G2') }, ['G1:G2']),
+    lookup('binary-lookup-plus-constant-sum', { G1: arr("SUM(XLOOKUP({1;2},A1:A3,B1:B3)+SUM(1,2,3))", 'G1:G2') }, ['G1:G2']),
+    lookup('binary-lookup-plus-constant-if', { G1: arr("SUM(XLOOKUP({1;2},A1:A3,B1:B3)+IF(TRUE,6,7))", 'G1:G2') }, ['G1:G2']),
+    lookup('branch-if-array-condition', { G1: arr("SUM(IF({TRUE;FALSE},XLOOKUP({1;2},A1:A3,B1:B3),0))", 'G1:G2') }, ['G1:G2']),
+    lookup('branch-if-scalar-condition', { G1: arr("SUM(IF(TRUE,XLOOKUP({1;2},A1:A3,B1:B3),0))", 'G1:G2') }, ['G1:G2']),
+    lookup('branch-if-lookup-condition', { G1: arr("SUM(IF(XLOOKUP({1;2},A1:A3,B1:B3)>0,XLOOKUP({1;2},A1:A3,B1:B3),0))", 'G1:G2') }, ['G1:G2']),
+    lookup('branch-abs-lookup', { G1: arr("SUM(ABS(XLOOKUP({1;2},A1:A3,B1:B3)))", 'G1:G2') }, ['G1:G2']),
+    lookup('branch-mod-array-divisor', { G1: arr("SUM(MOD(XLOOKUP({1;2},A1:A3,B1:B3),{2;3}))", 'G1:G2') }, ['G1:G2']),
+    lookup('branch-mod-scalar-two-control', { G1: arr("SUM(MOD(XLOOKUP({1;2},A1:A3,B1:B3),2))", 'G1:G2') }, ['G1:G2']),
+    lookup('branch-mod-scalar-three', { G1: arr("SUM(MOD(XLOOKUP({1;2},A1:A3,B1:B3),3))", 'G1:G2') }, ['G1:G2']),
+    lookup('branch-iferror-array-fallback', { G1: arr("SUM(IFERROR(XLOOKUP({9;1},A1:A3,B1:B3),{7;8}))", 'G1:G2') }, ['G1:G2']),
+    lookup('branch-lookup-plus-scalar-sum', { G1: arr("SUM(XLOOKUP({1;2},A1:A3,B1:B3)+SUM(A1:A3))", 'G1:G2') }, ['G1:G2']),
+    lookup('branch-lookup-direct-control', { G1: arr("SUM(XLOOKUP({1;2},A1:A3,B1:B3))", 'G1:G2') }, ['G1:G2']),
+    lookup('branch-lookup-plus-array-control', { G1: arr("SUM(XLOOKUP({1;2},A1:A3,B1:B3)+{7;8})", 'G1:G2') }, ['G1:G2']),
+    lookup('context-sum-transpose', { G1: arr("SUM(TRANSPOSE(XLOOKUP({1;2},A1:A3,B1:B3)))", 'G1:G2') }, ['G1:G2']),
+    lookup('context-two-lookups', { G1: arr("SUM(XLOOKUP({1;2},A1:A3,B1:B3)+XLOOKUP({1;2},A1:A3,B1:B3))", 'G1:G2') }, ['G1:G2']),
+    lookup('context-let-transpose', { G1: arr("LET(x,XLOOKUP({1;2},A1:A3,B1:B3),SUM(TRANSPOSE(x)))", 'G1:G2') }, ['G1:G2']),
+    lookup('context-let-mixed', { G1: arr("LET(x,XLOOKUP({1;2},A1:A3,B1:B3),SUM(x)+SUM(TRANSPOSE(x)))", 'G1:G2') }, ['G1:G2']),
+    lookup('context-let-captured-lambda', { G1: arr("LET(x,XLOOKUP({1;2},A1:A3,B1:B3),SUM(LAMBDA(t,SUM(x))(0)))", 'G1:G2') }, ['G1:G2']),
+    lookup('context-lambda-argument', { G1: arr("SUM(LAMBDA(t,t)(XLOOKUP({1;2},A1:A3,B1:B3)))", 'G1:G2') }, ['G1:G2']),
+    lookup('context-sibling-singleton', { G1: arr("SUM(XLOOKUP({1;2},A1:A3,B1:B3)+{0})", 'G1:G2') }, ['G1:G2']),
+    lookup('context-match-modes', { G1: arr("SUM(XLOOKUP({0;4},A1:A3,B1:B3,,{1;-1}))", 'G1:G2') }, ['G1:G2']),
+    lookup('context-missing-array', { G1: arr("SUM(XLOOKUP({9;1},A1:A3,B1:B3,{7;8}))", 'G1:G2') }, ['G1:G2']),
+    lookup('context-range-keys', { G1: arr("SUM(XLOOKUP(D1:D2,A1:A3,B1:B3))", 'G1:G3') }, ['G1:G3']),
+    lookup('fix-scalar-wide', { G1: arr("SUM(XLOOKUP(1,A1:A3,B1:C3))", 'G1:H2') }, ['G1:H2']),
+    lookup('fix-vector-wide', { G1: arr("SUM(XLOOKUP({1;2},A1:A3,B1:C3))", 'G1:G2') }, ['G1:G2']),
+    lookup('fix-index-zero-row', { G1: arr("SUM(INDEX(B1:C3,0,{1,2}))", 'G1:H1') }, ['G1:H1']),
+    lookup('fix-index-two-axes', { G1: arr("SUM(INDEX(B1:C3,{2;3},{1,2}))", 'G1:H2') }, ['G1:H2']),
+    lookup('fix-horizontal-keys', { G1: arr("SUM(XLOOKUP({1,2},A1:A3,B1:B3))", 'G1:H2') }, ['G1:H2']),
+    lookup('fix-vertical-keys', { G1: arr("SUM(XLOOKUP({1;2},A1:A3,B1:B3))", 'G1:H2') }, ['G1:H2']),
+    lookup('fix-aggregate-sibling', { G1: arr("SUM(XLOOKUP({1;2},A1:A3,B1:B3),{7;8})", 'G1:G2') }, ['G1:G2']),
+    lookup('fix-explicit-at', { G1: arr("SUM(@XLOOKUP({1;2},A1:A3,B1:B3))", 'G1:G2') }, ['G1:G2']),
+    lookup('fix-transpose', { G1: arr("TRANSPOSE(XLOOKUP({1;2},A1:A3,B1:B3))", 'G1:H1') }, ['G1:H1']),
+    lookup('fix-let-keys', { G1: arr("LET(k,{1;2},SUM(XLOOKUP(k,A1:A3,B1:B3)))", 'G1:G2') }, ['G1:G2']),
+    lookup('fix-let-result', { G1: arr("LET(x,XLOOKUP({1;2},A1:A3,B1:B3),SUM(x))", 'G1:G2') }, ['G1:G2']),
+    lookup('fix-lambda', { G1: arr("SUM(LAMBDA(k,XLOOKUP(k,A1:A3,B1:B3))({1;2}))", 'G1:G2') }, ['G1:G2']),
+    lookup('fix-singleton-type', { G1: arr("TYPE(XLOOKUP({1},A1:A3,B1:B3))", 'G1') }, ['G1']),
+    lookup('fix-array-key-mode', { G1: arr("SUM(XLOOKUP(1,A1:A3,B1:B3,,{0;1}))", 'G1:G2') }, ['G1:G2']),
+    lookup('input-transpose-single', { G1: arr("SUM(TRANSPOSE(XLOOKUP({1;2},A1:A3,B1:B3)))", 'G1') }, ['G1']),
+    lookup('input-lambda-key-array-single', { G1: arr("SUM(LAMBDA(k,XLOOKUP(k,A1:A3,B1:B3))({1;2}))", 'G1') }, ['G1']),
+    lookup('input-iferror-array-fallback-single', { G1: arr("SUM(IFERROR(XLOOKUP({9;1},A1:A3,B1:B3),{7;8}))", 'G1') }, ['G1']),
+    lookup('input-iferror-scalar-fallback-two', { G1: arr("SUM(IFERROR(XLOOKUP({1;2},A1:A3,B1:B3),0))", 'G1:G2') }, ['G1:G2']),
+    lookup('input-n-two', { G1: arr("SUM(N(XLOOKUP({1;2},A1:A3,B1:B3)))", 'G1:G2') }, ['G1:G2']),
+    lookup('input-nested-xlookup-return-table-single', { G1: arr("SUM(XLOOKUP(1,A1:A3,XLOOKUP({3;1;2},A1:A3,B1:B3)))", 'G1') }, ['G1']),
+    lookup('input-nested-index-array-single', { G1: arr("SUM(INDEX(XLOOKUP({3;1;2},A1:A3,B1:B3),2))", 'G1') }, ['G1']),
+    lookup('offset-lookup-range-offset-two', { G5: arr("SUM(XLOOKUP(D1:D2,A1:A3,B1:B3))", 'G5:G6') }, ['G5:G6']),
+    lookup('offset-lookup-range-offset-single', { G5: arr("SUM(XLOOKUP(D1:D2,A1:A3,B1:B3))", 'G5') }, ['G5']),
+    lookup('offset-index-range-offset-two', { G5: arr("SUM(INDEX(B1:B3,D1:D2))", 'G5:G6') }, ['G5:G6']),
+    lookup('first-bare-formula2', { G1: "=XLOOKUP({1;2},A1:A3,A1:A3)" }, ['G1']),
+    lookup('first-bare-cse', { G1: arr("XLOOKUP({1;2},A1:A3,A1:A3)", 'G1') }, ['G1']),
+    lookup('first-sum-formula2', { G1: "=SUM(XLOOKUP({1;2},A1:A3,A1:A3))" }, ['G1']),
+    lookup('first-sum-cse', { G1: arr("SUM(XLOOKUP({1;2},A1:A3,A1:A3))", 'G1') }, ['G1']),
+    lookup('first-outer-values-formula2', { G1: "=SUM(XLOOKUP({1;2},A1:A3,A1:A3)+0)" }, ['G1']),
+    lookup('first-outer-values-cse', { G1: arr("SUM(XLOOKUP({1;2},A1:A3,A1:A3)+0)", 'G1') }, ['G1']),
+    lookup('first-return-values-formula2', { G1: "=SUM(XLOOKUP({1;2},A1:A3,A1:A3+0))" }, ['G1']),
+    lookup('first-return-values-cse', { G1: arr("SUM(XLOOKUP({1;2},A1:A3,A1:A3+0))", 'G1') }, ['G1']),
+    lookup('first-sumproduct-formula2', { G1: "=SUMPRODUCT(XLOOKUP({1;2},A1:A3,A1:A3))" }, ['G1']),
+    lookup('first-sumproduct-cse', { G1: arr("SUMPRODUCT(XLOOKUP({1;2},A1:A3,A1:A3))", 'G1') }, ['G1']),
+    lookup('first-constants-formula2', { G1: "=SUM(XLOOKUP({1;2},{3;1;2},{3;1;2}))" }, ['G1']),
+    lookup('first-constants-cse', { G1: arr("SUM(XLOOKUP({1;2},{3;1;2},{3;1;2}))", 'G1') }, ['G1']),
+    lookup('first-sum-cse-two-cells', { G1: arr("SUM(XLOOKUP({1;2},A1:A3,A1:A3))", 'G1:G2') }, ['G1:G2']),
+    lookup('first-sum-reversed-cse', { G1: arr("SUM(XLOOKUP({2;1},A1:A3,A1:A3))", 'G1') }, ['G1']),
+    lookup('controls-abs-formula2', { G1: "=SUM(ABS({-1;-2}))" }, ['G1']),
+    lookup('controls-abs-cse', { G1: arr("SUM(ABS({-1;-2}))", 'G1:G2') }, ['G1:G2']),
+    lookup('controls-vlookup-formula2', { G1: "=SUM(VLOOKUP({1;2},A1:B3,2,FALSE))" }, ['G1']),
+    lookup('controls-vlookup-cse', { G1: arr("SUM(VLOOKUP({1;2},A1:B3,2,FALSE))", 'G1:G2') }, ['G1:G2']),
+    lookup('controls-index-formula2', { G1: "=SUM(INDEX(B1:B3,{2;3}))" }, ['G1']),
+    lookup('controls-index-cse', { G1: arr("SUM(INDEX(B1:B3,{2;3}))", 'G1:G2') }, ['G1:G2']),
+    lookup('controls-xmatch-formula2', { G1: "=SUM(XMATCH({1;2},A1:A3))" }, ['G1']),
+    lookup('controls-xmatch-cse', { G1: arr("SUM(XMATCH({1;2},A1:A3))", 'G1:G2') }, ['G1:G2']),
+    lookup('controls-filter-formula2', { G1: "=SUM(FILTER(B1:B3,A1:A3<3))" }, ['G1']),
+    lookup('controls-filter-cse', { G1: arr("SUM(FILTER(B1:B3,A1:A3<3))", 'G1:G2') }, ['G1:G2']),
+    lookup('controls-sequence-formula2', { G1: "=SUM(SEQUENCE(2))" }, ['G1']),
+    lookup('controls-sequence-cse', { G1: arr("SUM(SEQUENCE(2))", 'G1:G2') }, ['G1:G2']),
+    lookup('controls-sort-formula2', { G1: "=SUM(SORT(A1:A3))" }, ['G1']),
+    lookup('controls-sort-cse', { G1: arr("SUM(SORT(A1:A3))", 'G1:G2') }, ['G1:G2']),
+    lookup('controls-xlookup-formula2', { G1: "=SUM(XLOOKUP({1;2},A1:A3,B1:B3))" }, ['G1']),
+    lookup('controls-xlookup-expression-formula2', { G1: "=SUM(XLOOKUP({1;2}+0,A1:A3,B1:B3))" }, ['G1']),
+    lookup('controls-xlookup-expression-cse', { G1: arr("SUM(XLOOKUP({1;2}+0,A1:A3,B1:B3))", 'G1:G2') }, ['G1:G2']),
+    lookup('index-array-expression-formula2', { G1: "=SUM(INDEX(B1:B3+0,{2;3}))" }, ['G1']),
+    lookup('index-array-expression-cse', { G1: arr("SUM(INDEX(B1:B3+0,{2;3}))", 'G1:G2') }, ['G1:G2']),
+    lookup('index-array-literal-formula2', { G1: "=SUM(INDEX({30;10;20},{2;3}))" }, ['G1']),
+    lookup('index-array-literal-cse', { G1: arr("SUM(INDEX({30;10;20},{2;3}))", 'G1:G2') }, ['G1:G2']),
+  ]
+}
