@@ -19,6 +19,7 @@ import type { ErrorCode } from '../contract.js'
 import { canonical, isRefOp, type Ast, type BinOp, type RangeRef, type RefOp } from '../syntax.js'
 import { E, Rng, type V } from '../values.js'
 import { placedOnly, placing, QUIET, QUIET_RANGE, type Use } from './placed.js'
+import { cseArray, cseBinary, cseCall, needsCse } from './cse-plan.js'
 
 /** A defined name as the walk expands it: its formula, which sees the global names (a sheet's own only as `'S'!name`). */
 export interface NameDef {
@@ -122,6 +123,8 @@ export interface Backend<T> {
   recursive(build: (self: T) => T): T
   /** A built-in function by its name as a value. */
   eta(name: string): T
+  /** An affected CSE formula: select arguments by output position and keep invariant expressions once per evaluation. */
+  cse(rows: number, cols: number, build: (pick: (value: T) => T, keep: (value: T, scoped?: boolean) => T) => T): T
 }
 
 /** A LET value: computed on its first use, then kept. */
@@ -238,14 +241,21 @@ export function bySheet(list: readonly Rng[]): Map<number, Rng> {
 /** Walks a formula at sheet `s`, row `r`, column `c`: its information and the code of its root in `b`. */
 export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: number, b: Backend<T>): FormulaInfo & { code: T } {
   const info: FormulaInfo = { refs: [], volatile: false, nested: false, external: false }
+  const area = ctx.area
   // a name as the names of `scope` show it, or as its sheet's (`'S'!rate`)
   const resolve: NameRef = (n, scope) => ctx.name(n.name, n.sheet === undefined ? scope : ctx.sheet(n.sheet))
   const table = (n: Extract<Ast, { k: 'table' }>) => ctx.table?.(n, r) ?? 'REF'
-  const shape = shapes(ast, s, resolve, !!ctx.area, table, ctx.hosted)
+  const shape = shapes(ast, s, resolve, !!area, table, ctx.hosted)
   // an array formula's most rows and columns, for the arrays that meet its spill (`spill/rank.ts`)
   const size = shape.get(ast) ? sizeOf(ast, shape, table) : undefined
   if (size) info.size = size
-  const many = (n: Ast) => (shape.get(n) ?? 0) > 0
+  const many = (n: Ast) => !!shape.get(n)
+  const multiple = area !== undefined && (area.r2 > area.r1 || area.c2 > area.c1)
+  const positional = area !== undefined && needsCse(ast, shape, resolve, s, multiple)
+  let frame: { pick(value: T): T; keep(value: T, scoped?: boolean): T } | undefined
+  let full = false, lambdaScope = 0, cursorReads = 0
+  const dependent = positional ? new WeakSet<Ast>() : undefined
+  const lexicalReads: number[] | undefined = positional ? [] : undefined
   // the code of a use of each LET name and parameter, a LET name's value and ISOMITTED of a parameter, by slot (a
   // name's formula has its own LET names and parameters)
   let uses: T[] = []
@@ -453,7 +463,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
   let level = 0
   let deepest = 0
   // one frame a node, as a long flat formula (`1+1+…`) nests as deep as it is long
-  const go = (n: Ast, rangeOk = false): T => {
+  const generate = (n: Ast, rangeOk = false): T => {
     if (++level > deepest) deepest = level
     try {
       switch (n.k) {
@@ -544,9 +554,9 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
           return go(n.a, rangeOk)
         case 'un':
           // unary plus keeps a reference (SUM(+A1:A3) sums the range)
-          return n.op === '+' ? go(n.a) : b.unary('neg', go(n.a), many(n.a))
+          return n.op === '+' ? go(n.a) : b.unary('neg', go(n.a, false, full || (!!frame && multiple)), many(n.a))
         case 'pct':
-          return b.unary('pct', go(n.a), many(n.a))
+          return b.unary('pct', go(n.a, false, full || (!!frame && multiple)), many(n.a))
         case 'bin': {
           if (isRefOp(n.op)) {
             // the cells between the range's ends are read too, not only the operands'
@@ -554,11 +564,12 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
             const [x, y] = [go(n.a, true), go(n.b, true)]
             return value(b.refOp(n.op === ':' && placeOnly?.get(n) === 'place' ? QUIET_RANGE : n.op, x, y), n, rangeOk)
           }
-          const x = go(n.a)
-          return b.binary(n.op, x, go(n.b), many(n.a) || many(n.b), n === ast)
+          const array = full || (!!frame && cseBinary(n.op, multiple))
+          const x = go(n.a, false, array)
+          return b.binary(n.op, x, go(n.b, false, array), many(n.a) || many(n.b), n === ast)
         }
         case 'fn': {
-          if (ctx.area && !n.args.length && (n.name === 'ROW' || n.name === 'COLUMN')) return b.array(lines(ctx.area, n.name === 'ROW'))
+          if (area && !n.args.length && (n.name === 'ROW' || n.name === 'COLUMN')) return b.array(lines(area, n.name === 'ROW'))
           // ISOMITTED of a parameter: whether its call left it out
           const param = n.name === 'ISOMITTED' && n.args.length === 1 && n.args[0].k === 'local' ? omits[n.args[0].slot] : undefined
           if (param) return param
@@ -593,7 +604,17 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
           // a reference across sheets is passed to any argument, which takes it or answers its error; to a cube function
           // a host answers, every reference, for the member a cell of another cube function holds (`outside.ts`)
           const kept = ctx.hosted === true && n.name.startsWith('CUBE')
-          const args = n.args.map((a, i) => (a.k === 'missing' ? omitted(spec.omitted(i)) : i === 2 && past ? past : go(a, kept || spec.range(i) || a.k === 'ref3d')))
+          const selected = !!frame && !full && cseCall(n.name)
+          const args = n.args.map((a, i) => {
+            if (a.k === 'missing') return omitted(spec.omitted(i))
+            if (i === 2 && past) return past
+            const code = go(a, kept || spec.range(i) || a.k === 'ref3d', full || (!!frame && cseArray(n.name, spec, i, multiple)))
+            if (selected && spec.mode(i) === 'lift' && many(a)) {
+              cursorReads++
+              return frame!.pick(code)
+            }
+            return code
+          })
           let code: T
           if (spec.lazy) {
             // lifted when a lifting argument is an array
@@ -603,7 +624,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
             const here = ctx.here
             if (spec.cell) args.unshift(b.value(s), here ? b.computed!(() => here.r) : b.value(r), here ? b.computed!(() => here.c) : b.value(c))
             // a reference found for its place alone is not learnt by the graph: the function's quiet form
-            code = b.call(spec.dynamic && placeOnly?.get(n) === 'place' ? n.name + QUIET : n.name, args, n.args.some((a, i) => many(a) && spec.mode(i) !== 'whole'))
+            code = b.call(spec.dynamic && placeOnly?.get(n) === 'place' ? n.name + QUIET : n.name, args, !selected && n.args.some((a, i) => many(a) && spec.mode(i) !== 'whole'))
           }
           // a reference answered where one value goes is read here; a range position takes it as a reference
           return spec.refs ? value(code, n, rangeOk) : code
@@ -618,6 +639,10 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
             return { values, body: n.body ? go(n.body, rangeOk) : value(uses[n.binds[n.binds.length - 1].slot], n, rangeOk) }
           })
         case 'local':
+          if (frame) {
+            lexicalReads!.push(n.slot)
+            if (bound[n.slot] && dependent!.has(bound[n.slot]!)) cursorReads++
+          }
           return value(uses[n.slot], n, rangeOk)
         case 'lambda':
           // the calculation keeps a reference it answers: its call reads it where one value goes
@@ -625,7 +650,9 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
             n.params.forEach((x, i) => see(x.slot, param(i), undefined, omitted(i)))
             const [from, outer] = [level, deepest]
             deepest = level
-            const body = go(n.body, true)
+            lambdaScope++
+            let body: T
+            try { body = go(n.body, true, true) } finally { lambdaScope-- }
             const height = deepest - from
             deepest = Math.max(outer, deepest)
             return { body, height }
@@ -646,7 +673,28 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
       level--
     }
   }
-  const code = go(ast)
+  // Only the affected CSE path tracks positional dependencies. Ordinary compilation uses the original generator.
+  let go: (n: Ast, rangeOk?: boolean, array?: boolean) => T = generate
+  if (positional) go = (n, rangeOk = false, array = full) => {
+    const outer = full, before = cursorReads, localsFrom = lexicalReads!.length
+    full = array
+    try {
+      const code = generate(n, rangeOk)
+      if (n.k === 'let' || n.k === 'lambda') {
+        const own = n.k === 'let' ? n.binds : n.params
+        let end = localsFrom
+        for (let i = localsFrom; i < lexicalReads!.length; i++) if (!own.some((p) => p.slot === lexicalReads![i])) lexicalReads![end++] = lexicalReads![i]
+        lexicalReads!.length = end
+      }
+      if (cursorReads !== before) dependent!.add(n)
+      else if (!lambdaScope && ['fn', 'bin', 'call', 'name', 'let', 'un', 'pct', 'union'].includes(n.k)) return frame!.keep(code, lexicalReads!.length !== localsFrom)
+      return code
+    } finally { full = outer }
+  }
+  const code = positional ? b.cse(area!.r2 - area!.r1 + 1, area!.c2 - area!.c1 + 1, (pick, keep) => {
+    frame = { pick, keep }
+    return go(ast)
+  }) : go(ast)
   // the references as an array of their own length: pushed one by one, an array keeps room for many more
   return { ...info, refs: info.refs.slice(), code }
 }

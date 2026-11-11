@@ -6,6 +6,7 @@
 import type { Arg } from '../args.js'
 import type { Runtime } from '../runtime.js'
 import { Areas, type V } from '../values.js'
+import { cseAt, cseMap } from './cse.js'
 import { callValue, lambdaOf, OMITTED, parameters as given } from './lambda.js'
 import { once, operator, type Backend, type Operator } from './walk.js'
 
@@ -158,6 +159,32 @@ export function closureBackend(rt: Runtime, parameters?: Arg[]): Backend<Fn> {
       const i = parameters.length
       parameters.push(r, c)
       return (p) => I(a(p), p![i] as number, p![i + 1] as number)
+    },
+    cse: (rows, cols, build) => {
+      let row = 0, col = 0
+      const kept: Fn[] = []
+      let memo: (() => Arg)[] = []
+      const body = build(
+        (value) => (p) => cseAt(value(p), row, col, cell),
+        (value) => {
+          const i = kept.push(value) - 1
+          return () => memo[i]()
+        },
+      )
+      const i = parameters?.length
+      if (parameters) parameters.push(rows, cols)
+      return (p) => {
+        const outer = memo
+        memo = kept.map((value) => once(() => value(p)))
+        try {
+          return cseMap(i === undefined ? rows : p![i] as number, i === undefined ? cols : p![i + 1] as number, (r, c) => {
+            row = r; col = c
+            return body(p)
+          }, cell)
+        } finally {
+          memo = outer
+        }
+      }
     },
     let: (count, build) => {
       // the uses read the values of the current computation of the LET; a value is computed among the LETs it was made in

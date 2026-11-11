@@ -56,7 +56,7 @@ Each argument of each whitelisted function has a class: a single value, a refere
 
 ## Legacy array formulas
 
-A cell with `array: 'B2:C5'` contains an array formula entered over B2:C5. The formula is calculated as an array, without implicit intersection, and fills its range:
+A cell with `array: 'B2:C5'` contains an array formula entered over B2:C5. The formula is calculated as an array, without implicit intersection (with the selection by position below), and fills its range:
 
 | result | B2:C5 displays |
 |---|---|
@@ -70,6 +70,19 @@ A formula that cannot be read (a sheet not in the workbook, an unknown function,
 
 `ROW()` and `COLUMN()` return the rows and columns of the range: `{=ROW()}` over E1:E3 displays 1, 2, 3. A single cell (`array: 'B2'`) displays the top-left value: `{=A1:A3}` displays A1, where a plain legacy formula would use implicit intersection.
 
+### Selection by output position
+
+Inside a legacy array formula, `INDEX`, `XLOOKUP`, `OFFSET` and `INDIRECT` take an array in a single-value argument (a key, a row or column number, an offset, a size, a reference's text) one position at a time: each cell of the range gets the result for its own position, before an enclosing aggregation such as `SUM`, `AVERAGE`, `MAX` or `COUNT`. The size of the range matters too. Over several cells, arithmetic, single-value arguments (`ABS`, `MOD`) and the arguments of `SUMPRODUCT`, `MODE` and `SUMX2PY2` (and, by the same kind of argument, the other functions of paired arrays such as `CORREL` and `SLOPE`) evaluate the whole array first; over one cell they keep the selection. For A1:A3 containing 3, 1, 2 and B1:B3 containing 30, 10, 20:
+
+| Formula | Dynamic formula | Legacy over G1 | Legacy over G1:G2 |
+|---|---|---|---|
+| `SUM(XLOOKUP({1;2},A1:A3,B1:B3))` | 30 | 10 | 10; 20 |
+| `SUM(XLOOKUP({1;2},A1:A3,B1:B3)+1)` | 32 | 11 | 32; 32 |
+| `SUMPRODUCT(XLOOKUP({1;2},A1:A3,B1:B3))` | 30 | 10 | 30; 30 |
+| `SUM(OFFSET(B1,{1;2},0))` | 30 | 10 | 10; 20 |
+
+A position past the selecting array's size gives `#N/A`. A range as the selecting argument is read by position in the range, not by the rows of the sheet: `SUM(XLOOKUP(D1:D2,A1:A3,B1:B3))` over G5:G6 reads D1, then D2. LET values keep the context they are calculated in, and a LAMBDA body has its own. `N` and `T` keep taking the first value. `VLOOKUP`, `CHOOSE`, `LOOKUP` and `XMATCH` aggregate the whole array, as in a dynamic formula. These rules come from measurements in Excel for Windows and Excel for Mac (`test/excel/spill/cse-lookup*.json`) and hold in both execution modes; the formula's text and kind are unchanged when read from or written to xlsx.
+
 The range never spills and never returns `#SPILL!`. A dynamic array that runs into it returns `#SPILL!`. In the result, the formula's cell has `spill`, the range, and the other cells have `spillOf`. `B2#` refers to the range.
 
 The other cells of the range have no input, and two ranges never overlap: a workbook or an edit that would give them either is rejected with `InputError`. A session rejects edits that change some cells of a range but not the rest: `setCells` throws `InputError` and changes nothing, as Excel does. Clearing every cell of the range removes the formula. An edit of the formula's cell that keeps an array over the same range changes the whole array.
@@ -78,7 +91,7 @@ The other cells of the range have no input, and two ranges never overlap: a work
 
 ## Checked against Excel
 
-Tested in Excel 365: about 7,000 legacy formulas read back as Excel displays them and calculated, plus held-out sets predicted before Excel calculated them.
+Tested in Excel 365: about 7,000 legacy formulas read back as Excel displays them and calculated, plus held-out sets predicted before Excel calculated them. The selection by position: 91 formulas around XLOOKUP and INDEX, then 22 held-out ones whose predictions Excel confirmed 20 times.
 
 ## Known differences
 

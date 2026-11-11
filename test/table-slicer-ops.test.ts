@@ -4,7 +4,7 @@
  */
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { editStructure, InputError, type BookInput, type StructureOp } from '../src/index.js'
+import { createSession, editStructure, InputError, type BookInput, type StructureOp } from '../src/index.js'
 import { readXlsx } from '../src/xlsx.js'
 
 const book = (): BookInput => ({
@@ -43,6 +43,27 @@ describe("addSlicer over a table's column", () => {
 })
 
 describe("a table's slicer goes with its table or its column, as in Excel", () => {
+  it.each(['#N/A', '=#n/a', '42'])('removes only a lost cache-owned global #N/A name, given %s', (ref) => {
+    let b = done(book(), { op: 'addSlicer', sheet: 'Data', slicer: {}, cache: { table: 'Sales', column: 'Product' } })
+    b = done(b, { op: 'addSlicer', sheet: 'Data', slicer: {}, cache: { table: 'Sales', column: 'Amount' } })
+    const names = [
+      { name: 'Slicer_Product', ref: '#N/A' },
+      { name: 'sLiCeR_AmOuNt', ref },
+      { name: 'Slicer_Amount', ref: '#N/A', scope: 'Data' },
+      { name: 'Slicer_Unrelated', ref: '#N/A' },
+      { name: 'UserName', ref: '42' },
+    ]
+    const s = createSession({ ...b, names, sheets: [...b.sheets, { name: 'Checks', cells: { A1: { formula: 'Slicer_Amount' }, B1: { formula: 'Slicer_Product' } } }] })
+    expect(s.editStructure({ op: 'deleteColumns', sheet: 'Data', column: 'C' }).ok).toBe(true)
+    const snap = s.getSnapshot()
+    expect(snap.book.slicerCaches?.map((c) => c.name)).toEqual(['Slicer_Product'])
+    expect(snap.book.sheets[0].slicers?.map((x) => x.cache)).toEqual(['Slicer_Product'])
+    expect(snap.book.names).toEqual(ref === '42' ? names : names.filter((n) => n.name !== 'sLiCeR_AmOuNt'))
+    expect(snap.result.sheets[1].cells.A1.value).toEqual(ref === '42' ? 42 : { error: 'NAME' })
+    expect(snap.result.sheets[1].cells.B1.value).toEqual({ error: 'NA' })
+    s.close()
+  })
+
   const answers = new Map((JSON.parse(readFileSync(new URL('./excel/win/table-slicer/answers.json', import.meta.url), 'utf8')).cases as { id: string; caches: { name: string }[] }[]).map((c) => [c.id, c.caches.map((x) => x.name)]))
   const plain = async () => (await readXlsx(readFileSync(new URL('./excel/win/table-slicer/plain.xlsx', import.meta.url)))).book
   const column = async (name: string) => {

@@ -1905,11 +1905,13 @@ interface CellInput {
   /**
    * A legacy array formula (entered with Ctrl+Shift+Enter; in xlsx, `<f t="array" ref="B2:C5">` without dynamic array
    * metadata), set on the top-left cell of its range: the range (`B2:C5`, or just the cell, `B2`). The formula is
-   * calculated as an array, without implicit intersection, and fills its range without ever extending past it: a
-   * smaller array is repeated when it has one row or one column, otherwise the cells beyond it are #N/A; a larger one
-   * is truncated; a single value fills every cell. Nothing spills, and nothing blocks it. `ROW()` and `COLUMN()` return
-   * the rows and columns of the range. The other cells of the range hold no input, and a session does not allow
-   * changing some of them without the rest (`Session.setCells`). Only with `formula`.
+   * calculated as Excel calculates such a formula and fills its range without ever extending past it. INDEX, XLOOKUP,
+   * OFFSET and INDIRECT take an array in a single-value argument one output position at a time, before an enclosing
+   * aggregation; over several cells arithmetic and some arguments evaluate the whole array first (`docs/legacy.md`).
+   * The final result is fitted: a smaller array is repeated when it has one row or one column, otherwise the cells
+   * beyond it are #N/A; a larger one is truncated; a single value fills every cell. Nothing spills, and nothing blocks
+   * it. `ROW()` and `COLUMN()` return the rows and columns of the range. The other cells of the range hold no input,
+   * and a session does not allow changing some of them without the rest (`Session.setCells`). Only with `formula`.
    */
   array?: string
   /** A note on the cell (what Excel used to call a comment). Like a style, it stays with the cell and plays no part in calculation. */

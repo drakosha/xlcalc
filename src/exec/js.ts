@@ -8,6 +8,7 @@ import { Arr } from '../arrays/value.js'
 import { PACKAGE_NAME } from '../config.js'
 import type { Runtime } from '../runtime.js'
 import { Areas, isErr, Rng, type V } from '../values.js'
+import { cseAt, cseMap } from './cse.js'
 import { callValue, lambdaOf, OMITTED, parameters as given } from './lambda.js'
 import { once, operator, type Backend } from './walk.js'
 
@@ -54,6 +55,20 @@ export function jsBackend(parameters?: Arg[]): Backend<string> & { source(root: 
     union: (items) => `U(${items.join(',')})`,
     refOp: (op, a, b) => `RO(${JSON.stringify(op)},${a},${b})`,
     at: (a, r, c) => `I(${a},${bound(r)},${bound(c)})`,
+    cse: (rows, cols, build) => {
+      const cursor = variables(2)
+      const kept: string[] = []
+      const body = build(
+        (value) => `CS(${value},${cursor(0)},${cursor(1)},cell)`,
+        (value, local) => {
+          const v = variables(1)(0)
+          kept.push(local ? v : `${v}=M(()=>${value})`)
+          return local ? `(${v}??=M(()=>${value}))()` : `${v}()`
+        },
+      )
+      const code = `CM(${bound(rows)},${bound(cols)},(${cursor(0)},${cursor(1)})=>${body},cell)`
+      return kept.length ? `(()=>{let ${kept.join(',')};return ${code}})()` : code
+    },
     let: (count, build) => {
       const v = variables(count)
       const { values, body } = build((i) => `${v(i)}()`)
@@ -83,9 +98,9 @@ export function compileSources<T = () => Arg>(rt: Runtime, sources: string[]): T
   const R = (s: number, r1: number, c1: number, r2: number, c2: number) => new Rng(s, r1, c1, r2, c2)
   const A = (rows: number, cols: number, v: V[]) => new Arr(rows, cols, rows, cols, v)
   const X = (list: Rng[]) => new Areas(list, true)
-  let make: (rt: unknown) => unknown
+  let make: (rt: unknown, CS: typeof cseAt, CM: typeof cseMap) => unknown
   try {
-    make = new Function('rt', `${PRELUDE}return [${sources.join(',\n')}]`) as typeof make
+    make = new Function('rt', 'CS', 'CM', `${PRELUDE}return [${sources.join(',\n')}]`) as typeof make
   } catch (e) {
     // a Content Security Policy without 'unsafe-eval' blocks new Function with an EvalError
     if (e instanceof EvalError) throw new EvalError(`${PACKAGE_NAME} compiles formulas with new Function for execution 'eval', and this environment blocks it (a Content Security Policy without 'unsafe-eval'?); execution 'closures' does not need it`, { cause: e })
@@ -93,5 +108,5 @@ export function compileSources<T = () => Arg>(rt: Runtime, sources: string[]): T
   }
   // a LAMBDA's calculation gets its parameters as the uses of LET's names read them
   const LAM = (count: number, height: number, f: (...vals: (() => Arg)[]) => Arg, required?: number) => lambdaOf(count, height, (args) => f(...given(args, count)), required)
-  return make({ ...rt, R, A, X, M: once, LAM, CALL: callValue, OM: OMITTED }) as T[]
+  return make({ ...rt, R, A, X, M: once, LAM, CALL: callValue, OM: OMITTED }, cseAt, cseMap) as T[]
 }

@@ -61,13 +61,15 @@ describe('held-out spill cases: the engine gives the answer predicted before Exc
   }
 })
 
-describe('error-areas-held: the predictions Excel did not confirm are the ones in MISSED', async () => {
-  const { buildSpillCases, MISSED } = (await import('../bench/coverage/spill/error-areas-held.js')) as { buildSpillCases: () => SpillCase[]; MISSED: readonly string[] }
-  const set = SETS.find((s) => s.name === 'error-areas-held')
-  it.skipIf(!set)('each case', () => {
-    // a book Excel did not load misses whatever was predicted for it
-    const same = (a: Record<string, Val>, b: Record<string, Val> = {}) => Object.keys({ ...a, ...b }).every((k) => a[k] !== undefined && b[k] !== undefined && compare(a[k], b[k]).ok)
-    const missed = buildSpillCases().filter((c) => set!.answers[c.id].rejected || !same(set!.answers[c.id].values, c.predicted))
-    expect(missed.map((c) => c.id)).toEqual([...MISSED])
+for (const name of ['error-areas-held', 'cse-lookup-held', 'cse-lookup-held-2']) {
+  describe(`${name}: the predictions Excel did not confirm are the ones in MISSED`, async () => {
+    const { buildSpillCases, MISSED } = (await import(`../bench/coverage/spill/${name}.ts`)) as { buildSpillCases: () => SpillCase[]; MISSED: readonly string[] }
+    const set = SETS.find((s) => s.name === name)
+    it.skipIf(!set)('each case', () => {
+      // a book Excel did not load misses whatever was predicted for it
+      const same = (a: Record<string, Val>, b: Record<string, Val> = {}) => Object.keys({ ...a, ...b }).every((k) => a[k] !== undefined && b[k] !== undefined && compare(a[k], b[k]).ok)
+      const missed = buildSpillCases().filter((c) => set!.answers[c.id].rejected || !same(set!.answers[c.id].values, c.predicted))
+      expect(missed.map((c) => c.id)).toEqual([...MISSED])
+    })
   })
-})
+}

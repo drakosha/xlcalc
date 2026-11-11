@@ -243,6 +243,8 @@ export interface FunctionSpec {
   /** Whether a reference in this argument is passed as a reference (a single cell too). */
   range: (i: number) => boolean
   mode: (i: number) => ArgMode
+  /** The argument's declared kind (`N`, `R`, `C`…) at `i`. */
+  kind: (i: number) => string
   /** A range of several cells in a lifted argument: lifted, #VALUE!, or its top-left cell. */
   rangeAt: (i: number) => 'lift' | 'error' | 'first'
   array?: boolean
@@ -318,6 +320,7 @@ export function specOf(name: string, def: FnDef): FunctionSpec {
     counts,
     range: (i) => RANGE_KINDS.includes(kindAt(i)),
     mode,
+    kind: kindAt,
     rangeAt,
     volatile: def.volatile,
     dynamic: def.dynamic,
