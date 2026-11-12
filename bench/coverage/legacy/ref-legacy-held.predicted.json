@@ -1,0 +1,21 @@
+{
+ "refs#1": "SUBTOTAL(9,OFFSET('D'!B1,{0;1;2},0))",
+ "refs#2": "SUM(SUBTOTAL(9,OFFSET('D'!B1,{0;1;2},0)))",
+ "refs#3": "SUMPRODUCT(SUBTOTAL(3,OFFSET('D'!B1,{0;1;2},0)))",
+ "refs#4": "COUNTIF(INDIRECT({\"D!B1:B2\";\"D!B2:B3\"}),\">5\")",
+ "refs#5": "SUM(COUNTIF(INDIRECT({\"D!B1:B2\";\"D!B2:B3\"}),\">5\"))",
+ "refs#6": "SUMPRODUCT(COUNTIF(INDIRECT({\"D!B1:B2\";\"D!B2:B3\"}),\">5\"))",
+ "refs#7": "SUMIF(OFFSET('D'!B1,{0;1},0,2),\">5\")",
+ "refs#8": "SUM(SUMIF(OFFSET('D'!B1,{0;1},0,2),\">5\"))",
+ "refs#9": "SUMPRODUCT(SUMIF(OFFSET('D'!B1,{0;1},0,2),\">5\",OFFSET('D'!C1,{0;1},0,2)))",
+ "refs#10": "COUNTBLANK(OFFSET('D'!D4,{0;1},0,2))",
+ "refs#11": "SUM(COUNTBLANK(OFFSET('D'!D4,{0;1},0,2)))",
+ "refs#12": "SUM(SUBTOTAL(9,OFFSET('D'!B1,@ROW('D'!B1:B3)-1,0)))",
+ "refs#13": "SUMPRODUCT(SUBTOTAL(9,OFFSET('D'!B1,ROW('D'!B1:B3)-ROW('D'!B1),0)))",
+ "refs#14": "SUM(COUNTIF(OFFSET('D'!B1,{0;1;2},0),\">5\"))",
+ "refs#15": "MAX(SUBTOTAL(4,OFFSET('D'!B1,0,{0,1},3)))",
+ "refs#16": "SUMIFS(OFFSET('D'!C1,{0;1},0,2),OFFSET('D'!B1,{0;1},0,2),\">5\")",
+ "refs#17": "SUM(SUMIFS(OFFSET('D'!C1,{0;1},0,2),OFFSET('D'!B1,{0;1},0,2),\">5\"))",
+ "refs#18": "SUM(SUBTOTAL(9,INDIRECT({\"D!B1\";\"D!C1\"})))",
+ "refs#19": "SUMPRODUCT(SUBTOTAL(9,OFFSET('D'!B1,{0;1;2},0)))*1"
+}
