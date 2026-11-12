@@ -4,8 +4,9 @@
  * lazy unless an argument that lifts them is an array, and then every argument is computed.
  */
 import type { Arg, Cx, FunctionSpec } from '../args.js'
-import { Rng, type V } from '../values.js'
+import { Areas, Rng, type V } from '../values.js'
 import { first, liftN, lifts } from './lift.js'
+import { holdsReferences, keepReferences, placesOf, referenceAt } from './references.js'
 import { arr, Arr } from './value.js'
 
 type Call = (...a: any[]) => Arg
@@ -25,6 +26,8 @@ export function liftCaller(spec: FunctionSpec, cell: boolean, call: Call, cx: Cx
       const p = i - off
       const mode = spec.mode(p)
       const x = a[i]
+      // an array of references where the function takes a reference lifts the call together with the arrays of values
+      if (spec.referencesAt(p) && holdsReferences(x)) many = true
       if (mode === 'whole' || mode === 'pass' || !(x instanceof Arr || x instanceof Rng)) continue
       if (x instanceof Rng && mode === 'array') continue
       if (!lifts(x)) a[i] = single(x, cx)
@@ -39,10 +42,18 @@ export function liftCaller(spec: FunctionSpec, cell: boolean, call: Call, cx: Cx
     // lifted: the arrays, the liftable ranges and the passed-through arguments take part
     const at: number[] = []
     const xs: (V | Arr)[] = []
+    // the arrays of references among them, by their place in `at`
+    const byRef: (Arr | undefined)[] = []
     for (let i = off; i < a.length; i++) {
       const p = i - off
       const mode = spec.mode(p)
       const x = a[i]
+      if (spec.referencesAt(p) && holdsReferences(x)) {
+        byRef[at.length] = x
+        at.push(i)
+        xs.push(placesOf(x))
+        continue
+      }
       if (!(x instanceof Arr || x instanceof Rng) || mode === 'whole') continue
       if (x instanceof Rng && (mode === 'array' || (mode === 'lift' && spec.rangeAt(p) !== 'lift'))) continue
       at.push(i)
@@ -54,10 +65,20 @@ export function liftCaller(spec: FunctionSpec, cell: boolean, call: Call, cx: Cx
       const x = args[off + p]
       if (x instanceof Arr || x instanceof Rng) args[off + p] = arr(1, 1, [x instanceof Arr ? x.at(0, 0) : topLeft(x, cx)])
     }
-    return liftN(xs, (els) => {
-      for (let k = 0; k < at.length; k++) args[at[k]] = els[k]
-      return first(call(...args), (g) => topLeft(g, cx))
+    // OFFSET and INDIRECT keep the references they find for the functions that take one (`references.ts`); CELL and
+    // GETPIVOTDATA, dynamic too, answer values, which are no references
+    const found: Arg[] | undefined = spec.dynamic ? [] : undefined
+    let refs = false
+    const out = liftN(xs, (els) => {
+      for (let k = 0; k < at.length; k++) args[at[k]] = byRef[k] ? (referenceAt(byRef[k]!, els[k]) as Arg) : els[k]
+      const r = call(...args)
+      if (found) {
+        found.push(r)
+        if (r instanceof Rng || r instanceof Areas) refs = true
+      }
+      return first(r, (g) => topLeft(g, cx))
     }, true)
+    return refs ? keepReferences(out, found!) : out
   }
 }
 

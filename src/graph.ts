@@ -56,6 +56,8 @@ export function rebuildGraph(state: EngineState) {
   for (const [id, x] of state.spills.claims) {
     const readers = new Set<number>()
     readersOf(state, x, readers)
+    // a formula over its own area for the place alone (`{=ROW(G1)}` in G1, ROW(1:2) spilling into row 2) is no circular reference
+    if (readers.has(id) && !referencesOf(state, formulas[id]!).some((g) => g.s === x.s && g.r1 <= x.r2 && x.r1 <= g.r2 && g.c1 <= x.c2 && x.c1 <= g.c2)) readers.delete(id)
     if (!readers.size) continue
     spillSucc.set(id, [...readers])
   }

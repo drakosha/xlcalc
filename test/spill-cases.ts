@@ -53,3 +53,4 @@ export function computed(c: SpillCase): ComputeResult {
 export function differences(c: SpillCase, a: RectsAnswer, r: ComputeResult): string[] {
   return readDifferences(c.read, a.values, r, (excel, engine) => (c.volatile && excel.t === 'n' ? engine.t === 'n' : compare(excel, engine).ok))
 }
+

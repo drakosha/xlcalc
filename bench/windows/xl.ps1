@@ -314,7 +314,9 @@ function Step($xl, $wb, $s) {
     'sort' {
       $rg = Rg $wb $s.sheet $s.range
       $order = if ($s.descending) { 2 } else { 1 }
-      [void]$rg.Sort($rg.Cells.Item(1, 1), $order, [Type]::Missing, [Type]::Missing, 1, [Type]::Missing, 1, 2)
+      # by its first column top to bottom, or with byColumns by its first row left to right
+      $orient = if ($s.byColumns) { 2 } else { 1 }
+      [void]$rg.Sort($rg.Cells.Item(1, 1), $order, [Type]::Missing, [Type]::Missing, 1, [Type]::Missing, 1, 2, 1, $false, $orient)
       'null'
     }
     # every cell of the range holds a formula: a book Excel repaired on opening lost its formulas

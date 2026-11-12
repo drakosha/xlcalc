@@ -33,6 +33,9 @@ export const aggregateIf = (reduce: Aggregate) => (cx: Cx, range: V | Rng, crit:
   const vg = values === undefined ? cg : asRng(values)
   if (isErr(vg)) return vg
   const [g, cut] = values === undefined ? [cg, cg] : resized(vg, cg)
+  // the cells read past the sum range's own: the graph learns them where the formula finds references as it computes
+  // (OFFSET, INDIRECT); elsewhere the compiler reads them ahead (`resized` in `exec/walk.ts`)
+  if (values !== undefined) cx.found(g)
   const r = cx.select([[cut, crit]], g)
   return isErr(r) ? r : reduce(r.read(g), r.sel)
 }

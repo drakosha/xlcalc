@@ -160,9 +160,10 @@ export function shapes(ast: Ast, scope: number, nameRef: NameRef, inArea = false
     const passed: Shape[] = []
     args.forEach((a, i) => {
       const mode = spec.mode(i)
-      // an array (not a reference) in a range of criteria makes the call an array of #VALUE!, as the call answers at run time
+      // an array (not a reference) where a reference goes may be an array of references from OFFSET or INDIRECT, through
+      // LET or a name too: an array of one call for each; in a range of criteria any other array makes one of #VALUE!
       if (mode === 'whole') {
-        if (!a.ref && a.s > 0 && spec.criteriaAt(i)) lifted.push(a.s)
+        if (!a.ref && a.s > 0 && spec.referencesAt(i)) lifted.push(a.s)
         return
       }
       if (mode === 'pass') passed.push(a.s)

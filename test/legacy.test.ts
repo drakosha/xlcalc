@@ -79,7 +79,7 @@ function rowBook(cases: Probe[], rows: Record<string, number>, sheets?: SheetCel
   return book
 }
 
-for (const name of ['params', 'nesting', 'calls', 'blocks', 'ifs-text', 'index-calls', 'offset-calls', 'index-held', 'index-held-2', 'array-held']) {
+for (const name of ['params', 'nesting', 'calls', 'blocks', 'ifs-text', 'index-calls', 'offset-calls', 'index-held', 'index-held-2', 'array-held', 'deref-held', 'ref-legacy-held']) {
   const set = load<Stored>(name)
   const sheets = ((await import(`../bench/coverage/legacy/${name}.ts`)) as { SHEETS?: SheetCells }).SHEETS
 
@@ -109,7 +109,7 @@ for (const name of ['params', 'nesting', 'calls', 'blocks', 'ifs-text', 'index-c
 }
 
 describe('the text Excel shows predicted before Excel ran: the predictions Excel did not confirm are the ones in MISSED', async () => {
-  for (const name of ['index-calls', 'offset-calls', 'index-held', 'index-held-2', 'array-held']) {
+  for (const name of ['index-calls', 'offset-calls', 'index-held', 'index-held-2', 'array-held', 'deref-held', 'ref-legacy-held']) {
     const { PREDICTED_SHOWN, MISSED } = (await import(`../bench/coverage/legacy/${name}.ts`)) as { PREDICTED_SHOWN: Readonly<Record<string, string>>; MISSED: readonly string[] }
     const set = load<Stored>(name)
     it(name, () => expect(set.cases.filter((c) => canon(set.formulas[c.id]) !== PREDICTED_SHOWN[c.id]).map((c) => c.id)).toEqual([...MISSED]))

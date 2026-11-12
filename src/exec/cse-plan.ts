@@ -3,10 +3,18 @@ import type { FunctionSpec } from '../args.js'
 import type { NameRef, Shape } from '../arrays/shape.js'
 import { FUNCTIONS } from '../functions.js'
 import type { Ast, BinOp } from '../syntax.js'
+import { callOf, dereferenced } from '../syntax/idioms.js'
 
 /** The functions whose scalar arguments a CSE formula evaluates at each output position (measured against Excel). */
 const POSITIONAL = new Set(['XLOOKUP', 'INDEX', 'OFFSET', 'INDIRECT'])
 export const cseCall = (name: string) => POSITIONAL.has(name)
+
+/**
+ * OFFSET or INDIRECT right under N or T, or where SUBTOTAL, COUNTBLANK or a criteria function takes a reference:
+ * Excel takes all their references there, not one per position (measured).
+ */
+export const wholeUnder = (name: string, spec: FunctionSpec | undefined, i: number, arg: Ast) =>
+  (name === 'N' || name === 'T' || !!spec?.referencesAt(i)) && callOf(arg, 'OFFSET', 'INDIRECT') !== undefined
 
 /** Whole arguments Excel evaluates as arrays over several CSE cells: SUMPRODUCT, MODE and paired arrays (SUMX2PY2). */
 const WHOLE = new Set(['SUMPRODUCT', 'MODE', 'MODE.SNGL'])
@@ -20,6 +28,13 @@ export const cseArray = (name: string, spec: FunctionSpec | undefined, i: number
   return (!spec.refs && mode === 'lift' && spec.rangeAt(i) !== 'first') || (spec.array === true && (mode === 'whole' || mode === 'pass'))
 }
 
+/**
+ * An argument one value comes out of (SUM's, MAX's, not TRANSPOSE's): inside it a legacy array formula selects by
+ * position whatever is around the call, `SUM(XLOOKUP({1;2},…))+1` over two cells is 11; 21 (measured). A LAMBDA's body
+ * keeps its own context.
+ */
+export const aggregates = (spec: FunctionSpec | undefined, i: number) => !!spec && spec.mode(i) === 'whole' && spec.array !== true
+
 /** Arithmetic enters the CSE array context; comparisons keep their positional operands. */
 export const cseBinary = (op: BinOp, multiple: boolean) => multiple && '+-*/^&'.includes(op)
 
@@ -28,12 +43,13 @@ export function needsCse(ast: Ast, shape: Map<Ast, Shape>, name: NameRef, scope:
   type Binding = { value: Ast; full: boolean }
   let locals: (Binding | undefined)[] = []
   const inside = new Set<Ast>()
+  let lambdas = 0
   const go = (n: Ast, full: boolean, scope: number): boolean => {
     switch (n.k) {
       case 'fn': {
         const spec = FUNCTIONS[n.name]
-        if (!full && spec && cseCall(n.name) && n.args.some((a, i) => spec.mode(i) === 'lift' && shape.get(a))) return true
-        return n.args.some((a, i) => go(a, full || cseArray(n.name, spec, i, multiple), scope))
+        if (!full && spec && cseCall(n.name) && n.args.some((a, i) => spec.mode(i) === 'lift' && shape.get(a) && !dereferenced(a))) return true
+        return n.args.some((a, i) => go(a, (full && (lambdas > 0 || !aggregates(spec, i))) || cseArray(n.name, spec, i, multiple) || wholeUnder(n.name, spec, i, a), scope))
       }
       case 'bin': {
         const array = full || cseBinary(n.op, multiple)
@@ -67,7 +83,9 @@ export function needsCse(ast: Ast, shape: Map<Ast, Shape>, name: NameRef, scope:
         const outer = locals
         locals = locals.slice()
         for (const p of n.params) locals[p.slot] = undefined
+        lambdas++
         const found = go(n.body, true, scope)
+        lambdas--
         locals = outer
         return found
       }

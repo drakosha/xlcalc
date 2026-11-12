@@ -5,9 +5,9 @@
  */
 import { readFileSync, readdirSync } from 'node:fs'
 import { afterAll, describe, expect, it } from 'vitest'
-import { createSession, editStructure, type BookInput, type FilterSort, type SheetInput } from '../src/index.js'
+import { compute, createSession, editStructure, type BookInput, type Execution, type FilterSort, type SheetInput } from '../src/index.js'
 import { readXlsx } from '../src/xlsx.js'
-import { closeCalcs, KINDS, opener } from './session-kinds.js'
+import { closeCalcs, KINDS, opener, openerFor } from './session-kinds.js'
 
 afterAll(closeCalcs)
 
@@ -95,6 +95,43 @@ describe('sortRange', () => {
     expect(editStructure(table, { op: 'sortRange', sheet: 'Data', sort })).toMatchObject({ ok: false, code: 'table', message: 'the range cannot be sorted over part of the table T' })
     expect(() => editStructure(book(), { op: 'sortRange', sheet: 'Data', sort: { range: 'A2:C7', conditions: [{ range: 'E2:E7' }] } })).toThrow(/outside the sorted range/)
   })
+
+  it('refuses a range that meets a spilled array but whole in one of its lines, as Excel does; one whole in a line moves with it', () => {
+    const spill: BookInput = { sheets: [{ name: 'S', cells: { G1: { formula: 'SEQUENCE(3,,3,-1)' }, H1: { value: 1 }, H2: { value: 2 }, H3: { value: 3 } } }] }
+    // the condition is the range's first column
+    const first = (range: string) => {
+      const [a, b] = range.split(':')
+      return `${a}:${a.replace(/\d/g, '')}${b.replace(/[A-Z]/g, '')}`
+    }
+    for (const range of ['G1:G3', 'G1:G5', 'G2:G3', 'G1:H3'])
+      expect(editStructure(spill, { op: 'sortRange', sheet: 'S', sort: { range, conditions: [{ range: first(range) }] } }), range).toMatchObject({ ok: false, code: 'array' })
+    const s = createSession(spill)
+    try {
+      expect(s.editStructure({ op: 'sortRange', sheet: 'S', sort: { range: 'G1:G3', conditions: [{ range: 'G1:G3' }] } })).toMatchObject({ ok: false, code: 'array' })
+      expect(s.getBook().sheets[0].cells.G1).toEqual({ formula: 'SEQUENCE(3,,3,-1)' })
+      expect(s.getCells('S', 'G1:G3').G3.value).toBe(1)
+    } finally {
+      s.close()
+    }
+    // Excel for Windows: a spill in a row sorts with its row, one in a column with its column, a legacy array alike
+    const rest = { G2: { value: 5 }, H2: { value: 6 }, I2: { value: 7 }, G3: { value: 9 }, H3: { value: 8 }, I3: { value: 7 } }
+    const values = (book: BookInput, range: string) => {
+      const out = createSession(book)
+      try {
+        return Object.values(out.getCells('S', range)).map((c) => c.value)
+      } finally {
+        out.close()
+      }
+    }
+    for (const g1 of [{ formula: 'SEQUENCE(1,3)' }, { formula: 'COLUMN(A1:C1)', array: 'G1:I1' }]) {
+      const r = editStructure({ sheets: [{ name: 'S', cells: { G1: g1, ...rest } }] }, { op: 'sortRange', sheet: 'S', sort: { range: 'G1:I3', conditions: [{ range: 'G1:G3', descending: true }] } })
+      expect(r.ok, g1.formula).toBe(true)
+      if (r.ok) expect(values(r.book, 'G1:I3')).toEqual([9, 8, 7, 5, 6, 7, 1, 2, 3])
+    }
+    const columns = editStructure({ sheets: [{ name: 'S', cells: { G1: { formula: 'SEQUENCE(3)' }, H1: { value: 5 }, H2: { value: 6 }, H3: { value: 7 }, I1: { value: 9 }, I2: { value: 8 }, I3: { value: 7 } } }] }, { op: 'sortRange', sheet: 'S', sort: { range: 'G1:I3', byColumns: true, conditions: [{ range: 'G1:I1', descending: true }] } })
+    expect(columns.ok).toBe(true)
+    if (columns.ok) expect(values(columns.book, 'G1:I3')).toEqual([9, 5, 1, 8, 6, 2, 7, 7, 3])
+  })
 })
 
 describe('applyFilter with a sort', () => {
@@ -149,4 +186,38 @@ it.each(fixed)('%s %s: the order Excel sorted is a fixed point', (_, sheet, sort
   const before = s.getBook().sheets[i].cells
   expect(s.editStructure({ op: 'sortRange', sheet, sort }).ok).toBe(true)
   expect(s.getBook().sheets[i].cells).toEqual(before)
+})
+
+describe.each(['closures', 'eval'] as Execution[])('a sort that moves a whole array in a session computes as a full calculation, %s', (execution) => {
+  const clock = { now: '2026-10-29T12:00:00Z', seed: 1 }
+  const rest = { G2: { value: 5 }, H2: { value: 6 }, I2: { value: 7 }, G3: { value: 9 }, H3: { value: 8 }, I3: { value: 7 } }
+  const reads = { K2: { formula: 'SUM(G3:I3)' }, K3: { formula: 'SUM(H1:I1)' }, K4: { formula: 'COUNT(G1:I3)' } }
+  const rows = { range: 'G1:I3', conditions: [{ range: 'G1:G3', descending: true }] }
+  const books: [string, BookInput, FilterSort][] = [
+    ['a spill in a row', { sheets: [{ name: 'S', cells: { G1: { formula: 'SEQUENCE(1,3)' }, ...rest, K1: { formula: 'SUM(G1#)' }, ...reads } }] }, rows],
+    ['a legacy array in a row', { sheets: [{ name: 'S', cells: { G1: { formula: 'COLUMN(A1:C1)', array: 'G1:I1' }, ...rest, ...reads } }] }, rows],
+    ['a spill in a column', { sheets: [{ name: 'S', cells: { G1: { formula: 'SEQUENCE(3)' }, H1: { value: 5 }, H2: { value: 6 }, H3: { value: 7 }, I1: { value: 9 }, I2: { value: 8 }, I3: { value: 7 }, K1: { formula: 'SUM(G1#)' }, K2: { formula: 'SUM(I1:I3)' }, K3: { formula: 'SUM(G1:G3)' } } }] }, { range: 'G1:I3', byColumns: true, conditions: [{ range: 'G1:I1', descending: true }] }],
+  ]
+  describe.each(KINDS)('%s', (kind) => {
+    const open = openerFor(kind)
+    for (const [name, book, sort] of books)
+      it(name, async () => {
+        const s = await open(book, { clock, execution })
+        try {
+          expect(await s.editStructure({ op: 'sortRange', sheet: 'S', sort })).toMatchObject({ ok: true })
+          const full = compute(await s.getBook(), { clock, execution })
+          expect(await s.getHash()).toBe(full.hash)
+          const cells = await s.getCells('S', 'G1:K4')
+          expect(Object.fromEntries(Object.entries(cells).map(([k, c]) => [k, c.value]))).toEqual(Object.fromEntries(Object.keys(cells).map((k) => [k, full.sheets[0].cells[k]?.value ?? null])))
+          // an edit after the sort reaches the moved array's dependents; undo puts the book back
+          await s.setCells([{ sheet: 'S', cell: 'G2', input: { value: 50 } }])
+          expect(await s.getHash()).toBe(compute(await s.getBook(), { clock, execution }).hash)
+          await s.undo()
+          await s.undo()
+          expect(await s.getHash()).toBe(compute(book, { clock, execution }).hash)
+        } finally {
+          await s.close()
+        }
+      })
+  })
 })

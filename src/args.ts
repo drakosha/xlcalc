@@ -52,6 +52,8 @@
 import type { BookFile, ErrorCode, PivotCache, PivotTable } from './contract.js'
 import type { Rect } from './structure/area.js'
 import { Arr } from './arrays/value.js'
+import { first } from './arrays/lift.js'
+import { holdsReferences, overReferences } from './arrays/references.js'
 import { MAX_SERIAL } from './dates.js'
 import { arityOf, type Positions } from './arity.js'
 import type { Counts } from './locale/messages.js'
@@ -217,6 +219,11 @@ export interface FnDef {
    * over its values, and each is #VALUE!, as in Excel.
    */
   criteria?: boolean
+  /**
+   * An array of references (OFFSET or INDIRECT over an array) in its `R` and `G` arguments calls it once for each
+   * reference (SUBTOTAL, COUNTBLANK; the criteria functions too): `arrays/references.ts`.
+   */
+  references?: true
 }
 
 /** A left-out argument: not given (the function's default), a blank, TRUE, or an error. */
@@ -269,7 +276,15 @@ export interface FunctionSpec {
   cell?: boolean
   /** A range of criteria (`FnDef.criteria`): an array there makes the call an array of #VALUE!. */
   criteriaAt: (i: number) => boolean
+  /** An argument where an array of references calls the function once for each (`FnDef.references`). */
+  referencesAt: (i: number) => boolean
 }
+
+/** The kinds of argument an array of references is taken at, by reference, in the functions that say so. */
+const REFERENCE_KINDS = 'RG'
+
+/** Whether a function takes an array of references one reference at a time: SUBTOTAL, COUNTBLANK, the criteria functions. */
+const byReference = (def: FnDef) => def.references === true || def.criteria === true
 
 const RANGE_KINDS = 'NAYZVGDCMRrP'
 const LIST_KINDS = 'NAYZ'
@@ -328,6 +343,7 @@ export function specOf(name: string, def: FnDef): FunctionSpec {
     lazy: def.lazy,
     cell: def.cell,
     criteriaAt: (i) => def.criteria === true && kindAt(i) === 'R',
+    referencesAt: (i) => byReference(def) && REFERENCE_KINDS.includes(kindAt(i)),
     array: def.array,
     liftAt: def.liftAt ?? ((i) => i === 0),
     refs: kinds.some((k) => k.k === 'P'),
@@ -522,7 +538,15 @@ export function makeCaller(def: FnDef, cx: Cx): (...a: any[]) => Arg {
   const fixed = kinds.length - rep
   const head = (def.cx ? 1 : 0) + (def.cell ? 3 : 0)
   const kindAt = kindOf(kinds, rep)
-  return (...a: unknown[]) => {
+  const refs = byReference(def)
+  const caller = (...a: unknown[]): Arg => {
+    // an array of references where a reference goes: one call for each reference
+    if (refs) {
+      const cells = def.cell ? 3 : 0
+      let at: number[] | undefined
+      for (let p = 0; p < a.length - cells; p++) if (REFERENCE_KINDS.includes(kindAt(p)) && holdsReferences(a[cells + p])) (at ??= []).push(cells + p)
+      if (at) return overReferences(a, at, (b) => first(caller(...b), (g) => cx.scalar(g)))
+    }
     const out: unknown[] = []
     if (def.cx) out.push(cx)
     const cells = def.cell ? 3 : 0
@@ -588,6 +612,7 @@ export function makeCaller(def: FnDef, cx: Cx): (...a: any[]) => Arg {
     }
     return fitNumber(r)
   }
+  return caller
 }
 
 /** An array of #VALUE! only. */

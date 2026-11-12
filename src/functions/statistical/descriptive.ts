@@ -189,6 +189,7 @@ export const functions: Record<string, FnDef> = {
   },
   COUNTBLANK: {
     args: 'G',
+    references: true,
     fn: (g: Grid) => {
       let filled = 0
       for (const v of g.v) if (v !== null && v !== '') filled++

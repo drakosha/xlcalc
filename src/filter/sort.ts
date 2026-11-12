@@ -87,17 +87,27 @@ function keyLine(cond: SortCondition, area: Rect, byColumns: boolean, path: stri
 }
 
 /**
- * Why Excel refuses to sort `area` of sheet `s`, or null: a merged area it meets, a legacy array formula it meets other
- * than whole in one of its lines, a table it meets without lying in the table's data.
+ * Why Excel refuses to sort `area` of sheet `s`, or null: a merged area it meets, a legacy array formula or a spilled
+ * array it meets other than whole in one of its lines, a table it meets without lying in the table's data.
  */
-function sortRefusal(book: BookInput, s: number, area: Rect, byColumns: boolean): Refused | null {
+function sortRefusal(book: BookInput, state: EngineState, s: number, area: Rect, byColumns: boolean): Refused | null {
   const sheet = book.sheets[s]
   const no = (code: Refused['code'], message: Parameters<typeof sayPivot>[1]): Refused => ({ ok: false, code, message: sayPivot(book.locale, message) })
   const merged = (sheet.merges ?? []).find((m) => meets(parseMerge(m)!, area))
   if (merged) return no('merged', { key: 'sortMerged', sheet: sheet.name, area: merged })
-  for (const [addr, x] of arraysOf(sheet)) {
+  // a legacy array formula's range and a spilled array alike: Excel sorts one whole in a line with its line, and refuses
+  // one it meets otherwise, "You can't change part of an array" (Excel for Windows, sort-spill-1112)
+  const part = (x: Rect, cell: string) => {
     const oneLine = byColumns ? x.c1 === x.c2 : x.r1 === x.r2
-    if (meets(x, area) && (!contains(area, x) || !oneLine)) return no('array', { key: 'arrayPart', sheet: sheet.name, cell: addr, area: rectText(x) })
+    return meets(x, area) && (!contains(area, x) || !oneLine) ? no('array', { key: 'arrayPart', sheet: sheet.name, cell, area: rectText(x) }) : null
+  }
+  for (const [addr, x] of arraysOf(sheet)) {
+    const refused = part(x, addr)
+    if (refused) return refused
+  }
+  for (const x of state.spills.on.values()) {
+    const refused = x.s === s && (x.r1 !== x.r2 || x.c1 !== x.c2) ? part(x, formatAddress(x.r1, x.c1)) : null
+    if (refused) return refused
   }
   for (const t of tablesOf(book).list) {
     if (t.s !== s || !meets(t, area)) continue
@@ -119,7 +129,7 @@ export function sortedBook(book: BookInput, state: EngineState, s: number, area:
   const shown: number[] = []
   for (let k = lo; k <= hi; k++) if (!hidden(k)) shown.push(k)
   if (!conds.length) return null
-  const refused = sortRefusal(book, s, area, byColumns)
+  const refused = sortRefusal(book, state, s, area, byColumns)
   if (refused) return refused
   if (shown.length < 2) return null
   const rules = keepRules(state)
