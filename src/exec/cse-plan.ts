@@ -9,8 +9,12 @@ import { callOf, dereferenced } from '../syntax/idioms.js'
 const POSITIONAL = new Set(['XLOOKUP', 'INDEX', 'OFFSET', 'INDIRECT'])
 export const cseCall = (name: string) => POSITIONAL.has(name)
 
-/** OFFSET or INDIRECT right under N or T: Excel takes all their references there, not one per position (measured). */
-export const wholeUnder = (name: string, arg: Ast) => (name === 'N' || name === 'T') && callOf(arg, 'OFFSET', 'INDIRECT') !== undefined
+/**
+ * OFFSET or INDIRECT right under N or T, or where SUBTOTAL, COUNTBLANK or a criteria function takes a reference:
+ * Excel takes all their references there, not one per position (measured).
+ */
+export const wholeUnder = (name: string, spec: FunctionSpec | undefined, i: number, arg: Ast) =>
+  (name === 'N' || name === 'T' || !!spec?.referencesAt(i)) && callOf(arg, 'OFFSET', 'INDIRECT') !== undefined
 
 /** Whole arguments Excel evaluates as arrays over several CSE cells: SUMPRODUCT, MODE and paired arrays (SUMX2PY2). */
 const WHOLE = new Set(['SUMPRODUCT', 'MODE', 'MODE.SNGL'])
@@ -37,7 +41,7 @@ export function needsCse(ast: Ast, shape: Map<Ast, Shape>, name: NameRef, scope:
       case 'fn': {
         const spec = FUNCTIONS[n.name]
         if (!full && spec && cseCall(n.name) && n.args.some((a, i) => spec.mode(i) === 'lift' && shape.get(a) && !dereferenced(a))) return true
-        return n.args.some((a, i) => go(a, full || cseArray(n.name, spec, i, multiple) || wholeUnder(n.name, a), scope))
+        return n.args.some((a, i) => go(a, full || cseArray(n.name, spec, i, multiple) || wholeUnder(n.name, spec, i, a), scope))
       }
       case 'bin': {
         const array = full || cseBinary(n.op, multiple)

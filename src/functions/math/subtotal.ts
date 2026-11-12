@@ -82,5 +82,5 @@ function aggregate(cx: Cx, code: number, option: number, refs: (V | Rng | Arr | 
 
 export const functions: Record<string, FnDef> = {
   AGGREGATE: { args: 'n n R', rep: 1, max: NEWER_MAX_ARGS, cx: true, areas: true, fn: aggregate },
-  SUBTOTAL: { args: 'n R', rep: 1, cx: true, areas: true, fn: subtotal },
+  SUBTOTAL: { args: 'n R', rep: 1, cx: true, areas: true, references: true, fn: subtotal },
 }

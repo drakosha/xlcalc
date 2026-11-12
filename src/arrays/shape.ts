@@ -10,6 +10,7 @@ import { FUNCTIONS } from '../functions.js'
 import type { ErrorCode } from '../contract.js'
 import type { Rect } from '../structure/area.js'
 import { isRefOp, type Ast } from '../syntax.js'
+import { callOf } from '../syntax/idioms.js'
 
 /** A name's definition as the names of sheet `scope` show it (`exec/walk.ts`). */
 export type NameRef = (n: Extract<Ast, { k: 'name' }>, scope: number) => NameDef | undefined
@@ -160,9 +161,10 @@ export function shapes(ast: Ast, scope: number, nameRef: NameRef, inArea = false
     const passed: Shape[] = []
     args.forEach((a, i) => {
       const mode = spec.mode(i)
-      // an array (not a reference) in a range of criteria makes the call an array of #VALUE!, as the call answers at run time
+      // an array (not a reference) in a range of criteria makes the call an array of #VALUE!, as the call answers at run time;
+      // an array of references from OFFSET or INDIRECT where a reference goes, an array of one call for each
       if (mode === 'whole') {
-        if (!a.ref && a.s > 0 && spec.criteriaAt(i)) lifted.push(a.s)
+        if (!a.ref && a.s > 0 && (spec.criteriaAt(i) || (spec.referencesAt(i) && callOf(nodes[i], 'OFFSET', 'INDIRECT')))) lifted.push(a.s)
         return
       }
       if (mode === 'pass') passed.push(a.s)

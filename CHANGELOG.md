@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+Added:
+
+- Arrays of references: `OFFSET` or `INDIRECT` over an array given where `SUBTOTAL`, `COUNTBLANK`, `SUMIF`, `SUMIFS`, `COUNTIF`, `COUNTIFS`, `AVERAGEIF`, `AVERAGEIFS`, `MAXIFS` or `MINIFS` takes a reference calls the function once for each reference, as Excel does. `SUBTOTAL(9,OFFSET(B1,{0;1;2},0))` spills one total per cell, `SUMPRODUCT(SUBTOTAL(103,OFFSET(…)),…)` counts or adds the visible rows, `COUNTIF(INDIRECT({"B1:B2";"B2:B3"}),">15")` gives one count per range; these were `#VALUE!`, and in legacy array formulas one value per position. Other uses of such an array read the references' values, as before ([Exceptions](docs/arrays-incell.md#exceptions)). Checked against Excel for Mac and Windows on 21 spill cases, 16 SUBTOTAL formulas over hidden rows and the 12 earlier legacy array cases.
+
 Fixed:
 
 - 0.89.1 broke the dereferencing idioms of legacy array formulas: `SUM(INDEX(B1:B3,N(IF(1,{2;3}))))`, `SUM(N(OFFSET(B1,{1;2},0)))` and `SUM(N(INDIRECT({"B2";"B3"})))` added one value instead of every value. A selector written as `N(IF(…))` or `T(IF(…))`, and OFFSET or INDIRECT right under N or T, are taken whole again, as Excel takes them. Checked against Excel for Mac on 12 formulas.

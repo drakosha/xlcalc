@@ -609,7 +609,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
           const args = n.args.map((a, i) => {
             if (a.k === 'missing') return omitted(spec.omitted(i))
             if (i === 2 && past) return past
-            const code = go(a, kept || spec.range(i) || a.k === 'ref3d', full || (!!frame && (cseArray(n.name, spec, i, multiple) || wholeUnder(n.name, a))))
+            const code = go(a, kept || spec.range(i) || a.k === 'ref3d', full || (!!frame && (cseArray(n.name, spec, i, multiple) || wholeUnder(n.name, spec, i, a))))
             if (selected && spec.mode(i) === 'lift' && many(a) && !dereferenced(a)) {
               cursorReads++
               return frame!.pick(code)

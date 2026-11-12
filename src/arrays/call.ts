@@ -6,6 +6,7 @@
 import type { Arg, Cx, FunctionSpec } from '../args.js'
 import { Rng, type V } from '../values.js'
 import { first, liftN, lifts } from './lift.js'
+import { keepReferences } from './references.js'
 import { arr, Arr } from './value.js'
 
 type Call = (...a: any[]) => Arg
@@ -54,10 +55,15 @@ export function liftCaller(spec: FunctionSpec, cell: boolean, call: Call, cx: Cx
       const x = args[off + p]
       if (x instanceof Arr || x instanceof Rng) args[off + p] = arr(1, 1, [x instanceof Arr ? x.at(0, 0) : topLeft(x, cx)])
     }
-    return liftN(xs, (els) => {
+    // OFFSET and INDIRECT keep the references they find for the functions that take one (`references.ts`)
+    const found: Arg[] | undefined = spec.dynamic ? [] : undefined
+    const out = liftN(xs, (els) => {
       for (let k = 0; k < at.length; k++) args[at[k]] = els[k]
-      return first(call(...args), (g) => topLeft(g, cx))
+      const r = call(...args)
+      found?.push(r)
+      return first(r, (g) => topLeft(g, cx))
     }, true)
+    return found ? keepReferences(out, found) : out
   }
 }
 

@@ -41,8 +41,7 @@ function canon(f: string): string {
  * `legacy-shown`). The old and the dynamic kind part in Excel itself: a range where an argument takes one value and
  * Excel shows no `@` is an error in the old formula and lifted in the dynamic one. And Excel computes a few dynamic
  * formulas otherwise than the engine: an error as NETWORKDAYS.INTL's weekend, XIRR's guess given a range (`#VALUE!`
- * in Excel), the functions of the former Analysis ToolPak and GROWTH, TREND over an array inside SUMPRODUCT, and an
- * array of references from OFFSET given to SUBTOTAL (not supported yet).
+ * in Excel), the functions of the former Analysis ToolPak and GROWTH, TREND over an array inside SUMPRODUCT.
  */
 const PARTED: Readonly<Record<string, string>> = {
   'params:GROWTH#r4': 'Excel parts the two kinds',
@@ -57,7 +56,6 @@ const PARTED: Readonly<Record<string, string>> = {
   'nesting:GROWTH#array-r4': 'inside SUMPRODUCT Excel does not lift the call',
   'nesting:TREND#array-r4': 'inside SUMPRODUCT Excel does not lift the call',
   'nesting:XIRR#array-r3': 'inside SUMPRODUCT Excel does not lift the call',
-  'deref-held:deref#11': 'an array of references given to SUBTOTAL: Excel takes one reference at a time, #VALUE! here',
 }
 
 /** Volatile calls: their values are not compared. */

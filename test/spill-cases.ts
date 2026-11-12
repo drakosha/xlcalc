@@ -54,7 +54,3 @@ export function differences(c: SpillCase, a: RectsAnswer, r: ComputeResult): str
   return readDifferences(c.read, a.values, r, (excel, engine) => (c.volatile && excel.t === 'n' ? engine.t === 'n' : compare(excel, engine).ok))
 }
 
-/** The cases of the CSE lookup sets that need an array of references, Excel's and not yet the engine's (both Excels). */
-export const REFERENCE_ARRAYS: Readonly<Record<string, string>> = Object.fromEntries(
-  ['cse-lookup-held-5:subtotal-offset-single', 'cse-lookup-held-5:subtotal-offset-two', 'cse-lookup-held-5:subtotal-offset-rows-single', 'cse-lookup-held-5:sumif-offset-single', 'cse-lookup-held-5:countif-indirect-single', 'cse-lookup-held-6:subtotal-offset-rows-two', 'cse-lookup-held-6:countif-offset-single', 'cse-lookup-held-6:sumif-indirect-single', 'own-place-held:subtotal-offset', 'own-place-held:sum-subtotal-offset', 'own-place-held:countif-indirect', 'own-place-held:sumif-offset'].map((k) => [k, 'an array of references (OFFSET or INDIRECT over an array) into a function that takes a reference: Excel takes each reference, the engine one per position or #VALUE!']),
-)
