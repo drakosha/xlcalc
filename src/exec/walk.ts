@@ -20,7 +20,7 @@ import { canonical, isRefOp, type Ast, type BinOp, type RangeRef, type RefOp } f
 import { E, Rng, type V } from '../values.js'
 import { placedOnly, placing, QUIET, QUIET_RANGE, type Use } from './placed.js'
 import { dereferenced } from '../syntax/idioms.js'
-import { cseArray, cseBinary, cseCall, needsCse, wholeUnder } from './cse-plan.js'
+import { aggregates, cseArray, cseBinary, cseCall, needsCse, wholeUnder } from './cse-plan.js'
 
 /** A defined name as the walk expands it: its formula, which sees the global names (a sheet's own only as `'S'!name`). */
 export interface NameDef {
@@ -609,7 +609,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
           const args = n.args.map((a, i) => {
             if (a.k === 'missing') return omitted(spec.omitted(i))
             if (i === 2 && past) return past
-            const code = go(a, kept || spec.range(i) || a.k === 'ref3d', full || (!!frame && (cseArray(n.name, spec, i, multiple) || wholeUnder(n.name, spec, i, a))))
+            const code = go(a, kept || spec.range(i) || a.k === 'ref3d', (full && (lambdaScope > 0 || !aggregates(spec, i))) || (!!frame && (cseArray(n.name, spec, i, multiple) || wholeUnder(n.name, spec, i, a))))
             if (selected && spec.mode(i) === 'lift' && many(a) && !dereferenced(a)) {
               cursorReads++
               return frame!.pick(code)

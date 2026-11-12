@@ -18,8 +18,11 @@ const dyn = (id: string, formula: string, at: string, read: string): SpillCase =
 const cse = (id: string, formula: string, area: string): SpillCase =>
   one(id, `${formula} over ${area}`, { ...DATA, [area.split(':')[0]]: arr(formula, area) } as Record<string, CellSpec>, [area], { predicted: PREDICTED[id] })
 
-/** The cases whose prediction Excel answered otherwise. */
-export const MISSED: readonly string[] = []
+/**
+ * The cases whose prediction Excel answered otherwise (Excel for Mac and Windows alike): TRANSPOSE evaluates its argument
+ * as an array in a legacy array formula over several cells, SUM or not around it, 31; 31.
+ */
+export const MISSED: readonly string[] = ['sum-transpose-plus']
 
 export function buildSpillCases(): SpillCase[] {
   return [

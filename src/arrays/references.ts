@@ -21,24 +21,23 @@ export function keepReferences(a: Arr, found: readonly unknown[]): Arr {
 /** Whether `x` is an array a lifted OFFSET or INDIRECT answered, with its references. */
 export const holdsReferences = (x: unknown): x is Arr => x instanceof Arr && KEPT.has(x)
 
+/** The array of references `a` as the numbers of its places, its fill the number after them: what lifting goes over. */
+export function placesOf(a: Arr): Arr {
+  const n = a.h * a.w
+  return new Arr(a.rows, a.cols, a.h, a.w, Array.from({ length: n }, (_, k) => k), n)
+}
+
+/** The reference of `a` at a place `placesOf` gave, or the value lifting gave there instead (#N/A past a shorter array). */
+export const referenceAt = (a: Arr, e: V): unknown => (typeof e === 'number' ? KEPT.get(a)![e] : e)
+
 /**
  * `call` once for each position of the arrays of references at `at` among `args`, each given its reference there:
  * the arrays lift together as any arrays do (one row or column repeated, #N/A past a shorter one).
  */
 export function overReferences(args: readonly unknown[], at: readonly number[], call: (args: unknown[]) => V): Arr {
-  const found = at.map((i) => KEPT.get(args[i] as Arr)!)
-  // each array as the numbers of its places, its fill the number after them
-  const places = at.map((i) => {
-    const a = args[i] as Arr
-    const n = a.h * a.w
-    return new Arr(a.rows, a.cols, a.h, a.w, Array.from({ length: n }, (_, k) => k), n)
-  })
   const b = args.slice()
-  return liftN(places, (els) => {
-    for (let k = 0; k < at.length; k++) {
-      const e = els[k]
-      b[at[k]] = typeof e === 'number' ? found[k][e] : e
-    }
+  return liftN(at.map((i) => placesOf(args[i] as Arr)), (els) => {
+    for (let k = 0; k < at.length; k++) b[at[k]] = referenceAt(args[at[k]] as Arr, els[k])
     return call(b)
   }, true)
 }
