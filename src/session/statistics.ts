@@ -47,7 +47,8 @@ function counts(state: EngineState, s: number): StatisticsCounts & { end: string
     const x = c.array === undefined ? null : arrayArea(addr, c.array)
     if (x) fill(x)
   }
-  for (const x of state.spills.on.values()) if (x.s === s) fill(x)
+  // a legacy array formula's range is among the spills too: counted above by its input
+  for (const [id, x] of state.spills.on) if (x.s === s && !state.formulas[id]?.area) fill(x)
   // a merged area over a cell with data or a note reaches the end with its last cell (the set stats/held)
   for (const m of sheet.merges ?? []) {
     const x = parseMerge(m)

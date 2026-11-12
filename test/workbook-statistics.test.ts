@@ -37,6 +37,12 @@ describe.each(['closures', 'eval'] as Execution[])('%s', (execution) => {
   })
 })
 
+it('a legacy array formula counts each of its cells once, as a spilled array does', async () => {
+  const s = await (await opener('a synchronous session'))({ sheets: [{ name: 'S', cells: { A1: { value: 1 }, A2: { value: 2 }, A3: { value: 3 }, B2: { formula: 'A1:A3*2', array: 'B2:B4' } } }] }, {})
+  expect((await s.getWorkbookStatistics('S')).sheet).toMatchObject({ end: 'B4', cells: 6, formulas: 3 })
+  await s.close()
+})
+
 it('a sheet without data or notes has no end, whatever its styles, lines and hyperlinks', async () => {
   const s = await (await opener(KINDS[0]))({ styles: [{ font: { bold: true } }], sheets: [{ name: 'S', cells: { H20: { style: 0 }, C3: { link: { url: 'https://example.com/' } } }, rows: { '30': { height: 30 } } }] }, {})
   expect((await s.getWorkbookStatistics('S')).sheet).toEqual({ end: null, cells: 0, tables: 0, formulas: 0, notes: 0, ...UNHELD })
