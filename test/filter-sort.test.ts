@@ -96,14 +96,14 @@ describe('sortRange', () => {
     expect(() => editStructure(book(), { op: 'sortRange', sheet: 'Data', sort: { range: 'A2:C7', conditions: [{ range: 'E2:E7' }] } })).toThrow(/outside the sorted range/)
   })
 
-  it('refuses a range that meets a spilled array, as Excel does, and leaves the cells; a formula of one value sorts', () => {
-    const spill: BookInput = { sheets: [{ name: 'S', cells: { G1: { formula: 'SEQUENCE(3,,3,-1)' }, H1: { value: 1 }, H2: { value: 2 }, H3: { value: 3 }, J1: { formula: 'SEQUENCE(1,2)' } } }] }
+  it('refuses a range that meets a spilled array but whole in one of its lines, as Excel does; one whole in a line moves with it', () => {
+    const spill: BookInput = { sheets: [{ name: 'S', cells: { G1: { formula: 'SEQUENCE(3,,3,-1)' }, H1: { value: 1 }, H2: { value: 2 }, H3: { value: 3 } } }] }
     // the condition is the range's first column
     const first = (range: string) => {
       const [a, b] = range.split(':')
       return `${a}:${a.replace(/\d/g, '')}${b.replace(/[A-Z]/g, '')}`
     }
-    for (const range of ['G1:G3', 'G1:G5', 'G2:G3', 'G1:H3', 'J1:K1'])
+    for (const range of ['G1:G3', 'G1:G5', 'G2:G3', 'G1:H3'])
       expect(editStructure(spill, { op: 'sortRange', sheet: 'S', sort: { range, conditions: [{ range: first(range) }] } }), range).toMatchObject({ ok: false, code: 'array' })
     const s = createSession(spill)
     try {
@@ -113,8 +113,24 @@ describe('sortRange', () => {
     } finally {
       s.close()
     }
-    const one: BookInput = { sheets: [{ name: 'S', cells: { G1: { formula: 'H1*2' }, G2: { value: 1 }, H1: { value: 5 } } }] }
-    expect(editStructure(one, { op: 'sortRange', sheet: 'S', sort: { range: 'G1:G2', conditions: [{ range: 'G1:G2' }] } })).toMatchObject({ ok: true })
+    // Excel for Windows: a spill in a row sorts with its row, one in a column with its column, a legacy array alike
+    const rest = { G2: { value: 5 }, H2: { value: 6 }, I2: { value: 7 }, G3: { value: 9 }, H3: { value: 8 }, I3: { value: 7 } }
+    const values = (book: BookInput, range: string) => {
+      const out = createSession(book)
+      try {
+        return Object.values(out.getCells('S', range)).map((c) => c.value)
+      } finally {
+        out.close()
+      }
+    }
+    for (const g1 of [{ formula: 'SEQUENCE(1,3)' }, { formula: 'COLUMN(A1:C1)', array: 'G1:I1' }]) {
+      const r = editStructure({ sheets: [{ name: 'S', cells: { G1: g1, ...rest } }] }, { op: 'sortRange', sheet: 'S', sort: { range: 'G1:I3', conditions: [{ range: 'G1:G3', descending: true }] } })
+      expect(r.ok, g1.formula).toBe(true)
+      if (r.ok) expect(values(r.book, 'G1:I3')).toEqual([9, 8, 7, 5, 6, 7, 1, 2, 3])
+    }
+    const columns = editStructure({ sheets: [{ name: 'S', cells: { G1: { formula: 'SEQUENCE(3)' }, H1: { value: 5 }, H2: { value: 6 }, H3: { value: 7 }, I1: { value: 9 }, I2: { value: 8 }, I3: { value: 7 } } }] }, { op: 'sortRange', sheet: 'S', sort: { range: 'G1:I3', byColumns: true, conditions: [{ range: 'G1:I1', descending: true }] } })
+    expect(columns.ok).toBe(true)
+    if (columns.ok) expect(values(columns.book, 'G1:I3')).toEqual([9, 5, 1, 8, 6, 2, 7, 7, 3])
   })
 })
 
