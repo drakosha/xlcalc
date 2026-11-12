@@ -27,5 +27,8 @@ export function buildProbes(): Probe[] {
 /** The text Excel 365 was predicted to show for each case (canonical, without `=`), committed before Excel ran. */
 export const PREDICTED_SHOWN: Readonly<Record<string, string>> = PREDICTED
 
-/** The predictions Excel did not confirm. */
-export const MISSED: readonly string[] = []
+/**
+ * The predictions Excel did not confirm (Excel 16.115 for Mac and 16.0 for Windows alike): alone, SUBTOTAL, COUNTIF, SUMIF,
+ * SUMIFS and COUNTBLANK do not evaluate an array under their reference, OFFSET's and INDIRECT's array takes `@` there.
+ */
+export const MISSED: readonly string[] = ['refs#1', 'refs#4', 'refs#7', 'refs#10', 'refs#16']

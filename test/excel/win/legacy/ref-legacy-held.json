@@ -1,0 +1,249 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 12.8,
+  "legacy": true
+ },
+ "cases": [
+  {
+   "id": "refs#1",
+   "group": "refs",
+   "fn": "SUBTOTAL",
+   "formula": "SUBTOTAL(9,OFFSET(D!B1,{0;1;2},0))"
+  },
+  {
+   "id": "refs#2",
+   "group": "refs",
+   "fn": "SUM",
+   "formula": "SUM(SUBTOTAL(9,OFFSET(D!B1,{0;1;2},0)))"
+  },
+  {
+   "id": "refs#3",
+   "group": "refs",
+   "fn": "SUMPRODUCT",
+   "formula": "SUMPRODUCT(SUBTOTAL(3,OFFSET(D!B1,{0;1;2},0)))"
+  },
+  {
+   "id": "refs#4",
+   "group": "refs",
+   "fn": "COUNTIF",
+   "formula": "COUNTIF(INDIRECT({\"D!B1:B2\";\"D!B2:B3\"}),\">5\")"
+  },
+  {
+   "id": "refs#5",
+   "group": "refs",
+   "fn": "SUM",
+   "formula": "SUM(COUNTIF(INDIRECT({\"D!B1:B2\";\"D!B2:B3\"}),\">5\"))"
+  },
+  {
+   "id": "refs#6",
+   "group": "refs",
+   "fn": "SUMPRODUCT",
+   "formula": "SUMPRODUCT(COUNTIF(INDIRECT({\"D!B1:B2\";\"D!B2:B3\"}),\">5\"))"
+  },
+  {
+   "id": "refs#7",
+   "group": "refs",
+   "fn": "SUMIF",
+   "formula": "SUMIF(OFFSET(D!B1,{0;1},0,2),\">5\")"
+  },
+  {
+   "id": "refs#8",
+   "group": "refs",
+   "fn": "SUM",
+   "formula": "SUM(SUMIF(OFFSET(D!B1,{0;1},0,2),\">5\"))"
+  },
+  {
+   "id": "refs#9",
+   "group": "refs",
+   "fn": "SUMPRODUCT",
+   "formula": "SUMPRODUCT(SUMIF(OFFSET(D!B1,{0;1},0,2),\">5\",OFFSET(D!C1,{0;1},0,2)))"
+  },
+  {
+   "id": "refs#10",
+   "group": "refs",
+   "fn": "COUNTBLANK",
+   "formula": "COUNTBLANK(OFFSET(D!D4,{0;1},0,2))"
+  },
+  {
+   "id": "refs#11",
+   "group": "refs",
+   "fn": "SUM",
+   "formula": "SUM(COUNTBLANK(OFFSET(D!D4,{0;1},0,2)))"
+  },
+  {
+   "id": "refs#12",
+   "group": "refs",
+   "fn": "SUM",
+   "formula": "SUM(SUBTOTAL(9,OFFSET(D!B1,ROW(D!B1:B3)-1,0)))"
+  },
+  {
+   "id": "refs#13",
+   "group": "refs",
+   "fn": "SUMPRODUCT",
+   "formula": "SUMPRODUCT(SUBTOTAL(9,OFFSET(D!B1,ROW(D!B1:B3)-ROW(D!B1),0)))"
+  },
+  {
+   "id": "refs#14",
+   "group": "refs",
+   "fn": "SUM",
+   "formula": "SUM(COUNTIF(OFFSET(D!B1,{0;1;2},0),\">5\"))"
+  },
+  {
+   "id": "refs#15",
+   "group": "refs",
+   "fn": "MAX",
+   "formula": "MAX(SUBTOTAL(4,OFFSET(D!B1,0,{0,1},3)))"
+  },
+  {
+   "id": "refs#16",
+   "group": "refs",
+   "fn": "SUMIFS",
+   "formula": "SUMIFS(OFFSET(D!C1,{0;1},0,2),OFFSET(D!B1,{0;1},0,2),\">5\")"
+  },
+  {
+   "id": "refs#17",
+   "group": "refs",
+   "fn": "SUM",
+   "formula": "SUM(SUMIFS(OFFSET(D!C1,{0;1},0,2),OFFSET(D!B1,{0;1},0,2),\">5\"))"
+  },
+  {
+   "id": "refs#18",
+   "group": "refs",
+   "fn": "SUM",
+   "formula": "SUM(SUBTOTAL(9,INDIRECT({\"D!B1\";\"D!C1\"})))"
+  },
+  {
+   "id": "refs#19",
+   "group": "refs",
+   "fn": "SUMPRODUCT",
+   "formula": "SUMPRODUCT(SUBTOTAL(9,OFFSET(D!B1,{0;1;2},0)))*1"
+  }
+ ],
+ "values": {
+  "refs#1": {
+   "t": "n",
+   "v": 4
+  },
+  "refs#2": {
+   "t": "n",
+   "v": 27
+  },
+  "refs#3": {
+   "t": "n",
+   "v": 3
+  },
+  "refs#4": {
+   "t": "n",
+   "v": 1
+  },
+  "refs#5": {
+   "t": "n",
+   "v": 3
+  },
+  "refs#6": {
+   "t": "n",
+   "v": 3
+  },
+  "refs#7": {
+   "t": "n",
+   "v": 8
+  },
+  "refs#8": {
+   "t": "n",
+   "v": 31
+  },
+  "refs#9": {
+   "t": "n",
+   "v": 25
+  },
+  "refs#10": {
+   "t": "n",
+   "v": 1
+  },
+  "refs#11": {
+   "t": "n",
+   "v": 2
+  },
+  "refs#12": {
+   "t": "n",
+   "v": 4
+  },
+  "refs#13": {
+   "t": "n",
+   "v": 27
+  },
+  "refs#14": {
+   "t": "n",
+   "v": 2
+  },
+  "refs#15": {
+   "t": "n",
+   "v": 15
+  },
+  "refs#16": {
+   "t": "n",
+   "v": 7
+  },
+  "refs#17": {
+   "t": "n",
+   "v": 25
+  },
+  "refs#18": {
+   "t": "n",
+   "v": 6
+  },
+  "refs#19": {
+   "t": "n",
+   "v": 27
+  }
+ },
+ "formulas": {
+  "refs#1": "=SUBTOTAL(9,OFFSET(D!B1,@{0;1;2},0))",
+  "refs#2": "=SUM(SUBTOTAL(9,OFFSET(D!B1,{0;1;2},0)))",
+  "refs#3": "=SUMPRODUCT(SUBTOTAL(3,OFFSET(D!B1,{0;1;2},0)))",
+  "refs#4": "=COUNTIF(INDIRECT(@{\"D!B1:B2\";\"D!B2:B3\"}),\">5\")",
+  "refs#5": "=SUM(COUNTIF(INDIRECT({\"D!B1:B2\";\"D!B2:B3\"}),\">5\"))",
+  "refs#6": "=SUMPRODUCT(COUNTIF(INDIRECT({\"D!B1:B2\";\"D!B2:B3\"}),\">5\"))",
+  "refs#7": "=SUMIF(OFFSET(D!B1,@{0;1},0,2),\">5\")",
+  "refs#8": "=SUM(SUMIF(OFFSET(D!B1,{0;1},0,2),\">5\"))",
+  "refs#9": "=SUMPRODUCT(SUMIF(OFFSET(D!B1,{0;1},0,2),\">5\",OFFSET(D!C1,{0;1},0,2)))",
+  "refs#10": "=COUNTBLANK(OFFSET(D!D4,@{0;1},0,2))",
+  "refs#11": "=SUM(COUNTBLANK(OFFSET(D!D4,{0;1},0,2)))",
+  "refs#12": "=SUM(SUBTOTAL(9,OFFSET(D!B1,@ROW(D!B1:B3)-1,0)))",
+  "refs#13": "=SUMPRODUCT(SUBTOTAL(9,OFFSET(D!B1,ROW(D!B1:B3)-ROW(D!B1),0)))",
+  "refs#14": "=SUM(COUNTIF(OFFSET(D!B1,{0;1;2},0),\">5\"))",
+  "refs#15": "=MAX(SUBTOTAL(4,OFFSET(D!B1,0,{0,1},3)))",
+  "refs#16": "=SUMIFS(OFFSET(D!C1,@{0;1},0,2),OFFSET(D!B1,@{0;1},0,2),\">5\")",
+  "refs#17": "=SUM(SUMIFS(OFFSET(D!C1,{0;1},0,2),OFFSET(D!B1,{0;1},0,2),\">5\"))",
+  "refs#18": "=SUM(SUBTOTAL(9,INDIRECT({\"D!B1\";\"D!C1\"})))",
+  "refs#19": "=SUMPRODUCT(SUBTOTAL(9,OFFSET(D!B1,{0;1;2},0)))*1"
+ },
+ "rows": {
+  "refs#1": 1,
+  "refs#2": 2,
+  "refs#3": 3,
+  "refs#4": 4,
+  "refs#5": 5,
+  "refs#6": 6,
+  "refs#7": 7,
+  "refs#8": 8,
+  "refs#9": 9,
+  "refs#10": 10,
+  "refs#11": 11,
+  "refs#12": 12,
+  "refs#13": 13,
+  "refs#14": 14,
+  "refs#15": 15,
+  "refs#16": 16,
+  "refs#17": 17,
+  "refs#18": 18,
+  "refs#19": 19
+ }
+}
