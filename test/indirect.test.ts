@@ -96,6 +96,26 @@ describe.each(['closures', 'eval'] as Execution[])('INDIRECT and OFFSET in a ses
       }
     })
 
+    it("SUMIF's sum range resized to a found criteria range, or found itself, follows the cells it is resized over", async () => {
+      const cells: Record<string, CellInput> = {
+        B1: { value: 30 }, B2: { value: 10 }, B3: { value: 20 }, C1: { value: 300 }, C2: { value: 100 }, C3: { value: 200 },
+        E1: { formula: 'SUMIF(OFFSET(B1,1,0,2),">15",C1)' },
+        E2: { formula: 'SUMIF(INDIRECT("B2:B3"),">15",C1)' },
+        F1: { formula: 'SUMIF(B2:B3,">15",OFFSET(C1,0,0))' },
+        F2: { formula: 'AVERAGEIF(OFFSET(B1,1,0,2),">15",C1)' },
+        G1: { formula: 'SUMIF(OFFSET(B1,{0;1},0,2),">15",C1)' },
+      }
+      const s = await open(book(cells), { clock, execution })
+      try {
+        expect(await at(s, 'E1:G2')).toEqual({ E1: 100, E2: 100, F1: 100, F2: 100, G1: 300, G2: 100 })
+        // C2 lies past the sum range's own cell C1, inside it once resized
+        await set(s, 'C2', { value: 1000 })
+        expect(await at(s, 'E1:G2')).toEqual({ E1: 1000, E2: 1000, F1: 1000, F2: 1000, G1: 300, G2: 1000 })
+      } finally {
+        await s.close()
+      }
+    })
+
     it('a structure operation keeps the text and moves the references of OFFSET', async () => {
       const s = await open(book({ A1: { value: 1 }, A2: { value: 2 }, B1: { formula: 'INDIRECT("A2")' }, B2: { formula: 'OFFSET(A1,1,0)' } }), { clock, execution })
       try {

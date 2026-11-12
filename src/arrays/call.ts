@@ -4,7 +4,7 @@
  * lazy unless an argument that lifts them is an array, and then every argument is computed.
  */
 import type { Arg, Cx, FunctionSpec } from '../args.js'
-import { Rng, type V } from '../values.js'
+import { Areas, Rng, type V } from '../values.js'
 import { first, liftN, lifts } from './lift.js'
 import { keepReferences } from './references.js'
 import { arr, Arr } from './value.js'
@@ -55,15 +55,20 @@ export function liftCaller(spec: FunctionSpec, cell: boolean, call: Call, cx: Cx
       const x = args[off + p]
       if (x instanceof Arr || x instanceof Rng) args[off + p] = arr(1, 1, [x instanceof Arr ? x.at(0, 0) : topLeft(x, cx)])
     }
-    // OFFSET and INDIRECT keep the references they find for the functions that take one (`references.ts`)
+    // OFFSET and INDIRECT keep the references they find for the functions that take one (`references.ts`); CELL and
+    // GETPIVOTDATA, dynamic too, answer values, which are no references
     const found: Arg[] | undefined = spec.dynamic ? [] : undefined
+    let refs = false
     const out = liftN(xs, (els) => {
       for (let k = 0; k < at.length; k++) args[at[k]] = els[k]
       const r = call(...args)
-      found?.push(r)
+      if (found) {
+        found.push(r)
+        if (r instanceof Rng || r instanceof Areas) refs = true
+      }
       return first(r, (g) => topLeft(g, cx))
     }, true)
-    return found ? keepReferences(out, found) : out
+    return refs ? keepReferences(out, found!) : out
   }
 }
 
