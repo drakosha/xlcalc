@@ -19,7 +19,8 @@ import type { ErrorCode } from '../contract.js'
 import { canonical, isRefOp, type Ast, type BinOp, type RangeRef, type RefOp } from '../syntax.js'
 import { E, Rng, type V } from '../values.js'
 import { placedOnly, placing, QUIET, QUIET_RANGE, type Use } from './placed.js'
-import { cseArray, cseBinary, cseCall, dereferenced, needsCse, wholeUnder } from './cse-plan.js'
+import { dereferenced } from '../syntax/idioms.js'
+import { cseArray, cseBinary, cseCall, needsCse, wholeUnder } from './cse-plan.js'
 
 /** A defined name as the walk expands it: its formula, which sees the global names (a sheet's own only as `'S'!name`). */
 export interface NameDef {

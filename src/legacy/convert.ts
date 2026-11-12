@@ -18,6 +18,7 @@ import { canonical, FormulaError, isRefOp, parse, type Ast, type RangeRef } from
 import { inputNameFor } from '../names.js'
 import { object, onlyKeys } from '../input/basic.js'
 import { strict } from '../strict-args.js'
+import { dereferenced } from '../syntax/idioms.js'
 import { PARAMS } from './params.js'
 
 type Where = 'V' | 'R' | 'A'
@@ -87,10 +88,12 @@ function argument(fn: string, i: number, n: Ast, where: Where): [Slot, Where] {
     case 'v':
       return ['v', where]
     case 'w':
-      return ['v', where === 'A' && n.k !== 'ref' ? 'R' : where]
+      // VLOOKUP's column: one value inside SUM (`SUM(VLOOKUP(4,…,@{2,3},FALSE))`), an array inside SUMPRODUCT
+      return ['v', where === 'A' ? (n.k === 'ref' ? 'A' : 'R') : 'V']
     case 'V':
-      // a lookup's key or place is one value even inside SUM: `SUM(XLOOKUP(@{1;2},…))`; IF, CHOOSE, TRANSPOSE keep the array
-      return ['v', LOOKUPS.has(fn) ? 'V' : where === 'A' ? 'R' : where]
+      // a lookup's key or place is one value even inside SUM: `SUM(XLOOKUP(@{1;2},…))`, but `N(IF(…))` there keeps every
+      // value (`SUM(INDEX(B1:B3,N(IF(1,{2;3}))))` is unchanged, `N({2;3})` takes `@`); IF, CHOOSE, TRANSPOSE keep the array
+      return ['v', LOOKUPS.has(fn) && !dereferenced(n) ? 'V' : where === 'A' ? 'R' : where]
     case 'r':
       return ['r', where === 'A' ? 'A' : 'R']
     case 'R':

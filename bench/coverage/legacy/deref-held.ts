@@ -25,5 +25,8 @@ export function buildProbes(): Probe[] {
 /** The text Excel 365 was predicted to show for each case (canonical, without `=`), committed before Excel ran. */
 export const PREDICTED_SHOWN: Readonly<Record<string, string>> = PREDICTED
 
-/** The predictions Excel did not confirm. */
-export const MISSED: readonly string[] = []
+/**
+ * The predictions Excel did not confirm (Excel 16.115 for Mac and 16.0 for Windows alike): `N(IF(…))` in a lookup's
+ * place keeps every value without `@` (#1–#5), and VLOOKUP's column inside SUM takes `@` (#12).
+ */
+export const MISSED: readonly string[] = ['deref#1', 'deref#2', 'deref#3', 'deref#4', 'deref#5', 'deref#12']
