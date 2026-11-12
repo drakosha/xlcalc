@@ -1,0 +1,672 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "en-US",
+  "ui": "en-US (Excel 1033)",
+  "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
+  "system": "en-US (code page 1252)",
+  "dpi": 96,
+  "seconds": 14.9
+ },
+ "cases": [
+  {
+   "id": "row-rows",
+   "about": "ROW(1:2) at G1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "ROW(1:2)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1:G2"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 2
+    }
+   }
+  },
+  {
+   "id": "row-range",
+   "about": "ROW(G1:G3) at G1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "ROW(G1:G3)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1:G3"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!G3": {
+     "t": "n",
+     "v": 3
+    }
+   }
+  },
+  {
+   "id": "column-range",
+   "about": "COLUMN(G1:I1) at G1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "COLUMN(G1:I1)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1:I1"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 7
+    },
+    "S!H1": {
+     "t": "n",
+     "v": 8
+    },
+    "S!I1": {
+     "t": "n",
+     "v": 9
+    }
+   }
+  },
+  {
+   "id": "rows-own",
+   "about": "ROWS(G1:G5)+SEQUENCE(2) at G1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "ROWS(G1:G5)+SEQUENCE(2)"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1:G2"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 6
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 7
+    }
+   }
+  },
+  {
+   "id": "subtotal-offset",
+   "about": "SUBTOTAL(9,OFFSET(B1,{0;1;2},0)) at G5",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G5": {
+        "formula": "SUBTOTAL(9,OFFSET(B1,{0;1;2},0))"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G5:G7"
+    }
+   ],
+   "predicted": {
+    "S!G5": {
+     "t": "n",
+     "v": 30
+    },
+    "S!G6": {
+     "t": "n",
+     "v": 10
+    },
+    "S!G7": {
+     "t": "n",
+     "v": 20
+    }
+   }
+  },
+  {
+   "id": "sum-subtotal-offset",
+   "about": "SUM(SUBTOTAL(9,OFFSET(B1,{0;1;2},0))) at G5",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G5": {
+        "formula": "SUM(SUBTOTAL(9,OFFSET(B1,{0;1;2},0)))"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G5"
+    }
+   ],
+   "predicted": {
+    "S!G5": {
+     "t": "n",
+     "v": 60
+    }
+   }
+  },
+  {
+   "id": "countif-indirect",
+   "about": "COUNTIF(INDIRECT({\"B1:B2\";\"B2:B3\"}),\">15\") at G5",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G5": {
+        "formula": "COUNTIF(INDIRECT({\"B1:B2\";\"B2:B3\"}),\">15\")"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G5:G6"
+    }
+   ],
+   "predicted": {
+    "S!G5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!G6": {
+     "t": "n",
+     "v": 1
+    }
+   }
+  },
+  {
+   "id": "sumif-offset",
+   "about": "SUMIF(OFFSET(B1,{0;1},0,2),\">15\") at G5",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G5": {
+        "formula": "SUMIF(OFFSET(B1,{0;1},0,2),\">15\")"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G5:G6"
+    }
+   ],
+   "predicted": {
+    "S!G5": {
+     "t": "n",
+     "v": 30
+    },
+    "S!G6": {
+     "t": "n",
+     "v": 20
+    }
+   }
+  }
+ ],
+ "answers": {
+  "row-rows": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 2
+    }
+   },
+   "formulas": {
+    "S!G1": "=ROW(1:2)"
+   }
+  },
+  "row-range": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 2
+    },
+    "S!G3": {
+     "t": "n",
+     "v": 3
+    }
+   },
+   "formulas": {
+    "S!G1": "=ROW(G1:G3)"
+   }
+  },
+  "column-range": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 7
+    },
+    "S!H1": {
+     "t": "n",
+     "v": 8
+    },
+    "S!I1": {
+     "t": "n",
+     "v": 9
+    }
+   },
+   "formulas": {
+    "S!G1": "=COLUMN(G1:I1)"
+   }
+  },
+  "rows-own": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 6
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 7
+    }
+   },
+   "formulas": {
+    "S!G1": "=ROWS(G1:G5)+SEQUENCE(2)"
+   }
+  },
+  "subtotal-offset": {
+   "values": {
+    "S!G5": {
+     "t": "n",
+     "v": 30
+    },
+    "S!G6": {
+     "t": "n",
+     "v": 10
+    },
+    "S!G7": {
+     "t": "n",
+     "v": 20
+    }
+   },
+   "formulas": {
+    "S!G5": "=SUBTOTAL(9,OFFSET(B1,{0;1;2},0))"
+   }
+  },
+  "sum-subtotal-offset": {
+   "values": {
+    "S!G5": {
+     "t": "n",
+     "v": 60
+    }
+   },
+   "formulas": {
+    "S!G5": "=SUM(SUBTOTAL(9,OFFSET(B1,{0;1;2},0)))"
+   }
+  },
+  "countif-indirect": {
+   "values": {
+    "S!G5": {
+     "t": "n",
+     "v": 1
+    },
+    "S!G6": {
+     "t": "n",
+     "v": 1
+    }
+   },
+   "formulas": {
+    "S!G5": "=COUNTIF(INDIRECT({\"B1:B2\";\"B2:B3\"}),\">15\")"
+   }
+  },
+  "sumif-offset": {
+   "values": {
+    "S!G5": {
+     "t": "n",
+     "v": 30
+    },
+    "S!G6": {
+     "t": "n",
+     "v": 20
+    }
+   },
+   "formulas": {
+    "S!G5": "=SUMIF(OFFSET(B1,{0;1},0,2),\">15\")"
+   }
+  }
+ }
+}

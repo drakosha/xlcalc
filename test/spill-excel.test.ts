@@ -10,7 +10,7 @@ import { describe, expect, it } from 'vitest'
 import type { RectsAnswer } from '../bench/coverage/case-book.js'
 import type { StoredSpill } from '../bench/coverage/spill.js'
 import type { SpillCase } from '../bench/coverage/spill/cases.js'
-import { computed, differences } from './spill-cases.js'
+import { computed, differences, REFERENCE_ARRAYS } from './spill-cases.js'
 import { compare } from '../bench/coverage/compare.js'
 import type { Val } from '../bench/coverage/formulajs.js'
 import { currentCases } from './stored-cases.js'
@@ -30,19 +30,8 @@ const KNOWN: Readonly<Record<string, string>> = {
   'legacy-shown:params': "an error as NETWORKDAYS.INTL's weekend is #VALUE! in Excel and #NUM! here, XIRR's guess given a range #VALUE! there and lifted here",
   'legacy-index-held-2:names': 'N over a name of an array constant: #VALUE! in the old formula in Excel, the first value here',
   'legacy-index-held-3:names': 'T over a name of an array constant: #VALUE! in the old formula in Excel, the first value here',
+  ...REFERENCE_ARRAYS,
   'legacy-shown:nesting': 'inside SUMPRODUCT Excel does not lift ACCRINT, CUMIPMT, PRICE, XIRR, GROWTH and TREND over an array in a one-value argument; the engine lifts them',
-  'cse-lookup-held-5:subtotal-offset-single': 'an array of references (OFFSET or INDIRECT over an array) into a function that takes a reference: Excel takes each reference, the engine one per position or #VALUE!',
-  'cse-lookup-held-5:subtotal-offset-two': 'an array of references (OFFSET or INDIRECT over an array) into a function that takes a reference: Excel takes each reference, the engine one per position or #VALUE!',
-  'cse-lookup-held-5:subtotal-offset-rows-single': 'an array of references (OFFSET or INDIRECT over an array) into a function that takes a reference: Excel takes each reference, the engine one per position or #VALUE!',
-  'cse-lookup-held-5:sumif-offset-single': 'an array of references (OFFSET or INDIRECT over an array) into a function that takes a reference: Excel takes each reference, the engine one per position or #VALUE!',
-  'cse-lookup-held-5:countif-indirect-single': 'an array of references (OFFSET or INDIRECT over an array) into a function that takes a reference: Excel takes each reference, the engine one per position or #VALUE!',
-  'cse-lookup-held-6:subtotal-offset-rows-two': 'an array of references (OFFSET or INDIRECT over an array) into a function that takes a reference: Excel takes each reference, the engine one per position or #VALUE!',
-  'cse-lookup-held-6:countif-offset-single': 'an array of references (OFFSET or INDIRECT over an array) into a function that takes a reference: Excel takes each reference, the engine one per position or #VALUE!',
-  'cse-lookup-held-6:sumif-indirect-single': 'an array of references (OFFSET or INDIRECT over an array) into a function that takes a reference: Excel takes each reference, the engine one per position or #VALUE!',
-  'own-place-held:subtotal-offset': 'an array of references (OFFSET or INDIRECT over an array) into a function that takes a reference: Excel takes each reference, the engine one per position or #VALUE!',
-  'own-place-held:sum-subtotal-offset': 'an array of references (OFFSET or INDIRECT over an array) into a function that takes a reference: Excel takes each reference, the engine one per position or #VALUE!',
-  'own-place-held:countif-indirect': 'an array of references (OFFSET or INDIRECT over an array) into a function that takes a reference: Excel takes each reference, the engine one per position or #VALUE!',
-  'own-place-held:sumif-offset': 'an array of references (OFFSET or INDIRECT over an array) into a function that takes a reference: Excel takes each reference, the engine one per position or #VALUE!',
 }
 
 for (const set of SETS) {

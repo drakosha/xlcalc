@@ -7,7 +7,7 @@ import { describe, expect, it } from 'vitest'
 import type { StoredSpill } from '../bench/coverage/spill.js'
 import type { SpillCase } from '../bench/coverage/spill/cases.js'
 import { storedSets } from './stored-sets.js'
-import { computed, differences } from './spill-cases.js'
+import { computed, differences, REFERENCE_ARRAYS } from './spill-cases.js'
 import { currentCases, pinnedCases } from './stored-cases.js'
 
 const SETS = storedSets<StoredSpill>('win/spill')
@@ -21,6 +21,7 @@ const VARIES: ReadonlySet<string> = new Set(['base:cross', 'base:cross-rect', 'm
 
 /** `<set>:<case>` → why the engine's answer differs from Excel for Windows's. */
 const WIN_SPILL: Readonly<Record<string, string>> = {
+  ...REFERENCE_ARRAYS,
   'more:volatile-sizes': 'ten sizes drawn in one book: Excel for Windows gives #SPILL! as the Mac does (the sizes change between its passes), the engine draws once and spills',
   'legacy-shown:params': "an error as NETWORKDAYS.INTL's weekend is #VALUE! in Excel and #NUM! here, XIRR's guess given a range #VALUE! there and lifted here, as on the Mac",
   'legacy-shown:nesting': 'inside SUMPRODUCT Excel does not lift ACCRINT, CUMIPMT, PRICE, XIRR, GROWTH and TREND over an array in a one-value argument, the engine lifts them, as on the Mac',
