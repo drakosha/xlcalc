@@ -1,0 +1,1680 @@
+{
+ "meta": {
+  "version": "16.115",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 23.5
+ },
+ "cases": [
+  {
+   "id": "nif-true-single",
+   "about": "SUM(INDEX(B1:B3,N(IF(TRUE,{2;3})))) over G1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "SUM(INDEX(B1:B3,N(IF(TRUE,{2;3}))))",
+        "array": "G1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 30
+    }
+   }
+  },
+  {
+   "id": "nif-row-single",
+   "about": "SUM(INDEX(B1:B3,N(IF(1,ROW(B2:B3))))) over G1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "SUM(INDEX(B1:B3,N(IF(1,ROW(B2:B3)))))",
+        "array": "G1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 30
+    }
+   }
+  },
+  {
+   "id": "max-nif-single",
+   "about": "MAX(INDEX(B1:B3,N(IF(1,{1;3})))) over G1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "MAX(INDEX(B1:B3,N(IF(1,{1;3}))))",
+        "array": "G1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 30
+    }
+   }
+  },
+  {
+   "id": "average-n-offset-single",
+   "about": "AVERAGE(N(OFFSET(B1,{0;1;2},0))) over G1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "AVERAGE(N(OFFSET(B1,{0;1;2},0)))",
+        "array": "G1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 20
+    }
+   }
+  },
+  {
+   "id": "n-offset-two",
+   "about": "SUM(N(OFFSET(B1,{0;1;2},0))) over G1:G2",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "SUM(N(OFFSET(B1,{0;1;2},0)))",
+        "array": "G1:G2"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1:G2"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 60
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 60
+    }
+   }
+  },
+  {
+   "id": "subtotal-offset-rows-two",
+   "about": "SUM(SUBTOTAL(9,OFFSET(B1,ROW(B1:B3)-ROW(B1),0))) over G1:G2",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "SUM(SUBTOTAL(9,OFFSET(B1,ROW(B1:B3)-ROW(B1),0)))",
+        "array": "G1:G2"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1:G2"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 60
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 60
+    }
+   }
+  },
+  {
+   "id": "countif-offset-single",
+   "about": "SUM(COUNTIF(OFFSET(A1,{0;1;2},0),\">1\")) over G1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "SUM(COUNTIF(OFFSET(A1,{0;1;2},0),\">1\"))",
+        "array": "G1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 2
+    }
+   }
+  },
+  {
+   "id": "sumif-indirect-single",
+   "about": "SUM(SUMIF(INDIRECT({\"B1:B2\";\"B2:B3\"}),\">15\")) over G1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "SUM(SUMIF(INDIRECT({\"B1:B2\";\"B2:B3\"}),\">15\"))",
+        "array": "G1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 50
+    }
+   }
+  },
+  {
+   "id": "indirect-concat-single",
+   "about": "SUM(INDIRECT(\"B\"&{1;2})) over G1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "SUM(INDIRECT(\"B\"&{1;2}))",
+        "array": "G1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 30
+    }
+   }
+  },
+  {
+   "id": "n-indirect-concat-single",
+   "about": "SUM(N(INDIRECT(\"B\"&{1;2}))) over G1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "SUM(N(INDIRECT(\"B\"&{1;2})))",
+        "array": "G1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 40
+    }
+   }
+  },
+  {
+   "id": "large-row-indirect-single",
+   "about": "SUM(LARGE(B1:B3,ROW(INDIRECT(\"1:2\")))) over G1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "SUM(LARGE(B1:B3,ROW(INDIRECT(\"1:2\"))))",
+        "array": "G1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 50
+    }
+   }
+  },
+  {
+   "id": "small-if-constant-two",
+   "about": "INDEX(B1:B3,SMALL(IF(A1:A3>1,ROW(A1:A3)),{1;2})) over G1:G2",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "INDEX(B1:B3,SMALL(IF(A1:A3>1,ROW(A1:A3)),{1;2}))",
+        "array": "G1:G2"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1:G2"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 30
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 20
+    }
+   }
+  },
+  {
+   "id": "small-if-iferror-three",
+   "about": "IFERROR(INDEX(B1:B3,SMALL(IF(A1:A3>1,ROW(A1:A3)),{1;2;3})),-1) over G1:G3",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "IFERROR(INDEX(B1:B3,SMALL(IF(A1:A3>1,ROW(A1:A3)),{1;2;3})),-1)",
+        "array": "G1:G3"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1:G3"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 30
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 20
+    },
+    "S!G3": {
+     "t": "n",
+     "v": -1
+    }
+   }
+  },
+  {
+   "id": "small-if-rows-single",
+   "about": "INDEX(B1:B3,SMALL(IF(A1:A3>1,ROW(A1:A3)),ROWS(E$1:E1))) over G1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "INDEX(B1:B3,SMALL(IF(A1:A3>1,ROW(A1:A3)),ROWS(E$1:E1)))",
+        "array": "G1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 30
+    }
+   }
+  },
+  {
+   "id": "index-match-keys-two",
+   "about": "INDEX(B1:B3,MATCH({1;2},A1:A3,0)) over G1:G2",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "INDEX(B1:B3,MATCH({1;2},A1:A3,0))",
+        "array": "G1:G2"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1:G2"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 10
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 20
+    }
+   }
+  },
+  {
+   "id": "index-match-criteria-single",
+   "about": "INDEX(B1:B3,MATCH(1,(A1:A3=2)*(B1:B3>10),0)) over G1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "INDEX(B1:B3,MATCH(1,(A1:A3=2)*(B1:B3>10),0))",
+        "array": "G1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 20
+    }
+   }
+  },
+  {
+   "id": "sum-index-columns-single",
+   "about": "SUM(INDEX(B1:C3,2,{1,2})) over G1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "SUM(INDEX(B1:C3,2,{1,2}))",
+        "array": "G1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 10
+    }
+   }
+  },
+  {
+   "id": "sum-index-row-zero-single",
+   "about": "SUM(INDEX(B1:C3,{1;2},0)) over G1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "SUM(INDEX(B1:C3,{1;2},0))",
+        "array": "G1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 330
+    }
+   }
+  },
+  {
+   "id": "row-own-single",
+   "about": "ROW(G1) over G1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "ROW(G1)",
+        "array": "G1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 1
+    }
+   }
+  },
+  {
+   "id": "rows-own-single",
+   "about": "ROWS(1:2) over G1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "ROWS(1:2)",
+        "array": "G1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 2
+    }
+   }
+  },
+  {
+   "id": "row-own-two",
+   "about": "ROW(1:2) over G1:G2",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "ROW(1:2)",
+        "array": "G1:G2"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1:G2"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 2
+    }
+   }
+  },
+  {
+   "id": "sum-row-own-single",
+   "about": "SUM(ROW(1:3)) over G1",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 3
+       },
+       "A2": {
+        "value": 1
+       },
+       "A3": {
+        "value": 2
+       },
+       "B1": {
+        "value": 30
+       },
+       "B2": {
+        "value": 10
+       },
+       "B3": {
+        "value": 20
+       },
+       "C1": {
+        "value": 300
+       },
+       "C2": {
+        "value": 100
+       },
+       "C3": {
+        "value": 200
+       },
+       "D1": {
+        "value": 1
+       },
+       "D2": {
+        "value": 2
+       },
+       "G1": {
+        "formula": "SUM(ROW(1:3))",
+        "array": "G1"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "S",
+     "range": "G1"
+    }
+   ],
+   "predicted": {
+    "S!G1": {
+     "t": "n",
+     "v": 6
+    }
+   }
+  }
+ ],
+ "answers": {
+  "nif-true-single": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 30
+    }
+   },
+   "formulas": {
+    "S!G1": "=SUM(INDEX(B1:B3,N(IF(TRUE,{2;3}))))"
+   }
+  },
+  "nif-row-single": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 30
+    }
+   },
+   "formulas": {
+    "S!G1": "=SUM(INDEX(B1:B3,N(IF(1,ROW(B2:B3)))))"
+   }
+  },
+  "max-nif-single": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 30
+    }
+   },
+   "formulas": {
+    "S!G1": "=MAX(INDEX(B1:B3,N(IF(1,{1;3}))))"
+   }
+  },
+  "average-n-offset-single": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 20
+    }
+   },
+   "formulas": {
+    "S!G1": "=AVERAGE(N(OFFSET(B1,{0;1;2},0)))"
+   }
+  },
+  "n-offset-two": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 60
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 60
+    }
+   },
+   "formulas": {
+    "S!G1": "=SUM(N(OFFSET(B1,{0;1;2},0)))",
+    "S!G2": "=SUM(N(OFFSET(B1,{0;1;2},0)))"
+   }
+  },
+  "subtotal-offset-rows-two": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 60
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 60
+    }
+   },
+   "formulas": {
+    "S!G1": "=SUM(SUBTOTAL(9,OFFSET(B1,ROW(B1:B3)-ROW(B1),0)))",
+    "S!G2": "=SUM(SUBTOTAL(9,OFFSET(B1,ROW(B1:B3)-ROW(B1),0)))"
+   }
+  },
+  "countif-offset-single": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 2
+    }
+   },
+   "formulas": {
+    "S!G1": "=SUM(COUNTIF(OFFSET(A1,{0;1;2},0),\">1\"))"
+   }
+  },
+  "sumif-indirect-single": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 50
+    }
+   },
+   "formulas": {
+    "S!G1": "=SUM(SUMIF(INDIRECT({\"B1:B2\";\"B2:B3\"}),\">15\"))"
+   }
+  },
+  "indirect-concat-single": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 30
+    }
+   },
+   "formulas": {
+    "S!G1": "=SUM(INDIRECT(\"B\"&{1;2}))"
+   }
+  },
+  "n-indirect-concat-single": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 40
+    }
+   },
+   "formulas": {
+    "S!G1": "=SUM(N(INDIRECT(\"B\"&{1;2})))"
+   }
+  },
+  "large-row-indirect-single": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 50
+    }
+   },
+   "formulas": {
+    "S!G1": "=SUM(LARGE(B1:B3,ROW(INDIRECT(\"1:2\"))))"
+   }
+  },
+  "small-if-constant-two": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 30
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 20
+    }
+   },
+   "formulas": {
+    "S!G1": "=INDEX(B1:B3,SMALL(IF(A1:A3>1,ROW(A1:A3)),{1;2}))",
+    "S!G2": "=INDEX(B1:B3,SMALL(IF(A1:A3>1,ROW(A1:A3)),{1;2}))"
+   }
+  },
+  "small-if-iferror-three": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 30
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 20
+    },
+    "S!G3": {
+     "t": "n",
+     "v": -1
+    }
+   },
+   "formulas": {
+    "S!G1": "=IFERROR(INDEX(B1:B3,SMALL(IF(A1:A3>1,ROW(A1:A3)),{1;2;3})),-1)",
+    "S!G2": "=IFERROR(INDEX(B1:B3,SMALL(IF(A1:A3>1,ROW(A1:A3)),{1;2;3})),-1)",
+    "S!G3": "=IFERROR(INDEX(B1:B3,SMALL(IF(A1:A3>1,ROW(A1:A3)),{1;2;3})),-1)"
+   }
+  },
+  "small-if-rows-single": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 30
+    }
+   },
+   "formulas": {
+    "S!G1": "=INDEX(B1:B3,SMALL(IF(A1:A3>1,ROW(A1:A3)),ROWS(E$1:E1)))"
+   }
+  },
+  "index-match-keys-two": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 10
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 20
+    }
+   },
+   "formulas": {
+    "S!G1": "=INDEX(B1:B3,MATCH({1;2},A1:A3,0))",
+    "S!G2": "=INDEX(B1:B3,MATCH({1;2},A1:A3,0))"
+   }
+  },
+  "index-match-criteria-single": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 20
+    }
+   },
+   "formulas": {
+    "S!G1": "=INDEX(B1:B3,MATCH(1,(A1:A3=2)*(B1:B3>10),0))"
+   }
+  },
+  "sum-index-columns-single": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 10
+    }
+   },
+   "formulas": {
+    "S!G1": "=SUM(INDEX(B1:C3,2,{1,2}))"
+   }
+  },
+  "sum-index-row-zero-single": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 330
+    }
+   },
+   "formulas": {
+    "S!G1": "=SUM(INDEX(B1:C3,{1;2},0))"
+   }
+  },
+  "row-own-single": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 1
+    }
+   },
+   "formulas": {
+    "S!G1": "=ROW(G1)"
+   }
+  },
+  "rows-own-single": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 2
+    }
+   },
+   "formulas": {
+    "S!G1": "=ROWS(1:2)"
+   }
+  },
+  "row-own-two": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 1
+    },
+    "S!G2": {
+     "t": "n",
+     "v": 2
+    }
+   },
+   "formulas": {
+    "S!G1": "=ROW(1:2)",
+    "S!G2": "=ROW(1:2)"
+   }
+  },
+  "sum-row-own-single": {
+   "values": {
+    "S!G1": {
+     "t": "n",
+     "v": 6
+    }
+   },
+   "formulas": {
+    "S!G1": "=SUM(ROW(1:3))"
+   }
+  }
+ }
+}

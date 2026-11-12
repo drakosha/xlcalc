@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+Fixed:
+
+- 0.89.1 broke the dereferencing idioms of legacy array formulas: `SUM(INDEX(B1:B3,N(IF(1,{2;3}))))`, `SUM(N(OFFSET(B1,{1;2},0)))` and `SUM(N(INDIRECT({"B2";"B3"})))` added one value instead of every value. A selector written as `N(IF(…))` or `T(IF(…))`, and OFFSET or INDIRECT right under N or T, are taken whole again, as Excel takes them. Checked against Excel for Mac on 12 formulas.
+- A legacy array formula whose ROW, ROWS or COLUMN reads its own cells (`{=ROW(G1)}` in G1, `INDEX(…,SMALL(IF(…),ROW(1:2)))` over G1:G2), and a dynamic array spilling over the rows or columns its ROW or COLUMN reads (`=ROW(1:2)` in G1), were taken for circular references and showed 0. These functions read only where the cells are, so the formulas now calculate, as in Excel.
+
 ## 0.89.1 (2026-11-12)
 
 Fixed:

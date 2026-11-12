@@ -142,6 +142,29 @@ describe.each(['closures', 'eval'] as const)('CSE lookup evaluation (%s)', (exec
     expect(values({ formula, array }).slice(0, expected.length)).toEqual(expected)
   })
 
+  // test/excel/spill/cse-lookup-held-4.json, -6.json: the dereferencing idioms add every value, as in 0.89.0 and before
+  it.each([
+    ['SUM(INDEX(B1:B3,N(IF(1,{2;3}))))', 'G1', [30]],
+    ['SUM(INDEX(B1:B3,N(IF(1,{2;3}))))', 'G1:G2', [30, 30]],
+    ['SUM(INDEX(B1:B3,N(IF(TRUE,{2;3}))))', 'G1', [30]],
+    ['SUM(XLOOKUP(N(IF(1,{1;2})),A1:A3,B1:B3))', 'G1', [30]],
+    ['SUM(N(OFFSET(B1,{1;2},0)))', 'G1:G2', [30, 30]],
+    ['SUM(N(INDIRECT({"B2";"B3"})))', 'G1', [30]],
+    ['SUM(INDEX(B1:B3,IF(1,{2;3})))', 'G1', [10]],
+    ['SUM(INDEX(B1:B3,N({2;3})))', 'G1', [10]],
+  ] as const)('%s over %s keeps the old dereferencing idiom', (formula, array, expected) => {
+    expect(values({ formula, array }).slice(0, expected.length)).toEqual(expected)
+  })
+
+  it.each([
+    ['ROW(G1)', 'G1', [1]],
+    ['ROWS(1:2)', 'G1', [2]],
+    ['ROW(1:2)', 'G1:G2', [1, 2]],
+    ['INDEX(B1:B3,SMALL(IF(A1:A3>1,ROW(A1:A3)),ROW(1:2)))', 'G1:G2', [30, 20]],
+  ] as const)('%s over %s reads its own cells for their place alone, no circular reference', (formula, array, expected) => {
+    expect(values({ formula, array }).slice(0, expected.length)).toEqual(expected)
+  })
+
   it('pads positions past the key range with NA', () => {
     expect(values({ formula: 'SUM(XLOOKUP(D1:D2,A1:A3,B1:B3))', array: 'G1:G3' })).toEqual([10, 20, { error: 'NA' }])
   })

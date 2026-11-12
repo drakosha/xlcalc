@@ -31,6 +31,18 @@ const KNOWN: Readonly<Record<string, string>> = {
   'legacy-index-held-2:names': 'N over a name of an array constant: #VALUE! in the old formula in Excel, the first value here',
   'legacy-index-held-3:names': 'T over a name of an array constant: #VALUE! in the old formula in Excel, the first value here',
   'legacy-shown:nesting': 'inside SUMPRODUCT Excel does not lift ACCRINT, CUMIPMT, PRICE, XIRR, GROWTH and TREND over an array in a one-value argument; the engine lifts them',
+  'cse-lookup-held-5:subtotal-offset-single': 'an array of references (OFFSET or INDIRECT over an array) into a function that takes a reference: Excel takes each reference, the engine one per position or #VALUE!',
+  'cse-lookup-held-5:subtotal-offset-two': 'an array of references (OFFSET or INDIRECT over an array) into a function that takes a reference: Excel takes each reference, the engine one per position or #VALUE!',
+  'cse-lookup-held-5:subtotal-offset-rows-single': 'an array of references (OFFSET or INDIRECT over an array) into a function that takes a reference: Excel takes each reference, the engine one per position or #VALUE!',
+  'cse-lookup-held-5:sumif-offset-single': 'an array of references (OFFSET or INDIRECT over an array) into a function that takes a reference: Excel takes each reference, the engine one per position or #VALUE!',
+  'cse-lookup-held-5:countif-indirect-single': 'an array of references (OFFSET or INDIRECT over an array) into a function that takes a reference: Excel takes each reference, the engine one per position or #VALUE!',
+  'cse-lookup-held-6:subtotal-offset-rows-two': 'an array of references (OFFSET or INDIRECT over an array) into a function that takes a reference: Excel takes each reference, the engine one per position or #VALUE!',
+  'cse-lookup-held-6:countif-offset-single': 'an array of references (OFFSET or INDIRECT over an array) into a function that takes a reference: Excel takes each reference, the engine one per position or #VALUE!',
+  'cse-lookup-held-6:sumif-indirect-single': 'an array of references (OFFSET or INDIRECT over an array) into a function that takes a reference: Excel takes each reference, the engine one per position or #VALUE!',
+  'own-place-held:subtotal-offset': 'an array of references (OFFSET or INDIRECT over an array) into a function that takes a reference: Excel takes each reference, the engine one per position or #VALUE!',
+  'own-place-held:sum-subtotal-offset': 'an array of references (OFFSET or INDIRECT over an array) into a function that takes a reference: Excel takes each reference, the engine one per position or #VALUE!',
+  'own-place-held:countif-indirect': 'an array of references (OFFSET or INDIRECT over an array) into a function that takes a reference: Excel takes each reference, the engine one per position or #VALUE!',
+  'own-place-held:sumif-offset': 'an array of references (OFFSET or INDIRECT over an array) into a function that takes a reference: Excel takes each reference, the engine one per position or #VALUE!',
 }
 
 for (const set of SETS) {
@@ -61,7 +73,7 @@ describe('held-out spill cases: the engine gives the answer predicted before Exc
   }
 })
 
-for (const name of ['error-areas-held', 'cse-lookup-held', 'cse-lookup-held-2', 'cse-lookup-held-3']) {
+for (const name of ['error-areas-held', 'cse-lookup-held', 'cse-lookup-held-2', 'cse-lookup-held-3', 'cse-lookup-held-4', 'cse-lookup-held-5', 'cse-lookup-held-6', 'own-place-held']) {
   describe(`${name}: the predictions Excel did not confirm are the ones in MISSED`, async () => {
     const { buildSpillCases, MISSED } = (await import(`../bench/coverage/spill/${name}.ts`)) as { buildSpillCases: () => SpillCase[]; MISSED: readonly string[] }
     const set = SETS.find((s) => s.name === name)

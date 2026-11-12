@@ -19,7 +19,7 @@ import type { ErrorCode } from '../contract.js'
 import { canonical, isRefOp, type Ast, type BinOp, type RangeRef, type RefOp } from '../syntax.js'
 import { E, Rng, type V } from '../values.js'
 import { placedOnly, placing, QUIET, QUIET_RANGE, type Use } from './placed.js'
-import { cseArray, cseBinary, cseCall, needsCse } from './cse-plan.js'
+import { cseArray, cseBinary, cseCall, dereferenced, needsCse, wholeUnder } from './cse-plan.js'
 
 /** A defined name as the walk expands it: its formula, which sees the global names (a sheet's own only as `'S'!name`). */
 export interface NameDef {
@@ -608,8 +608,8 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
           const args = n.args.map((a, i) => {
             if (a.k === 'missing') return omitted(spec.omitted(i))
             if (i === 2 && past) return past
-            const code = go(a, kept || spec.range(i) || a.k === 'ref3d', full || (!!frame && cseArray(n.name, spec, i, multiple)))
-            if (selected && spec.mode(i) === 'lift' && many(a)) {
+            const code = go(a, kept || spec.range(i) || a.k === 'ref3d', full || (!!frame && (cseArray(n.name, spec, i, multiple) || wholeUnder(n.name, a))))
+            if (selected && spec.mode(i) === 'lift' && many(a) && !dereferenced(a)) {
               cursorReads++
               return frame!.pick(code)
             }
@@ -624,7 +624,7 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
             const here = ctx.here
             if (spec.cell) args.unshift(b.value(s), here ? b.computed!(() => here.r) : b.value(r), here ? b.computed!(() => here.c) : b.value(c))
             // a reference found for its place alone is not learnt by the graph: the function's quiet form
-            code = b.call(spec.dynamic && placeOnly?.get(n) === 'place' ? n.name + QUIET : n.name, args, !selected && n.args.some((a, i) => many(a) && spec.mode(i) !== 'whole'))
+            code = b.call(spec.dynamic && placeOnly?.get(n) === 'place' ? n.name + QUIET : n.name, args, selected ? n.args.some((a, i) => spec.mode(i) === 'lift' && many(a) && dereferenced(a)) : n.args.some((a, i) => many(a) && spec.mode(i) !== 'whole'))
           }
           // a reference answered where one value goes is read here; a range position takes it as a reference
           return spec.refs ? value(code, n, rangeOk) : code

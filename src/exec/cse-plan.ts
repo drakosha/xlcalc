@@ -8,6 +8,15 @@ import type { Ast, BinOp } from '../syntax.js'
 const POSITIONAL = new Set(['XLOOKUP', 'INDEX', 'OFFSET', 'INDIRECT'])
 export const cseCall = (name: string) => POSITIONAL.has(name)
 
+const inner = (n: Ast): Ast => (n.k === 'paren' ? inner(n.a) : n)
+const call = (n: Ast, ...names: string[]) => { const x = inner(n); return x.k === 'fn' && names.includes(x.name) ? x : undefined }
+
+/** `N(IF(…))` or `T(IF(…))` as a selector: the old idiom that hands the lookup every value at once (measured). */
+export const dereferenced = (n: Ast) => { const x = call(n, 'N', 'T'); return x !== undefined && x.args.length === 1 && call(x.args[0], 'IF') !== undefined }
+
+/** OFFSET or INDIRECT right under N or T: Excel takes all their references there, not one per position (measured). */
+export const wholeUnder = (name: string, arg: Ast) => (name === 'N' || name === 'T') && call(arg, 'OFFSET', 'INDIRECT') !== undefined
+
 /** Whole arguments Excel evaluates as arrays over several CSE cells: SUMPRODUCT, MODE and paired arrays (SUMX2PY2). */
 const WHOLE = new Set(['SUMPRODUCT', 'MODE', 'MODE.SNGL'])
 
@@ -32,8 +41,8 @@ export function needsCse(ast: Ast, shape: Map<Ast, Shape>, name: NameRef, scope:
     switch (n.k) {
       case 'fn': {
         const spec = FUNCTIONS[n.name]
-        if (!full && spec && cseCall(n.name) && n.args.some((a, i) => spec.mode(i) === 'lift' && shape.get(a))) return true
-        return n.args.some((a, i) => go(a, full || cseArray(n.name, spec, i, multiple), scope))
+        if (!full && spec && cseCall(n.name) && n.args.some((a, i) => spec.mode(i) === 'lift' && shape.get(a) && !dereferenced(a))) return true
+        return n.args.some((a, i) => go(a, full || cseArray(n.name, spec, i, multiple) || wholeUnder(n.name, a), scope))
       }
       case 'bin': {
         const array = full || cseBinary(n.op, multiple)
