@@ -1,0 +1,274 @@
+{
+ "meta": {
+  "version": "16.115",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 1.7
+ },
+ "cases": [
+  {
+   "id": "manual",
+   "about": "rows 3 and 5 hidden by hand",
+   "book": {
+    "sheets": [
+     {
+      "name": "S",
+      "cells": {
+       "A1": {
+        "value": 1
+       },
+       "A2": {
+        "value": 2
+       },
+       "A3": {
+        "value": 4
+       },
+       "A4": {
+        "value": 8
+       },
+       "A5": {
+        "value": 16
+       },
+       "A6": {
+        "value": 32
+       }
+      }
+     },
+     {
+      "name": "F",
+      "cells": {
+       "A1": {
+        "formula": "SUM(SUBTOTAL(109,OFFSET(S!A1,{0;1;2;3;4;5},0)))"
+       },
+       "A2": {
+        "formula": "SUM(SUBTOTAL(9,OFFSET(S!A1,{0;1;2;3;4;5},0)))"
+       },
+       "A3": {
+        "formula": "SUM(SUBTOTAL(103,OFFSET(S!A1,{0;1;2;3;4;5},0)))"
+       },
+       "A4": {
+        "formula": "SUM(SUBTOTAL(3,OFFSET(S!A1,{0;1;2;3;4;5},0)))"
+       },
+       "A5": {
+        "formula": "SUM(SUBTOTAL(101,OFFSET(S!A1,{0;2;4},0,2)))"
+       },
+       "A6": {
+        "formula": "MAX(SUBTOTAL(104,OFFSET(S!A1,{0;2;4},0,2)))"
+       },
+       "A7": {
+        "formula": "SUM(SUBTOTAL(102,OFFSET(S!A1,{0;2;4},0,2)))"
+       },
+       "A8": {
+        "formula": "SUMPRODUCT(SUBTOTAL(103,OFFSET(S!A1,{0;1;2;3;4;5},0)),S!A1:A6)"
+       },
+       "A9": {
+        "formula": "SUM(SUBTOTAL(105,OFFSET(S!A1,{0;2;4},0,2)))"
+       },
+       "A10": {
+        "formula": "SUM(SUBTOTAL(106,OFFSET(S!A1,{0;2;4},0,2)))"
+       },
+       "A11": {
+        "formula": "SUM(SUBTOTAL(107,OFFSET(S!A1,{0;2;4},0,2)))"
+       },
+       "A12": {
+        "formula": "SUM(SUBTOTAL(109,OFFSET(S!A1,ROW(S!A1:A6)-1,0)))"
+       },
+       "A13": {
+        "formula": "SUM(SUBTOTAL(110,OFFSET(S!A1,{0;2;4},0,2)))"
+       },
+       "A14": {
+        "formula": "SUM(SUBTOTAL(108,OFFSET(S!A1,{0;2;4},0,2)))"
+       },
+       "A15": {
+        "formula": "SUM(SUBTOTAL(9,INDIRECT({\"S!A1:A3\";\"S!A4:A6\"})))"
+       },
+       "A16": {
+        "formula": "SUM(SUBTOTAL(109,INDIRECT({\"S!A1:A3\";\"S!A4:A6\"})))"
+       }
+      }
+     }
+    ]
+   },
+   "read": [
+    {
+     "sheet": "F",
+     "range": "A1:A16"
+    }
+   ],
+   "file": {
+    "sheets": {
+     "S": {
+      "hiddenRows": [
+       "3",
+       "5"
+      ]
+     }
+    }
+   },
+   "predicted": [
+    {
+     "F!A1": {
+      "t": "n",
+      "v": 43
+     },
+     "F!A2": {
+      "t": "n",
+      "v": 63
+     },
+     "F!A3": {
+      "t": "n",
+      "v": 4
+     },
+     "F!A4": {
+      "t": "n",
+      "v": 6
+     },
+     "F!A5": {
+      "t": "n",
+      "v": 41.5
+     },
+     "F!A6": {
+      "t": "n",
+      "v": 32
+     },
+     "F!A7": {
+      "t": "n",
+      "v": 4
+     },
+     "F!A8": {
+      "t": "n",
+      "v": 43
+     },
+     "F!A9": {
+      "t": "n",
+      "v": 41
+     },
+     "F!A10": {
+      "t": "n",
+      "v": 42
+     },
+     "F!A11": {
+      "t": "e",
+      "v": "DIV0"
+     },
+     "F!A12": {
+      "t": "n",
+      "v": 43
+     },
+     "F!A13": {
+      "t": "n",
+      "v": 0.25
+     },
+     "F!A14": {
+      "t": "n",
+      "v": 0.5
+     },
+     "F!A15": {
+      "t": "n",
+      "v": 63
+     },
+     "F!A16": {
+      "t": "n",
+      "v": 43
+     }
+    }
+   ]
+  }
+ ],
+ "answers": {
+  "manual": {
+   "settings": {
+    "iteration": false,
+    "count": 100,
+    "delta": 0.001
+   },
+   "reads": [
+    {
+     "values": {
+      "F!A1": {
+       "t": "n",
+       "v": 43
+      },
+      "F!A2": {
+       "t": "n",
+       "v": 63
+      },
+      "F!A3": {
+       "t": "n",
+       "v": 4
+      },
+      "F!A4": {
+       "t": "n",
+       "v": 6
+      },
+      "F!A5": {
+       "t": "n",
+       "v": 41.5
+      },
+      "F!A6": {
+       "t": "n",
+       "v": 32
+      },
+      "F!A7": {
+       "t": "n",
+       "v": 4
+      },
+      "F!A8": {
+       "t": "n",
+       "v": 43
+      },
+      "F!A9": {
+       "t": "n",
+       "v": 41
+      },
+      "F!A10": {
+       "t": "n",
+       "v": 42
+      },
+      "F!A11": {
+       "t": "e",
+       "v": "DIV0"
+      },
+      "F!A12": {
+       "t": "n",
+       "v": 43
+      },
+      "F!A13": {
+       "t": "e",
+       "v": "DIV0"
+      },
+      "F!A14": {
+       "t": "n",
+       "v": 0.5
+      },
+      "F!A15": {
+       "t": "n",
+       "v": 63
+      },
+      "F!A16": {
+       "t": "n",
+       "v": 43
+      }
+     },
+     "formulas": {
+      "F!A1": "=SUM(SUBTOTAL(109,OFFSET(S!A1,{0;1;2;3;4;5},0)))",
+      "F!A2": "=SUM(SUBTOTAL(9,OFFSET(S!A1,{0;1;2;3;4;5},0)))",
+      "F!A3": "=SUM(SUBTOTAL(103,OFFSET(S!A1,{0;1;2;3;4;5},0)))",
+      "F!A4": "=SUM(SUBTOTAL(3,OFFSET(S!A1,{0;1;2;3;4;5},0)))",
+      "F!A5": "=SUM(SUBTOTAL(101,OFFSET(S!A1,{0;2;4},0,2)))",
+      "F!A6": "=MAX(SUBTOTAL(104,OFFSET(S!A1,{0;2;4},0,2)))",
+      "F!A7": "=SUM(SUBTOTAL(102,OFFSET(S!A1,{0;2;4},0,2)))",
+      "F!A8": "=SUMPRODUCT(SUBTOTAL(103,OFFSET(S!A1,{0;1;2;3;4;5},0)),S!A1:A6)",
+      "F!A9": "=SUM(SUBTOTAL(105,OFFSET(S!A1,{0;2;4},0,2)))",
+      "F!A10": "=SUM(SUBTOTAL(106,OFFSET(S!A1,{0;2;4},0,2)))",
+      "F!A11": "=SUM(SUBTOTAL(107,OFFSET(S!A1,{0;2;4},0,2)))",
+      "F!A12": "=SUM(SUBTOTAL(109,OFFSET(S!A1,ROW(S!A1:A6)-1,0)))",
+      "F!A13": "=SUM(SUBTOTAL(110,OFFSET(S!A1,{0;2;4},0,2)))",
+      "F!A14": "=SUM(SUBTOTAL(108,OFFSET(S!A1,{0;2;4},0,2)))",
+      "F!A15": "=SUM(SUBTOTAL(9,INDIRECT({\"S!A1:A3\";\"S!A4:A6\"})))",
+      "F!A16": "=SUM(SUBTOTAL(109,INDIRECT({\"S!A1:A3\";\"S!A4:A6\"})))"
+     }
+    }
+   ]
+  }
+ }
+}

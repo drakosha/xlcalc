@@ -35,6 +35,7 @@ const missed = (set: string, ids: string[], cells: string[], why: string) => Obj
 /** Predictions of held-out cases that Excel answered otherwise: `<set>:<case>` → cells, each the reason of the miss. */
 const MISSED: Readonly<Record<string, Readonly<Record<string, string>>>> = {
   'date1904-held:held': { 'F!A24': 'EDATE of date text typed in the formula: Excel takes the 1904 serial as a 1900 one (the set date1904-text measures it)' },
+  'ref-arrays-hidden-held:manual': { 'F!A13': 'SUBTOTAL 110 taken for VAR.P: it is VAR, #DIV/0! over the one visible cell of a pair' },
   'iterate-held:text': Object.fromEntries(['S!A1', 'S!B1'].map((k) => [k, 'a change of text into other text does not count to go on iterating (the set iterate measures it)'])),
   ...missed('spill-cycles-held', ['wait-file', 'wait-typed-B1-A2-C1-C2'], ['S!B1', 'S!C1', 'S!A2', 'S!B2', 'S!C2'], 'the engine threw "spilled arrays did not settle" before an array closing a cycle through its spill gave way (x-fuzz-modes-6)'),
   ...missed('spill-cycles-held-2', ['unique-typed', 'unique-typed-20', 'unique-found-typed'], ['S!B3', 'S!A5'], ONE),
