@@ -88,9 +88,10 @@ function keyLine(cond: SortCondition, area: Rect, byColumns: boolean, path: stri
 
 /**
  * Why Excel refuses to sort `area` of sheet `s`, or null: a merged area it meets, a legacy array formula it meets other
- * than whole in one of its lines, a table it meets without lying in the table's data.
+ * than whole in one of its lines, a spilled array of several cells it meets at all, a table it meets without lying in the
+ * table's data.
  */
-function sortRefusal(book: BookInput, s: number, area: Rect, byColumns: boolean): Refused | null {
+function sortRefusal(book: BookInput, state: EngineState, s: number, area: Rect, byColumns: boolean): Refused | null {
   const sheet = book.sheets[s]
   const no = (code: Refused['code'], message: Parameters<typeof sayPivot>[1]): Refused => ({ ok: false, code, message: sayPivot(book.locale, message) })
   const merged = (sheet.merges ?? []).find((m) => meets(parseMerge(m)!, area))
@@ -99,6 +100,10 @@ function sortRefusal(book: BookInput, s: number, area: Rect, byColumns: boolean)
     const oneLine = byColumns ? x.c1 === x.c2 : x.r1 === x.r2
     if (meets(x, area) && (!contains(area, x) || !oneLine)) return no('array', { key: 'arrayPart', sheet: sheet.name, cell: addr, area: rectText(x) })
   }
+  // Excel refuses a spilled array whole too (`SEQUENCE(3)` sorted over its cells); measured for one down a column only,
+  // so an array in one line refuses as well, where a legacy one sorts with its line
+  for (const x of state.spills.on.values())
+    if (x.s === s && (x.r1 !== x.r2 || x.c1 !== x.c2) && meets(x, area)) return no('array', { key: 'arrayPart', sheet: sheet.name, cell: formatAddress(x.r1, x.c1), area: rectText(x) })
   for (const t of tablesOf(book).list) {
     if (t.s !== s || !meets(t, area)) continue
     const { first, last } = rowsOf(t)
@@ -119,7 +124,7 @@ export function sortedBook(book: BookInput, state: EngineState, s: number, area:
   const shown: number[] = []
   for (let k = lo; k <= hi; k++) if (!hidden(k)) shown.push(k)
   if (!conds.length) return null
-  const refused = sortRefusal(book, s, area, byColumns)
+  const refused = sortRefusal(book, state, s, area, byColumns)
   if (refused) return refused
   if (shown.length < 2) return null
   const rules = keepRules(state)

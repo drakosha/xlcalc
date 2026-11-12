@@ -95,6 +95,27 @@ describe('sortRange', () => {
     expect(editStructure(table, { op: 'sortRange', sheet: 'Data', sort })).toMatchObject({ ok: false, code: 'table', message: 'the range cannot be sorted over part of the table T' })
     expect(() => editStructure(book(), { op: 'sortRange', sheet: 'Data', sort: { range: 'A2:C7', conditions: [{ range: 'E2:E7' }] } })).toThrow(/outside the sorted range/)
   })
+
+  it('refuses a range that meets a spilled array, as Excel does, and leaves the cells; a formula of one value sorts', () => {
+    const spill: BookInput = { sheets: [{ name: 'S', cells: { G1: { formula: 'SEQUENCE(3,,3,-1)' }, H1: { value: 1 }, H2: { value: 2 }, H3: { value: 3 }, J1: { formula: 'SEQUENCE(1,2)' } } }] }
+    // the condition is the range's first column
+    const first = (range: string) => {
+      const [a, b] = range.split(':')
+      return `${a}:${a.replace(/\d/g, '')}${b.replace(/[A-Z]/g, '')}`
+    }
+    for (const range of ['G1:G3', 'G1:G5', 'G2:G3', 'G1:H3', 'J1:K1'])
+      expect(editStructure(spill, { op: 'sortRange', sheet: 'S', sort: { range, conditions: [{ range: first(range) }] } }), range).toMatchObject({ ok: false, code: 'array' })
+    const s = createSession(spill)
+    try {
+      expect(s.editStructure({ op: 'sortRange', sheet: 'S', sort: { range: 'G1:G3', conditions: [{ range: 'G1:G3' }] } })).toMatchObject({ ok: false, code: 'array' })
+      expect(s.getBook().sheets[0].cells.G1).toEqual({ formula: 'SEQUENCE(3,,3,-1)' })
+      expect(s.getCells('S', 'G1:G3').G3.value).toBe(1)
+    } finally {
+      s.close()
+    }
+    const one: BookInput = { sheets: [{ name: 'S', cells: { G1: { formula: 'H1*2' }, G2: { value: 1 }, H1: { value: 5 } } }] }
+    expect(editStructure(one, { op: 'sortRange', sheet: 'S', sort: { range: 'G1:G2', conditions: [{ range: 'G1:G2' }] } })).toMatchObject({ ok: true })
+  })
 })
 
 describe('applyFilter with a sort', () => {
