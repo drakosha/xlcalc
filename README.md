@@ -57,15 +57,15 @@ How each rule was checked: [Development](docs/development.md#how-the-rules-were-
 
 ESM with TypeScript types, no dependencies. From CommonJS use `await import('xlcalc')`, or `require()` on Node 20.19+ and 22.12+.
 
-A bundle includes only the entry points it imports. Sizes are for the browser, bundled with esbuild and minified (11.11.2026, 0.89.0 for the main entry points and xlsx; the worker's as of 0.71.0), gzipped in brackets; `test/bundle-size.test.ts` keeps `compute` under 405 KB.
+A bundle includes only the entry points it imports. Sizes are for the browser, bundled with esbuild and minified (12.11.2026, 0.89.1 for the main entry points and xlsx; the worker's as of 0.71.0), gzipped in brackets; `test/bundle-size.test.ts` keeps `compute` under 405 KB.
 
 | import | for | size |
 |---|---|---:|
-| `compute` from `xlcalc` | calculating a workbook | 401 KB (154) |
-| `createSession` from `xlcalc` | a session: edits, structure operations, undo, AutoFit, conditional formats, data validation | 712 KB (269) |
+| `compute` from `xlcalc` | calculating a workbook | 404 KB (155) |
+| `createSession` from `xlcalc` | a session: edits, structure operations, undo, AutoFit, conditional formats, data validation | 716 KB (270) |
 | `liveBook` from `xlcalc` | a session's cells as objects: `cells.A1.value = 100`, listeners ([Live objects](docs/live-objects.md)) | |
-| all of `xlcalc` | also `createInlineCalc`, `registerLocale`, `registerRegex`, `functionSignature` and `FUNCTION_CATEGORIES` for tooltips | 799 KB (298) |
-| `xlcalc/core` | the same API without five groups of rarely used functions, which `registerFunctions` loads from `xlcalc/functions` ([Groups of functions](docs/function-groups.md)) | `compute` 330 KB (125), all 724 KB (268) |
+| all of `xlcalc` | also `createInlineCalc`, `registerLocale`, `registerRegex`, `functionSignature` and `FUNCTION_CATEGORIES` for tooltips | 803 KB (300) |
+| `xlcalc/core` | the same API without five groups of rarely used functions, which `registerFunctions` loads from `xlcalc/functions` ([Groups of functions](docs/function-groups.md)) | `compute` 333 KB (126), all 728 KB (269) |
 | `xlcalc/functions` | the groups: `engineering`, `finance`, `lambda`, `statistics`, `xml`, `allFunctions` | 102 KB (41) |
 | `xlcalc/xlsx` | `readXlsx`, `writeXlsx`, `fromLegacy` | 345 KB (129) |
 | `xlcalc/xlsx/keep` | `openKept`, `writeKept`, `inspectKept`: a workbook written over the file it was read from, keeping its charts, pictures and everything else the workbook does not hold ([Writing over the original file](docs/xlsx-keep.md)) | 438 KB (163) |
