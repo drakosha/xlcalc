@@ -27,5 +27,8 @@ export function buildProbes(): Probe[] {
 /** The text Excel 365 was predicted to show for each case (canonical, without `=`), committed before Excel ran. */
 export const PREDICTED_SHOWN: Readonly<Record<string, string>> = PREDICTED
 
-/** The predictions Excel did not confirm. */
-export const MISSED: readonly string[] = []
+/**
+ * The predictions Excel did not confirm (Excel 16.0 for Windows): ROW takes `@` inside SUM too, FORMULATEXT and ISFORMULA
+ * of one cell take none before them, AGGREGATE's and INDEX's array of references takes `@` as SUBTOTAL's does.
+ */
+export const MISSED: readonly string[] = ['refs2#5', 'refs2#10', 'refs2#11', 'refs2#16', 'refs2#17']

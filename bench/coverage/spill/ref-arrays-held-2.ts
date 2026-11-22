@@ -31,7 +31,16 @@ const cse = (id: string, formula: string, area: string): SpillCase =>
   one(id, `${formula} over ${area}`, { ...DATA, ...MORE, [area.split(':')[0]]: arr(formula, area) } as Record<string, CellSpec>, [area], { predicted: PREDICTED[id] })
 
 /** The cases whose prediction Excel answered otherwise. */
-export const MISSED: readonly string[] = []
+export const MISSED: readonly string[] = [
+  'aggregate-9',
+  'aggregate-4-row',
+  'aggregate-3-indirect',
+  'aggregate-two-arrays',
+  'aggregate-14-array-form',
+  'sum-aggregate',
+  'index-values',
+  'isref',
+]
 
 export function buildSpillCases(): SpillCase[] {
   return [
