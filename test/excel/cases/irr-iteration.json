@@ -1,0 +1,182 @@
+{
+ "meta": {
+  "version": "16.115",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 1.749,
+  "dynamic": true
+ },
+ "cases": [
+  {
+   "id": "IRR#1",
+   "group": "IRR",
+   "fn": "IRR",
+   "formula": "IRR(F!A1:A61)*12"
+  },
+  {
+   "id": "IRR#2",
+   "group": "IRR",
+   "fn": "IRR",
+   "formula": "IRR(F!A1:A61,0.1)"
+  },
+  {
+   "id": "IRR#3",
+   "group": "IRR",
+   "fn": "IRR",
+   "formula": "IRR(F!A1:A61,-0.9)"
+  },
+  {
+   "id": "IRR#4",
+   "group": "IRR",
+   "fn": "IRR",
+   "formula": "IRR(F!A1:A61,100)"
+  },
+  {
+   "id": "IRR#5",
+   "group": "IRR",
+   "fn": "IRR",
+   "formula": "IRR(F!B1:B61)"
+  },
+  {
+   "id": "IRR#6",
+   "group": "IRR",
+   "fn": "IRR",
+   "formula": "IRR(F!C1:C601)"
+  },
+  {
+   "id": "IRR#7",
+   "group": "IRR",
+   "fn": "IRR",
+   "formula": "IRR(F!C1:C601,0.05)"
+  },
+  {
+   "id": "IRR#8",
+   "group": "IRR",
+   "fn": "IRR",
+   "formula": "IRR(F!C1:C601,5)"
+  },
+  {
+   "id": "IRR#9",
+   "group": "IRR",
+   "fn": "IRR",
+   "formula": "IRR({-100,320,-298,84})"
+  },
+  {
+   "id": "IRR#10",
+   "group": "IRR",
+   "fn": "IRR",
+   "formula": "IRR({-100,320,-298,84},0.2)"
+  },
+  {
+   "id": "IRR#11",
+   "group": "IRR",
+   "fn": "IRR",
+   "formula": "IRR({-100,320,-298,84},-0.5)"
+  },
+  {
+   "id": "IRR#12",
+   "group": "IRR",
+   "fn": "IRR",
+   "formula": "IRR({-1,2.0001,-1},0)"
+  },
+  {
+   "id": "IRR#13",
+   "group": "IRR",
+   "fn": "IRR",
+   "formula": "IRR({-1,2.0001,-1},0.01)"
+  },
+  {
+   "id": "IRR#14",
+   "group": "IRR",
+   "fn": "IRR",
+   "formula": "IRR({-100,200,-100},0)"
+  },
+  {
+   "id": "IRR#15",
+   "group": "IRR",
+   "fn": "IRR",
+   "formula": "IRR({-100,199,-100})"
+  },
+  {
+   "id": "IRR#16",
+   "group": "IRR",
+   "fn": "IRR",
+   "formula": "IRR({0,0,0,-100,110},100)"
+  },
+  {
+   "id": "IRR#17",
+   "group": "IRR",
+   "fn": "IRR",
+   "formula": "IRR({-100,0,110},100)"
+  }
+ ],
+ "values": {
+  "IRR#1": {
+   "t": "n",
+   "v": 0.21615589019123593
+  },
+  "IRR#2": {
+   "t": "n",
+   "v": 0.01801299084926966
+  },
+  "IRR#3": {
+   "t": "n",
+   "v": 0.018012990876967727
+  },
+  "IRR#4": {
+   "t": "n",
+   "v": 0.01801299084926966
+  },
+  "IRR#5": {
+   "t": "n",
+   "v": -0.01769426425634779
+  },
+  "IRR#6": {
+   "t": "n",
+   "v": 0.0011559128538236596
+  },
+  "IRR#7": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "IRR#8": {
+   "t": "e",
+   "v": "DIV0"
+  },
+  "IRR#9": {
+   "t": "n",
+   "v": -0.16735376289043713
+  },
+  "IRR#10": {
+   "t": "n",
+   "v": 0.8099828467967536
+  },
+  "IRR#11": {
+   "t": "n",
+   "v": -0.442629083914974
+  },
+  "IRR#12": {
+   "t": "n",
+   "v": -0.00995012499916792
+  },
+  "IRR#13": {
+   "t": "n",
+   "v": 0.010050124999238852
+  },
+  "IRR#14": {
+   "t": "n",
+   "v": 0
+  },
+  "IRR#15": {
+   "t": "e",
+   "v": "NUM"
+  },
+  "IRR#16": {
+   "t": "n",
+   "v": 0.10000000000000009
+  },
+  "IRR#17": {
+   "t": "n",
+   "v": 0.04880884817021691
+  }
+ }
+}

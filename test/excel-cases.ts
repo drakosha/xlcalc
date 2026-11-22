@@ -219,7 +219,6 @@ export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engi
   'fuzz:1#234': { reason: 'textDigits', engine: { t: 's', v: '2.72527006358476E-05' } },
   'fuzz:1#403': { reason: 'textDigits', engine: { t: 's', v: '4.18382560777941E-23' } },
   'fuzz:1#947': { reason: 'textDigits', engine: { t: 's', v: '0.00803735952120296' } },
-  'fuzz:1#1327': { reason: 'textDigits', engine: { t: 's', v: '0.1963093102686' } },
   'fuzz-rules:LINEST#41': { reason: 'linestConstantColumn', engine: { t: 'n', v: 0.474341649025257 } },
   'fuzz-rules:LINEST#42': { reason: 'linestConstantColumn', engine: { t: 'n', v: 56.3333333333333 } },
   'fuzz-rules:LINEST#43': { reason: 'linestConstantColumn', engine: { t: 'n', v: 2 } },

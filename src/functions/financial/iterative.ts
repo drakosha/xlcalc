@@ -1,7 +1,7 @@
 /** Rates found by iteration (RATE, IRR, XIRR) and the cash-flow functions next to them (MIRR, XNPV), this engine's own. */
 import { gridAt, type Arg, type Cx, type FnDef, type Grid } from '../../args.js'
 import type { Rules } from '../../locale/rules.js'
-import { E, isErr, type CErr, type V } from '../../values.js'
+import { E, isErr, MIN_NORMAL, type CErr, type V } from '../../values.js'
 import { atp } from '../date/atp.js'
 import { areaNumbers, numbersOf } from '../statistical/common.js'
 
@@ -35,22 +35,70 @@ function annuity(nper: number, pmt: number, pv: number, fv: number, type: number
   }
 }
 
-/** IRR by Newton's method in v = 1/(1+r), where the present value is a polynomial (Excel converges from far guesses too). */
-function irr(xs: number[], guess: number): number | null {
-  let v = 1 / (1 + guess)
-  for (let k = 0; k < 20; k++) {
-    let y = 0
-    let dy = 0
-    for (let i = xs.length - 1; i >= 0; i--) {
-      dy = dy * v + y
-      y = y * v + xs[i]
+/** Excel's IRR evaluates the cash flows in order at s = 1/(1+r) − 1. */
+function irrBalance(xs: number[], first: number, s: number): number | CErr {
+  if (!Number.isFinite(s)) return E.NUM
+  const factor = 1 / (1 + s)
+  let discount = 1
+  let balance = xs[first]
+  for (let i = first + 1; i < xs.length; i++) {
+    discount *= factor
+    if (!Number.isFinite(discount) || Math.abs(discount) < MIN_NORMAL) return E.DIV0
+    balance += xs[i] / discount
+  }
+  // A later invalid divisor takes precedence over an overflow in the sum.
+  return Number.isFinite(balance) ? balance : E.NUM
+}
+
+function irrAttempt(xs: number[], first: number, guess: number): number | CErr | null {
+  const step = 0.001
+  const tolerance = 1e-7
+  let previousRate = guess / (-1 - guess)
+  let previousBalance = irrBalance(xs, first, previousRate)
+  if (isErr(previousBalance)) return previousBalance
+  let rate = previousRate + (previousBalance < 0 ? -step : step)
+  let balance = irrBalance(xs, first, rate)
+  if (isErr(balance)) return balance
+
+  for (let i = 0; i < 200; i++) {
+    if (balance === previousBalance) {
+      // Equal balances give the secant a zero denominator, so reevaluate the older point.
+      previousRate += previousRate > rate ? -step : step
+      previousBalance = irrBalance(xs, first, previousRate)
+      if (isErr(previousBalance)) return previousBalance
+      if (balance === previousBalance) return null
     }
-    const next = v - y / dy
-    if (!Number.isFinite(next) || next === 0) return null
-    if (Math.abs(1 / next - 1 / v) < 1e-7) return next > 0 ? 1 / next - 1 : null
-    v = next
+    const change = ((rate - previousRate) * balance) / (balance - previousBalance)
+    previousRate = rate
+    previousBalance = balance
+    rate -= change
+    balance = irrBalance(xs, first, rate)
+    if (isErr(balance)) return balance
+    if (Math.abs(balance) <= tolerance && Math.abs(rate - previousRate) <= tolerance) {
+      return rate - tolerance > -1 ? 1 / (1 + rate) - 1 : null
+    }
+  }
+
+  const finalTolerance = 1e-4
+  if (Math.abs(balance) <= finalTolerance && Math.abs(rate - previousRate) <= finalTolerance && rate - finalTolerance > -1) {
+    return 1 / (1 + rate) - 1
   }
   return null
+}
+
+const IRR_DEFAULT_GUESS = 0.1
+const IRR_RESTARTS = [IRR_DEFAULT_GUESS, -1 / 11, 2]
+
+/** Excel retries an unsettled secant search from three fixed guesses. Arithmetic errors end the search. */
+function irr(xs: number[], guess: number): number | CErr {
+  // Excel starts discounting after the first nonzero cash flow.
+  const first = xs.findIndex((value) => value !== 0)
+  const guesses = guess === IRR_DEFAULT_GUESS ? IRR_RESTARTS : [guess, ...IRR_RESTARTS]
+  for (const start of guesses) {
+    const result = irrAttempt(xs, first, start)
+    if (result !== null) return result
+  }
+  return E.NUM
 }
 
 /** Numbers of a range in order (IRR: text, booleans and blanks skipped, an error is #VALUE!, where MIRR answers it). */
@@ -142,16 +190,15 @@ function xirr(vs: number[], ds: number[], guess: number): number | null {
 }
 
 export const functions: Record<string, FnDef> = {
-  // at most 20 steps, as Excel documents
   IRR: {
     args: 'G n?',
-    fn: (g: Grid, guess = 0.1) => {
+    fn: (g: Grid, guess = IRR_DEFAULT_GUESS) => {
       const xs = flows(g)
       if (isErr(xs)) return xs
       // a guess of -1 or less is #VALUE!, before the flows' signs are looked at
       if (guess <= -1) return E.VALUE
       if (!signs(xs)) return E.NUM
-      return irr(xs, guess) ?? E.NUM
+      return irr(xs, guess)
     },
   },
   // the values' numbers in order, each area of a union; one value given is an array of it, text there no number (`MIRR("x",0.1,0.1)` is #DIV/0!)
