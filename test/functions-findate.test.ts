@@ -11,6 +11,11 @@ import { valuesAt } from './formula-values.js'
 /** Formulas computed on sheet S with the given cells; values in order. */
 const values = valuesAt('2026-10-05T12:00:00Z')
 
+it('IRR reports a later invalid discount divisor even after the balance overflows, as in Excel for Mac', () => {
+  const cells = Object.fromEntries(Array.from({ length: 121 }, (_, i) => [`A${i + 1}`, { value: i === 0 ? -100 : 1000 }]))
+  expect(values(['IRR(A1:A121,-0.999)'], cells)).toEqual([{ error: 'DIV0' }])
+})
+
 /** Weekend days (0 Sunday) of a WORKDAY.INTL code 1–7 or 11–17; serial 1 is a Sunday in Excel. */
 const weekendOf = (code: number) => (code < 10 ? [(code + 5) % 7, (code + 6) % 7] : [code - 11])
 const isWork = (s: number, code: number, hol: Set<number>) => !weekendOf(code).includes((s + 6) % 7) && !hol.has(s)

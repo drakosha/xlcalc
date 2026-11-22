@@ -35,7 +35,7 @@ More examples are in [Recipes](#recipes) below and in the [quick start guide](do
 
 A function is admitted only after it matches Excel on all of its cases. Any other function is `#NAME?`.
 
-The expected results come from real Excel. A harness drives Excel 16 for Mac, and Excel for Windows on a Windows machine, and the results are stored in the repository ([`test/excel/`](https://github.com/drakosha/xlcalc/tree/master/test/excel)). The tests compare the engine with them, so the tests run without Excel. The functions and formulas have 51,925 cases; displayed text, structure operations, tables and xlsx files are checked on workbooks of their own. Many case sets are predicted first: the expected results are written down before Excel runs them. When a prediction misses, the rule is fixed and tested again on a new set.
+The expected results come from real Excel. A harness drives Excel 16 for Mac, and Excel for Windows on a Windows machine, and the results are stored in the repository ([`test/excel/`](https://github.com/drakosha/xlcalc/tree/master/test/excel)). The tests compare the engine with them, so the tests run without Excel. The functions and formulas have 51,942 cases; displayed text, structure operations, tables and xlsx files are checked on workbooks of their own. Many case sets are predicted first: the expected results are written down before Excel runs them. When a prediction misses, the rule is fixed and tested again on a new set.
 
 How each rule was checked: [Development](docs/development.md#how-the-rules-were-checked). The cases by function: [Functions](docs/functions.md). Known differences: [Limitations](docs/limitations.md); other inputs can differ too.
 

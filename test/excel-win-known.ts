@@ -74,7 +74,6 @@ export const WIN_KNOWN_CASES: Readonly<Record<string, { reason: Reason; engine: 
   'en-US:fuzz:1#234': { reason: 'textDigits', engine: { t: 's', v: "2.72527006358476E-05" } },
   'en-US:fuzz:1#403': { reason: 'textDigits', engine: { t: 's', v: "4.18382560777941E-23" } },
   'en-US:fuzz:1#947': { reason: 'textDigits', engine: { t: 's', v: "0.00803735952120296" } },
-  'en-US:fuzz:1#1327': { reason: 'textDigits', engine: { t: 's', v: "0.1963093102686" } },
   'en-US:fuzz:2#472': { reason: 'textDigits', engine: { t: 's', v: "2048.47532711546" } },
   'en-US:let:let:file#5': { reason: 'letFileName', engine: { t: 'e', v: 'ERROR' } },
   'en-US:unknown-name:untaken#5': { reason: 'ifnaUnknown', engine: { t: 'n', v: 1 } },
