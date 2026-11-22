@@ -6,7 +6,7 @@
  * whose answer depends on their arguments (`calls`), and the coverage measurement as Excel computed it with formulas of
  * the old kind (`measurement.json`).
  */
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { Val } from '../bench/coverage/formulajs.js'
 import type { Probe, SheetCells } from '../bench/coverage/probes.js'
@@ -25,7 +25,11 @@ interface Stored {
   rows: Record<string, number>
 }
 
-const load = <T>(name: string) => JSON.parse(readFileSync(new URL(`./excel/legacy/${name}.json`, import.meta.url), 'utf8')) as T
+/** A set's answers: Excel for Mac's, else Excel for Windows' for a set only Windows ran (`legacy-win.test.ts`). */
+const load = <T>(name: string) => {
+  const mac = new URL(`./excel/legacy/${name}.json`, import.meta.url)
+  return JSON.parse(readFileSync(existsSync(mac) ? mac : new URL(`./excel/win/legacy/${name}.json`, import.meta.url), 'utf8')) as T
+}
 
 /** Excel's text as canonical text; as it is where the engine has no syntax for it. */
 function canon(f: string): string {
@@ -56,6 +60,10 @@ const PARTED: Readonly<Record<string, string>> = {
   'nesting:GROWTH#array-r4': 'inside SUMPRODUCT Excel does not lift the call',
   'nesting:TREND#array-r4': 'inside SUMPRODUCT Excel does not lift the call',
   'nesting:XIRR#array-r3': 'inside SUMPRODUCT Excel does not lift the call',
+  'ref-legacy-held-2:refs2#9': "the book's name in CELL's address: Excel's file is 0.xlsx, the engine's book has no name (Book1)",
+  'ref-legacy-held-2:refs2#13': 'a criteria label left blank (D!A1): Excel matches no record, the engine matches the database column with a blank label; DSUM(D!A1:B2,2,D!A1:A2) parts alike, not measured apart',
+  'ref-legacy-held-2:refs2#14': 'a criteria label left blank (D!A1), as refs2#13',
+  'ref-legacy-held-2:refs2#15': 'a criteria label left blank (D!A1), as refs2#13',
 }
 
 /** Volatile calls: their values are not compared. */
@@ -79,7 +87,7 @@ function rowBook(cases: Probe[], rows: Record<string, number>, sheets?: SheetCel
   return book
 }
 
-for (const name of ['params', 'nesting', 'calls', 'blocks', 'ifs-text', 'index-calls', 'offset-calls', 'index-held', 'index-held-2', 'array-held', 'deref-held', 'ref-legacy-held']) {
+for (const name of ['params', 'nesting', 'calls', 'blocks', 'ifs-text', 'index-calls', 'offset-calls', 'index-held', 'index-held-2', 'array-held', 'deref-held', 'ref-legacy-held', 'ref-legacy-held-2']) {
   const set = load<Stored>(name)
   const sheets = ((await import(`../bench/coverage/legacy/${name}.ts`)) as { SHEETS?: SheetCells }).SHEETS
 
@@ -109,7 +117,7 @@ for (const name of ['params', 'nesting', 'calls', 'blocks', 'ifs-text', 'index-c
 }
 
 describe('the text Excel shows predicted before Excel ran: the predictions Excel did not confirm are the ones in MISSED', async () => {
-  for (const name of ['index-calls', 'offset-calls', 'index-held', 'index-held-2', 'array-held', 'deref-held', 'ref-legacy-held']) {
+  for (const name of ['index-calls', 'offset-calls', 'index-held', 'index-held-2', 'array-held', 'deref-held', 'ref-legacy-held', 'ref-legacy-held-2']) {
     const { PREDICTED_SHOWN, MISSED } = (await import(`../bench/coverage/legacy/${name}.ts`)) as { PREDICTED_SHOWN: Readonly<Record<string, string>>; MISSED: readonly string[] }
     const set = load<Stored>(name)
     it(name, () => expect(set.cases.filter((c) => canon(set.formulas[c.id]) !== PREDICTED_SHOWN[c.id]).map((c) => c.id)).toEqual([...MISSED]))

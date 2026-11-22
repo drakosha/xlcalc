@@ -24,6 +24,7 @@ const WIN_SPILL: Readonly<Record<string, string>> = {
   'more:volatile-sizes': 'ten sizes drawn in one book: Excel for Windows gives #SPILL! as the Mac does (the sizes change between its passes), the engine draws once and spills',
   'legacy-shown:params': "an error as NETWORKDAYS.INTL's weekend is #VALUE! in Excel and #NUM! here, XIRR's guess given a range #VALUE! there and lifted here, as on the Mac",
   'legacy-shown:nesting': 'inside SUMPRODUCT Excel does not lift ACCRINT, CUMIPMT, PRICE, XIRR, GROWTH and TREND over an array in a one-value argument, the engine lifts them, as on the Mac',
+  'ref-arrays-held-2:aggregate-two-arrays': "AGGREGATE(9,0,OFFSET(B1,{0;1},0),OFFSET(C1,{0;1},0)) is #VALUE!; #VALUE! in Excel: it lifts AGGREGATE over its fourth argument, k of the array form, and the engine answers one #VALUE!; how Excel lifts over that argument with no array of references was not measured",
 }
 
 for (const set of SETS) {

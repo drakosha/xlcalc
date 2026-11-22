@@ -18,7 +18,7 @@ import { canonical, FormulaError, isRefOp, parse, type Ast, type RangeRef } from
 import { inputNameFor } from '../names.js'
 import { object, onlyKeys } from '../input/basic.js'
 import { strict } from '../strict-args.js'
-import { dereferenced } from '../syntax/idioms.js'
+import { callOf, dereferenced } from '../syntax/idioms.js'
 import { PARAMS } from './params.js'
 
 type Where = 'V' | 'R' | 'A'
@@ -81,16 +81,28 @@ const LOOKUPS = new Set(['INDEX', 'VLOOKUP', 'HLOOKUP', 'XLOOKUP'])
 
 /**
  * Functions whose arguments of class `r` take a reference only, not an array: inside them the evaluation stays as it is
- * around the call (`bench/coverage/legacy/ref-legacy-held.ts`: SUBTOTAL, COUNTIF, SUMIF, SUMIFS, COUNTBLANK measured, the
- * other criteria functions by their kind).
+ * around the call. Measured in `bench/coverage/legacy/ref-legacy-held.ts` (SUBTOTAL, COUNTIF, SUMIF, SUMIFS, COUNTBLANK)
+ * and `ref-legacy-held-2.ts` (RANK, RANK.EQ, AREAS, CELL, FORMULATEXT, ISFORMULA, DSUM, DCOUNT, AGGREGATE); the other
+ * criteria and database functions and RANK.AVG by their kind.
  */
-const REFERENCE_ONLY = new Set(['SUBTOTAL', 'COUNTBLANK', 'COUNTIF', 'COUNTIFS', 'SUMIF', 'SUMIFS', 'AVERAGEIF', 'AVERAGEIFS', 'MAXIFS', 'MINIFS'])
+const REFERENCE_ONLY = new Set([
+  'SUBTOTAL', 'COUNTBLANK', 'COUNTIF', 'COUNTIFS', 'SUMIF', 'SUMIFS', 'AVERAGEIF', 'AVERAGEIFS', 'MAXIFS', 'MINIFS',
+  'RANK', 'RANK.EQ', 'RANK.AVG', 'AREAS', 'CELL', 'FORMULATEXT', 'ISFORMULA', 'AGGREGATE',
+  'DAVERAGE', 'DCOUNT', 'DCOUNTA', 'DGET', 'DMAX', 'DMIN', 'DPRODUCT', 'DSTDEV', 'DSTDEVP', 'DSUM', 'DVAR', 'DVARP',
+])
+
+/** Functions that answer an array only for a reference of several cells: of one cell, one value without `@`. */
+const ARRAY_OF_SEVERAL = new Set(['FORMULATEXT', 'ISFORMULA'])
 
 /** The slot and the evaluation of argument `i` of `fn` (the node `n`) called where `where` says. */
 function argument(fn: string, i: number, n: Ast, where: Where): [Slot, Where] {
   const own = SLOTS[fn]?.[i]
   // under an argument that takes an array IFERROR's value takes a range as a reference, TYPE's whole (SUMPRODUCT(TYPE(A1:A3)) is 64)
   if (own) return [own, own === 'p' && where === 'A' && fn !== 'TYPE' ? 'R' : where]
+  // ROW's and COLUMN's reference takes one value even inside SUM (`SUM(ROW(OFFSET(B1,@{0;1;2},0)))`); INDEX's array given
+  // as OFFSET or INDIRECT is a reference, as SUBTOTAL's (`INDEX(OFFSET(B1,@{0;1},0,2),2)`, measured alone)
+  if ((fn === 'ROW' || fn === 'COLUMN') && i === 0) return ['r', where === 'A' ? 'A' : 'V']
+  if (fn === 'INDEX' && i === 0 && callOf(n, 'OFFSET', 'INDIRECT')) return ['r', where]
   switch (classAt(fn, i)) {
     case 'v':
       return ['v', where]
@@ -177,6 +189,8 @@ function answer(fn: string, args: Out[], nodes: Ast[]): Kind {
     case 'SWITCH':
       return 'array'
   }
+  // `FORMULATEXT(OFFSET(B1,@{0;1},0))` stays without `@` before it, `CELL("address",…)` takes one
+  if (ARRAY_OF_SEVERAL.has(fn)) return args.length && args[0].kind !== 'one' ? 'array' : 'one'
   const passing = PASSING[fn]
   if (passing) return args.reduce<Kind>((k, a, i) => (passing(i) ? wider(k, a.kind) : k), 'one')
   return paramsOf(fn)?.array ? 'array' : 'one'

@@ -241,8 +241,8 @@ export const functions: Record<string, FnDef> = {
   'PERCENTRANK.INC': { args: 'N n i?', empty: 'NA', fn: percentRankInc },
   'QUARTILE.EXC': { args: 'N n', empty: 'NUM', fn: quartileExc },
   'QUARTILE.INC': { args: 'N n', empty: 'NUM', fn: quartileInc },
-  'RANK.AVG': { args: 'n N v?', fn: rankAvg },
-  'RANK.EQ': { args: 'n N v?', fn: rankEq },
+  'RANK.AVG': { args: 'n N v?', references: true, fn: rankAvg },
+  'RANK.EQ': { args: 'n N v?', references: true, fn: rankEq },
   SKEW: {
     args: 'N',
     rep: 1,

@@ -28,6 +28,7 @@ describe('bundle size', () => {
     expect(used.filter((f) => /function-arity/.test(f))).toEqual([])
     // CSE selector contexts: 413,845 bytes of dist, 410,601 at 0.89.0; ordinary generated formula code is unchanged.
     // Arrays of references (SUBTOTAL, SUMIF over OFFSET over an array): 415,109 bytes, 414,310 before.
+    // Arrays of references into RANK, ROW, CELL and the database functions, #VALUE! for AGGREGATE and INDEX: 415,543 bytes, 415,376 before.
     expect(bytes).toBeLessThan(406 * 1024)
   }, 60_000)
 

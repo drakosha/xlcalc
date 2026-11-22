@@ -165,6 +165,7 @@ function fieldOf(cx: Cx, field: V | Rng | undefined): V | undefined {
 const dfn = (f: (vs: V[]) => V): FnDef => ({
   args: 'D r G',
   cx: true,
+  references: true,
   fn: (cx: Cx, db: Grid | Rng, field: V | Rng | undefined, criteria: Grid) => {
     const at = fieldOf(cx, field)
     const vs = db instanceof Rng ? selectedIn(cx, db, at, criteria) : selected(db, at, criteria, cx.rules)

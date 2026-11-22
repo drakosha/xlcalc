@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+Added:
+
+- Arrays of references in more functions: `RANK`, `RANK.EQ`, `RANK.AVG`, `AREAS`, `ROW`, `COLUMN`, `CELL`, `FORMULATEXT`, `ISFORMULA` and the database functions (their database and criteria) given `OFFSET` or `INDIRECT` over an array where they take a reference are called once for each reference, as `SUBTOTAL` is since 0.89.2. `ROW(OFFSET(B1,{0;1;2},0))` spills 1; 2; 3, `CELL("address",OFFSET(B1,{0;1},0))` `$B$1`; `$B$2`, `RANK(20,OFFSET(B1,{0;1},0,2))` one rank per pair of rows; these were `#VALUE!` or one value. In a legacy array formula such a call takes the references whole (`{=SUM(RANK(10,OFFSET(B1,0,0,{2;3})))}` is 5). Measured in Excel for Windows on 21 cases; Excel for Mac not yet.
+
+Fixed:
+
+- `AGGREGATE` and `INDEX` given an array of references read the references' values: `AGGREGATE(14,0,OFFSET(B1,{0;1},0,2),1)` was the largest of the top-left values and `INDEX(OFFSET(B1,{0;1},0,2),2)` the second one. Excel answers `#VALUE!` for both, and now so does the engine. With arrays of references in two of its arguments `AGGREGATE` still gives one `#VALUE!`, where Excel spills it over them.
+- `fromLegacy` and `readXlsx` put `@` on the array of `OFFSET` or `INDIRECT` under the functions above, under `AGGREGATE` and as `INDEX`'s array in a legacy formula (not an array formula) as Excel shows it: `RANK(20,OFFSET(B1,@{0;1},0,2))`, `ROW(OFFSET(B1,@{0;1;2},0))` (inside `SUM` too), `INDEX(OFFSET(B1,@{0;1},0,2),2)`; inside `SUM` or `SUMPRODUCT` the other functions keep every reference. `FORMULATEXT` and `ISFORMULA` of one cell take no `@` before them (`FORMULATEXT(A1)`, was `@FORMULATEXT(A1)`). Checked against Excel for Windows on 17 formulas; none of the 7,374 recorded legacy formulas converts otherwise.
+
 ## 0.89.2 (2026-11-12)
 
 Added:

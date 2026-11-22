@@ -31,7 +31,8 @@ const VOLATILE = /\b(RAND|RANDBETWEEN|RANDARRAY|NOW|TODAY)\(/
 const WIN_LEGACY: Readonly<Record<string, string>> = {}
 
 describe.skipIf(!existsSync(new URL('./excel/win/legacy/', import.meta.url)) || !readdirSync(new URL('./excel/win/legacy/', import.meta.url)).length)('legacy formulas in Excel for Windows', () => {
-  for (const set of SETS)
+  // a set only Windows ran (the Mac could not) is `legacy.test.ts`'s answers itself
+  for (const set of SETS.filter((s) => existsSync(new URL(`./excel/legacy/${s.name}.json`, import.meta.url))))
     it(`${set.name}: as on the Mac, at the Mac's rows, but the cases listed`, () => {
       const m = mac(set.name)
       expect(set.cases).toEqual(m.cases)

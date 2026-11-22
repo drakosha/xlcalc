@@ -220,8 +220,9 @@ export interface FnDef {
    */
   criteria?: boolean
   /**
-   * An array of references (OFFSET or INDIRECT over an array) in its `R` and `G` arguments calls it once for each
-   * reference (SUBTOTAL, COUNTBLANK; the criteria functions too): `arrays/references.ts`.
+   * An array of references (OFFSET or INDIRECT over an array) in its `R`, `G`, `N` and `D` arguments calls it once for
+   * each reference (SUBTOTAL, COUNTBLANK, RANK, ROW, CELL, the D functions; the criteria functions too):
+   * `arrays/references.ts`.
    */
   references?: true
 }
@@ -281,9 +282,9 @@ export interface FunctionSpec {
 }
 
 /** The kinds of argument an array of references is taken at, by reference, in the functions that say so. */
-const REFERENCE_KINDS = 'RG'
+const REFERENCE_KINDS = 'RGND'
 
-/** Whether a function takes an array of references one reference at a time: SUBTOTAL, COUNTBLANK, the criteria functions. */
+/** Whether a function takes an array of references one reference at a time (`FnDef.references`), the criteria functions too. */
 const byReference = (def: FnDef) => def.references === true || def.criteria === true
 
 const RANGE_KINDS = 'NAYZVGDCMRrP'
