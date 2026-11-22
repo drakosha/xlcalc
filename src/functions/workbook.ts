@@ -152,12 +152,13 @@ function cellwise(cx: Cx, x: Arg, other: V, at: (s: number, r: number, c: number
 
 export const functions: Record<string, FnDef> = {
   // a union's first area
-  CELL: { args: 's R?', cx: true, cell: true, dynamic: true, looks: true, array: true, areas: true, fn: (cx: Cx, s: number, r: number, c: number, type: string, ref?: Arg) => cell(cx, s, r, c, type, ref) },
+  CELL: { args: 's R?', cx: true, cell: true, dynamic: true, looks: true, array: true, areas: true, references: true, fn: (cx: Cx, s: number, r: number, c: number, type: string, ref?: Arg) => cell(cx, s, r, c, type, ref) },
   FORMULATEXT: {
     args: 'R',
     cx: true,
     areas: true,
     array: true,
+    references: true,
     fn: (cx: Cx, x: Arg) =>
       cellwise(cx, x, E.NA, (s, r, c) => {
         const text = cx.book.formula(s, r, c)
@@ -165,7 +166,7 @@ export const functions: Record<string, FnDef> = {
       }),
   },
   INFO: { args: 's', cx: true, fn: info },
-  ISFORMULA: { args: 'R', cx: true, areas: true, array: true, fn: (cx: Cx, x: Arg) => cellwise(cx, x, E.VALUE, (s, r, c) => cx.book.hasFormula(s, r, c)) },
+  ISFORMULA: { args: 'R', cx: true, areas: true, array: true, references: true, fn: (cx: Cx, x: Arg) => cellwise(cx, x, E.VALUE, (s, r, c) => cx.book.hasFormula(s, r, c)) },
   SHEET: { args: 'R?', cx: true, cell: true, areas: true, fn: sheet },
   SHEETS: { args: 'R?', cx: true, areas: true, fn: sheets },
 }

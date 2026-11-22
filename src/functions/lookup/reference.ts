@@ -34,6 +34,7 @@ const position = (row: boolean): FnDef => ({
   args: 'R?',
   cell: true,
   array: true,
+  references: true,
   fn: (_s: number, r: number, c: number, ref?: V | Rng) => {
     if (ref === undefined) return (row ? r : c) + 1
     if (!(ref instanceof Rng)) return isErr(ref) ? ref : E.VALUE
@@ -75,7 +76,7 @@ function trimRange(cx: Cx, x: Arg, rows = 3, cols = 3): Arg {
 export const functions: Record<string, FnDef> = {
   ADDRESS: { args: 'w w w? b? s?', fn: address },
   // the areas of a union; a reference across sheets, a value or an array is #VALUE!
-  AREAS: { args: 'R', areas: true, fn: (x: Arg) => (isErr(x) ? x : x instanceof Rng ? 1 : x instanceof Areas && !x.cube ? x.list.length : E.VALUE) },
+  AREAS: { args: 'R', areas: true, references: true, fn: (x: Arg) => (isErr(x) ? x : x instanceof Rng ? 1 : x instanceof Areas && !x.cube ? x.list.length : E.VALUE) },
   // the chosen value as it is, a reference too, one cell too (SUMIF(CHOOSE(1,A1:A9,B1:B9),">2"))
   CHOOSE: { args: 'i P', rep: 1, fn: (i: number, values: V[]) => (i < 1 || i > values.length ? E.VALUE : values[i - 1]) },
   COLUMN: position(false),

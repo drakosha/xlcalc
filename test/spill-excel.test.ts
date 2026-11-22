@@ -25,6 +25,7 @@ const KNOWN: Readonly<Record<string, string>> = {
   'base:cross': 'two independent arrays over one cell: in the set order the same pair (cross-C1-A2-row-first) let either spill',
   'base:cross-rect': 'two independent arrays over one cell: Excel lets either spill, the set order shows it for 11 pairs',
   'more:volatile-size': 'a size drawn by RANDBETWEEN: Excel spilled its own draw (five runs of five), the engine spills the draw of its clock',
+  'ref-arrays-held-2:aggregate-two-arrays': "AGGREGATE(9,0,OFFSET(B1,{0;1},0),OFFSET(C1,{0;1},0)) is #VALUE!; #VALUE! in Excel: it lifts AGGREGATE over its fourth argument, k of the array form, and the engine answers one #VALUE!; how Excel lifts over that argument with no array of references was not measured",
   'more:volatile-sizes': 'ten sizes drawn in one book: Excel gave #SPILL! 47 times of 50 in five runs (the sizes changed between its passes), the engine draws once and spills',
   'more:volatile-cell': 'a size from a cell holding a draw: both spill that cell\'s value (Excel five runs of five), which Excel and the engine draw differently',
   'legacy-shown:params': "an error as NETWORKDAYS.INTL's weekend is #VALUE! in Excel and #NUM! here, XIRR's guess given a range #VALUE! there and lifted here",
@@ -61,7 +62,7 @@ describe('held-out spill cases: the engine gives the answer predicted before Exc
   }
 })
 
-for (const name of ['error-areas-held', 'cse-lookup-held', 'cse-lookup-held-2', 'cse-lookup-held-3', 'cse-lookup-held-4', 'cse-lookup-held-5', 'cse-lookup-held-6', 'own-place-held', 'ref-arrays-held', 'cse-review-held']) {
+for (const name of ['error-areas-held', 'cse-lookup-held', 'cse-lookup-held-2', 'cse-lookup-held-3', 'cse-lookup-held-4', 'cse-lookup-held-5', 'cse-lookup-held-6', 'own-place-held', 'ref-arrays-held', 'ref-arrays-held-2', 'cse-review-held']) {
   describe(`${name}: the predictions Excel did not confirm are the ones in MISSED`, async () => {
     const { buildSpillCases, MISSED } = (await import(`../bench/coverage/spill/${name}.ts`)) as { buildSpillCases: () => SpillCase[]; MISSED: readonly string[] }
     const set = SETS.find((s) => s.name === name)

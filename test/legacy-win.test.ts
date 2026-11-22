@@ -28,7 +28,9 @@ const SETS = storedSets<Stored>('win/legacy')
 const VOLATILE = /\b(RAND|RANDBETWEEN|RANDARRAY|NOW|TODAY)\(/
 
 /** `<set>:<case id>` → why Excel for Windows parts from Excel for Mac. */
-const WIN_LEGACY: Readonly<Record<string, string>> = {}
+const WIN_LEGACY: Readonly<Record<string, string>> = {
+  'ref-legacy-held-2:refs2#9': "CELL's address names the book's file, book.xlsx on the Mac and 0.xlsx on Windows",
+}
 
 describe.skipIf(!existsSync(new URL('./excel/win/legacy/', import.meta.url)) || !readdirSync(new URL('./excel/win/legacy/', import.meta.url)).length)('legacy formulas in Excel for Windows', () => {
   for (const set of SETS)

@@ -1,6 +1,7 @@
 /** VLOOKUP, HLOOKUP, MATCH, LOOKUP and INDEX, this engine's own (formula.js is case-sensitive, without wildcards or binary search). */
 import { gridAt, type Arg, type Cx, type FnDef, type Grid } from '../../args.js'
 import { lifts } from '../../arrays/lift.js'
+import { holdsReferences } from '../../arrays/references.js'
 import { arr, Arr, selectArray } from '../../arrays/value.js'
 import type { Rules } from '../../locale/rules.js'
 import { MAX_COLS, MAX_ROWS } from '../../model.js'
@@ -113,6 +114,9 @@ function lookup(cx: Cx, key: V, look: Grid, result?: Arg): V {
  */
 function index(x: Arg, r: number, c?: number, area?: number): Arg {
   if (isErr(x)) return x
+  // an array of references, not its values as SUM takes: INDEX(OFFSET(B1,{0;1},0,2),2) is #VALUE! (Excel for Mac
+  // and Windows, the set ref-arrays-held-2)
+  if (holdsReferences(x)) return E.VALUE
   if (x instanceof Areas) {
     if (x.cube) return E.VALUE
     const n = area ?? 1

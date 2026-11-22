@@ -1,0 +1,220 @@
+{
+ "meta": {
+  "version": "16.115",
+  "locale": "en-US (-AppleLanguages (en) -AppleLocale en_US)",
+  "seconds": 1.401,
+  "legacy": true
+ },
+ "cases": [
+  {
+   "id": "refs2#1",
+   "group": "refs2",
+   "fn": "RANK",
+   "formula": "RANK(20,OFFSET(D!B1,{0;1},0,2))"
+  },
+  {
+   "id": "refs2#2",
+   "group": "refs2",
+   "fn": "SUM",
+   "formula": "SUM(RANK(20,OFFSET(D!B1,{0;1},0,2)))"
+  },
+  {
+   "id": "refs2#3",
+   "group": "refs2",
+   "fn": "RANK.EQ",
+   "formula": "_xlfn.RANK.EQ(20,OFFSET(D!B1,0,0,{2;3}),1)"
+  },
+  {
+   "id": "refs2#4",
+   "group": "refs2",
+   "fn": "ROW",
+   "formula": "ROW(OFFSET(D!B1,{0;1;2},0))"
+  },
+  {
+   "id": "refs2#5",
+   "group": "refs2",
+   "fn": "SUM",
+   "formula": "SUM(ROW(OFFSET(D!B1,{0;1;2},0)))"
+  },
+  {
+   "id": "refs2#6",
+   "group": "refs2",
+   "fn": "COLUMN",
+   "formula": "COLUMN(OFFSET(D!B1,0,{0,1}))"
+  },
+  {
+   "id": "refs2#7",
+   "group": "refs2",
+   "fn": "AREAS",
+   "formula": "AREAS(OFFSET(D!B1,{0;1},0))"
+  },
+  {
+   "id": "refs2#8",
+   "group": "refs2",
+   "fn": "SUM",
+   "formula": "SUM(AREAS(OFFSET(D!B1,{0;1},0)))"
+  },
+  {
+   "id": "refs2#9",
+   "group": "refs2",
+   "fn": "CELL",
+   "formula": "CELL(\"address\",OFFSET(D!B1,{0;1},0))"
+  },
+  {
+   "id": "refs2#10",
+   "group": "refs2",
+   "fn": "FORMULATEXT",
+   "formula": "_xlfn.FORMULATEXT(OFFSET(D!B1,{0;1},0))"
+  },
+  {
+   "id": "refs2#11",
+   "group": "refs2",
+   "fn": "ISFORMULA",
+   "formula": "_xlfn.ISFORMULA(OFFSET(D!B1,{0;1},0))"
+  },
+  {
+   "id": "refs2#12",
+   "group": "refs2",
+   "fn": "SUMPRODUCT",
+   "formula": "SUMPRODUCT(--_xlfn.ISFORMULA(OFFSET(D!B1,{0;1},0)))"
+  },
+  {
+   "id": "refs2#13",
+   "group": "refs2",
+   "fn": "DSUM",
+   "formula": "DSUM(OFFSET(D!A1,0,0,{2;3},2),2,D!A1:A2)"
+  },
+  {
+   "id": "refs2#14",
+   "group": "refs2",
+   "fn": "SUM",
+   "formula": "SUM(DSUM(OFFSET(D!A1,0,0,{2;3},2),2,D!A1:A2))"
+  },
+  {
+   "id": "refs2#15",
+   "group": "refs2",
+   "fn": "DCOUNT",
+   "formula": "DCOUNT(D!A1:B3,2,OFFSET(D!A1,0,0,2,{1,2}))"
+  },
+  {
+   "id": "refs2#16",
+   "group": "refs2",
+   "fn": "AGGREGATE",
+   "formula": "_xlfn.AGGREGATE(9,0,OFFSET(D!B1,{0;1},0,2))"
+  },
+  {
+   "id": "refs2#17",
+   "group": "refs2",
+   "fn": "INDEX",
+   "formula": "INDEX(OFFSET(D!B1,{0;1},0,2),2)"
+  }
+ ],
+ "values": {
+  "refs2#1": {
+   "t": "e",
+   "v": "NA"
+  },
+  "refs2#2": {
+   "t": "e",
+   "v": "NA"
+  },
+  "refs2#3": {
+   "t": "e",
+   "v": "NA"
+  },
+  "refs2#4": {
+   "t": "n",
+   "v": 1
+  },
+  "refs2#5": {
+   "t": "n",
+   "v": 1
+  },
+  "refs2#6": {
+   "t": "n",
+   "v": 2
+  },
+  "refs2#7": {
+   "t": "n",
+   "v": 1
+  },
+  "refs2#8": {
+   "t": "n",
+   "v": 2
+  },
+  "refs2#9": {
+   "t": "s",
+   "v": "[book.xlsx]D!$B$1"
+  },
+  "refs2#10": {
+   "t": "e",
+   "v": "NA"
+  },
+  "refs2#11": {
+   "t": "b",
+   "v": false
+  },
+  "refs2#12": {
+   "t": "n",
+   "v": 0
+  },
+  "refs2#13": {
+   "t": "n",
+   "v": 0
+  },
+  "refs2#14": {
+   "t": "n",
+   "v": 0
+  },
+  "refs2#15": {
+   "t": "n",
+   "v": 0
+  },
+  "refs2#16": {
+   "t": "n",
+   "v": 12
+  },
+  "refs2#17": {
+   "t": "n",
+   "v": 8
+  }
+ },
+ "formulas": {
+  "refs2#1": "=RANK(20,OFFSET(D!B1,@{0;1},0,2))",
+  "refs2#2": "=SUM(RANK(20,OFFSET(D!B1,{0;1},0,2)))",
+  "refs2#3": "=RANK.EQ(20,OFFSET(D!B1,0,0,@{2;3}),1)",
+  "refs2#4": "=ROW(OFFSET(D!B1,@{0;1;2},0))",
+  "refs2#5": "=SUM(ROW(OFFSET(D!B1,@{0;1;2},0)))",
+  "refs2#6": "=COLUMN(OFFSET(D!B1,0,@{0,1}))",
+  "refs2#7": "=AREAS(OFFSET(D!B1,@{0;1},0))",
+  "refs2#8": "=SUM(AREAS(OFFSET(D!B1,{0;1},0)))",
+  "refs2#9": "=@CELL(\"address\",OFFSET(D!B1,@{0;1},0))",
+  "refs2#10": "=FORMULATEXT(OFFSET(D!B1,@{0;1},0))",
+  "refs2#11": "=ISFORMULA(OFFSET(D!B1,@{0;1},0))",
+  "refs2#12": "=SUMPRODUCT(--ISFORMULA(OFFSET(D!B1,{0;1},0)))",
+  "refs2#13": "=DSUM(OFFSET(D!A1,0,0,@{2;3},2),2,D!A1:A2)",
+  "refs2#14": "=SUM(DSUM(OFFSET(D!A1,0,0,{2;3},2),2,D!A1:A2))",
+  "refs2#15": "=DCOUNT(D!A1:B3,2,OFFSET(D!A1,0,0,2,@{1,2}))",
+  "refs2#16": "=AGGREGATE(9,0,OFFSET(D!B1,@{0;1},0,2))",
+  "refs2#17": "=INDEX(OFFSET(D!B1,@{0;1},0,2),2)"
+ },
+ "rows": {
+  "refs2#1": 1,
+  "refs2#2": 2,
+  "refs2#3": 3,
+  "refs2#4": 4,
+  "refs2#5": 5,
+  "refs2#6": 6,
+  "refs2#7": 7,
+  "refs2#8": 8,
+  "refs2#9": 9,
+  "refs2#10": 10,
+  "refs2#11": 11,
+  "refs2#12": 12,
+  "refs2#13": 13,
+  "refs2#14": 14,
+  "refs2#15": 15,
+  "refs2#16": 16,
+  "refs2#17": 17
+ }
+}
