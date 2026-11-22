@@ -6,7 +6,7 @@
  * whose answer depends on their arguments (`calls`), and the coverage measurement as Excel computed it with formulas of
  * the old kind (`measurement.json`).
  */
-import { existsSync, readFileSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { Val } from '../bench/coverage/formulajs.js'
 import type { Probe, SheetCells } from '../bench/coverage/probes.js'
@@ -25,11 +25,7 @@ interface Stored {
   rows: Record<string, number>
 }
 
-/** A set's answers: Excel for Mac's, else Excel for Windows' for a set only Windows ran (`legacy-win.test.ts`). */
-const load = <T>(name: string) => {
-  const mac = new URL(`./excel/legacy/${name}.json`, import.meta.url)
-  return JSON.parse(readFileSync(existsSync(mac) ? mac : new URL(`./excel/win/legacy/${name}.json`, import.meta.url), 'utf8')) as T
-}
+const load = <T>(name: string) => JSON.parse(readFileSync(new URL(`./excel/legacy/${name}.json`, import.meta.url), 'utf8')) as T
 
 /** Excel's text as canonical text; as it is where the engine has no syntax for it. */
 function canon(f: string): string {
@@ -60,7 +56,7 @@ const PARTED: Readonly<Record<string, string>> = {
   'nesting:GROWTH#array-r4': 'inside SUMPRODUCT Excel does not lift the call',
   'nesting:TREND#array-r4': 'inside SUMPRODUCT Excel does not lift the call',
   'nesting:XIRR#array-r3': 'inside SUMPRODUCT Excel does not lift the call',
-  'ref-legacy-held-2:refs2#9': "the book's name in CELL's address: Excel's file is 0.xlsx, the engine's book has no name (Book1)",
+  'ref-legacy-held-2:refs2#9': "the book's name in CELL's address: Excel's file is book.xlsx, the engine's book has no name (Book1)",
   'ref-legacy-held-2:refs2#13': 'a criteria label left blank (D!A1): Excel matches no record, the engine matches the database column with a blank label; DSUM(D!A1:B2,2,D!A1:A2) parts alike, not measured apart',
   'ref-legacy-held-2:refs2#14': 'a criteria label left blank (D!A1), as refs2#13',
   'ref-legacy-held-2:refs2#15': 'a criteria label left blank (D!A1), as refs2#13',

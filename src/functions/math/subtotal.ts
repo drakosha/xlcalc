@@ -70,7 +70,7 @@ function aggregate(cx: Cx, code: number, option: number, refs: (V | Rng | Arr | 
   const c = whole(code)
   const o = Math.trunc(option)
   if (c < 1 || c > 19 || o < 0 || o > 7) return E.VALUE
-  // an array of references is no reference nor array to AGGREGATE, unlike SUBTOTAL (Excel for Windows, the set
+  // an array of references is no reference nor array to AGGREGATE, unlike SUBTOTAL (Excel for Mac and Windows, the set
   // ref-arrays-held-2): AGGREGATE(9,0,OFFSET(B1,{0;1},0,2)) and AGGREGATE(14,0,OFFSET(…),1) are #VALUE!
   if (refs.some(holdsReferences)) return E.VALUE
   const skip: Skip = { nested: o < 4, hidden: o % 2 === 1 ? 'all' : 'none', errors: o % 4 >= 2 }
