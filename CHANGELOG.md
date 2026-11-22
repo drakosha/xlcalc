@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+Changed:
+
+- `readXlsx`, `openKept` and `inspectKept` no longer bound a part's ratio to its compressed size unless `limits.ratio` gives one; it was 200 by default. `writeXlsx` deflates a PivotTable's large records some 280 times (104 MB into 370 KB, where Excel's file held 724 KB), and a workbook it wrote was refused when read again. The parts read stay bounded by `entryBytes` (512 MiB) and `totalBytes` (1 GiB), which also bound a zip bomb; a host that wants a small file refused before it inflates passes a ratio.
+
 ## 0.89.3 (2026-11-22)
 
 Added:

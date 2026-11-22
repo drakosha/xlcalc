@@ -38,12 +38,12 @@ export const CENTRAL = 0x02014b50
 export const LOCAL = 0x04034b50
 
 /**
- * The bounds of a file once inflated by default: 512 MiB a part (about what a JavaScript string holds), 1 GiB the parts
- * read together, and a part over 16 MiB no more than 200 times its size in the file (xlsx parts inflate 5 to 40 times).
+ * The bounds of a file once inflated by default: 512 MiB a part (about what a JavaScript string holds) and 1 GiB the
+ * parts read together. The ratio of a part over 16 MiB to its size in the file is bounded only when `limits.ratio` asks:
+ * the writer's own PivotTable records inflate some 280 times.
  */
 export const ENTRY_BYTES = 2 ** 29
 export const TOTAL_BYTES = 2 ** 30
-export const RATIO = 200
 const RATIO_FROM = 2 ** 24
 
 let tables: Uint32Array | undefined
@@ -135,7 +135,7 @@ export function openArchive(bytes: Uint8Array, limits: XlsxLimits = {}): Archive
     if (byName.has(key)) fail(`entries ${byName.get(key)!.name} and ${e.name} have the same name`)
     byName.set(key, e)
   }
-  const { entryBytes = ENTRY_BYTES, totalBytes = TOTAL_BYTES, ratio = RATIO } = limits
+  const { entryBytes = ENTRY_BYTES, totalBytes = TOTAL_BYTES, ratio } = limits
   let spent = 0
   const bytesOf = async (name: string): Promise<Uint8Array | undefined> => {
     const e = byName.get(name.toLowerCase())
@@ -151,7 +151,7 @@ export function openArchive(bytes: Uint8Array, limits: XlsxLimits = {}): Archive
     if (size > entryBytes) fail(`entry ${e.name} is larger than ${entryBytes} bytes (limits.entryBytes)`)
     if ((spent += size) > totalBytes) fail(`the parts read add up to more than ${totalBytes} bytes (limits.totalBytes)`)
     if (e.method === 0) return checked(e, raw)
-    if (e.usize > RATIO_FROM && e.usize > ratio * e.csize) fail(`entry ${e.name} inflates to ${e.usize} bytes from ${e.csize}, more than ${ratio} times its size (limits.ratio)`)
+    if (ratio !== undefined && e.usize > RATIO_FROM && e.usize > ratio * e.csize) fail(`entry ${e.name} inflates to ${e.usize} bytes from ${e.csize}, more than ${ratio} times its size (limits.ratio)`)
     // a platform without the codec throws as it is; damaged data fails the stream
     // the CRC-32 of each chunk as it comes, while the next one inflates
     let crc = 0
