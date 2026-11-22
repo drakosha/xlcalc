@@ -6,6 +6,10 @@ Changed:
 
 - `readXlsx`, `openKept` and `inspectKept` no longer bound a part's ratio to its compressed size unless `limits.ratio` gives one; it was 200 by default. `writeXlsx` deflates a PivotTable's large records some 280 times (104 MB into 370 KB, where Excel's file held 724 KB), and a workbook it wrote was refused when read again. The parts read stay bounded by `entryBytes` (512 MiB) and `totalBytes` (1 GiB), which also bound a zip bomb; a host that wants a small file refused before it inflates passes a ratio.
 
+Fixed:
+
+- `IRR` finds the rate where Excel finds it: secant steps from the guess, then restarts from 0.1, −1/11 and 2. On cash flows such as 14 outflows followed by 47 inflows Newton's method from 0.1 ran to a root below −1 and gave `#NUM!`, where Excel answers the rate; with several roots the guess picks the same root as in Excel. Checked against Excel for Mac and Windows on 17 cases (`irr-iteration`).
+
 ## 0.89.3 (2026-11-22)
 
 Added:
