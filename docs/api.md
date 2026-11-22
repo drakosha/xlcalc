@@ -7461,8 +7461,9 @@ interface XlsxLimits {
   /** All the parts read, together: 1,073,741,824 (1 GiB) by default. */
   totalBytes?: number
   /**
-   * How many times its compressed size a part over 16 MiB may inflate to, at least 1: 200 by default. The parts of xlsx
-   * files inflate some 5 to 40 times; a zip bomb's, a thousand times.
+   * How many times its compressed size a part over 16 MiB may inflate to, at least 1; no bound unless given. Most
+   * parts inflate 5 to 40 times, but Excel deflated a PivotTable's 104 MB of records 144 times and `writeXlsx` the same
+   * records 280 times; a zip bomb's parts inflate a thousand times.
    */
   ratio?: number
 }
