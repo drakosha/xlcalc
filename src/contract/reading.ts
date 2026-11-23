@@ -231,6 +231,8 @@ export interface ViewportCell extends Partial<CellDisplay> {
    * be a style of the cell's own (`Session.patchCells`).
    */
   effectiveStyle?: number
+  /** The final visual style's index in this window's `resolvedStyles`, when a table or PivotTable style contributes. */
+  resolvedStyle?: number
   /** The number format the cell is displayed in, as a format code: its own, or else its row's, or else its column's; a built-in format as its code in the workbook's locale (14 is `dd/mm/yyyy` in ru-RU). */
   numberFormat?: string
   /** Where `numberFormat` comes from. */
@@ -288,6 +290,8 @@ export interface Viewport {
   cells: Record<string, ViewportCell>
   /** The styles the viewport's cells have or use (`ViewportCell.style`, `effectiveStyle`), by their index in the workbook's `styles`: copies owned by the result. */
   styles: Record<number, CellStyle>
+  /** Final visual styles of the cells in this window. Their indices are local to this response. */
+  resolvedStyles?: Record<number, CellStyle>
   /** The columns of `range` from left to right, or those of `ViewportOptions.columns`. */
   columns: ViewportColumn[]
   /** The rows of `range` from top to bottom, or those of `ViewportOptions.rows`. */

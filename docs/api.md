@@ -1603,6 +1603,8 @@ interface BookInput {
    * included in `inputHash` when given.
    */
   font?: { name: string; size: number }
+  /** The workbook's theme palette and custom table style definitions. */
+  tableStyles?: WorkbookTableStyles
   /** The caches of the workbook's PivotTables (`SheetInput.pivotTables`), by `id`. Not part of calculation or `inputHash`. */
   pivotCaches?: PivotCache[]
   /** The caches of its slicers and timelines, by name. */
@@ -6714,6 +6716,30 @@ interface TableStyle {
 }
 ```
 
+### `TableStyleDefinition`
+
+A custom definition by name in [`WorkbookTableStyles.custom`](#workbooktablestyles).
+
+```ts
+interface TableStyleDefinition {
+  table?: boolean
+  pivot?: boolean
+  elements: TableStyleElement[]
+}
+```
+
+### `TableStyleElement`
+
+One region of a custom table style, with the size of a stripe when the region is one.
+
+```ts
+interface TableStyleElement {
+  type: string
+  size?: number
+  style: CellStyle
+}
+```
+
 ### `TextFormat`
 
 The cell's text contains `text`, does not contain it, begins with it or ends with it, in any case. Excel calculates
@@ -7071,6 +7097,8 @@ interface Viewport {
   cells: Record<string, ViewportCell>
   /** The styles the viewport's cells have or use (`ViewportCell.style`, `effectiveStyle`), by their index in the workbook's `styles`: copies owned by the result. */
   styles: Record<number, CellStyle>
+  /** Final visual styles of the cells in this window. Their indices are local to this response. */
+  resolvedStyles?: Record<number, CellStyle>
   /** The columns of `range` from left to right, or those of `ViewportOptions.columns`. */
   columns: ViewportColumn[]
   /** The rows of `range` from top to bottom, or those of `ViewportOptions.rows`. */
@@ -7118,6 +7146,8 @@ interface ViewportCell extends Partial<CellDisplay> {
    * be a style of the cell's own (`Session.patchCells`).
    */
   effectiveStyle?: number
+  /** The final visual style's index in this window's `resolvedStyles`, when a table or PivotTable style contributes. */
+  resolvedStyle?: number
   /** The number format the cell is displayed in, as a format code: its own, or else its row's, or else its column's; a built-in format as its code in the workbook's locale (14 is `dd/mm/yyyy` in ru-RU). */
   numberFormat?: string
   /** Where `numberFormat` comes from. */
@@ -7220,6 +7250,18 @@ interface WorkbookStatistics {
   sheet: StatisticsCounts & { end: string | null }
   /** The workbook's counts over all its sheets, hidden ones too, and the number of sheets. */
   workbook: StatisticsCounts & { sheets: number }
+}
+```
+
+### `WorkbookTableStyles`
+
+The theme colours and custom differential styles used to display tables and PivotTables.
+
+```ts
+interface WorkbookTableStyles {
+  /** The 12 theme colours in xlsx theme-index order. */
+  theme?: string[]
+  custom?: Record<string, TableStyleDefinition>
 }
 ```
 

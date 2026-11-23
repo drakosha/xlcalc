@@ -469,6 +469,27 @@ export interface TableInput {
   filter?: FilterCriteria | false
 }
 
+/** One region of a custom table style, with the size of a stripe when the region is one. */
+export interface TableStyleElement {
+  type: string
+  size?: number
+  style: CellStyle
+}
+
+/** A custom definition by name in `WorkbookTableStyles.custom`. */
+export interface TableStyleDefinition {
+  table?: boolean
+  pivot?: boolean
+  elements: TableStyleElement[]
+}
+
+/** The theme colours and custom differential styles used to display tables and PivotTables. */
+export interface WorkbookTableStyles {
+  /** The 12 theme colours in xlsx theme-index order. */
+  theme?: string[]
+  custom?: Record<string, TableStyleDefinition>
+}
+
 /**
  * A table's style (`TableInput.style`): one of Excel's table styles, and the parts of the table it emphasizes, each
  * false by default, as the checkboxes of Excel's Table Style Options.
@@ -626,6 +647,8 @@ export interface BookInput {
    * included in `inputHash` when given.
    */
   font?: { name: string; size: number }
+  /** The workbook's theme palette and custom table style definitions. */
+  tableStyles?: WorkbookTableStyles
   /** The caches of the workbook's PivotTables (`SheetInput.pivotTables`), by `id`. Not part of calculation or `inputHash`. */
   pivotCaches?: PivotCache[]
   /** The caches of its slicers and timelines, by name. */
