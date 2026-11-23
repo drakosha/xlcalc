@@ -1,5 +1,5 @@
 /** The same groupings made independently in Excel for Mac and Windows in ru-RU. */
-import type { Period, PivotCase, PivotOp } from './cases.js'
+import type { PivotCase, PivotOp } from './cases.js'
 import { serial } from './data.js'
 
 type Group = Extract<PivotOp, { group: string }>
