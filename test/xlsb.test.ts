@@ -1,5 +1,7 @@
+import { readFile } from 'node:fs/promises'
 import { describe, expect, it } from 'vitest'
 import { readXlsb } from '../src/xlsb.js'
+import { readXlsx } from '../src/xlsx.js'
 import { records } from '../src/xlsb/records.js'
 import { Xml } from '../src/xlsb/xml.js'
 import { zip } from '../src/xlsx/zip/write.js'
@@ -30,6 +32,12 @@ const fixture = (data: Uint8Array) => zip([
 ])
 
 describe('XLSB archive', () => {
+  it.each(['probe', 'formulas'])('reads both of Excel’s %s saves identically', async (name) => {
+    const path = `./excel/win/xlsb-read/${name}`
+    const [binary, xml] = await Promise.all(['xlsb', 'xlsx'].map((ext) => readFile(new URL(`${path}.${ext}`, import.meta.url))))
+    await expect(readXlsb(binary)).resolves.toStrictEqual(await readXlsx(xml))
+  })
+
   it('resolves the workbook and worksheets from their original package paths', async () => {
     const data = await fixture(Uint8Array.of(0x81, 1, 0, 0x82, 1, 0))
     const read = await readXlsb(data)

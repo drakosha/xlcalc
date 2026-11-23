@@ -68,6 +68,11 @@ export class Payload {
     this.next(size)
   }
 
+  section(size: number): Payload {
+    const start = this.next(size)
+    return new Payload(this.view, this.part, start, start + size, this.type)
+  }
+
   u8(): number {
     return this.view.getUint8(this.next(1))
   }
