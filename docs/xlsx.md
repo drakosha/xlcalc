@@ -283,6 +283,8 @@ The calculation option is kept as `calculation`: `manual`, or `autoNoTable` (aut
 
 ### Names
 
+On import, an empty or whitespace-only `definedName` is left out. Excel for Windows refused the synthetic files in a normal open through its object model. Excel for Mac's interactive repair of the empty case dropped the definition, and the cell referring to it gave `#NAME?`.
+
 | in the file | in the workbook |
 |---|---|
 | `Data!$A$1`, `'Data'!$D:$D` | the reference |

@@ -8,8 +8,6 @@ import { EMPTY_NAME_CASES, emptyNameFile } from '../coverage/xlsx/empty-defined-
 import { winFile } from './functions.js'
 import { metaOf, OUT, runJob, withWindowsExcel, type Step } from './remote.js'
 
-const repair = process.argv[2] === 'repair'
-
 await withWindowsExcel('ru-RU', async (env) => {
   mkdirSync(OUT, { recursive: true })
   const steps: Step[] = [
@@ -21,7 +19,7 @@ await withWindowsExcel('ru-RU', async (env) => {
   const files = await Promise.all(EMPTY_NAME_CASES.map(async (c) => {
     const file = join(OUT, `empty-defined-names-${c.id}.xlsx`)
     writeFileSync(file, await emptyNameFile(c))
-    return { file, steps, ...(repair ? { repair: true as const } : {}) }
+    return { file, steps }
   }))
   const results = await runJob('xlsx-empty-defined-names', files)
   const entries = await Promise.all(EMPTY_NAME_CASES.map(async ({ id }, index) => {
@@ -34,5 +32,5 @@ await withWindowsExcel('ru-RU', async (env) => {
     const [names, , value] = result.answers
     return [id, { names, value, saved }] as const
   }))
-  writeAnswers(winFile(repair ? 'xlsx/empty-defined-names-repair.json' : 'xlsx/empty-defined-names.json'), { meta: metaOf(env, 'ru-RU'), answers: Object.fromEntries(entries) })
+  writeAnswers(winFile('xlsx/empty-defined-names.json'), { meta: metaOf(env, 'ru-RU'), answers: Object.fromEntries(entries) })
 })

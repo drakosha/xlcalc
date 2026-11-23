@@ -82,7 +82,10 @@ function readNames(xml: string, decls: SheetDecl[], read: Set<string>, issues: I
       issues.add('name', { key: 'nameOfSheetLeftOut' }, { name })
       continue
     }
-    const f = readFormula(readText(e.body ?? ''), issues, { name }, { ...opts, union: true })
+    const ref = readText(e.body ?? '')
+    // Excel's repair removes an empty definition. Leaving it here could shadow a valid workbook name.
+    if (!ref.trim()) continue
+    const f = readFormula(ref, issues, { name }, { ...opts, union: true })
     out.push({ name, ref: f.formula, ...(scope === undefined ? {} : { scope }), ...(flag(a.hidden) ? { hidden: true } : {}) })
   }
   return out
