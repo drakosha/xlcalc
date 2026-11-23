@@ -5,7 +5,7 @@
  * shows what `numberFormat` says in every locale.
  */
 import { InputError } from '../../input-error.js'
-import { formatRefused } from '../../numfmt/refused.js'
+import { checkFormatSectionLayout, formatRefused } from '../../numfmt/refused.js'
 import type { BorderLine, CellStyle, ConditionalStyle, FontStyle, NumberFormat } from '../../contract.js'
 import { BUILTIN, BUILTIN_ID } from '../styles/numfmt.js'
 import type { Issues } from '../issues.js'
@@ -102,7 +102,9 @@ export function dxfXml(s: ConditionalStyle, numFmt: (code: NumberFormat) => numb
 
 /** A code a file is to take: refused where Excel does not open a file with it, a code no cell uses too. */
 export function checkWritten(code: string): void {
-  if (formatRefused(code)) throw new InputError('numberFormat', `Excel does not open a file with the number format ${JSON.stringify(code)}: text in a format goes in quotes (0 "kg", 0 "шт/ч")`)
+  if (!formatRefused(code)) return
+  checkFormatSectionLayout(code)
+  throw new InputError('numberFormat', `Excel does not open a file with the number format ${JSON.stringify(code)}: text in a format goes in quotes (0 "kg", 0 "шт/ч")`)
 }
 
 /** A number format's id among the built-in ones and those a file defines (`custom`, which a new code joins from 164 on). */

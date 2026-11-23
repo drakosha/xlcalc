@@ -1,0 +1,39 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "ru-RU",
+  "ui": "ru-RU (Excel 1049)",
+  "format": "ru-RU (decimal \",\", thousands U+0020, list \";\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96
+ },
+ "answers": {
+  "three-conditions": {
+   "rejected": "-2146827284 Невозможно получить свойство Open класса Workbooks"
+  },
+  "two-conditions": {
+   "rejected": "-2146827284 Невозможно получить свойство Open класса Workbooks"
+  },
+  "three-sections": {
+   "rejected": "-2146827284 Невозможно получить свойство Open класса Workbooks"
+  },
+  "only-third": {
+   "rejected": "-2146827284 Невозможно получить свойство Open класса Workbooks"
+  },
+  "only-fourth": {
+   "rejected": "-2146827284 Невозможно получить свойство Open класса Workbooks"
+  },
+  "quoted-third": {
+   "shown": [
+    [
+     "75,0%",
+     0,
+     "0,0%;[Синий]0,0%;0,0%\"[>=0.6]\"",
+     "0,0%;[Синий]0,0%;0,0%\"[>=0.6]\""
+    ]
+   ],
+   "saved": true
+  }
+ }
+}

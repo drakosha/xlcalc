@@ -6,7 +6,8 @@
  */
 import type { NumberFormat } from '../contract.js'
 import { checkFormat } from '../input/styles.js'
-import { EN_CODES, parseFormat, splitSections } from './parse.js'
+import { InputError } from '../input-error.js'
+import { EN_CODES, formatSectionProblem, parseFormat, splitSections } from './parse.js'
 
 /** A longer code Excel cuts to this or refuses: never what was asked for. */
 const MAX_CODE = 255
@@ -92,6 +93,12 @@ function sectionCost(read: Read): number {
   const codes = rest.replace(/[^0#?.,%@/]/g, '').replace(/[0#?]/g, '').length
   const literals = rest.replace(/[0#?.,%@/]/g, '').length
   return read.cost + literals * CHAR_COST + codes * CODE_COST + (/[0#?]/.test(rest) ? DIGITS_COST : 0) + (literals && !read.quotedLast ? 1 : 0)
+}
+
+/** A misplaced condition or a fourth numeric section prevents Excel from opening the file. */
+export function checkFormatSectionLayout(code: string): void {
+  const problem = formatSectionProblem(code.replace(DBNUM_ANY, ''))
+  if (problem) throw new InputError('numberFormat', `Excel does not open a file with the number format ${JSON.stringify(code)}: ${problem}`)
 }
 
 /**

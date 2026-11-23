@@ -10,6 +10,7 @@ import { formatRefused } from '../src/text.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openKept, writeKept } from '../src/xlsx-keep.js'
 import { zip } from '../src/xlsx/zip/write.js'
+import { FORMAT_CONDITION_CASES, conditionFormatFile } from '../bench/coverage/xlsx/number-format-conditions.js'
 import { partsOf } from './keep-files.js'
 
 const SETS = ['digits-date-letters', 'bare-literals', 'bare-held', 'refused-held', 'written-held', 'letters-open', 'letters-open-2']
@@ -97,5 +98,27 @@ describe('writing a refused code', () => {
     expect((await partsOf(written.data)).get('xl/styles.xml')).toContain('formatCode="0 kg"')
     // the workbook as a new file is another file, which takes the code anew
     await expect(writeXlsx({ book: read.book })).rejects.toThrow('0 kg')
+  })
+})
+
+describe('conditional sections of an xlsx number format', () => {
+  const { answers } = JSON.parse(readFileSync(new URL('excel/win/xlsx/number-format-conditions.json', import.meta.url), 'utf8')) as {
+    answers: Record<string, { rejected?: string; saved?: boolean }>
+  }
+
+  it.each(FORMAT_CONDITION_CASES.filter(({ id }) => id !== 'quoted-third'))('$id is refused with the section rule', async ({ id, code }) => {
+    expect(answers[id].rejected).toBeDefined()
+    expect(formatRefused(code)).toBe(true)
+    const reason = id === 'two-conditions' ? 'the fourth section is for text' : 'conditions go in the first two sections'
+    await expect(readXlsx(await conditionFormatFile(code))).rejects.toThrow(reason)
+    await expect(writeXlsx({ book: { sheets: [{ name: 'S', cells: { A1: { value: 0.75, numberFormat: code } } }] } })).rejects.toThrow(reason)
+  })
+
+  it('keeps a comparator in quoted text', async () => {
+    const { code } = FORMAT_CONDITION_CASES.find(({ id }) => id === 'quoted-third')!
+    expect(answers['quoted-third'].saved).toBe(true)
+    const { book } = await readXlsx(await conditionFormatFile(code))
+    expect(book.sheets[0].cells.A1.numberFormat).toBe(code)
+    await expect(writeXlsx({ book })).resolves.toBeDefined()
   })
 })

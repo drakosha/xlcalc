@@ -1,3 +1,4 @@
+import { checkFormatSectionLayout } from '../../numfmt/refused.js'
 /**
  * styles.xml as the model's style table: each cell format (`<xf>` of `<cellXfs>`) becomes a style of the book
  * (font, solid fill, borders, alignment, protection; equal ones shared) and a number format, a code or a built-in format's number.
@@ -198,7 +199,11 @@ export function readStyles(xml: string | undefined, p: Palette): StyleTable {
   const formats = new Map<number, string>()
   for (const e of within(xml, 'numFmts', 'numFmt')) {
     const a = attributes(e.attrs)
-    if (a.numFmtId !== undefined && a.formatCode !== undefined) formats.set(Number(a.numFmtId), decodeXml(a.formatCode))
+    if (a.numFmtId !== undefined && a.formatCode !== undefined) {
+      const code = decodeXml(a.formatCode)
+      checkFormatSectionLayout(code)
+      formats.set(Number(a.numFmtId), code)
+    }
   }
   const fonts = within(xml, 'fonts', 'font').map((e) => font(e, p))
   const base = fonts[0]?.style ?? {}
