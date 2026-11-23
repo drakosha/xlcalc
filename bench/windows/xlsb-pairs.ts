@@ -3,19 +3,28 @@
  * or omit them for the small probe: XLWIN_HOST=… XLWIN_CODEPAGE=any npx tsx bench/windows/xlsb-pairs.ts OUT [XLSX…]
  */
 import { createHash } from 'node:crypto'
-import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { basename, join } from 'node:path'
 import { writeXlsx } from '../../src/xlsx.js'
 import { metaOf, runJob, withWindowsExcel, type Book, type Step } from './remote.js'
 
 const [, , out, ...sources] = process.argv
-if (!out) throw new Error('usage: xlsb-pairs.ts OUT [XLSX… | --formulas]')
+if (!out) throw new Error('usage: xlsb-pairs.ts OUT [XLSX…] [--formulas] [--files-from PATH]')
 mkdirSync(out, { recursive: true })
 
 const locale = process.env.XLWIN_LOCALE ?? 'ru-RU'
 const probe = join(out, 'probe.source.xlsx')
 const save: Step = { do: 'saveXlsbPair' }
-const files = sources.filter((source) => source !== '--formulas')
+const files: string[] = []
+for (let i = 0; i < sources.length; i++) {
+  const source = sources[i]
+  if (source === '--formulas') continue
+  if (source === '--files-from') {
+    const manifest = sources[++i]
+    if (!manifest) throw new Error('--files-from takes a text file with one workbook path per line')
+    files.push(...readFileSync(manifest, 'utf8').split(/\r?\n/).filter(Boolean))
+  } else files.push(source)
+}
 const cases: { id: string; book: Book }[] = files.map((file) => {
   const suffix = createHash('sha256').update(file).digest('hex').slice(0, 12)
   return { id: `${basename(file, '.xlsx')}-${suffix}`, book: { file, steps: [save] } }

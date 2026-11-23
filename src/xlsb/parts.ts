@@ -17,6 +17,7 @@ export interface Part {
 
 export interface Context {
   fonts: string[]
+  date1904?: boolean
   strings: number
   styles?: number
   dxfs14: string[]
@@ -27,6 +28,7 @@ export interface Context {
   external: ReadonlyMap<string, ExternalSource>
   metadata: { cell: number; value: number }
   tables: Map<number, TableIndex>
+  pivotNames?: string[]
 }
 
 export function workbook({ bytes, path, xml, pending, context }: Part): void {
@@ -60,7 +62,8 @@ export function workbook({ bytes, path, xml, pending, context }: Part): void {
         payload.u32()
         if (payload.remaining) payload.wide()
         payload.done()
-        if (flags & 1) xml.add('<workbookPr date1904="1"/>')
+        context.date1904 = Boolean(flags & 1)
+        if (context.date1904) xml.add('<workbookPr date1904="1"/>')
         break
       }
       case 158: { // BrtBookView
@@ -126,6 +129,15 @@ export function workbook({ bytes, path, xml, pending, context }: Part): void {
         for (let i = 0; i < count; i++) context.xti.push([payload.u32(), payload.i32(), payload.i32()])
         break
       }
+      case 384: xml.add('<pivotCaches>'); break
+      case 385: xml.add('</pivotCaches>'); break
+      case 386: {
+        const id = payload.u32()
+        const rel = payload.nullableWide()
+        payload.done()
+        xml.add(`<pivotCache cacheId="${id}"${rel ? ` r:id="${escapeAttr(rel)}"` : ''}/>`)
+        break
+      }
     }
   }
   if (sheetsOpen) xml.add('</sheets>')
@@ -138,6 +150,7 @@ export function workbook({ bytes, path, xml, pending, context }: Part): void {
     xml.add('<definedNames>')
     for (const name of context.names) {
       if (/^_xl(?:fn|pm|op|eta)\./i.test(name.name)) continue
+      if (!name.ref.tokens.remaining && !name.ref.extra.remaining) continue
       const parsed = formulaText(name.ref, context, 0, 0, true)
       if (!parsed || !('text' in parsed)) {
         pending()

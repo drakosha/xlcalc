@@ -8,10 +8,10 @@ export function address(payload: Payload, row: number, column: number): string {
 
 /** RfX: the two row numbers precede the two column numbers. */
 export function range(payload: Payload): string {
-  const top = payload.u32()
-  const bottom = payload.u32()
-  const left = payload.u32()
-  const right = payload.u32()
+  return rangeAt(payload, payload.u32(), payload.u32(), payload.u32(), payload.u32())
+}
+
+export function rangeAt(payload: Payload, top: number, bottom: number, left: number, right: number): string {
   if (top > bottom || left > right) payload.fail('range ends before it starts')
   const first = address(payload, top, left)
   const last = address(payload, bottom, right)

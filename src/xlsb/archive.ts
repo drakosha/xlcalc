@@ -1,13 +1,16 @@
+import { relsOf } from '../xlsx/read/package.js'
 import type { XlsxLimits } from '../xlsx/types.js'
 import { attributes, elements } from '../xlsx/xml/scan.js'
 import { decodeXml } from '../xlsx/xml/text.js'
 import type { Archive } from '../xlsx/zip/read.js'
 import { comments } from './comments.js'
 import { externalIndex, externalLink, type ExternalSource } from './external.js'
-import { relsOf } from '../xlsx/read/package.js'
 import { metadata } from './metadata.js'
 import { workbook, type Context, type Part } from './parts.js'
+import { cacheDefinition, cacheRecords } from './pivot-cache.js'
+import { pivotTable } from './pivot-table.js'
 import { records } from './records.js'
+import { slicerCache, slicers } from './slicers.js'
 import { sharedStrings } from './strings.js'
 import { styles } from './styles.js'
 import { table, tableIndex } from './table.js'
@@ -23,11 +26,16 @@ const converters: Readonly<Partial<Record<string, Convert>>> = {
   'application/vnd.ms-excel.sheetmetadata': metadata,
   'application/vnd.ms-excel.table': table,
   'application/vnd.ms-excel.comments': comments,
-  'application/vnd.ms-excel.externallink': externalLink,
+  'application/vnd.ms-excel.pivottable': pivotTable,
+  'application/vnd.ms-excel.slicer': slicers,
+  'application/vnd.ms-excel.slicercache': slicerCache,
 }
 
 /** The relationship graph keeps its original paths, so binary and XML parts can point to each other. */
-export async function convertingArchive(source: Archive, workbookPath: string, limits: XlsxLimits, budget: Budget, unfinished: Set<string>): Promise<Archive> {
+export async function convertingArchive(
+  source: Archive, workbookPath: string, limits: XlsxLimits, budget: Budget,
+  unfinished: Set<string>, invalidExternalDefinition: (part: string, name: string) => void,
+): Promise<Archive> {
   const types = new Map<string, string>()
   const external = new Map<string, ExternalSource>()
   const context: Context = {
@@ -39,6 +47,7 @@ export async function convertingArchive(source: Archive, workbookPath: string, l
     if (PartName && ContentType) types.set(decodeXml(PartName).replace(/^\//, '').toLowerCase(), ContentType.toLowerCase())
   }
   const loaded = new Map<string, Uint8Array>()
+  const cacheFields = new Map<string, ReturnType<typeof cacheDefinition>>()
   const slash = workbookPath.lastIndexOf('/') + 1
   const workbookRelsPath = `${workbookPath.slice(0, slash)}_rels/${workbookPath.slice(slash)}.rels`
   const relsText = await source.text(workbookRelsPath)
@@ -85,6 +94,22 @@ export async function convertingArchive(source: Archive, workbookPath: string, l
       const xml = new Xml(path, limits, budget)
       const kind = types.get(key) ?? ''
       const part = { bytes, path, xml, context, pending }
+      if (kind === 'application/vnd.ms-excel.externallink') {
+        externalLink(part, (name) => invalidExternalDefinition(path, name))
+        return xml.text()
+      }
+      if (kind === 'application/vnd.ms-excel.pivotcachedefinition') {
+        const fields = cacheDefinition(part)
+        const data = (await relsOf(source, path)).find((r) => r.kind === 'pivotCacheRecords' && !r.external)
+        if (data) cacheFields.set(data.target.toLowerCase(), fields)
+        return xml.text()
+      }
+      if (kind === 'application/vnd.ms-excel.pivotcacherecords') {
+        const fields = cacheFields.get(key)
+        if (fields) cacheRecords(part, fields)
+        else pending()
+        return xml.text()
+      }
       const convert = key === workbookPath.toLowerCase() ? workbook : Object.hasOwn(converters, kind) ? converters[kind] : undefined
       if (!convert) {
         for (const _record of records(bytes, path)) {

@@ -198,10 +198,17 @@ export function formulaText({ tokens, extra }: Formula, context: Context, row = 
         break
       case 0x16: push(''); break
       case 0x17: push(textLiteral(tokens.wide(tokens.u16()))); break
-      case 0x18:
-        if (tokens.u8() !== 0x19) return undefined
-        push(list(tokens, extra, context))
+      case 0x18: {
+        const extension = tokens.u8()
+        if (extension === 0x19) push(list(tokens, extra, context))
+        else if (extension === 0x1d && context.pivotNames) {
+          const index = tokens.u32()
+          const name = context.pivotNames[index]
+          if (name === undefined) return tokens.fail(`pivot formula name index ${index} out of bounds`)
+          push(name)
+        } else return undefined
         break
+      }
       case 0x19: {
         const flag = tokens.u8()
         if (flag === 0x40 || flag === 0x41) {

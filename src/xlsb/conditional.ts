@@ -1,5 +1,7 @@
 import { parseAddress } from '../model.js'
+import { X14_CF } from '../xlsx/read/conditional.js'
 import { escapeAttr, escapeText } from '../xlsx/xml/text.js'
+import { differential } from './dxf.js'
 import { colorAttrs } from './fields.js'
 import { ICONS } from './filter.js'
 import { formula, formulaText, type Formula } from './formula.js'
@@ -23,9 +25,22 @@ export class Conditional {
   private col = 0
   private visual = false
   private futureRefs = ''
+  private standaloneRule = false
   private barColors: string[] = []
+  private readonly futureRules: Xml
+  private awaitingDxf = false
+  private embeddedDxfs = 0
 
-  constructor(private readonly part: Part, private readonly extensions: Xml) {}
+  constructor(private readonly part: Part) {
+    this.futureRules = part.xml.fragment()
+  }
+
+  appendExtensions(extensions: Xml): void {
+    if (this.futureRules.empty) return
+    extensions.add(`<ext uri="${X14_CF}"><x14:conditionalFormattings>`)
+    extensions.append(this.futureRules)
+    extensions.add('</x14:conditionalFormattings></ext>')
+  }
 
   take(type: number, payload: Payload): boolean {
     const { xml } = this.part
@@ -92,14 +107,34 @@ export class Conditional {
         this.row = corner.row
         this.col = corner.col
         this.futureRefs = header.ranges.join(' ')
-        text = `<ext><x14:conditionalFormattings><x14:conditionalFormatting${pivot ? ' pivot="1"' : ''}>`
+        text = `<x14:conditionalFormatting${pivot ? ' pivot="1"' : ''}>`
         break
       }
       case 1047:
-        text = `<xm:sqref>${this.futureRefs}</xm:sqref></x14:conditionalFormatting></x14:conditionalFormattings></ext>`
+        text = `<xm:sqref>${this.futureRefs}</xm:sqref></x14:conditionalFormatting>`
         break
       case 1048: text = this.rule(payload, future(payload).formulas); break
-      case 1049: text = '</x14:cfRule>'; break
+      case 1049:
+        if (this.awaitingDxf) this.part.pending()
+        this.awaitingDxf = false
+        text = '</x14:cfRule>'
+        break
+      case 505:
+        if (!this.awaitingDxf) return false
+        payload.skip(4) // Worksheet DXFs carry an FRT header before the count.
+        this.embeddedDxfs = payload.u32()
+        text = ''
+        break
+      case 507:
+        if (!this.embeddedDxfs) return false
+        this.embeddedDxfs--
+        text = `<x14:dxf>${differential(payload, true)}</x14:dxf>`
+        this.awaitingDxf = false
+        break
+      case 506:
+        if (this.embeddedDxfs) return payload.fail('incomplete conditional formatting DXF collection')
+        text = ''
+        break
       case 1050: text = this.threshold(payload, future(payload).formulas[0], true); break
       case 1051: {
         payload.u32()
@@ -110,10 +145,10 @@ export class Conditional {
         const axis = ['automatic', 'middle', 'none'][payload.u8()]
         const flags = payload.u16()
         this.barColors = [
-          'fillColor',
+          ...(this.standaloneRule ? ['fillColor'] : []),
           ...(flags & 1 ? ['borderColor'] : []),
           ...(flags & 4 ? ['negativeFillColor'] : []),
-          ...(flags & 8 ? ['negativeBorderColor'] : []),
+          ...((flags & 9) === 9 ? ['negativeBorderColor'] : []),
           ...(axis === 'none' ? [] : ['axisColor']),
         ]
         text = `<x14:dataBar minLength="${min}" maxLength="${max}" showValue="${show}" direction="${direction}" axisPosition="${axis}"`
@@ -142,12 +177,12 @@ export class Conditional {
       }
       case 1155: text = '</x14:iconSet>'; break
       case 1156: this.barColors = []; text = '</x14:dataBar>'; break
-      case 1157: payload.u32(); text = '<x14:colorScale>'; break
+      case 1157: text = '<x14:colorScale>'; break
       case 1158: text = '</x14:colorScale>'; break
       default: return false
     }
     payload.done()
-    this.extensions.add(text)
+    this.futureRules.add(text)
     return true
   }
 
@@ -157,6 +192,7 @@ export class Conditional {
     const template = payload.u32()
     const dxf = payload.u32()
     const priority = payload.i32()
+    this.standaloneRule = priority !== -1
     const parameter = payload.u32()
     payload.skip(8)
     const flags = payload.u16()
@@ -184,9 +220,11 @@ export class Conditional {
     if (name === 'top10') attrs += ` rank="${parameter}" percent="${(flags >>> 4) & 1}" bottom="${(flags >>> 3) & 1}"`
     if (name === 'aboveAverage') attrs += ` aboveAverage="${(flags >>> 2) & 1}" equalAverage="${template >= 29 ? 1 : 0}" stdDev="${parameter}"`
     let text = `<${extended ? 'x14:' : ''}cfRule type="${name}" priority="${priority}"${attrs}>`
-    const ownDxf = extended && dxf !== 0xffffffff ? context.dxfs14[dxf] : undefined
+    // The second half of a data bar carries no differential style, even though it stores a zero index.
+    const useOwnDxf = extended && priority !== -1 && dxf !== 0xffffffff
+    const ownDxf = useOwnDxf ? context.dxfs14[dxf] : undefined
     if (ownDxf !== undefined) text += `<x14:dxf>${ownDxf}</x14:dxf>`
-    else if (extended && dxf !== 0xffffffff) pending()
+    else if (useOwnDxf) this.awaitingDxf = true
     for (const parsed of extended ?? counts.flatMap((count) => count ? [formula(payload)] : [])) {
       const value = formulaText(parsed, context, this.row, this.col, true)
       if (!value || !('text' in value)) pending()

@@ -38,7 +38,8 @@ export function worksheet(part: Part): void {
   xml.add(`<worksheet ${NS}>`)
   const filters = new Filters(xml)
   const extensions = xml.fragment()
-  const conditional = new Conditional(part, extensions)
+  const hyperlinks = xml.fragment()
+  const conditional = new Conditional(part)
   let row = -1
   let cm = 0
   let vm = 0
@@ -47,7 +48,7 @@ export function worksheet(part: Part): void {
   let defaultHeight: number | undefined
   let hasPane = false
   let colsOpen = false
-  let linksOpen = false
+  let isoProtection = false
   let lastCell: Cell | undefined
   const anchors = new Map<string, ArrayFormula>()
   const flush = () => {
@@ -69,10 +70,6 @@ export function worksheet(part: Part): void {
     lastCell = undefined
   }
   for (const { type, payload } of records(bytes, path)) {
-    if (linksOpen && type !== 494) {
-      xml.add('</hyperlinks>')
-      linksOpen = false
-    }
     switch (type) {
       case 133: xml.add('<sheetViews>'); break
       case 134: xml.add('</sheetViews>'); break
@@ -161,12 +158,19 @@ export function worksheet(part: Part): void {
       case 177: xml.add('<mergeCells>'); break
       case 178: xml.add('</mergeCells>'); break
       case 176: xml.add(`<mergeCell ref="${range(payload)}"/>`); payload.done(); break
-      case 535: xml.add(protection(payload)); break
-      case 678: pending(); break
+      case 535: {
+        const protectionXml = protection(payload)
+        if (!isoProtection) xml.add(protectionXml)
+        isoProtection = false
+        break
+      }
+      case 678:
+        xml.add(protection(payload, true))
+        isoProtection = true
+        break
+      case 536: case 680: case 1103: case 1104: xml.add('<protectedRanges/>'); break
       case 494:
-        if (!linksOpen) xml.add('<hyperlinks>')
-        linksOpen = true
-        xml.add(hyperlink(payload))
+        hyperlinks.add(hyperlink(payload))
         break
       case 550: case 551: {
         const id = payload.nullableWide()
@@ -178,18 +182,26 @@ export function worksheet(part: Part): void {
       case 392: xml.add('<rowBreaks/>'); break
       case 394: xml.add('<colBreaks/>'); break
       case 479: xml.add('<headerFooter/>'); break
-      case 478: pending(); break
+      case 478: xml.add(pageSetup(payload)); break
+      case 562: xml.add('<picture/>'); break
+      case 638: xml.add('<oleObjects/>'); break
+      case 643: xml.add('<controls/>'); break
       default:
         if (!filters.take(type, payload) && !conditional.take(type, payload)) validation(part, type, payload, extensions)
     }
   }
-  if (linksOpen) xml.add('</hyperlinks>')
   if (inData) {
     flush()
     if (rowOpen) xml.add('</row>')
     xml.add('</sheetData>')
     pending()
   }
+  if (!hyperlinks.empty) {
+    xml.add('<hyperlinks>')
+    xml.append(hyperlinks)
+    xml.add('</hyperlinks>')
+  }
+  conditional.appendExtensions(extensions)
   if (!extensions.empty) {
     xml.add('<extLst xmlns:x14="http://schemas.microsoft.com/office/spreadsheetml/2009/9/main" xmlns:xm="http://schemas.microsoft.com/office/excel/2006/main">')
     xml.append(extensions)
@@ -254,8 +266,9 @@ function selection(payload: Payload, hasPane: boolean): string {
   for (let i = 0; i < count; i++) ranges.push(range(payload))
   payload.done()
   if (!selectedPane) payload.fail('invalid selection pane')
-  if (!hasPane && active === 'A1' && ranges.length === 1 && ranges[0] === 'A1') return ''
-  return `<selection${hasPane ? ` pane="${selectedPane}"` : ''} activeCell="${active}" sqref="${ranges.join(' ')}"/>`
+  const paneAttr = hasPane ? ` pane="${selectedPane}"` : ''
+  if (active === 'A1' && ranges.length === 1 && ranges[0] === 'A1') return paneAttr ? `<selection${paneAttr}/>` : ''
+  return `<selection${paneAttr} activeCell="${active}" sqref="${ranges.join(' ')}"/>`
 }
 
 function sheetFormat(payload: Payload): { height: number; xml: string } {
@@ -352,12 +365,21 @@ function dataTable(payload: Payload): string {
   return `<f t="dataTable" ref="${ref}"${fields}/>`
 }
 
-function protection(payload: Payload): string {
-  const password = payload.u16()
+function protection(payload: Payload, iso = false): string {
+  const count = iso ? payload.u32() : undefined
+  const password = iso ? 0 : payload.u16()
   const locked = payload.u32()
   const attrs = PROTECTION.map((prop) => ` ${prop}="${payload.u32() ? 0 : 1}"`).join('')
+  let passwordAttr = password ? ` password="${password.toString(16)}"` : ''
+  if (iso) {
+    const hashBytes = payload.u32()
+    payload.skip(hashBytes)
+    payload.skip(payload.u32()) // salt
+    const algorithm = payload.nullableWide()
+    if (hashBytes && algorithm) passwordAttr = ` algorithmName="${escapeAttr(algorithm)}" spinCount="${count}"`
+  }
   payload.done()
-  return locked ? `<sheetProtection sheet="1"${password ? ` password="${password.toString(16)}"` : ''}${attrs}/>` : ''
+  return locked ? `<sheetProtection sheet="1"${passwordAttr}${attrs}/>` : ''
 }
 
 function hyperlink(payload: Payload): string {
@@ -367,4 +389,20 @@ function hyperlink(payload: Payload): string {
   payload.done()
   const attrs = tokens.map(([key, value]) => value ? ` ${key}="${escapeAttr(value)}"` : '').join('')
   return `<hyperlink ref="${ref}"${id ? ` r:id="${escapeAttr(id)}"` : ''}${attrs}/>`
+}
+
+/** The setup options that readXlsx reports, whose binary defaults Excel leaves out of XML. */
+function pageSetup(payload: Payload): string {
+  payload.skip(4)
+  const scale = payload.u32()
+  payload.skip(16)
+  const width = payload.u32()
+  const height = payload.u32()
+  const flags = payload.u16()
+  payload.nullableWide()
+  payload.done()
+  const orientation = (flags & 0x42) === 2 ? ' orientation="landscape"' : ''
+  const sizing = (scale === 100 ? '' : ` scale="${scale}"`)
+    + (width === 1 ? '' : ` fitToWidth="${width}"`) + (height === 1 ? '' : ` fitToHeight="${height}"`)
+  return orientation || sizing ? `<pageSetup${orientation}${sizing}/>` : ''
 }

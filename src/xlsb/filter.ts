@@ -11,15 +11,22 @@ export const ICONS = ['3Arrows', '3ArrowsGray', '3Flags', '3TrafficLights1', '3T
 const OPERATORS = ['', 'lessThan', 'equal', 'lessThanOrEqual', 'greaterThan', 'notEqual', 'greaterThanOrEqual']
 const DATE_FIELDS = ['year', 'month', 'day', 'hour', 'minute', 'second']
 const dx = (id: number) => id === 0xffffffff ? '' : ` dxfId="${id}"`
+interface CustomCondition {
+  type: number
+  comparison: number
+  xml: string
+}
 
 /** Filter records occur in worksheets, tables, and PivotTable filter definitions. */
 export class Filters {
-  private customPrefix = ''
+  private custom?: { prefix: string; and: boolean; conditions: CustomCondition[] }
   private inFilter = false
+  private skippedAlternate = 0
 
   constructor(private readonly xml: Xml) {}
 
   take(type: number, payload: Payload): boolean {
+    if (this.inFilter && this.alternate(type, payload)) return true
     let text: string
     switch (type) {
       case 161: this.inFilter = true; text = `<autoFilter ref="${range(payload)}">`; break
@@ -74,11 +81,29 @@ export class Filters {
         break
       }
       case 172: case 1178:
-        this.customPrefix = type === 1178 ? 'x14:' : ''
-        text = `<${this.customPrefix}customFilters${payload.u32() === 0 ? ' and="1"' : ''}>`
+        this.custom = { prefix: type === 1178 ? 'x14:' : '', and: payload.u32() === 0, conditions: [] }
+        text = ''
         break
-      case 173: text = `</${this.customPrefix}customFilters>`; this.customPrefix = ''; break
-      case 174: case 1180: text = custom(payload, type === 1180 ? 'x14:' : ''); break
+      case 173: {
+        const filter = this.custom
+        if (!filter) return payload.fail('custom filter end without a start')
+        const two = filter.conditions.length === 2
+        // Excel writes its all-rows placeholder as blank equal OR blank not equal in XLSX.
+        const allRows = two && filter.conditions.every((condition) => condition.type === 12 || condition.type === 14)
+          && filter.conditions.some((condition) => condition.comparison === 2)
+          && filter.conditions.some((condition) => condition.comparison === 5)
+        const and = filter.and && two && !allRows ? ' and="1"' : ''
+        const tag = filter.prefix + 'customFilters'
+        text = `<${tag}${and}>${filter.conditions.map((condition) => condition.xml).join('')}</${tag}>`
+        this.custom = undefined
+        break
+      }
+      case 174: case 1180:
+        if (!this.custom) return payload.fail('custom filter criteria without a start')
+        if (this.custom.conditions.length === 2) return payload.fail('too many custom filter criteria')
+        this.custom.conditions.push(custom(payload, this.custom.prefix))
+        text = ''
+        break
       case 175: text = dateGroup(payload); break
       case 530: {
         const flags = payload.u16()
@@ -95,6 +120,28 @@ export class Filters {
     if (text) this.xml.add(text)
     return true
   }
+
+  private alternate(type: number, payload: Payload): boolean {
+    if (this.skippedAlternate) {
+      if (type === 37) this.skippedAlternate++
+      else if (type === 38) this.skippedAlternate--
+      return true
+    }
+    if (type === 38) return true
+    if (type !== 37) return false
+    const count = payload.u16()
+    if (!count || count * 4 !== payload.remaining) return payload.fail(`invalid filter alternate version count ${count}`)
+    let supported = false
+    for (let i = 0; i < count; i++) {
+      const version = payload.u16()
+      const product = payload.u16()
+      // The XLSX filter reader takes Excel 2010's Choice. Exact Excel 2007 records are its Fallback.
+      const matchesVersion = version === 0x0e02 || Boolean(product & 0x8000) && version <= 0x0e02
+      if ((product & 0x7fff) === 0 && matchesVersion) supported = true
+    }
+    if (!supported) this.skippedAlternate = 1
+    return true
+  }
 }
 
 function iconAttrs(payload: Payload): string {
@@ -105,7 +152,7 @@ function iconAttrs(payload: Payload): string {
   return ` iconSet="${ICONS[set]}"${icon === 0xffffffff ? '' : ` iconId="${icon}"`}`
 }
 
-function custom(payload: Payload, prefix: string): string {
+function custom(payload: Payload, prefix: string): CustomCondition {
   const type = payload.u8()
   const rule = payload.u8()
   let value = ''
@@ -118,7 +165,7 @@ function custom(payload: Payload, prefix: string): string {
   }
   const operator = OPERATORS[rule]
   if (!operator) return payload.fail(`unknown filter operator ${rule}`)
-  return `<${prefix}customFilter${operator === 'equal' ? '' : ` operator="${operator}"`} val="${escapeAttr(value)}"/>`
+  return { type, comparison: rule, xml: `<${prefix}customFilter${operator === 'equal' ? '' : ` operator="${operator}"`} val="${escapeAttr(value)}"/>` }
 }
 
 function dateGroup(payload: Payload): string {

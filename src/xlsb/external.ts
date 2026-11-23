@@ -25,7 +25,7 @@ export function externalIndex(bytes: Uint8Array, path: string): ExternalSource {
   return index
 }
 
-export function externalLink({ bytes, path, xml }: Part): void {
+export function externalLink({ bytes, path, xml }: Part, invalidDefinition: (name: string) => void): void {
   let sheets: string[] = []
   let namesOpen = false
   let tableOpen = false
@@ -66,7 +66,12 @@ export function externalLink({ bytes, path, xml }: Part): void {
         scope = 0
         ref = ''
         break
-      case 585: ref = definition(payload.section(payload.u32()), sheets); break
+      case 585: {
+        const decoded = definition(payload.section(payload.u32()), sheets)
+        ref = decoded.ref
+        if (decoded.invalidReference) invalidDefinition(name)
+        break
+      }
       case 586:
         payload.u16()
         scope = payload.u32()
@@ -121,10 +126,20 @@ function cell(type: number, payload: Payload, row: number, vm: number): string {
   return `<cell r="${ref}"${metadata} t="${kind}"><v>${value}</v></cell>`
 }
 
-function definition(payload: Payload, sheets: readonly string[]): string {
-  if (!payload.remaining) return ''
+function definition(payload: Payload, sheets: readonly string[]): { ref: string; invalidReference?: true } {
+  if (!payload.remaining) return { ref: '' }
   const type = payload.u8()
-  if (type === 0x1c) return errorText(payload.u8())
+  if (type === 0x1c) {
+    const ref = errorText(payload.u8())
+    payload.done()
+    return { ref }
+  }
+  if (type === 0x3c || type === 0x3d) {
+    // ExtPtgRefErr3D and ExtPtgAreaErr3D leave the coordinate bytes undefined.
+    payload.skip(type === 0x3c ? 8 : 12)
+    payload.done()
+    return { ref: '#REF!', invalidReference: true }
+  }
   const first = payload.i16()
   const last = payload.i16()
   const start = sheets[first]
@@ -135,11 +150,17 @@ function definition(payload: Payload, sheets: readonly string[]): string {
     const digits = String(row + 1)
     return (col & 0x4000 ? '' : '$') + ref.slice(0, -digits.length) + (col & 0x8000 ? '' : '$') + digits
   }
-  if (type === 0x3a) return '=' + prefix + cell(payload.u16(), payload.u16())
+  if (type === 0x3a) {
+    const ref = '=' + prefix + cell(payload.u16(), payload.u16())
+    payload.done()
+    return { ref }
+  }
   if (type === 0x3b) {
     const row1 = payload.u16()
     const row2 = payload.u16()
-    return '=' + prefix + cell(row1, payload.u16()) + ':' + cell(row2, payload.u16())
+    const ref = '=' + prefix + cell(row1, payload.u16()) + ':' + cell(row2, payload.u16())
+    payload.done()
+    return { ref }
   }
-  return '#REF!'
+  return { ref: '#REF!' }
 }
