@@ -166,7 +166,7 @@ export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Car
       },
       col: (c) => {
         const e = entryAt(cols, c)
-        return e?.hidden ? 0 : columnPoints(e?.width) * EMU
+        return e?.hidden ? 0 : columnPoints(e?.width ?? s?.defaultColumnWidth) * EMU
       },
     }
   }

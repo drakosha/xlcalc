@@ -321,9 +321,10 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
   const minCol = Math.min(extent.c1, looked?.c1 ?? MAX_COLS)
   const maxCol = Math.max(extent.c2, looked?.c2 ?? 0)
   const dim = any ? `${indexToCol(minCol)}${rowLo + 1}:${indexToCol(maxCol)}${rowHi + 1}` : 'A1'
+  const defaultWidth = sheet.defaultColumnWidth
   const cols = colLines.map(([lo, hi, e]) => {
     const xf = styles.xf(e.style, e.numberFormat)
-    const size = e.width !== undefined ? ` width="${e.width}" customWidth="1"${e.bestFit ? ' bestFit="1"' : ''}` : ` width="${DEFAULT_WIDTH}"`
+    const size = e.width !== undefined ? ` width="${e.width}" customWidth="1"${e.bestFit ? ' bestFit="1"' : ''}` : ` width="${defaultWidth ?? DEFAULT_WIDTH}"`
     return `<col min="${lo + 1}" max="${hi + 1}"${size}${e.hidden ? ' hidden="1"' : ''}${xf ? ` style="${xf}"` : ''}${outlineAttrs(e)}/>`
   })
   const merges = sheet.merges ?? []
@@ -367,7 +368,7 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
     dimension: dim,
     views: sheetViewXml(view, pane, ctx.active),
     // without it Excel for Mac takes a standard width of 10 digits, not the 8 the model assumes
-    formatPr: `<sheetFormatPr defaultRowHeight="15"${deepest(rowLines, 'outlineLevelRow')}${deepest(colLines, 'outlineLevelCol')}/>`,
+    formatPr: `<sheetFormatPr defaultRowHeight="15"${defaultWidth === undefined ? '' : ` defaultColWidth="${defaultWidth}"`}${deepest(rowLines, 'outlineLevelRow')}${deepest(colLines, 'outlineLevelCol')}/>`,
     cols: cols.length ? `<cols>${cols.join('')}</cols>` : '',
     rows: data,
     protection: protectionXml(sheet.protection),

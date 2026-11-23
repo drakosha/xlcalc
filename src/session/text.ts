@@ -124,7 +124,10 @@ export function columnWidening(s: EngineState, i: number, r: number, c: number, 
   // a column's cells of one value and format take one width (a fill of a constant): measured once in a call that passes `memo`
   const k = memo && JSON.stringify([i, c, numberFormat ?? null, value])
   if (k !== undefined && memo!.has(k)) return memo!.get(k)
-  const width = entryWidth(value, { numberFormat, locale, dateSystem, width: column?.width, bestFit: column?.bestFit })
+  const currentWidth = column?.width ?? sh.defaultColumnWidth
+  // A width inherited from the sheet still widens like an unset width.
+  const bestFit = column?.width === undefined || column.bestFit
+  const width = entryWidth(value, { numberFormat, locale, dateSystem, width: currentWidth, bestFit })
   if (k !== undefined) memo!.set(k, width)
   return width
 }

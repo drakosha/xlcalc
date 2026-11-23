@@ -1,0 +1,186 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "ru-RU",
+  "ui": "ru-RU (Excel 1049)",
+  "format": "ru-RU (decimal \",\", thousands U+0020, list \";\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96
+ },
+ "answers": {
+  "none": {
+   "widths": [
+    [
+     8.43,
+     48,
+     true
+    ],
+    [
+     11.29,
+     63,
+     false
+    ]
+   ],
+   "shown": [
+    [
+     "12345,67",
+     0
+    ],
+    [
+     "12345,67",
+     0
+    ]
+   ],
+   "saved": {
+    "defaultRowHeight": "15",
+    "x14ac:dyDescent": "0.25"
+   }
+  },
+  "narrow": {
+   "widths": [
+    [
+     3.71,
+     23.25,
+     true
+    ],
+    [
+     11.29,
+     63,
+     false
+    ]
+   ],
+   "shown": [
+    [
+     "###",
+     0
+    ],
+    [
+     "12345,67",
+     0
+    ]
+   ],
+   "saved": {
+    "defaultColWidth": "4.42578125",
+    "defaultRowHeight": "15",
+    "x14ac:dyDescent": "0.25"
+   }
+  },
+  "fractional": {
+   "widths": [
+    [
+     11.57,
+     64.5,
+     true
+    ],
+    [
+     11.29,
+     63,
+     false
+    ]
+   ],
+   "shown": [
+    [
+     "12345,67",
+     0
+    ],
+    [
+     "12345,67",
+     0
+    ]
+   ],
+   "saved": {
+    "defaultColWidth": "12.28515625",
+    "defaultRowHeight": "15",
+    "x14ac:dyDescent": "0.25"
+   }
+  },
+  "wide": {
+   "widths": [
+    [
+     18,
+     98.25,
+     true
+    ],
+    [
+     11.29,
+     63,
+     false
+    ]
+   ],
+   "shown": [
+    [
+     "12345,67",
+     0
+    ],
+    [
+     "12345,67",
+     0
+    ]
+   ],
+   "saved": {
+    "defaultColWidth": "18.7109375",
+    "defaultRowHeight": "15",
+    "x14ac:dyDescent": "0.25"
+   }
+  },
+  "base": {
+   "widths": [
+    [
+     21,
+     114,
+     true
+    ],
+    [
+     11.29,
+     63,
+     false
+    ]
+   ],
+   "shown": [
+    [
+     "12345,67",
+     0
+    ],
+    [
+     "12345,67",
+     0
+    ]
+   ],
+   "saved": {
+    "defaultColWidth": "21.7109375",
+    "defaultRowHeight": "15",
+    "x14ac:dyDescent": "0.25"
+   }
+  },
+  "both": {
+   "widths": [
+    [
+     3.71,
+     23.25,
+     true
+    ],
+    [
+     11.29,
+     63,
+     false
+    ]
+   ],
+   "shown": [
+    [
+     "###",
+     0
+    ],
+    [
+     "12345,67",
+     0
+    ]
+   ],
+   "saved": {
+    "defaultColWidth": "4.42578125",
+    "defaultRowHeight": "15",
+    "x14ac:dyDescent": "0.25"
+   }
+  }
+ }
+}

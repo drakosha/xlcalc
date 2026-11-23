@@ -318,7 +318,7 @@ xlsx has no place for the workbook's locale. The writer stores it in a custom do
 | `calculation` | manual mode, automatic except for data tables, precision as displayed, an iteration count or change out of range |
 | `style` | pattern and gradient fills, diagonal borders, shrink to fit, subscript and superscript |
 | `defaultFont` | a default font other than Calibri 11, kept in `font` and measured as Calibri 11 |
-| `defaultWidth` | a default column width other than 8 digits |
+| `defaultWidth` | an invalid default column width, replaced with Excel's standard |
 | `numberFormat` | an East Asian built-in format (50 to 58), or an unknown one |
 | `hidden` | a file whose worksheets are all hidden (next to chart sheets): its first worksheet is read as visible |
 | `autoFilter` | unsupported filter properties, an advanced filter; an AutoFilter over a table or over no range of cells, left out |
@@ -335,6 +335,9 @@ xlsx has no place for the workbook's locale. The writer stores it in a custom do
 | `drawing`, `print`, `macros`, `sparkline`, `connection` | parts of the file the model does not support |
 | `locale` | a locale the package does not have |
 | `part` | a sheet name Excel would not take, read under another ([Sheet names](#sheet-names)); a missing sheet part, a cell outside the sheet, a Strict file's date that is no date, XML of the cells or the shared strings left open (an element without its closing tag), a width or height that is no size, a row number that is no whole number, a style index or a shared string the file does not have, a value that is no number or no boolean |
+
+An explicit `sheetFormatPr.defaultColWidth` becomes `SheetInput.defaultColumnWidth` in the same units as an individual column width. A nonstandard `baseColWidth` alone gives the width of that many digits plus padding. The sheet's width applies where a column has none of its own. `writeXlsx` writes it as `defaultColWidth`. `writeKept` keeps the original attributes if the width has stayed the same and updates the full default width when it changes.
+
 
 ### What is not reported
 

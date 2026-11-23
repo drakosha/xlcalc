@@ -197,6 +197,7 @@ export function sessionEditTexts(state: EngineState, now: string): (s: number, r
 export function* windowOf(src: WindowSource, w: WindowLines, o: ViewportOptions): Steps<Omit<Viewport, 'revision'>> {
   const { book, s, lines, tables } = src
   const sheet = book.sheets[s]
+  const defaultWidth = sheet.defaultColumnWidth ?? DEFAULT_WIDTH
   // each style the window's cells show, copied once: the answer's own
   const styles: Record<number, CellStyle> = {}
   const shows = (i: number) => {
@@ -251,7 +252,7 @@ export function* windowOf(src: WindowSource, w: WindowLines, o: ViewportOptions)
     styles,
     columns: w.cols.map((c) => {
       const col = lines.column(c)
-      return col && isHiddenColumn(col) ? { column: c + 1, width: col.width ?? DEFAULT_WIDTH, hidden: true } : { column: c + 1, width: col?.width ?? DEFAULT_WIDTH }
+      return col && isHiddenColumn(col) ? { column: c + 1, width: col.width ?? defaultWidth, hidden: true } : { column: c + 1, width: col?.width ?? defaultWidth }
     }),
     rows: w.rows.map((r) => {
       const row = lines.row(r)

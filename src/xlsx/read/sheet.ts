@@ -1,3 +1,4 @@
+import { widthOf } from '../../column-width.js'
 /**
  * A worksheet part as a sheet of the book: cells (see `cells.ts`), formulas in the engine's spelling (those of the
  * old kind as the dynamic formulas Excel 365 shows for them, `@` where Excel puts it), shared formulas spread to their
@@ -283,13 +284,23 @@ function features(head: string, tail: string, src: SheetSource, issues: Issues) 
   const where = { sheet: src.name }
   // a drawing of slicers and timelines alone is theirs (`readSheetPivots`)
   for (const [local, code, message] of FEATURES) if (has(outside, local) && !(local === 'drawing' && framesOnly(src.drawing))) issues.add(code, message, where)
-  // the sheet's default column width: 8 digits and the padding, as the model assumes, or another
-  const fp = attrsAt(head, 'sheetFormatPr')
-  const width = fp.defaultColWidth !== undefined ? Number(fp.defaultColWidth) : Number(fp.baseColWidth ?? 8) + 0.84
-  if (!(width >= 8 && width < 9.5)) issues.add('defaultWidth', { key: 'defaultWidth', width: Math.round(width * 100) / 100 }, where)
   const setup = element(tail, 'pageSetup')
   const sa = setup ? attributes(setup.attrs) : {}
   if (sa.orientation === 'landscape' || sa.scale !== undefined || sa.fitToWidth !== undefined || sa.fitToHeight !== undefined) issues.add('print', { key: 'printSettings' }, where)
+}
+
+function defaultWidthOf(head: string, sheet: string, issues: Issues): number | undefined {
+  const { defaultColWidth, baseColWidth } = attrsAt(head, 'sheetFormatPr')
+  const source = defaultColWidth ?? baseColWidth
+  if (source === undefined) return undefined
+  const width = source.trim() ? Number(source) : NaN
+  if (!Number.isFinite(width) || width < 0) {
+    issues.add('defaultWidth', { key: 'defaultWidth', width }, { sheet })
+    return undefined
+  }
+  if (defaultColWidth !== undefined) return Math.min(255, width)
+  // baseColWidth is a count of digits without padding. The model stores the full width.
+  return width === 8 ? undefined : Math.min(255, widthOf(width * 6 + 5))
 }
 
 /** The addresses of the cells of a look of a layer in a rectangle. */
@@ -408,6 +419,8 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   for (const cell of sortAddresses(read.errors)) ctx.issues.add('errorConstant', { key: 'errorTyped' }, { sheet: name, cell })
   features(head, tail, src, ctx.issues)
   const sheet: SheetInput = { name, cells: read.cells }
+  const defaultWidth = defaultWidthOf(head, name, ctx.issues)
+  if (defaultWidth !== undefined) sheet.defaultColumnWidth = defaultWidth
   if (filterMode(head, tail, src, ctx.issues)) sheet.filtered = true
   const sp = element(tail, 'sheetProtection')
   const sheetProtection = sp ? readProtection(attributes(sp.attrs)) : undefined

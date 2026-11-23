@@ -165,7 +165,8 @@ function placeBeside(book: BookInput, kind: Kind, s: number, x: Rect | undefined
   const [cols, rows] = [lines(sheet.columns, 'c'), lines(sheet.rows, 'r')]
   const col = (c: number) => {
     const e = entryAt(cols, c)
-    return e?.hidden ? 0 : (e?.width === undefined ? COLUMN : Math.round(e.width * 7)) * PIXEL
+    const width = e?.width ?? sheet.defaultColumnWidth
+    return e?.hidden ? 0 : (width === undefined ? COLUMN : Math.round(width * 7)) * PIXEL
   }
   const row = (k: number) => {
     const e = entryAt(rows, k)

@@ -77,7 +77,7 @@ export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: Xl
   drawings: () => 'pictures, charts and shapes are not in the model',
   sparklines: () => 'sparklines are not in the model',
   printSettings: () => 'print settings (headers and footers, page breaks, page setup) are not in the model',
-  defaultWidth: (p) => `the sheet's default column width (${p.width} in xlsx units) is not in the model, which uses Excel's standard width of 8 digits`,
+  defaultWidth: (p) => `the sheet's default column width (${p.width} in xlsx units) is invalid, and Excel's standard is used`,
   errorTyped: () => 'an error typed into a cell is read as a formula of that error',
   sheetDataOpen: () => "the sheet's cells have no closing tag (</sheetData>): they are read to the end of the part",
   // reading: formulas

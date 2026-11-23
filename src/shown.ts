@@ -48,7 +48,7 @@ function pointsAt(x: SheetLook, r: number, c: number, turned: Set<number> | null
   if (turned?.has(x.lines.look(r, c, own).style!)) return MAX_POINTS
   const last = x.merges.size ? (x.merges.get(r * MAX_COLS + c) ?? c) : c
   let points = 0
-  for (let k = c; k <= last; k++) points += columnPoints(x.lines.column(k)?.width)
+  for (let k = c; k <= last; k++) points += columnPoints(x.lines.width(k))
   return points
 }
 

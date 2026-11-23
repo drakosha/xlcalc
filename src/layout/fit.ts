@@ -26,7 +26,7 @@ import { fontSize, turnedPoints, turnedStyles, turnOf } from './turned.js'
 const MAX_WIDTH = 255
 
 /** The width of a column of `points`: null for the default width, which Excel writes as no width at all. */
-const widthAt = (points: number): number | null => (points === columnPoints(undefined) ? null : Math.min(MAX_WIDTH, widthOf(points)))
+const widthAt = (points: number, defaultWidth: number | undefined): number | null => (points === columnPoints(defaultWidth) ? null : Math.min(MAX_WIDTH, widthOf(points)))
 
 /**
  * The widths AutoFit gives the columns `lo` to `hi` of a sheet whose cells hold `cells` (in any order), as
@@ -44,7 +44,7 @@ function fitWidths(rules: Rules, styles: readonly CellStyle[], sheet: SheetInput
     const points = id !== null && id !== undefined && turned!.has(id) ? turnedCell(rules, v, formats.format(r, c), styles[id]) : rules.fitPoints(v, formats.format(r, c))
     if (points !== null && points > (widest.get(c) ?? 0)) widest.set(c, points)
   }
-  return Object.fromEntries([...widest].sort((a, b) => a[0] - b[0]).map(([c, points]) => [spanKey(c, c, 'c'), widthAt(points)]))
+  return Object.fromEntries([...widest].sort((a, b) => a[0] - b[0]).map(([c, points]) => [spanKey(c, c, 'c'), widthAt(points, sheet.defaultColumnWidth)]))
 }
 
 /** The points AutoFit gives a turned cell (`turnedPoints`), its line breaks lines across the column when it wraps; null when it shows nothing. */
