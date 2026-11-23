@@ -83,12 +83,12 @@ export function movedChanges(old: EngineState, next: EngineState, g: Geometry, f
   }
   /**
    * Whether the new cell at `p` shows something else than the old one at `s`, `r`, `c` (their inputs `held` and
-   * `entry`), which holds the same value: its text is made only where its format or room differ.
+   * `entry`), which holds the same value: its text is made only where its format, room or font differs.
    */
   const parts = looks && [lookParts(old), lookParts(next)]
   const shows = (s: number, r: number, c: number, held: CellInput | undefined, entry: CellInput | undefined) => {
     const [a, b] = [parts![0](s, r, c, held), parts![1](p.s, p.r, p.c, entry)]
-    return (a[0] !== b[0] || a[1] !== b[1]) && shownKey(looks![0], old, s, r, c, held) !== shownKey(looks![1], next, p.s, p.r, p.c, entry)
+    return (a[0] !== b[0] || a[1] !== b[1] || a[2] !== b[2]) && shownKey(looks![0], old, s, r, c, held) !== shownKey(looks![1], next, p.s, p.r, p.c, entry)
   }
   // the places of the cells listed, sorted at the end
   const out: number[] = []

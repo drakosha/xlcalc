@@ -9,7 +9,8 @@ import type { CellInput, CellRef, CellReplace, CellTextRefusal, CellTextRefused,
 import { sheetIndexOf, type EngineState } from '../engine.js'
 import { readEntry, type EntryWay } from '../entry/index.js'
 import type { FormatAt } from '../entry/formula.js'
-import { entryWidth } from '../layout/fit.js'
+import { measureFont } from '../numfmt/font-metrics.js'
+import { widthForEntry } from '../layout/fit.js'
 import { formatOf, sheetLines } from '../layout/lines.js'
 import { mergedOf } from '../layout/merges.js'
 import { hasCell } from '../structure/area.js'
@@ -121,10 +122,11 @@ export function columnWidening(s: EngineState, i: number, r: number, c: number, 
   const { locale, dateSystem } = s.input
   const value = cellValue(s, i, r, c)
   const numberFormat = lines.format(r, c)
-  // a column's cells of one value and format take one width (a fill of a constant): measured once in a call that passes `memo`
-  const k = memo && JSON.stringify([i, c, numberFormat ?? null, value])
+  const font = measureFont(s.input.font, style === undefined ? undefined : s.input.styles?.[style]?.font)
+  // a column's cells of one value, format and font take one width (a fill of a constant): measured once in a call that passes `memo`
+  const k = memo && JSON.stringify([i, c, numberFormat ?? null, font ? style ?? -1 : null, value])
   if (k !== undefined && memo!.has(k)) return memo!.get(k)
-  const width = entryWidth(value, { numberFormat, locale, dateSystem, width: column?.width, bestFit: column?.bestFit })
+  const width = widthForEntry(value, { numberFormat, locale, dateSystem, width: column?.width, bestFit: column?.bestFit }, s.input.font, font)
   if (k !== undefined) memo!.set(k, width)
   return width
 }

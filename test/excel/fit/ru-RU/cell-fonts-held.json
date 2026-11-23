@@ -1,0 +1,1797 @@
+{
+ "meta": {
+  "version": "16.115",
+  "locale": "ru-RU (the system language and locale)",
+  "date": "2026-11-23",
+  "seconds": 8.3
+ },
+ "cases": [
+  {
+   "id": "arial-8-latin",
+   "cells": {
+    "1": {
+     "value": "MWilWAV 0123456789MWilWAV 0123456789",
+     "look": {
+      "font": {
+       "name": "Arial",
+       "size": 8
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-8-cyrillic",
+   "cells": {
+    "1": {
+     "value": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽",
+     "look": {
+      "font": {
+       "name": "Arial",
+       "size": 8
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-8-number",
+   "readWidth": true,
+   "column": {
+    "width": 3.8
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00",
+     "look": {
+      "font": {
+       "name": "Arial",
+       "size": 8
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-9-latin",
+   "cells": {
+    "1": {
+     "value": "MWilWAV 0123456789MWilWAV 0123456789",
+     "look": {
+      "font": {
+       "name": "Arial",
+       "size": 9
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-9-cyrillic",
+   "cells": {
+    "1": {
+     "value": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽",
+     "look": {
+      "font": {
+       "name": "Arial",
+       "size": 9
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-9-number",
+   "readWidth": true,
+   "column": {
+    "width": 3.8
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00",
+     "look": {
+      "font": {
+       "name": "Arial",
+       "size": 9
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-10-latin",
+   "cells": {
+    "1": {
+     "value": "MWilWAV 0123456789MWilWAV 0123456789",
+     "look": {
+      "font": {
+       "name": "Arial",
+       "size": 10
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-10-cyrillic",
+   "cells": {
+    "1": {
+     "value": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽",
+     "look": {
+      "font": {
+       "name": "Arial",
+       "size": 10
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-10-number",
+   "readWidth": true,
+   "column": {
+    "width": 3.8
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00",
+     "look": {
+      "font": {
+       "name": "Arial",
+       "size": 10
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-11-latin",
+   "cells": {
+    "1": {
+     "value": "MWilWAV 0123456789MWilWAV 0123456789",
+     "look": {
+      "font": {
+       "name": "Arial",
+       "size": 11
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-11-cyrillic",
+   "cells": {
+    "1": {
+     "value": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽",
+     "look": {
+      "font": {
+       "name": "Arial",
+       "size": 11
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-11-number",
+   "readWidth": true,
+   "column": {
+    "width": 3.8
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00",
+     "look": {
+      "font": {
+       "name": "Arial",
+       "size": 11
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-12-latin",
+   "cells": {
+    "1": {
+     "value": "MWilWAV 0123456789MWilWAV 0123456789",
+     "look": {
+      "font": {
+       "name": "Arial",
+       "size": 12
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-12-cyrillic",
+   "cells": {
+    "1": {
+     "value": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽",
+     "look": {
+      "font": {
+       "name": "Arial",
+       "size": 12
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-12-number",
+   "readWidth": true,
+   "column": {
+    "width": 3.8
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00",
+     "look": {
+      "font": {
+       "name": "Arial",
+       "size": 12
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-13-latin",
+   "cells": {
+    "1": {
+     "value": "MWilWAV 0123456789MWilWAV 0123456789",
+     "look": {
+      "font": {
+       "name": "Arial",
+       "size": 13
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-13-cyrillic",
+   "cells": {
+    "1": {
+     "value": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽",
+     "look": {
+      "font": {
+       "name": "Arial",
+       "size": 13
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-13-number",
+   "readWidth": true,
+   "column": {
+    "width": 3.8
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00",
+     "look": {
+      "font": {
+       "name": "Arial",
+       "size": 13
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-14-latin",
+   "cells": {
+    "1": {
+     "value": "MWilWAV 0123456789MWilWAV 0123456789",
+     "look": {
+      "font": {
+       "name": "Arial",
+       "size": 14
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-14-cyrillic",
+   "cells": {
+    "1": {
+     "value": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽",
+     "look": {
+      "font": {
+       "name": "Arial",
+       "size": 14
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-14-number",
+   "readWidth": true,
+   "column": {
+    "width": 3.8
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00",
+     "look": {
+      "font": {
+       "name": "Arial",
+       "size": 14
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-8-latin",
+   "cells": {
+    "1": {
+     "value": "MWilWAV 0123456789MWilWAV 0123456789",
+     "look": {
+      "font": {
+       "name": "Arial Cyr",
+       "size": 8
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-8-cyrillic",
+   "cells": {
+    "1": {
+     "value": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽",
+     "look": {
+      "font": {
+       "name": "Arial Cyr",
+       "size": 8
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-8-number",
+   "readWidth": true,
+   "column": {
+    "width": 3.8
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00",
+     "look": {
+      "font": {
+       "name": "Arial Cyr",
+       "size": 8
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-9-latin",
+   "cells": {
+    "1": {
+     "value": "MWilWAV 0123456789MWilWAV 0123456789",
+     "look": {
+      "font": {
+       "name": "Arial Cyr",
+       "size": 9
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-9-cyrillic",
+   "cells": {
+    "1": {
+     "value": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽",
+     "look": {
+      "font": {
+       "name": "Arial Cyr",
+       "size": 9
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-9-number",
+   "readWidth": true,
+   "column": {
+    "width": 3.8
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00",
+     "look": {
+      "font": {
+       "name": "Arial Cyr",
+       "size": 9
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-10-latin",
+   "cells": {
+    "1": {
+     "value": "MWilWAV 0123456789MWilWAV 0123456789",
+     "look": {
+      "font": {
+       "name": "Arial Cyr",
+       "size": 10
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-10-cyrillic",
+   "cells": {
+    "1": {
+     "value": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽",
+     "look": {
+      "font": {
+       "name": "Arial Cyr",
+       "size": 10
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-10-number",
+   "readWidth": true,
+   "column": {
+    "width": 3.8
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00",
+     "look": {
+      "font": {
+       "name": "Arial Cyr",
+       "size": 10
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-11-latin",
+   "cells": {
+    "1": {
+     "value": "MWilWAV 0123456789MWilWAV 0123456789",
+     "look": {
+      "font": {
+       "name": "Arial Cyr",
+       "size": 11
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-11-cyrillic",
+   "cells": {
+    "1": {
+     "value": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽",
+     "look": {
+      "font": {
+       "name": "Arial Cyr",
+       "size": 11
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-11-number",
+   "readWidth": true,
+   "column": {
+    "width": 3.8
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00",
+     "look": {
+      "font": {
+       "name": "Arial Cyr",
+       "size": 11
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-12-latin",
+   "cells": {
+    "1": {
+     "value": "MWilWAV 0123456789MWilWAV 0123456789",
+     "look": {
+      "font": {
+       "name": "Arial Cyr",
+       "size": 12
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-12-cyrillic",
+   "cells": {
+    "1": {
+     "value": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽",
+     "look": {
+      "font": {
+       "name": "Arial Cyr",
+       "size": 12
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-12-number",
+   "readWidth": true,
+   "column": {
+    "width": 3.8
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00",
+     "look": {
+      "font": {
+       "name": "Arial Cyr",
+       "size": 12
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-13-latin",
+   "cells": {
+    "1": {
+     "value": "MWilWAV 0123456789MWilWAV 0123456789",
+     "look": {
+      "font": {
+       "name": "Arial Cyr",
+       "size": 13
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-13-cyrillic",
+   "cells": {
+    "1": {
+     "value": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽",
+     "look": {
+      "font": {
+       "name": "Arial Cyr",
+       "size": 13
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-13-number",
+   "readWidth": true,
+   "column": {
+    "width": 3.8
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00",
+     "look": {
+      "font": {
+       "name": "Arial Cyr",
+       "size": 13
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-14-latin",
+   "cells": {
+    "1": {
+     "value": "MWilWAV 0123456789MWilWAV 0123456789",
+     "look": {
+      "font": {
+       "name": "Arial Cyr",
+       "size": 14
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-14-cyrillic",
+   "cells": {
+    "1": {
+     "value": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽",
+     "look": {
+      "font": {
+       "name": "Arial Cyr",
+       "size": 14
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-14-number",
+   "readWidth": true,
+   "column": {
+    "width": 3.8
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00",
+     "look": {
+      "font": {
+       "name": "Arial Cyr",
+       "size": 14
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-8-latin",
+   "cells": {
+    "1": {
+     "value": "MWilWAV 0123456789MWilWAV 0123456789",
+     "look": {
+      "font": {
+       "name": "Times New Roman",
+       "size": 8
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-8-cyrillic",
+   "cells": {
+    "1": {
+     "value": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽",
+     "look": {
+      "font": {
+       "name": "Times New Roman",
+       "size": 8
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-8-number",
+   "readWidth": true,
+   "column": {
+    "width": 3.8
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00",
+     "look": {
+      "font": {
+       "name": "Times New Roman",
+       "size": 8
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-9-latin",
+   "cells": {
+    "1": {
+     "value": "MWilWAV 0123456789MWilWAV 0123456789",
+     "look": {
+      "font": {
+       "name": "Times New Roman",
+       "size": 9
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-9-cyrillic",
+   "cells": {
+    "1": {
+     "value": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽",
+     "look": {
+      "font": {
+       "name": "Times New Roman",
+       "size": 9
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-9-number",
+   "readWidth": true,
+   "column": {
+    "width": 3.8
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00",
+     "look": {
+      "font": {
+       "name": "Times New Roman",
+       "size": 9
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-10-latin",
+   "cells": {
+    "1": {
+     "value": "MWilWAV 0123456789MWilWAV 0123456789",
+     "look": {
+      "font": {
+       "name": "Times New Roman",
+       "size": 10
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-10-cyrillic",
+   "cells": {
+    "1": {
+     "value": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽",
+     "look": {
+      "font": {
+       "name": "Times New Roman",
+       "size": 10
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-10-number",
+   "readWidth": true,
+   "column": {
+    "width": 3.8
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00",
+     "look": {
+      "font": {
+       "name": "Times New Roman",
+       "size": 10
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-11-latin",
+   "cells": {
+    "1": {
+     "value": "MWilWAV 0123456789MWilWAV 0123456789",
+     "look": {
+      "font": {
+       "name": "Times New Roman",
+       "size": 11
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-11-cyrillic",
+   "cells": {
+    "1": {
+     "value": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽",
+     "look": {
+      "font": {
+       "name": "Times New Roman",
+       "size": 11
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-11-number",
+   "readWidth": true,
+   "column": {
+    "width": 3.8
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00",
+     "look": {
+      "font": {
+       "name": "Times New Roman",
+       "size": 11
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-12-latin",
+   "cells": {
+    "1": {
+     "value": "MWilWAV 0123456789MWilWAV 0123456789",
+     "look": {
+      "font": {
+       "name": "Times New Roman",
+       "size": 12
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-12-cyrillic",
+   "cells": {
+    "1": {
+     "value": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽",
+     "look": {
+      "font": {
+       "name": "Times New Roman",
+       "size": 12
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-12-number",
+   "readWidth": true,
+   "column": {
+    "width": 3.8
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00",
+     "look": {
+      "font": {
+       "name": "Times New Roman",
+       "size": 12
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-13-latin",
+   "cells": {
+    "1": {
+     "value": "MWilWAV 0123456789MWilWAV 0123456789",
+     "look": {
+      "font": {
+       "name": "Times New Roman",
+       "size": 13
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-13-cyrillic",
+   "cells": {
+    "1": {
+     "value": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽",
+     "look": {
+      "font": {
+       "name": "Times New Roman",
+       "size": 13
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-13-number",
+   "readWidth": true,
+   "column": {
+    "width": 3.8
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00",
+     "look": {
+      "font": {
+       "name": "Times New Roman",
+       "size": 13
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-14-latin",
+   "cells": {
+    "1": {
+     "value": "MWilWAV 0123456789MWilWAV 0123456789",
+     "look": {
+      "font": {
+       "name": "Times New Roman",
+       "size": 14
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-14-cyrillic",
+   "cells": {
+    "1": {
+     "value": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽",
+     "look": {
+      "font": {
+       "name": "Times New Roman",
+       "size": 14
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-14-number",
+   "readWidth": true,
+   "column": {
+    "width": 3.8
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00",
+     "look": {
+      "font": {
+       "name": "Times New Roman",
+       "size": 14
+      }
+     }
+    }
+   }
+  }
+ ],
+ "answers": {
+  "arial-8-latin": {
+   "columnWidth": 26.83,
+   "points": 166,
+   "standard": false,
+   "saved": {
+    "width": 27.6640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "MWilWAV 0123456789MWilWAV 0123456789"
+   }
+  },
+  "arial-8-cyrillic": {
+   "columnWidth": 27.17,
+   "points": 168,
+   "standard": false,
+   "saved": {
+    "width": 28,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+   }
+  },
+  "arial-8-number": {
+   "columnWidth": 3,
+   "points": 23,
+   "standard": false,
+   "saved": {
+    "width": 3.83203125,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "8,25"
+   }
+  },
+  "arial-9-latin": {
+   "columnWidth": 31.67,
+   "points": 195,
+   "standard": false,
+   "saved": {
+    "width": 32.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "MWilWAV 0123456789MWilWAV 0123456789"
+   }
+  },
+  "arial-9-cyrillic": {
+   "columnWidth": 31,
+   "points": 191,
+   "standard": false,
+   "saved": {
+    "width": 31.83203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+   }
+  },
+  "arial-9-number": {
+   "columnWidth": 3,
+   "points": 23,
+   "standard": false,
+   "saved": {
+    "width": 3.83203125,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "8,25"
+   }
+  },
+  "arial-10-latin": {
+   "columnWidth": 36.83,
+   "points": 226,
+   "standard": false,
+   "saved": {
+    "width": 37.6640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "MWilWAV 0123456789MWilWAV 0123456789"
+   }
+  },
+  "arial-10-cyrillic": {
+   "columnWidth": 34.33,
+   "points": 211,
+   "standard": false,
+   "saved": {
+    "width": 35.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+   }
+  },
+  "arial-10-number": {
+   "columnWidth": 3,
+   "points": 23,
+   "standard": false,
+   "saved": {
+    "width": 3.83203125,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "###"
+   }
+  },
+  "arial-11-latin": {
+   "columnWidth": 37.83,
+   "points": 232,
+   "standard": false,
+   "saved": {
+    "width": 38.6640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "MWilWAV 0123456789MWilWAV 0123456789"
+   }
+  },
+  "arial-11-cyrillic": {
+   "columnWidth": 37.83,
+   "points": 232,
+   "standard": false,
+   "saved": {
+    "width": 38.6640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+   }
+  },
+  "arial-11-number": {
+   "columnWidth": 3,
+   "points": 23,
+   "standard": false,
+   "saved": {
+    "width": 3.83203125,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "###"
+   }
+  },
+  "arial-12-latin": {
+   "columnWidth": 43.67,
+   "points": 267,
+   "standard": false,
+   "saved": {
+    "width": 44.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "MWilWAV 0123456789MWilWAV 0123456789"
+   }
+  },
+  "arial-12-cyrillic": {
+   "columnWidth": 41.33,
+   "points": 253,
+   "standard": false,
+   "saved": {
+    "width": 42.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+   }
+  },
+  "arial-12-number": {
+   "columnWidth": 3,
+   "points": 23,
+   "standard": false,
+   "saved": {
+    "width": 3.83203125,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "##"
+   }
+  },
+  "arial-13-latin": {
+   "columnWidth": 45.67,
+   "points": 279,
+   "standard": false,
+   "saved": {
+    "width": 46.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "MWilWAV 0123456789MWilWAV 0123456789"
+   }
+  },
+  "arial-13-cyrillic": {
+   "columnWidth": 44.67,
+   "points": 273,
+   "standard": false,
+   "saved": {
+    "width": 45.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+   }
+  },
+  "arial-13-number": {
+   "columnWidth": 3,
+   "points": 23,
+   "standard": false,
+   "saved": {
+    "width": 3.83203125,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "##"
+   }
+  },
+  "arial-14-latin": {
+   "columnWidth": 50.17,
+   "points": 306,
+   "standard": false,
+   "saved": {
+    "width": 51,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "MWilWAV 0123456789MWilWAV 0123456789"
+   }
+  },
+  "arial-14-cyrillic": {
+   "columnWidth": 48.17,
+   "points": 294,
+   "standard": false,
+   "saved": {
+    "width": 49,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+   }
+  },
+  "arial-14-number": {
+   "columnWidth": 3,
+   "points": 23,
+   "standard": false,
+   "saved": {
+    "width": 3.83203125,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "##"
+   }
+  },
+  "arial-cyr-8-latin": {
+   "columnWidth": 26.83,
+   "points": 166,
+   "standard": false,
+   "saved": {
+    "width": 27.6640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "MWilWAV 0123456789MWilWAV 0123456789"
+   }
+  },
+  "arial-cyr-8-cyrillic": {
+   "columnWidth": 27.17,
+   "points": 168,
+   "standard": false,
+   "saved": {
+    "width": 28,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+   }
+  },
+  "arial-cyr-8-number": {
+   "columnWidth": 3,
+   "points": 23,
+   "standard": false,
+   "saved": {
+    "width": 3.83203125,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "8,25"
+   }
+  },
+  "arial-cyr-9-latin": {
+   "columnWidth": 31.67,
+   "points": 195,
+   "standard": false,
+   "saved": {
+    "width": 32.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "MWilWAV 0123456789MWilWAV 0123456789"
+   }
+  },
+  "arial-cyr-9-cyrillic": {
+   "columnWidth": 31,
+   "points": 191,
+   "standard": false,
+   "saved": {
+    "width": 31.83203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+   }
+  },
+  "arial-cyr-9-number": {
+   "columnWidth": 3,
+   "points": 23,
+   "standard": false,
+   "saved": {
+    "width": 3.83203125,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "8,25"
+   }
+  },
+  "arial-cyr-10-latin": {
+   "columnWidth": 36.83,
+   "points": 226,
+   "standard": false,
+   "saved": {
+    "width": 37.6640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "MWilWAV 0123456789MWilWAV 0123456789"
+   }
+  },
+  "arial-cyr-10-cyrillic": {
+   "columnWidth": 34.33,
+   "points": 211,
+   "standard": false,
+   "saved": {
+    "width": 35.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+   }
+  },
+  "arial-cyr-10-number": {
+   "columnWidth": 3,
+   "points": 23,
+   "standard": false,
+   "saved": {
+    "width": 3.83203125,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "###"
+   }
+  },
+  "arial-cyr-11-latin": {
+   "columnWidth": 37.83,
+   "points": 232,
+   "standard": false,
+   "saved": {
+    "width": 38.6640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "MWilWAV 0123456789MWilWAV 0123456789"
+   }
+  },
+  "arial-cyr-11-cyrillic": {
+   "columnWidth": 37.67,
+   "points": 231,
+   "standard": false,
+   "saved": {
+    "width": 38.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+   }
+  },
+  "arial-cyr-11-number": {
+   "columnWidth": 3,
+   "points": 23,
+   "standard": false,
+   "saved": {
+    "width": 3.83203125,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "###"
+   }
+  },
+  "arial-cyr-12-latin": {
+   "columnWidth": 43.67,
+   "points": 267,
+   "standard": false,
+   "saved": {
+    "width": 44.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "MWilWAV 0123456789MWilWAV 0123456789"
+   }
+  },
+  "arial-cyr-12-cyrillic": {
+   "columnWidth": 41,
+   "points": 251,
+   "standard": false,
+   "saved": {
+    "width": 41.83203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+   }
+  },
+  "arial-cyr-12-number": {
+   "columnWidth": 3,
+   "points": 23,
+   "standard": false,
+   "saved": {
+    "width": 3.83203125,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "##"
+   }
+  },
+  "arial-cyr-13-latin": {
+   "columnWidth": 45.67,
+   "points": 279,
+   "standard": false,
+   "saved": {
+    "width": 46.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "MWilWAV 0123456789MWilWAV 0123456789"
+   }
+  },
+  "arial-cyr-13-cyrillic": {
+   "columnWidth": 44.5,
+   "points": 272,
+   "standard": false,
+   "saved": {
+    "width": 45.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+   }
+  },
+  "arial-cyr-13-number": {
+   "columnWidth": 3,
+   "points": 23,
+   "standard": false,
+   "saved": {
+    "width": 3.83203125,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "##"
+   }
+  },
+  "arial-cyr-14-latin": {
+   "columnWidth": 50.17,
+   "points": 306,
+   "standard": false,
+   "saved": {
+    "width": 51,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "MWilWAV 0123456789MWilWAV 0123456789"
+   }
+  },
+  "arial-cyr-14-cyrillic": {
+   "columnWidth": 48,
+   "points": 293,
+   "standard": false,
+   "saved": {
+    "width": 48.83203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+   }
+  },
+  "arial-cyr-14-number": {
+   "columnWidth": 3,
+   "points": 23,
+   "standard": false,
+   "saved": {
+    "width": 3.83203125,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "##"
+   }
+  },
+  "times-new-roman-8-latin": {
+   "columnWidth": 27.5,
+   "points": 170,
+   "standard": false,
+   "saved": {
+    "width": 28.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "MWilWAV 0123456789MWilWAV 0123456789"
+   }
+  },
+  "times-new-roman-8-cyrillic": {
+   "columnWidth": 24.67,
+   "points": 153,
+   "standard": false,
+   "saved": {
+    "width": 25.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+   }
+  },
+  "times-new-roman-8-number": {
+   "columnWidth": 3,
+   "points": 23,
+   "standard": false,
+   "saved": {
+    "width": 3.83203125,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "8,25"
+   }
+  },
+  "times-new-roman-9-latin": {
+   "columnWidth": 32.33,
+   "points": 199,
+   "standard": false,
+   "saved": {
+    "width": 33.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "MWilWAV 0123456789MWilWAV 0123456789"
+   }
+  },
+  "times-new-roman-9-cyrillic": {
+   "columnWidth": 28.17,
+   "points": 174,
+   "standard": false,
+   "saved": {
+    "width": 29,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+   }
+  },
+  "times-new-roman-9-number": {
+   "columnWidth": 3,
+   "points": 23,
+   "standard": false,
+   "saved": {
+    "width": 3.83203125,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "8,25"
+   }
+  },
+  "times-new-roman-10-latin": {
+   "columnWidth": 34.33,
+   "points": 211,
+   "standard": false,
+   "saved": {
+    "width": 35.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "MWilWAV 0123456789MWilWAV 0123456789"
+   }
+  },
+  "times-new-roman-10-cyrillic": {
+   "columnWidth": 31.33,
+   "points": 193,
+   "standard": false,
+   "saved": {
+    "width": 32.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+   }
+  },
+  "times-new-roman-10-number": {
+   "columnWidth": 3,
+   "points": 23,
+   "standard": false,
+   "saved": {
+    "width": 3.83203125,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "8,25"
+   }
+  },
+  "times-new-roman-11-latin": {
+   "columnWidth": 39.5,
+   "points": 242,
+   "standard": false,
+   "saved": {
+    "width": 40.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "MWilWAV 0123456789MWilWAV 0123456789"
+   }
+  },
+  "times-new-roman-11-cyrillic": {
+   "columnWidth": 34.5,
+   "points": 212,
+   "standard": false,
+   "saved": {
+    "width": 35.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+   }
+  },
+  "times-new-roman-11-number": {
+   "columnWidth": 3,
+   "points": 23,
+   "standard": false,
+   "saved": {
+    "width": 3.83203125,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "###"
+   }
+  },
+  "times-new-roman-12-latin": {
+   "columnWidth": 41.33,
+   "points": 253,
+   "standard": false,
+   "saved": {
+    "width": 42.1640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "MWilWAV 0123456789MWilWAV 0123456789"
+   }
+  },
+  "times-new-roman-12-cyrillic": {
+   "columnWidth": 37.67,
+   "points": 231,
+   "standard": false,
+   "saved": {
+    "width": 38.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+   }
+  },
+  "times-new-roman-12-number": {
+   "columnWidth": 3,
+   "points": 23,
+   "standard": false,
+   "saved": {
+    "width": 3.83203125,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "###"
+   }
+  },
+  "times-new-roman-13-latin": {
+   "columnWidth": 46.5,
+   "points": 284,
+   "standard": false,
+   "saved": {
+    "width": 47.33203125,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "MWilWAV 0123456789MWilWAV 0123456789"
+   }
+  },
+  "times-new-roman-13-cyrillic": {
+   "columnWidth": 40.67,
+   "points": 249,
+   "standard": false,
+   "saved": {
+    "width": 41.5,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+   }
+  },
+  "times-new-roman-13-number": {
+   "columnWidth": 3,
+   "points": 23,
+   "standard": false,
+   "saved": {
+    "width": 3.83203125,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "##"
+   }
+  },
+  "times-new-roman-14-latin": {
+   "columnWidth": 48.17,
+   "points": 294,
+   "standard": false,
+   "saved": {
+    "width": 49,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "MWilWAV 0123456789MWilWAV 0123456789"
+   }
+  },
+  "times-new-roman-14-cyrillic": {
+   "columnWidth": 43.83,
+   "points": 268,
+   "standard": false,
+   "saved": {
+    "width": 44.6640625,
+    "customWidth": true,
+    "bestFit": true
+   },
+   "texts": {
+    "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+   }
+  },
+  "times-new-roman-14-number": {
+   "columnWidth": 3,
+   "points": 23,
+   "standard": false,
+   "saved": {
+    "width": 3.83203125,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "##"
+   }
+  }
+ }
+}

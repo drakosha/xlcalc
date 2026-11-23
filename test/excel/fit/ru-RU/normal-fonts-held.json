@@ -1,0 +1,975 @@
+{
+ "meta": {
+  "version": "16.115",
+  "locale": "ru-RU (the system language and locale)",
+  "date": "2026-11-23",
+  "seconds": 11.8
+ },
+ "cases": [
+  {
+   "id": "arial-8-standard",
+   "bookFont": {
+    "name": "Arial",
+    "size": 8
+   },
+   "readWidth": true,
+   "cells": {
+    "1": {
+     "value": 12345678
+    }
+   }
+  },
+  {
+   "id": "arial-8-file-width",
+   "bookFont": {
+    "name": "Arial",
+    "size": 8
+   },
+   "readWidth": true,
+   "column": {
+    "width": 80
+   },
+   "cells": {
+    "1": {
+     "value": 18
+    }
+   }
+  },
+  {
+   "id": "arial-8-fraction",
+   "bookFont": {
+    "name": "Arial",
+    "size": 8
+   },
+   "readWidth": true,
+   "column": {
+    "width": 0.75
+   },
+   "cells": {
+    "1": {
+     "value": 8
+    }
+   }
+  },
+  {
+   "id": "arial-8-number",
+   "bookFont": {
+    "name": "Arial",
+    "size": 8
+   },
+   "readWidth": true,
+   "column": {
+    "width": 5
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00"
+    }
+   }
+  },
+  {
+   "id": "arial-10-standard",
+   "bookFont": {
+    "name": "Arial",
+    "size": 10
+   },
+   "readWidth": true,
+   "cells": {
+    "1": {
+     "value": 12345678
+    }
+   }
+  },
+  {
+   "id": "arial-10-file-width",
+   "bookFont": {
+    "name": "Arial",
+    "size": 10
+   },
+   "readWidth": true,
+   "column": {
+    "width": 80
+   },
+   "cells": {
+    "1": {
+     "value": 18
+    }
+   }
+  },
+  {
+   "id": "arial-10-fraction",
+   "bookFont": {
+    "name": "Arial",
+    "size": 10
+   },
+   "readWidth": true,
+   "column": {
+    "width": 0.75
+   },
+   "cells": {
+    "1": {
+     "value": 8
+    }
+   }
+  },
+  {
+   "id": "arial-10-number",
+   "bookFont": {
+    "name": "Arial",
+    "size": 10
+   },
+   "readWidth": true,
+   "column": {
+    "width": 5
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00"
+    }
+   }
+  },
+  {
+   "id": "arial-11-standard",
+   "bookFont": {
+    "name": "Arial",
+    "size": 11
+   },
+   "readWidth": true,
+   "cells": {
+    "1": {
+     "value": 12345678
+    }
+   }
+  },
+  {
+   "id": "arial-11-file-width",
+   "bookFont": {
+    "name": "Arial",
+    "size": 11
+   },
+   "readWidth": true,
+   "column": {
+    "width": 80
+   },
+   "cells": {
+    "1": {
+     "value": 18
+    }
+   }
+  },
+  {
+   "id": "arial-11-fraction",
+   "bookFont": {
+    "name": "Arial",
+    "size": 11
+   },
+   "readWidth": true,
+   "column": {
+    "width": 0.75
+   },
+   "cells": {
+    "1": {
+     "value": 8
+    }
+   }
+  },
+  {
+   "id": "arial-11-number",
+   "bookFont": {
+    "name": "Arial",
+    "size": 11
+   },
+   "readWidth": true,
+   "column": {
+    "width": 5
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00"
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-8-standard",
+   "bookFont": {
+    "name": "Arial Cyr",
+    "size": 8
+   },
+   "readWidth": true,
+   "cells": {
+    "1": {
+     "value": 12345678
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-8-file-width",
+   "bookFont": {
+    "name": "Arial Cyr",
+    "size": 8
+   },
+   "readWidth": true,
+   "column": {
+    "width": 80
+   },
+   "cells": {
+    "1": {
+     "value": 18
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-8-fraction",
+   "bookFont": {
+    "name": "Arial Cyr",
+    "size": 8
+   },
+   "readWidth": true,
+   "column": {
+    "width": 0.75
+   },
+   "cells": {
+    "1": {
+     "value": 8
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-8-number",
+   "bookFont": {
+    "name": "Arial Cyr",
+    "size": 8
+   },
+   "readWidth": true,
+   "column": {
+    "width": 5
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00"
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-10-standard",
+   "bookFont": {
+    "name": "Arial Cyr",
+    "size": 10
+   },
+   "readWidth": true,
+   "cells": {
+    "1": {
+     "value": 12345678
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-10-file-width",
+   "bookFont": {
+    "name": "Arial Cyr",
+    "size": 10
+   },
+   "readWidth": true,
+   "column": {
+    "width": 80
+   },
+   "cells": {
+    "1": {
+     "value": 18
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-10-fraction",
+   "bookFont": {
+    "name": "Arial Cyr",
+    "size": 10
+   },
+   "readWidth": true,
+   "column": {
+    "width": 0.75
+   },
+   "cells": {
+    "1": {
+     "value": 8
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-10-number",
+   "bookFont": {
+    "name": "Arial Cyr",
+    "size": 10
+   },
+   "readWidth": true,
+   "column": {
+    "width": 5
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00"
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-11-standard",
+   "bookFont": {
+    "name": "Arial Cyr",
+    "size": 11
+   },
+   "readWidth": true,
+   "cells": {
+    "1": {
+     "value": 12345678
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-11-file-width",
+   "bookFont": {
+    "name": "Arial Cyr",
+    "size": 11
+   },
+   "readWidth": true,
+   "column": {
+    "width": 80
+   },
+   "cells": {
+    "1": {
+     "value": 18
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-11-fraction",
+   "bookFont": {
+    "name": "Arial Cyr",
+    "size": 11
+   },
+   "readWidth": true,
+   "column": {
+    "width": 0.75
+   },
+   "cells": {
+    "1": {
+     "value": 8
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-11-number",
+   "bookFont": {
+    "name": "Arial Cyr",
+    "size": 11
+   },
+   "readWidth": true,
+   "column": {
+    "width": 5
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00"
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-8-standard",
+   "bookFont": {
+    "name": "Times New Roman",
+    "size": 8
+   },
+   "readWidth": true,
+   "cells": {
+    "1": {
+     "value": 12345678
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-8-file-width",
+   "bookFont": {
+    "name": "Times New Roman",
+    "size": 8
+   },
+   "readWidth": true,
+   "column": {
+    "width": 80
+   },
+   "cells": {
+    "1": {
+     "value": 18
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-8-fraction",
+   "bookFont": {
+    "name": "Times New Roman",
+    "size": 8
+   },
+   "readWidth": true,
+   "column": {
+    "width": 0.75
+   },
+   "cells": {
+    "1": {
+     "value": 8
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-8-number",
+   "bookFont": {
+    "name": "Times New Roman",
+    "size": 8
+   },
+   "readWidth": true,
+   "column": {
+    "width": 5
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00"
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-10-standard",
+   "bookFont": {
+    "name": "Times New Roman",
+    "size": 10
+   },
+   "readWidth": true,
+   "cells": {
+    "1": {
+     "value": 12345678
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-10-file-width",
+   "bookFont": {
+    "name": "Times New Roman",
+    "size": 10
+   },
+   "readWidth": true,
+   "column": {
+    "width": 80
+   },
+   "cells": {
+    "1": {
+     "value": 18
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-10-fraction",
+   "bookFont": {
+    "name": "Times New Roman",
+    "size": 10
+   },
+   "readWidth": true,
+   "column": {
+    "width": 0.75
+   },
+   "cells": {
+    "1": {
+     "value": 8
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-10-number",
+   "bookFont": {
+    "name": "Times New Roman",
+    "size": 10
+   },
+   "readWidth": true,
+   "column": {
+    "width": 5
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00"
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-11-standard",
+   "bookFont": {
+    "name": "Times New Roman",
+    "size": 11
+   },
+   "readWidth": true,
+   "cells": {
+    "1": {
+     "value": 12345678
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-11-file-width",
+   "bookFont": {
+    "name": "Times New Roman",
+    "size": 11
+   },
+   "readWidth": true,
+   "column": {
+    "width": 80
+   },
+   "cells": {
+    "1": {
+     "value": 18
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-11-fraction",
+   "bookFont": {
+    "name": "Times New Roman",
+    "size": 11
+   },
+   "readWidth": true,
+   "column": {
+    "width": 0.75
+   },
+   "cells": {
+    "1": {
+     "value": 8
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-11-number",
+   "bookFont": {
+    "name": "Times New Roman",
+    "size": 11
+   },
+   "readWidth": true,
+   "column": {
+    "width": 5
+   },
+   "cells": {
+    "1": {
+     "value": 8.25,
+     "format": "0.00"
+    }
+   }
+  }
+ ],
+ "answers": {
+  "arial-8-standard": {
+   "columnWidth": 8,
+   "points": 35,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "12345678"
+   }
+  },
+  "arial-8-file-width": {
+   "columnWidth": 79.25,
+   "points": 320,
+   "standard": false,
+   "saved": {
+    "width": 80,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "18"
+   }
+  },
+  "arial-8-fraction": {
+   "columnWidth": 0.43,
+   "points": 3,
+   "standard": false,
+   "saved": {
+    "width": 0.75,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "8"
+   }
+  },
+  "arial-8-number": {
+   "columnWidth": 4.25,
+   "points": 20,
+   "standard": false,
+   "saved": {
+    "width": 5,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "8,25"
+   }
+  },
+  "arial-10-standard": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "12345678"
+   }
+  },
+  "arial-10-file-width": {
+   "columnWidth": 79.17,
+   "points": 480,
+   "standard": false,
+   "saved": {
+    "width": 80,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "18"
+   }
+  },
+  "arial-10-fraction": {
+   "columnWidth": 0.36,
+   "points": 4,
+   "standard": false,
+   "saved": {
+    "width": 0.6640625,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "8"
+   }
+  },
+  "arial-10-number": {
+   "columnWidth": 4.17,
+   "points": 30,
+   "standard": false,
+   "saved": {
+    "width": 5,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "8,25"
+   }
+  },
+  "arial-11-standard": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "12345678"
+   }
+  },
+  "arial-11-file-width": {
+   "columnWidth": 79.17,
+   "points": 480,
+   "standard": false,
+   "saved": {
+    "width": 80,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "18"
+   }
+  },
+  "arial-11-fraction": {
+   "columnWidth": 0.36,
+   "points": 4,
+   "standard": false,
+   "saved": {
+    "width": 0.6640625,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "8"
+   }
+  },
+  "arial-11-number": {
+   "columnWidth": 4.17,
+   "points": 30,
+   "standard": false,
+   "saved": {
+    "width": 5,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "8,25"
+   }
+  },
+  "arial-cyr-8-standard": {
+   "columnWidth": 8,
+   "points": 35,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "12345678"
+   }
+  },
+  "arial-cyr-8-file-width": {
+   "columnWidth": 79.25,
+   "points": 320,
+   "standard": false,
+   "saved": {
+    "width": 80,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "18"
+   }
+  },
+  "arial-cyr-8-fraction": {
+   "columnWidth": 0.43,
+   "points": 3,
+   "standard": false,
+   "saved": {
+    "width": 0.75,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "8"
+   }
+  },
+  "arial-cyr-8-number": {
+   "columnWidth": 4.25,
+   "points": 20,
+   "standard": false,
+   "saved": {
+    "width": 5,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "8,25"
+   }
+  },
+  "arial-cyr-10-standard": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "12345678"
+   }
+  },
+  "arial-cyr-10-file-width": {
+   "columnWidth": 79.17,
+   "points": 480,
+   "standard": false,
+   "saved": {
+    "width": 80,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "18"
+   }
+  },
+  "arial-cyr-10-fraction": {
+   "columnWidth": 0.36,
+   "points": 4,
+   "standard": false,
+   "saved": {
+    "width": 0.6640625,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "8"
+   }
+  },
+  "arial-cyr-10-number": {
+   "columnWidth": 4.17,
+   "points": 30,
+   "standard": false,
+   "saved": {
+    "width": 5,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "8,25"
+   }
+  },
+  "arial-cyr-11-standard": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "12345678"
+   }
+  },
+  "arial-cyr-11-file-width": {
+   "columnWidth": 79.17,
+   "points": 480,
+   "standard": false,
+   "saved": {
+    "width": 80,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "18"
+   }
+  },
+  "arial-cyr-11-fraction": {
+   "columnWidth": 0.36,
+   "points": 4,
+   "standard": false,
+   "saved": {
+    "width": 0.6640625,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "8"
+   }
+  },
+  "arial-cyr-11-number": {
+   "columnWidth": 4.17,
+   "points": 30,
+   "standard": false,
+   "saved": {
+    "width": 5,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "8,25"
+   }
+  },
+  "times-new-roman-8-standard": {
+   "columnWidth": 8,
+   "points": 35,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "12345678"
+   }
+  },
+  "times-new-roman-8-file-width": {
+   "columnWidth": 79.25,
+   "points": 320,
+   "standard": false,
+   "saved": {
+    "width": 80,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "18"
+   }
+  },
+  "times-new-roman-8-fraction": {
+   "columnWidth": 0.43,
+   "points": 3,
+   "standard": false,
+   "saved": {
+    "width": 0.75,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "8"
+   }
+  },
+  "times-new-roman-8-number": {
+   "columnWidth": 4.25,
+   "points": 20,
+   "standard": false,
+   "saved": {
+    "width": 5,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "8,25"
+   }
+  },
+  "times-new-roman-10-standard": {
+   "columnWidth": 8,
+   "points": 45,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "12345678"
+   }
+  },
+  "times-new-roman-10-file-width": {
+   "columnWidth": 79,
+   "points": 400,
+   "standard": false,
+   "saved": {
+    "width": 80,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "18"
+   }
+  },
+  "times-new-roman-10-fraction": {
+   "columnWidth": 0.4,
+   "points": 4,
+   "standard": false,
+   "saved": {
+    "width": 0.796875,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "8"
+   }
+  },
+  "times-new-roman-10-number": {
+   "columnWidth": 4,
+   "points": 25,
+   "standard": false,
+   "saved": {
+    "width": 5,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "8,25"
+   }
+  },
+  "times-new-roman-11-standard": {
+   "columnWidth": 8,
+   "points": 53,
+   "standard": true,
+   "saved": null,
+   "texts": {
+    "1": "12345678"
+   }
+  },
+  "times-new-roman-11-file-width": {
+   "columnWidth": 79.17,
+   "points": 480,
+   "standard": false,
+   "saved": {
+    "width": 80,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "18"
+   }
+  },
+  "times-new-roman-11-fraction": {
+   "columnWidth": 0.36,
+   "points": 4,
+   "standard": false,
+   "saved": {
+    "width": 0.6640625,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "8"
+   }
+  },
+  "times-new-roman-11-number": {
+   "columnWidth": 4.17,
+   "points": 30,
+   "standard": false,
+   "saved": {
+    "width": 5,
+    "customWidth": true
+   },
+   "texts": {
+    "1": "8,25"
+   }
+  }
+ }
+}

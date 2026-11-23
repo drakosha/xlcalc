@@ -1,0 +1,891 @@
+{
+ "now": "2026-11-23",
+ "locales": {
+  "en-US": {
+   "arial-8-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "arial-8-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "arial-8-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "arial-9-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "arial-9-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "arial-9-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "arial-10-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "arial-10-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "arial-10-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "arial-11-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "arial-11-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "arial-11-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "arial-12-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "arial-12-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "arial-12-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "arial-13-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "arial-13-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "arial-13-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "arial-14-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "arial-14-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "arial-14-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "arial-cyr-8-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "arial-cyr-8-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "arial-cyr-8-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "arial-cyr-9-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "arial-cyr-9-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "arial-cyr-9-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "arial-cyr-10-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "arial-cyr-10-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "arial-cyr-10-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "arial-cyr-11-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "arial-cyr-11-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "arial-cyr-11-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "arial-cyr-12-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "arial-cyr-12-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "arial-cyr-12-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "arial-cyr-13-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "arial-cyr-13-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "arial-cyr-13-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "arial-cyr-14-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "arial-cyr-14-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "arial-cyr-14-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "times-new-roman-8-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "times-new-roman-8-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "times-new-roman-8-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "times-new-roman-9-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "times-new-roman-9-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "times-new-roman-9-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "times-new-roman-10-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "times-new-roman-10-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "times-new-roman-10-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "times-new-roman-11-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "times-new-roman-11-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "times-new-roman-11-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "times-new-roman-12-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "times-new-roman-12-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "times-new-roman-12-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "times-new-roman-13-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "times-new-roman-13-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "times-new-roman-13-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "times-new-roman-14-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "times-new-roman-14-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "times-new-roman-14-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   }
+  },
+  "ru-RU": {
+   "arial-8-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "arial-8-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "arial-8-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "arial-9-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "arial-9-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "arial-9-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "arial-10-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "arial-10-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "arial-10-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "arial-11-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "arial-11-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "arial-11-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "arial-12-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "arial-12-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "arial-12-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "arial-13-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "arial-13-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "arial-13-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "arial-14-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "arial-14-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "arial-14-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "arial-cyr-8-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "arial-cyr-8-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "arial-cyr-8-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "arial-cyr-9-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "arial-cyr-9-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "arial-cyr-9-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "arial-cyr-10-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "arial-cyr-10-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "arial-cyr-10-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "arial-cyr-11-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "arial-cyr-11-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "arial-cyr-11-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "arial-cyr-12-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "arial-cyr-12-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "arial-cyr-12-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "arial-cyr-13-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "arial-cyr-13-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "arial-cyr-13-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "arial-cyr-14-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "arial-cyr-14-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "arial-cyr-14-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "times-new-roman-8-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "times-new-roman-8-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "times-new-roman-8-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "times-new-roman-9-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "times-new-roman-9-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "times-new-roman-9-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "times-new-roman-10-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "times-new-roman-10-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "times-new-roman-10-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "times-new-roman-11-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "times-new-roman-11-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "times-new-roman-11-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "times-new-roman-12-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "times-new-roman-12-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "times-new-roman-12-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "times-new-roman-13-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "times-new-roman-13-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "times-new-roman-13-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   },
+   "times-new-roman-14-latin": {
+    "width": 38.33203125,
+    "fitted": true,
+    "texts": {
+     "1": "MWilWAV 0123456789MWilWAV 0123456789"
+    }
+   },
+   "times-new-roman-14-cyrillic": {
+    "width": 35,
+    "fitted": true,
+    "texts": {
+     "1": "Итог за ноябрь, 123 ₽Итог за ноябрь, 123 ₽"
+    }
+   },
+   "times-new-roman-14-number": {
+    "width": 3.8,
+    "points": 23,
+    "texts": {
+     "1": "###"
+    }
+   }
+  }
+ }
+}

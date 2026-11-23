@@ -1,3 +1,4 @@
+import { normalGeometry } from '../../column-width.js'
 /**
  * `readXlsx`: an xlsx file as a book. The workbook part is found through the package's relationships, its
  * sheets taken in the order the workbook lists them (not by part names), each linked to its part by id; shared
@@ -182,10 +183,10 @@ export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsx
   const plain = () => (plainStyle ??= table.styles.push({}) - 1)
   const isPlain = (style: number) => style === plainStyle
   const cond = { dxfs: readDxfs(stylesXml, colors), palette: colors }
-  // the default font is the book's when it is not the model's; the engine measures as for Calibri 11 either way
+  // a non-default Normal font stays in the book, with an issue when its geometry is unmeasured
   const read = table.font && { name: table.font.name || 'Calibri', size: table.font.size || 11 }
   const font = read && (read.name !== 'Calibri' || read.size !== 11) ? read : undefined
-  if (font) issues.add('defaultFont', { key: 'defaultFont', ...table.font })
+  if (font && !normalGeometry(font)) issues.add('defaultFont', { key: 'defaultFont', ...table.font })
   const iteration = calculation(wb, issues)
   workbookIssues(wb, rels, issues)
   const dateSystem = flag(attrsAt(wb, 'workbookPr').date1904) ? 1904 : 1900
