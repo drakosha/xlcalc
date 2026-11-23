@@ -122,7 +122,11 @@ export function workbook({ bytes, path, xml, pending, context }: Part): void {
         const ref = formula(payload)
         while (payload.remaining) payload.nullableWide()
         const builtin = flags & 0x20 && !name.startsWith('_xlnm.') ? '_xlnm.' : ''
-        context.names.push({ name: builtin + name, scope, hidden: Boolean(flags & 1), ref })
+        context.names.push({
+          name: builtin + name, scope, hidden: Boolean(flags & 1), ref,
+          empty: !ref.tokens.remaining && !ref.extra.remaining,
+          future: Boolean(flags & 0x20000) && /^_xlfn\./i.test(name),
+        })
         break
       }
       case 355: { // BrtSupBookSrc
@@ -172,7 +176,7 @@ export function workbook({ bytes, path, xml, pending, context }: Part): void {
     xml.add('<definedNames>')
     for (const name of context.names) {
       if (/^_xl(?:fn|pm|op|eta)\./i.test(name.name)) continue
-      if (!name.ref.tokens.remaining && !name.ref.extra.remaining) continue
+      if (name.empty) continue
       const parsed = formulaText(name.ref, context, 0, 0, true)
       if (!parsed || !('text' in parsed)) {
         pending()

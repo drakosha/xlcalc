@@ -1,6 +1,7 @@
 import { quoteSheetIfNeeded } from '../a1.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { linkedTableText, type TableSpec } from '../syntax/table.js'
+import { XLFN, XLWS } from '../xlsx/formulas/prefixes.js'
 import { address, errorText } from './fields.js'
 import { FTAB } from './ftab.js'
 import type { Context } from './parts.js'
@@ -15,7 +16,21 @@ export interface Defined {
   name: string
   scope: number
   hidden: boolean
+  empty: boolean
+  future: boolean
   ref: Formula
+}
+
+type Operand = string | { text: string; name: Defined }
+const render = (operand: Operand): string => typeof operand === 'string' ? operand : operand.text
+
+function functionName(operand: Operand): string {
+  if (typeof operand === 'string' || !operand.name.empty) return render(operand)
+  const name = operand.name.name.toUpperCase()
+  // Excel writes a call to an empty, unprefixed placeholder for a newer function as _xludf in XLSX.
+  if (!XLFN.has(name) && !XLWS.has(name)) return operand.text
+  const space = operand.text.slice(0, operand.text.length - operand.name.name.length)
+  return space + '_xludf.' + operand.name.name
 }
 
 export type FormulaText = { text: string } | { anchor: string } | undefined
@@ -159,18 +174,20 @@ function list(tokens: Payload, extra: Payload, context: Context): string {
 }
 
 export function formulaText({ tokens, extra }: Formula, context: Context, row = 0, col = 0, relative = false, implicitSheet?: string): FormulaText {
-  const stack: string[] = []
+  const stack: Operand[] = []
   let space = ''
   let openSpace = ''
   let closeSpace = ''
-  const push = (text: string) => {
-    stack.push(space + text)
+  const push = (text: string, name?: Defined) => {
+    const value = space + text
+    stack.push(name ? { text: value, name } : value)
     space = ''
   }
-  const args = (length: number) => {
+  const operands = (length: number) => {
     if (stack.length < length) tokens.fail(`formula token needs ${length} operands, has ${stack.length}`)
     return stack.splice(stack.length - length, length)
   }
+  const args = (length: number) => operands(length).map(render)
   while (tokens.remaining) {
     const byte = tokens.u8()
     const type = byte < 0x20 ? byte : 0x20 | (byte & 31)
@@ -252,17 +269,23 @@ export function formulaText({ tokens, extra }: Formula, context: Context, row = 
       case 0x22: {
         const count = tokens.u8()
         const id = tokens.u16()
-        const values = args(count)
-        const fn = id === 255 ? values.shift() : FTAB[id]?.[0]
+        const values = operands(count)
+        let fn = FTAB[id]?.[0]
+        if (id === 255) {
+          // With a union argument, Excel can put the future-function operand after earlier arguments.
+          const index = values.findIndex((value) => typeof value !== 'string' && value.name.future)
+          const [callee] = values.splice(Math.max(0, index), 1)
+          fn = callee === undefined ? undefined : functionName(callee)
+        }
         if (!fn) return undefined
-        push(`${fn}(${values.join(',')})`)
+        push(`${fn}(${values.map(render).join(',')})`)
         break
       }
       case 0x23: {
         const index = tokens.u32()
         const name = context.names[index - 1]
         if (!name) tokens.fail(`defined name index ${index} out of bounds`)
-        push(name.name)
+        push(name.name, name)
         break
       }
       case 0x24: case 0x2c: case 0x3a: {
@@ -315,5 +338,5 @@ export function formulaText({ tokens, extra }: Formula, context: Context, row = 
     if (!stack.length) return undefined
     tokens.fail(`formula left ${stack.length} operands`)
   }
-  return { text: stack[0] + space }
+  return { text: render(stack[0]) + space }
 }
