@@ -1,0 +1,96 @@
+{
+ "constant": {
+  "names": [
+   {
+    "name": "VacantName",
+    "ref": "31"
+   }
+  ],
+  "issues": [],
+  "value": 31
+ },
+ "broken-reference": {
+  "names": [
+   {
+    "name": "VacantName",
+    "ref": "#REF!"
+   }
+  ],
+  "issues": [],
+  "value": {
+   "error": "REF"
+  }
+ },
+ "empty": {
+  "names": [
+   {
+    "name": "VacantName",
+    "ref": ""
+   }
+  ],
+  "issues": [
+   {
+    "code": "formula",
+    "message": "a formula the engine does not parse is read as written (its cell evaluates to an error)"
+   }
+  ],
+  "value": {
+   "error": "NAME"
+  }
+ },
+ "self-closing": {
+  "names": [
+   {
+    "name": "VacantName",
+    "ref": ""
+   }
+  ],
+  "issues": [
+   {
+    "code": "formula",
+    "message": "a formula the engine does not parse is read as written (its cell evaluates to an error)"
+   }
+  ],
+  "value": {
+   "error": "NAME"
+  }
+ },
+ "whitespace": {
+  "names": [
+   {
+    "name": "VacantName",
+    "ref": " \n\t "
+   }
+  ],
+  "issues": [
+   {
+    "code": "formula",
+    "message": "a formula the engine does not parse is read as written (its cell evaluates to an error)"
+   }
+  ],
+  "value": {
+   "error": "NAME"
+  }
+ },
+ "local-shadow": {
+  "names": [
+   {
+    "name": "VacantName",
+    "ref": "17"
+   },
+   {
+    "name": "VacantName",
+    "ref": "",
+    "scope": "S",
+    "hidden": true
+   }
+  ],
+  "issues": [
+   {
+    "code": "formula",
+    "message": "a formula the engine does not parse is read as written (its cell evaluates to an error)"
+   }
+  ],
+  "value": 17
+ }
+}

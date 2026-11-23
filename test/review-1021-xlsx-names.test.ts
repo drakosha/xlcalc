@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 /**
  * A file whose sheet names Excel would not take (x-xlsx-16) reads with the names repaired and reported, and every
  * reference to such a sheet follows its new name.
@@ -5,6 +6,7 @@
 import { describe, expect, it } from 'vitest'
 import { compute } from '../src/index.js'
 import { ruRU } from '../src/locales/ru-RU.js'
+import { EMPTY_NAME_CASES, emptyNamePrediction } from '../bench/coverage/xlsx/empty-defined-names.js'
 import { readXlsx } from '../src/xlsx.js'
 import { pack, parts, read } from './xlsx-fixtures.js'
 
@@ -99,5 +101,24 @@ describe('xlsx: sheet names Excel would not take (x-xlsx-16)', () => {
     const data = await pack(parts({ sheets: [{ name: 'History', body: one(1) }] }))
     expect((await readXlsx(data)).issues.map((i) => i.message)).toEqual(['the sheet name "History" is not one Excel takes: the sheet is read as "History (2)"'])
     expect((await readXlsx(data, { locale: ruRU })).issues.map((i) => i.message)).toEqual(['Имя листа «History» Excel не принимает: лист прочитан как «History (2)»'])
+  })
+})
+
+
+describe('empty defined names in an xlsx file', () => {
+  const normal = JSON.parse(readFileSync(new URL('excel/win/xlsx/empty-defined-names.json', import.meta.url), 'utf8'))
+  const repaired = JSON.parse(readFileSync(new URL('excel/xlsx/empty-defined-names-repair.json', import.meta.url), 'utf8'))
+  const blanks = EMPTY_NAME_CASES.filter((c) => c.body === null || c.body?.trim() === '')
+
+  it.each(blanks)('$id leaves no empty definition to shadow other names', async (c) => {
+    expect(normal.answers[c.id].rejected).toBeDefined()
+    const got = await emptyNamePrediction(c)
+    expect(got.issues).toEqual([])
+    if (c.local) {
+      expect(got.names).toEqual([{ name: 'VacantName', ref: '17' }])
+      expect(got.value).toBe(17)
+    } else {
+      expect({ names: got.names ?? [], value: got.value }).toEqual(repaired.answers.empty)
+    }
   })
 })
