@@ -10,7 +10,7 @@ const OPERATORS = ['between', 'notBetween', 'equal', 'notEqual', 'greaterThan', 
 const STYLES = ['stop', 'warning', 'information']
 const IME = ['noControl', 'on', 'off', 'disabled', 'hiragana', 'fullKatakana', 'halfKatakana', 'fullAlpha', 'halfAlpha', 'fullHangul', 'halfHangul']
 
-export function validation(part: Part, type: number, payload: Payload, extensions: Xml): boolean {
+export function validation(part: Part, type: number, payload: Payload, extensions: Xml, alternateList: boolean): boolean {
   const { xml, context, pending } = part
   switch (type) {
     case 573:
@@ -25,6 +25,7 @@ export function validation(part: Part, type: number, payload: Payload, extension
       const attributes = validationAttrs(flags, payload)
       const corner = rangeOrigin(refs)
       xml.add(`<dataValidation sqref="${refs.join(' ')}"${attributes}>`)
+      if (alternateList) xml.add('<list/>')
       for (const tag of ['formula1', 'formula2']) {
         const parsed = formula(payload)
         if (!parsed.tokens.remaining) {

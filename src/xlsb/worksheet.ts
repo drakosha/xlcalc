@@ -49,6 +49,7 @@ export function worksheet(part: Part): void {
   let hasPane = false
   let colsOpen = false
   let isoProtection = false
+  let validationList = false
   let lastCell: Cell | undefined
   const anchors = new Map<string, ArrayFormula>()
   const flush = () => {
@@ -186,8 +187,21 @@ export function worksheet(part: Part): void {
       case 562: xml.add('<picture/>'); break
       case 638: xml.add('<oleObjects/>'); break
       case 643: xml.add('<controls/>'); break
+      case 681:
+        // BrtDValList belongs to the next BrtDVal, after the alternate-content block ends.
+        payload.skip(payload.u32() * 2)
+        payload.done()
+        validationList = true
+        break
+      case 1058:
+        payload.done()
+        xml.add('<sparklineGroups/>')
+        break
       default:
-        if (!filters.take(type, payload) && !conditional.take(type, payload)) validation(part, type, payload, extensions)
+        if (!filters.take(type, payload) && !conditional.take(type, payload)) {
+          validation(part, type, payload, extensions, validationList)
+          if (type === 64) validationList = false
+        }
     }
   }
   if (inData) {
