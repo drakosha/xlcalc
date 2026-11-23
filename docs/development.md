@@ -759,6 +759,14 @@ The Format Painter has no AppleScript command. The step takes Excel to the front
 
 `array-ops` showed both Excels refusing an operation onto any legacy array formula, of one cell too (`You can't change part of an array`), where the engine combined a one-cell array as a formula (2 misses, now the rule); `array-ops-held`, held out after it, refused as predicted in all five cases onto an array, and showed a legacy array copied with formulas and an operation onto plain cells giving each of its cells an ordinary formula with `@`, a known difference, as the conversion (`fromLegacy`) would add about 11 KB to a session's bundle for it. `merging-rules` came out as predicted in both Excels: a rule of any kind is kept whole or grown as a rule of cell values. `fit-borders` came out as predicted in both: All Except Borders fits the rows as All does. `painter-double` came out as predicted in both: each target painted as Formats pastes it, in turn. `theme` writes both books by hand (`handBook`), the source in a theme whose accents 1 and 2 and minor font differ from the target's Office theme; `test/paste-theme.test.ts` checks the saved files: All Using Source Theme writes the source's colors as RGB and names its font on every cell, All and Formats keep the theme's colors by their place and the minor scheme, a color given as RGB and a font named without a scheme stay, and both Excels pasted alike.
 
+### Preset table style data
+
+The optional `xlcalc/table-styles` subpath holds 144 presets and 672 unique differential formats from the ECMA-376 `presetTableStyles.xml`. Regenerate the data with `python3 bench/coverage/table-styles/generate.py <SpreadsheetMLStyles archive> src/table-styles/presets.ts`. The generator checks the source's one-based table and zero-based PivotTable format indices. Its outer style elements name the presets, including the two with extra characters in the nested names.
+
+The minified data entry is 193,547 bytes. The root and core imports have no dependency on it. `test/table-style-presets.test.ts` checks both import graphs and the preset references. This entry supplies the data for the renderer.
+
+`bench/windows/table-styles-display.ts` reads `DisplayFormat` for 15 cells of a banded table and 12 cells of a PivotTable, including borders and empty cells. In the table, B2 keeps its direct font color and its table borders, with bold and the green fill supplied by the conditional rule. The prediction was committed before the Excel run. The capture is in `test/excel/win/xlsx/table-style-display-held.json`.
+
 ### PivotTables
 
 From [PivotTables](pivot-tables.md). The reader is `src/xlsx/read/pivots.ts` (the parts through the relationships), `pivot-cache.ts`, `pivot-table.ts` and `slicers.ts`; the model's full check `src/pivot/check.ts`, the core's `src/input/pivot.ts`; `GETPIVOTDATA` `src/functions/lookup/pivot.ts`.

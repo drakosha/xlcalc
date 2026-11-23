@@ -10,13 +10,14 @@ await withWindowsExcel('ru-RU', async (env) => {
   const books = await Promise.all(DISPLAY_CASES.map(async ({ id, sheet, range }) => {
     const file = join(OUT, `table-style-display-${id}.xlsx`)
     writeFileSync(file, await displayFile(id))
-    const steps: Step[] = [{ do: 'full' }, { do: 'cond', op: 'looks', read: [[sheet, range]], borders: true }]
+    const steps: Step[] = [{ do: 'full' }, { do: 'cond', kind: 'looks', read: [[sheet, range]], borders: true }]
     return { file, steps }
   }))
   const results = await runJob('table-style-display', books)
   const entries = DISPLAY_CASES.map(({ id }, i) => {
     const result = results[i]
-    if (!result || 'rejected' in result) throw new Error(`${id}: Excel did not open the synthetic workbook`)
+    if (!result) throw new Error(`${id}: Excel did not finish the case`)
+    if ('rejected' in result) throw new Error(`${id}: ${result.rejected}`)
     return [id, result.answers[1]]
   })
   writeAnswers(winFile('xlsx/table-style-display-held.json'), { meta: metaOf(env, 'ru-RU'), answers: Object.fromEntries(entries) })
