@@ -30,11 +30,28 @@ export class Xml {
 
   add(text: string): void {
     const bytes = utf8Bytes(text)
-    const entryBytes = this.limits.entryBytes ?? ENTRY_BYTES
-    if ((this.size += bytes) > entryBytes) throw new Error(`xlsb: ${this.part} produces more than ${entryBytes} bytes of XML (limits.entryBytes)`)
+    this.grow(bytes)
     const totalBytes = this.limits.totalBytes ?? TOTAL_BYTES
     if ((this.budget.spent += bytes) > totalBytes) throw new Error(`xlsb: ${this.part} produces XML past the ${totalBytes} byte total (limits.totalBytes)`)
     this.chunks.push(text)
+  }
+
+  fragment(): Xml {
+    return new Xml(this.part, this.limits, this.budget)
+  }
+
+  append(other: Xml): void {
+    this.grow(other.size)
+    for (const chunk of other.chunks) this.chunks.push(chunk)
+  }
+
+  get empty(): boolean {
+    return this.size === 0
+  }
+
+  private grow(bytes: number): void {
+    const entryBytes = this.limits.entryBytes ?? ENTRY_BYTES
+    if ((this.size += bytes) > entryBytes) throw new Error(`xlsb: ${this.part} produces more than ${entryBytes} bytes of XML (limits.entryBytes)`)
   }
 
   text(): string {

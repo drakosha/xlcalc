@@ -1,4 +1,5 @@
 import { escapeAttr, escapeText } from '../xlsx/xml/text.js'
+import type { ExternalSource } from './external.js'
 import { formula, formulaText, type Defined } from './formula.js'
 import { records } from './records.js'
 import type { TableIndex } from './table.js'
@@ -18,10 +19,12 @@ export interface Context {
   fonts: string[]
   strings: number
   styles?: number
+  dxfs14: string[]
   sheets: string[]
   names: Defined[]
   xti: [book: number, first: number, last: number][]
-  linkSources: { number?: number; sheets?: string[]; names?: string[] }[]
+  linkSources: { number?: number; sheets?: string[]; names?: string[]; scopes?: number[] }[]
+  external: ReadonlyMap<string, ExternalSource>
   metadata: { cell: number; value: number }
   tables: Map<number, TableIndex>
 }
@@ -101,7 +104,8 @@ export function workbook({ bytes, path, xml, pending, context }: Part): void {
         const id = payload.nullableWide()
         payload.done()
         if (id) links.push(id)
-        context.linkSources.push({ number: links.length })
+        const external = id ? context.external.get(id) : undefined
+        context.linkSources.push({ number: links.length, ...external })
         break
       }
       case 357: case 358: case 667:

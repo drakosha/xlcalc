@@ -2,6 +2,9 @@ import type { XlsxLimits } from '../xlsx/types.js'
 import { attributes, elements } from '../xlsx/xml/scan.js'
 import { decodeXml } from '../xlsx/xml/text.js'
 import type { Archive } from '../xlsx/zip/read.js'
+import { comments } from './comments.js'
+import { externalIndex, externalLink, type ExternalSource } from './external.js'
+import { relsOf } from '../xlsx/read/package.js'
 import { metadata } from './metadata.js'
 import { workbook, type Context, type Part } from './parts.js'
 import { records } from './records.js'
@@ -19,21 +22,36 @@ const converters: Readonly<Partial<Record<string, Convert>>> = {
   'application/vnd.ms-excel.styles': styles,
   'application/vnd.ms-excel.sheetmetadata': metadata,
   'application/vnd.ms-excel.table': table,
+  'application/vnd.ms-excel.comments': comments,
+  'application/vnd.ms-excel.externallink': externalLink,
 }
 
 /** The relationship graph keeps its original paths, so binary and XML parts can point to each other. */
 export async function convertingArchive(source: Archive, workbookPath: string, limits: XlsxLimits, budget: Budget, unfinished: Set<string>): Promise<Archive> {
   const types = new Map<string, string>()
+  const external = new Map<string, ExternalSource>()
   const context: Context = {
-    fonts: [], strings: 0, sheets: [], names: [], xti: [], linkSources: [], metadata: { cell: 0, value: 0 }, tables: new Map(),
+    fonts: [], strings: 0, dxfs14: [], sheets: [], names: [], xti: [], linkSources: [], external, metadata: { cell: 0, value: 0 }, tables: new Map(),
   }
   const contentTypes = await source.text('[Content_Types].xml')
   for (const { attrs } of elements(contentTypes ?? '', 'Override')) {
     const { PartName, ContentType } = attributes(attrs)
     if (PartName && ContentType) types.set(decodeXml(PartName).replace(/^\//, '').toLowerCase(), ContentType.toLowerCase())
   }
-  const stylesPath = [...types].find(([, kind]) => kind === 'application/vnd.ms-excel.styles')?.[0]
   const loaded = new Map<string, Uint8Array>()
+  const slash = workbookPath.lastIndexOf('/') + 1
+  const workbookRelsPath = `${workbookPath.slice(0, slash)}_rels/${workbookPath.slice(slash)}.rels`
+  const relsText = await source.text(workbookRelsPath)
+  const sourceText = (path: string) => path.toLowerCase() === workbookRelsPath.toLowerCase() ? Promise.resolve(relsText) : source.text(path)
+  const links = await relsOf({ ...source, text: sourceText }, workbookPath)
+  const stylesPath = links.find((r) => r.kind === 'styles' && !r.external)?.target.toLowerCase()
+  for (const { id, kind, target, external: outside } of links) {
+    if (kind !== 'externalLink' || outside || !target.toLowerCase().endsWith('.bin')) continue
+    const bytes = await source.bytes(target)
+    if (!bytes) continue
+    loaded.set(target.toLowerCase(), bytes)
+    external.set(id, externalIndex(bytes, target))
+  }
   for (const [path, kind] of types) {
     if (kind !== 'application/vnd.ms-excel.table') continue
     const bytes = await source.bytes(path)
@@ -58,7 +76,7 @@ export async function convertingArchive(source: Archive, workbookPath: string, l
     marked: source.marked,
     async text(path) {
       const key = path.toLowerCase()
-      if (!key.endsWith('.bin')) return source.text(path)
+      if (!key.endsWith('.bin')) return sourceText(path)
       if (key === stylesPath) return stylesXml
       const bytes = loaded.get(key) ?? await source.bytes(path)
       loaded.delete(key)
@@ -66,6 +84,7 @@ export async function convertingArchive(source: Archive, workbookPath: string, l
       const pending = () => unfinished.add(path)
       const xml = new Xml(path, limits, budget)
       const kind = types.get(key) ?? ''
+      const part = { bytes, path, xml, context, pending }
       const convert = key === workbookPath.toLowerCase() ? workbook : Object.hasOwn(converters, kind) ? converters[kind] : undefined
       if (!convert) {
         for (const _record of records(bytes, path)) {
@@ -74,7 +93,7 @@ export async function convertingArchive(source: Archive, workbookPath: string, l
         pending()
         return undefined
       }
-      convert({ bytes, path, xml, context, pending })
+      convert(part)
       return xml.text()
     },
   }

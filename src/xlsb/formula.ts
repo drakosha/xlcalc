@@ -87,10 +87,16 @@ function sheetPrefix(context: Context, index: number, tokens: Payload): string {
   const start = sheets[first]
   const end = sheets[last]
   if (start === undefined || end === undefined) return `${prefix}#REF!`
-  if (first === last) return `${quoteSheetIfNeeded(prefix + start).replace(/^'\[(\d+)\]([^ '\[\]]+)'$/, '[$1]$2')}!`
+  if (first === last) return qualifier(prefix, start)
   return quoteSheetIfNeeded(start) === start && quoteSheetIfNeeded(end) === end
     ? `${prefix}${start}:${end}!`
     : `'${(prefix + start + ':' + end).replace(/'/g, "''")}'!`
+}
+
+function qualifier(prefix: string, sheet: string): string {
+  return quoteSheetIfNeeded(sheet) === sheet
+    ? `${prefix}${sheet}!`
+    : `'${(prefix + sheet).replace(/'/g, "''")}'!`
 }
 
 function array(extra: Payload): string {
@@ -145,11 +151,10 @@ function list(tokens: Payload, extra: Payload, context: Context): string {
   if (!table) return tokens.fail(`table index ${id} out of bounds`)
   const n = flags & 3
   const areas = AREAS[(flags >>> 2) & 31]
-  if (!areas || n > 2 || (n && first >= table.columns.length) || (n === 2 && (last < first || last >= table.columns.length))) {
+  if (!areas || n > 2 || (n && first >= table.columns.length) || (n === 2 && last >= table.columns.length)) {
     return tokens.fail('invalid structured reference')
   }
   const cols: TableSpec['cols'] = n === 0 ? undefined : n === 1 ? [table.columns[first]] : [table.columns[first], table.columns[last]]
-  if (!areas.length && !cols) return table.name
   return linkedTableText({ name: table.name, spec: { areas, cols } }, true)
 }
 
@@ -284,7 +289,10 @@ export function formulaText({ tokens, extra }: Formula, context: Context, row = 
         const source = context.linkSources[xti[0]]
         const name = source?.names?.[index - 1]
         if (!name) return undefined
-        push(source.number === undefined ? name : `[${source.number}]!${name}`)
+        const sheet = source.scopes?.[index - 1]
+        const owner = sheet ? source.sheets?.[sheet - 1] : undefined
+        const prefix = source.number === undefined ? '' : owner ? qualifier(`[${source.number}]`, owner) : `[${source.number}]!`
+        push(prefix + name)
         break
       }
       default: return undefined

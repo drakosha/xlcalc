@@ -1,10 +1,13 @@
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { escapeAttr, escapeText } from '../xlsx/xml/text.js'
+import { Conditional } from './conditional.js'
 import { address, colorAttrs, errorText, range, rkNumber } from './fields.js'
+import { Filters } from './filter.js'
 import { formula, formulaText, type FormulaText } from './formula.js'
 import { NS, type Part } from './parts.js'
 import { records, type Payload } from './records.js'
 import { richString } from './strings.js'
+import { validation } from './validation.js'
 
 const PANE = ['bottomRight', 'topRight', 'bottomLeft', 'topLeft']
 const PROTECTION = ['objects', 'scenarios', 'formatCells', 'formatColumns', 'formatRows', 'insertColumns',
@@ -33,6 +36,9 @@ interface ArrayFormula {
 export function worksheet(part: Part): void {
   const { bytes, path, xml, context, pending } = part
   xml.add(`<worksheet ${NS}>`)
+  const filters = new Filters(xml)
+  const extensions = xml.fragment()
+  const conditional = new Conditional(part, extensions)
   let row = -1
   let cm = 0
   let vm = 0
@@ -172,9 +178,9 @@ export function worksheet(part: Part): void {
       case 392: xml.add('<rowBreaks/>'); break
       case 394: xml.add('<colBreaks/>'); break
       case 479: xml.add('<headerFooter/>'); break
-      case 161: case 478:
-        pending()
-        break
+      case 478: pending(); break
+      default:
+        if (!filters.take(type, payload) && !conditional.take(type, payload)) validation(part, type, payload, extensions)
     }
   }
   if (linksOpen) xml.add('</hyperlinks>')
@@ -183,6 +189,11 @@ export function worksheet(part: Part): void {
     if (rowOpen) xml.add('</row>')
     xml.add('</sheetData>')
     pending()
+  }
+  if (!extensions.empty) {
+    xml.add('<extLst xmlns:x14="http://schemas.microsoft.com/office/spreadsheetml/2009/9/main" xmlns:xm="http://schemas.microsoft.com/office/excel/2006/main">')
+    xml.append(extensions)
+    xml.add('</extLst>')
   }
   xml.add('</worksheet>')
 }

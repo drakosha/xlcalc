@@ -1,6 +1,7 @@
 import { parseAddress } from '../model.js'
 import { escapeAttr, escapeText } from '../xlsx/xml/text.js'
 import { range } from './fields.js'
+import { Filters } from './filter.js'
 import { formula, formulaText } from './formula.js'
 import type { Part } from './parts.js'
 import { records, type Payload } from './records.js'
@@ -70,6 +71,7 @@ export function tableIndex(bytes: Uint8Array, path: string): TableIndex | undefi
 }
 
 export function table({ bytes, path, xml, context, pending }: Part): void {
+  const filters = new Filters(xml)
   let row = 0
   let firstCol = 0
   let col = 0
@@ -109,9 +111,7 @@ export function table({ bytes, path, xml, context, pending }: Part): void {
         xml.add(`<tableStyleInfo${attr('name', name)}${options}/>`)
         break
       }
-      case 161: xml.add(`<autoFilter ref="${range(payload)}">`); payload.done(); break
-      case 162: xml.add('</autoFilter>'); break
-      case 163: pending(); break
+      default: filters.take(type, payload)
     }
   }
 }

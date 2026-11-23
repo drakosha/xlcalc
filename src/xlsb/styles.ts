@@ -88,6 +88,9 @@ export function styles({ bytes, path, xml, context }: Part): void {
       case 507:
         xml.add(`<dxf>${differential(payload)}</dxf>`)
         break
+      case 1171:
+        context.dxfs14.push(differential(payload, true))
+        break
       case 508: {
         const count = payload.u32()
         const table = payload.nullableWide()
