@@ -6,6 +6,7 @@
  * script may stand in any book, whatever locales are loaded. Characters not in the table count as a digit (a known
  * difference for other scripts).
  */
+import type { FontMeasure } from './font-metrics.js'
 import { ADVANCES, BESIDES, DIGIT_ADVANCE } from './advances.js'
 import { BLANK, FILL, PAD } from './style.js'
 export { columnPoints, widthOf } from '../column-width.js'
@@ -62,15 +63,16 @@ export const advance = (ch: string): number => (ch.length === 1 ? advanceOf(ch.c
 const glyphOf = (c: number): number => (c < GLYPH.length ? GLYPH[c] : DIGIT)
 
 /** The width of one character. */
-export const glyph = (ch: string): number => (ch.length === 1 ? glyphOf(ch.charCodeAt(0)) : DIGIT)
+export const glyph = (ch: string, font?: FontMeasure): number => ch.length === 1 ? (font?.width ?? glyphOf)(ch.charCodeAt(0)) : (font?.digit ?? DIGIT)
 
 /** The width of a text, a pair of surrogates one character. */
-export function textWidth(s: string): number {
+export function textWidth(s: string, font?: FontMeasure): number {
+  const width = font?.width ?? glyphOf
   let w = 0
   for (let i = 0; i < s.length; i++) {
     const c = s.codePointAt(i)!
     if (c > 0xffff) i++
-    w += glyphOf(c)
+    w += width(c)
   }
   return w
 }
@@ -102,13 +104,13 @@ function laidOut(s: string, width: (c: number) => number): number {
 }
 
 /** The points AutoFit gives `w` points of text: two past the padding, or the padding and a thirtieth more of the text. */
-export const padded = (w: number): number => Math.max(w + 7, Math.floor((w * 31) / 30) + 5)
+export const padded = (w: number, padding = 5): number => Math.max(w + 2, Math.floor((w * 31) / 30)) + padding
 
 /**
  * The width of laid-out text in Calibri of `size` points as Excel for Mac wraps and turns it: each character the font's
  * advance rounded to a point at its size (`test/excel/rows/held.json`, the set `scale`; `rotation-2.json`).
  */
-export const sizedWidth = (s: string, size: number): number => laidOut(s, (c) => Math.round((advanceOf(c) * size) / 2048))
+export const sizedWidth = (s: string, size: number, font?: FontMeasure): number => laidOut(s, font?.width ?? ((c) => Math.round((advanceOf(c) * size) / 2048)))
 
 /** Text of ASCII alone (the marks of laid-out text aside), which Excel for Mac measures by the widths it shows it in. */
 const ASCII = /^[\x20-\x7e\uFFFE\uFFFF\u2007]*$/
@@ -119,7 +121,12 @@ const ASCII = /^[\x20-\x7e\uFFFE\uFFFF\u2007]*$/
  * it measures by the widths it shows it in; other text by the font's advance widths (`advances.ts`), its 11 points
  * rounded for the first measure.
  */
-export function fitText(s: string): number {
+export function fitText(s: string, font?: FontMeasure): number {
+  if (font) {
+    if (ASCII.test(s)) return padded(laidOut(s, font.width), font.padding)
+    const points = laidOut(s, font.advance) * font.size / 2048
+    return Math.max(Math.round(points) + 2, Math.floor(points * 31 / 30)) + font.padding
+  }
   if (ASCII.test(s)) return padded(laidOut(s, glyphOf))
   const u = laidOut(s, advanceOf)
   return Math.max(Math.floor((u * 11 + 1024) / 2048) + 7, Math.floor((u * 11 * 31) / (2048 * 30)) + 5)
@@ -129,4 +136,4 @@ export function fitText(s: string): number {
 export const MAX_SHOWN = 255
 
 /** `#` across a cell that a number does not fit, one per 5 points; General shows one at least. */
-export const hashes = (space: number, general = false): string => '#'.repeat(Math.min(MAX_SHOWN, Math.max(general ? 1 : 0, Math.floor(space / 5))))
+export const hashes = (space: number, general = false, font?: FontMeasure): string => '#'.repeat(Math.min(MAX_SHOWN, Math.max(general ? 1 : 0, Math.floor(space / (font ? font.width(35) : 5)))))

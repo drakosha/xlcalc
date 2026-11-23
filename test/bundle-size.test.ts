@@ -1,9 +1,9 @@
 /**
  * What a host's bundle takes of the package, bundled by esbuild for the browser and minified: `compute` alone stays
- * under 406 KB, as no locale module but en-US comes with it, nor the functions' declared arguments; the root,
+ * under 412 KB, as no locale module but en-US comes with it, nor the functions' declared arguments; the root,
  * `xlcalc/xlsx` and `xlcalc/csv` take no other locale either (`loadLocale`, which imports the others, is `xlcalc/locales`'s alone), and the ru-RU module takes nothing of the computation. A budget, so that the computation does not grow past it unnoticed; the README's table of
  * what to import gives the sizes. The light entry `xlcalc/core` takes none of the groups of functions, its `compute`
- * under 335 KB.
+ * under 341 KB.
  */
 import { build } from 'esbuild'
 import { fileURLToPath } from 'node:url'
@@ -21,7 +21,7 @@ const lib = (file: string) => JSON.stringify(fileURLToPath(libUrl(file)))
 const locales = (used: string[]) => used.filter((f) => /\/locales\//.test(f)).map((f) => f.replace(/^.*\/locales\//, ''))
 
 describe('bundle size', () => {
-  it('compute alone: under 407 KB minified, with en-US alone of the locales, the functions\' arguments by their specs', async () => {
+  it('compute alone: under 412 KB minified, with en-US alone of the locales, the functions\' arguments by their specs', async () => {
     const { bytes, used } = await minified(`export { compute } from ${lib('index.js')}`)
     expect(locales(used)).toEqual([expect.stringMatching(/^en-US\.(ts|js)$/)])
     // the table of declared arguments is for the calls that check formulas without the engine (`declared-arity.ts`)
@@ -30,7 +30,8 @@ describe('bundle size', () => {
     // Arrays of references (SUBTOTAL, SUMIF over OFFSET over an array): 415,109 bytes, 414,310 before.
     // Arrays of references into RANK, ROW, CELL and the database functions, #VALUE! for AGGREGATE and INDEX: 415,543 bytes, 415,376 before.
     // IRR by Excel's secant search with restarts: 416,103 bytes, 415,543 before.
-    expect(bytes).toBeLessThan(407 * 1024)
+    // Normal geometry and regular Liberation advances: 420,990 bytes.
+    expect(bytes).toBeLessThan(412 * 1024)
   }, 60_000)
 
   it('the root, xlcalc/xlsx and xlcalc/csv take en-US alone of the locales, xlcalc/csv and xlcalc/locales none of the computation, xlcalc/locales the modules it loads; the ru-RU module none of the computation, nor the registry its import loads it into', async () => {
@@ -48,7 +49,7 @@ describe('bundle size', () => {
     expect(ru.used.map((f) => f.replace(/^(.*\/)?(src|dist)\//, '')).sort()).toEqual([expect.stringMatching(/^locale\/imported\.(ts|js)$/), expect.stringMatching(/^locale\/lcid\.(ts|js)$/), expect.stringMatching(/^locales\/ru-RU\.(ts|js)$/)])
   }, 60_000)
 
-  it("the light entry takes none of the groups' modules, its compute under 336 KB; the groups take the core's", async () => {
+  it("the light entry takes none of the groups' modules, its compute under 341 KB; the groups take the core's", async () => {
     // the modules of the groups alone (`src/groups/`): each is in the bundle of xlcalc/functions
     const GROUPS = [/\/groups\/(index|all|engineering|finance|lambda|statistics|xml)\./, /\/functions\/(engineering|xml)\//, /\/functions\/text\/filterxml\./, /\/functions\/financial\/(bond|coupon|odd|discount|depreciation)\./, /\/functions\/statistical\/(distributions|inverse|tests|fit|special|old-distributions)\./, /\/functions\/(jstat|lambda)\./, /\/functions\/lookup\/groupby\./]
     const grouped = (used: string[]) => used.filter((f) => GROUPS.some((g) => g.test(f)))
@@ -59,6 +60,7 @@ describe('bundle size', () => {
     expect(grouped((await minified(`export * from ${lib('core.js')}`)).used)).toEqual([])
     // CSE selector contexts: 340,986 bytes of dist, 337,717 at 0.89.0. Arrays of references: 342,250, 341,451 before.
     // IRR by Excel's secant search with restarts: 343,244.
-    expect(compute.bytes).toBeLessThan(336 * 1024)
+    // Normal geometry and regular Liberation advances: 348,131 bytes.
+    expect(compute.bytes).toBeLessThan(341 * 1024)
   }, 60_000)
 })

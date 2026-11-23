@@ -57,7 +57,7 @@ export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: Xl
   pivotSourceLinked: (p) => `the source of a pivot cache is on the sheet '${p.sheet}', which the workbook no longer has: written as Excel writes it, a link to a file by its path (book.xlsx), which a refresh cannot read`,
   macros: () => 'macros (a VBA project) are not in the model',
   connections: () => 'data connections and queries are not in the model',
-  defaultFont: (p) => `the default font ${p.name ?? '(no name)'} ${p.size ?? '(no size)'} is kept, and text widths use Calibri 11 metrics`,
+  defaultFont: (p) => `the default font ${p.name ?? '(no name)'} ${p.size ?? '(no size)'} is kept, and its default column and row geometry uses Calibri 11`,
   sheetKind: () => 'a chart, dialog or macro sheet is left out',
   sheetPartMissing: () => 'a sheet whose part is missing is left out',
   sheetNameRepaired: (p) => `the sheet name ${JSON.stringify(p.name)} is not one Excel takes: the sheet is read as ${JSON.stringify(p.sheet)}`,

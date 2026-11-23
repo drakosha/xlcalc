@@ -7,15 +7,24 @@ import type { BookInput } from './contract.js'
 
 export type BookGeometry = readonly [digit: number, height: number, size: number]
 
+export function fontFamily(name: string | undefined): 'sans' | 'serif' | undefined {
+  switch (name?.toLowerCase()) {
+    case 'arial': case 'arial cyr': return 'sans'
+    case 'times new roman': return 'serif'
+  }
+}
+
 /** The Normal font's digit width, row height and point size as measured in Excel for Mac. */
-export function bookGeometry(font: BookInput['font']): BookGeometry {
-  if (font && /^(arial( cyr)?|times new roman)$/i.test(font.name)) {
+export function normalGeometry(font: BookInput['font']): BookGeometry | undefined {
+  const family = fontFamily(font?.name)
+  if (font && family) {
     if (font.size === 8) return [4, 11, 8]
-    if (font.size === 10) return [/^times/i.test(font.name) ? 5 : 6, 13, 10]
+    if (font.size === 10) return [family === 'serif' ? 5 : 6, 13, 10]
     if (font.size === 11) return [6, 14, 11]
   }
-  return [6, 15, 11]
 }
+
+export const bookGeometry = (font: BookInput['font']): BookGeometry => normalGeometry(font) ?? [6, 15, 11]
 
 /** The margin Excel adds to a column of at least one character. */
 export const columnPadding = (digit: number): number => digit === 4 ? 3 : 5

@@ -22,10 +22,10 @@ export function shownBy(text: Dialect, cell: Style, dates: DateSyntax): Pick<Rul
   return {
     dateText: (t) => parseDateWith(t, dates),
     formatText: (value, format) => formatWith(value, format, text),
-    display: (value, format, space) => displayWith(value, format, cell, space),
+    display: (value, format, space, font) => displayWith(value, format, cell, space, font),
     fitLaid: (value, format) => fitLaid(value, format, cell),
-    fitPoints: (value, format) => fitPoints(value, format, cell),
-    typedPoints: (value, format, now) => typedPoints(value, format, cell, now),
+    fitPoints: (value, format, font) => fitPoints(value, format, cell, font),
+    typedPoints: (value, format, now, font, margin) => typedPoints(value, format, cell, now, font, margin),
   }
 }
 

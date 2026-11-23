@@ -1,0 +1,1461 @@
+{
+ "meta": {
+  "version": "16.115",
+  "locale": "ru-RU (the system language and locale)",
+  "date": "2026-11-23",
+  "seconds": 6.8
+ },
+ "cases": [
+  {
+   "id": "arial-8-one-line",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Arial",
+      "size": 8
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "arial-8-two-lines",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Arial",
+      "size": 8
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один\nДва",
+     "look": {
+      "font": {
+       "name": "Arial",
+       "size": 8
+      },
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-9-one-line",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Arial",
+      "size": 9
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "arial-9-two-lines",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Arial",
+      "size": 9
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один\nДва",
+     "look": {
+      "font": {
+       "name": "Arial",
+       "size": 9
+      },
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-10-one-line",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Arial",
+      "size": 10
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "arial-10-two-lines",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Arial",
+      "size": 10
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один\nДва",
+     "look": {
+      "font": {
+       "name": "Arial",
+       "size": 10
+      },
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-11-one-line",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Arial",
+      "size": 11
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "arial-11-two-lines",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Arial",
+      "size": 11
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один\nДва",
+     "look": {
+      "font": {
+       "name": "Arial",
+       "size": 11
+      },
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-12-one-line",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Arial",
+      "size": 12
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "arial-12-two-lines",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Arial",
+      "size": 12
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один\nДва",
+     "look": {
+      "font": {
+       "name": "Arial",
+       "size": 12
+      },
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-13-one-line",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Arial",
+      "size": 13
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "arial-13-two-lines",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Arial",
+      "size": 13
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один\nДва",
+     "look": {
+      "font": {
+       "name": "Arial",
+       "size": 13
+      },
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-14-one-line",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Arial",
+      "size": 14
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "arial-14-two-lines",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Arial",
+      "size": 14
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один\nДва",
+     "look": {
+      "font": {
+       "name": "Arial",
+       "size": 14
+      },
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-8-one-line",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Arial Cyr",
+      "size": 8
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-8-two-lines",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Arial Cyr",
+      "size": 8
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один\nДва",
+     "look": {
+      "font": {
+       "name": "Arial Cyr",
+       "size": 8
+      },
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-9-one-line",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Arial Cyr",
+      "size": 9
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-9-two-lines",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Arial Cyr",
+      "size": 9
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один\nДва",
+     "look": {
+      "font": {
+       "name": "Arial Cyr",
+       "size": 9
+      },
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-10-one-line",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Arial Cyr",
+      "size": 10
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-10-two-lines",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Arial Cyr",
+      "size": 10
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один\nДва",
+     "look": {
+      "font": {
+       "name": "Arial Cyr",
+       "size": 10
+      },
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-11-one-line",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Arial Cyr",
+      "size": 11
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-11-two-lines",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Arial Cyr",
+      "size": 11
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один\nДва",
+     "look": {
+      "font": {
+       "name": "Arial Cyr",
+       "size": 11
+      },
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-12-one-line",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Arial Cyr",
+      "size": 12
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-12-two-lines",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Arial Cyr",
+      "size": 12
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один\nДва",
+     "look": {
+      "font": {
+       "name": "Arial Cyr",
+       "size": 12
+      },
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-13-one-line",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Arial Cyr",
+      "size": 13
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-13-two-lines",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Arial Cyr",
+      "size": 13
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один\nДва",
+     "look": {
+      "font": {
+       "name": "Arial Cyr",
+       "size": 13
+      },
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-14-one-line",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Arial Cyr",
+      "size": 14
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-14-two-lines",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Arial Cyr",
+      "size": 14
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один\nДва",
+     "look": {
+      "font": {
+       "name": "Arial Cyr",
+       "size": 14
+      },
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-8-one-line",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Times New Roman",
+      "size": 8
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-8-two-lines",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Times New Roman",
+      "size": 8
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один\nДва",
+     "look": {
+      "font": {
+       "name": "Times New Roman",
+       "size": 8
+      },
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-9-one-line",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Times New Roman",
+      "size": 9
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-9-two-lines",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Times New Roman",
+      "size": 9
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один\nДва",
+     "look": {
+      "font": {
+       "name": "Times New Roman",
+       "size": 9
+      },
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-10-one-line",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Times New Roman",
+      "size": 10
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-10-two-lines",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Times New Roman",
+      "size": 10
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один\nДва",
+     "look": {
+      "font": {
+       "name": "Times New Roman",
+       "size": 10
+      },
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-11-one-line",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Times New Roman",
+      "size": 11
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-11-two-lines",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Times New Roman",
+      "size": 11
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один\nДва",
+     "look": {
+      "font": {
+       "name": "Times New Roman",
+       "size": 11
+      },
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-12-one-line",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Times New Roman",
+      "size": 12
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-12-two-lines",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Times New Roman",
+      "size": 12
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один\nДва",
+     "look": {
+      "font": {
+       "name": "Times New Roman",
+       "size": 12
+      },
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-13-one-line",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Times New Roman",
+      "size": 13
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-13-two-lines",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Times New Roman",
+      "size": 13
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один\nДва",
+     "look": {
+      "font": {
+       "name": "Times New Roman",
+       "size": 13
+      },
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-14-one-line",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Times New Roman",
+      "size": 14
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-14-two-lines",
+   "row": {
+    "look": {
+     "font": {
+      "name": "Times New Roman",
+      "size": 14
+     }
+    }
+   },
+   "cells": {
+    "0": {
+     "value": "Один\nДва",
+     "look": {
+      "font": {
+       "name": "Times New Roman",
+       "size": 14
+      },
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  }
+ ],
+ "answers": {
+  "arial-8-one-line": {
+   "before": 11,
+   "height": 11,
+   "standard": true,
+   "saved": {
+    "ht": 11
+   },
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "arial-8-two-lines": {
+   "before": 24,
+   "height": 24,
+   "standard": true,
+   "saved": {
+    "ht": 24
+   },
+   "cells": {
+    "0": {
+     "formula": "Один\nДва",
+     "wrap": true
+    }
+   }
+  },
+  "arial-9-one-line": {
+   "before": 12,
+   "height": 12,
+   "standard": true,
+   "saved": {
+    "ht": 12
+   },
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "arial-9-two-lines": {
+   "before": 26,
+   "height": 26,
+   "standard": true,
+   "saved": {
+    "ht": 26
+   },
+   "cells": {
+    "0": {
+     "formula": "Один\nДва",
+     "wrap": true
+    }
+   }
+  },
+  "arial-10-one-line": {
+   "before": 13,
+   "height": 13,
+   "standard": true,
+   "saved": {
+    "ht": 13
+   },
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "arial-10-two-lines": {
+   "before": 28,
+   "height": 28,
+   "standard": true,
+   "saved": {
+    "ht": 28
+   },
+   "cells": {
+    "0": {
+     "formula": "Один\nДва",
+     "wrap": true
+    }
+   }
+  },
+  "arial-11-one-line": {
+   "before": 14,
+   "height": 14,
+   "standard": true,
+   "saved": {
+    "ht": 14
+   },
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "arial-11-two-lines": {
+   "before": 30,
+   "height": 30,
+   "standard": true,
+   "saved": {
+    "ht": 30
+   },
+   "cells": {
+    "0": {
+     "formula": "Один\nДва",
+     "wrap": true
+    }
+   }
+  },
+  "arial-12-one-line": {
+   "before": 16,
+   "height": 16,
+   "standard": true,
+   "saved": {
+    "ht": 16
+   },
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "arial-12-two-lines": {
+   "before": 34,
+   "height": 34,
+   "standard": true,
+   "saved": {
+    "ht": 34
+   },
+   "cells": {
+    "0": {
+     "formula": "Один\nДва",
+     "wrap": true
+    }
+   }
+  },
+  "arial-13-one-line": {
+   "before": 17,
+   "height": 17,
+   "standard": true,
+   "saved": {
+    "ht": 17
+   },
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "arial-13-two-lines": {
+   "before": 36,
+   "height": 36,
+   "standard": true,
+   "saved": {
+    "ht": 36
+   },
+   "cells": {
+    "0": {
+     "formula": "Один\nДва",
+     "wrap": true
+    }
+   }
+  },
+  "arial-14-one-line": {
+   "before": 18,
+   "height": 18,
+   "standard": true,
+   "saved": {
+    "ht": 18
+   },
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "arial-14-two-lines": {
+   "before": 38,
+   "height": 38,
+   "standard": true,
+   "saved": {
+    "ht": 38
+   },
+   "cells": {
+    "0": {
+     "formula": "Один\nДва",
+     "wrap": true
+    }
+   }
+  },
+  "arial-cyr-8-one-line": {
+   "before": 11,
+   "height": 11,
+   "standard": true,
+   "saved": {
+    "ht": 11
+   },
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "arial-cyr-8-two-lines": {
+   "before": 24,
+   "height": 24,
+   "standard": true,
+   "saved": {
+    "ht": 24
+   },
+   "cells": {
+    "0": {
+     "formula": "Один\nДва",
+     "wrap": true
+    }
+   }
+  },
+  "arial-cyr-9-one-line": {
+   "before": 12,
+   "height": 12,
+   "standard": true,
+   "saved": {
+    "ht": 12
+   },
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "arial-cyr-9-two-lines": {
+   "before": 26,
+   "height": 26,
+   "standard": true,
+   "saved": {
+    "ht": 26
+   },
+   "cells": {
+    "0": {
+     "formula": "Один\nДва",
+     "wrap": true
+    }
+   }
+  },
+  "arial-cyr-10-one-line": {
+   "before": 13,
+   "height": 13,
+   "standard": true,
+   "saved": {
+    "ht": 13
+   },
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "arial-cyr-10-two-lines": {
+   "before": 28,
+   "height": 28,
+   "standard": true,
+   "saved": {
+    "ht": 28
+   },
+   "cells": {
+    "0": {
+     "formula": "Один\nДва",
+     "wrap": true
+    }
+   }
+  },
+  "arial-cyr-11-one-line": {
+   "before": 14,
+   "height": 14,
+   "standard": true,
+   "saved": {
+    "ht": 14
+   },
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "arial-cyr-11-two-lines": {
+   "before": 30,
+   "height": 30,
+   "standard": true,
+   "saved": {
+    "ht": 30
+   },
+   "cells": {
+    "0": {
+     "formula": "Один\nДва",
+     "wrap": true
+    }
+   }
+  },
+  "arial-cyr-12-one-line": {
+   "before": 16,
+   "height": 16,
+   "standard": true,
+   "saved": {
+    "ht": 16
+   },
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "arial-cyr-12-two-lines": {
+   "before": 34,
+   "height": 34,
+   "standard": true,
+   "saved": {
+    "ht": 34
+   },
+   "cells": {
+    "0": {
+     "formula": "Один\nДва",
+     "wrap": true
+    }
+   }
+  },
+  "arial-cyr-13-one-line": {
+   "before": 17,
+   "height": 17,
+   "standard": true,
+   "saved": {
+    "ht": 17
+   },
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "arial-cyr-13-two-lines": {
+   "before": 36,
+   "height": 36,
+   "standard": true,
+   "saved": {
+    "ht": 36
+   },
+   "cells": {
+    "0": {
+     "formula": "Один\nДва",
+     "wrap": true
+    }
+   }
+  },
+  "arial-cyr-14-one-line": {
+   "before": 18,
+   "height": 18,
+   "standard": true,
+   "saved": {
+    "ht": 18
+   },
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "arial-cyr-14-two-lines": {
+   "before": 38,
+   "height": 38,
+   "standard": true,
+   "saved": {
+    "ht": 38
+   },
+   "cells": {
+    "0": {
+     "formula": "Один\nДва",
+     "wrap": true
+    }
+   }
+  },
+  "times-new-roman-8-one-line": {
+   "before": 11,
+   "height": 11,
+   "standard": true,
+   "saved": {
+    "ht": 11
+   },
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "times-new-roman-8-two-lines": {
+   "before": 24,
+   "height": 24,
+   "standard": true,
+   "saved": {
+    "ht": 24
+   },
+   "cells": {
+    "0": {
+     "formula": "Один\nДва",
+     "wrap": true
+    }
+   }
+  },
+  "times-new-roman-9-one-line": {
+   "before": 12,
+   "height": 12,
+   "standard": true,
+   "saved": {
+    "ht": 12
+   },
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "times-new-roman-9-two-lines": {
+   "before": 26,
+   "height": 26,
+   "standard": true,
+   "saved": {
+    "ht": 26
+   },
+   "cells": {
+    "0": {
+     "formula": "Один\nДва",
+     "wrap": true
+    }
+   }
+  },
+  "times-new-roman-10-one-line": {
+   "before": 13,
+   "height": 13,
+   "standard": true,
+   "saved": {
+    "ht": 13
+   },
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "times-new-roman-10-two-lines": {
+   "before": 28,
+   "height": 28,
+   "standard": true,
+   "saved": {
+    "ht": 28
+   },
+   "cells": {
+    "0": {
+     "formula": "Один\nДва",
+     "wrap": true
+    }
+   }
+  },
+  "times-new-roman-11-one-line": {
+   "before": 14,
+   "height": 14,
+   "standard": true,
+   "saved": {
+    "ht": 14
+   },
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "times-new-roman-11-two-lines": {
+   "before": 30,
+   "height": 30,
+   "standard": true,
+   "saved": {
+    "ht": 30
+   },
+   "cells": {
+    "0": {
+     "formula": "Один\nДва",
+     "wrap": true
+    }
+   }
+  },
+  "times-new-roman-12-one-line": {
+   "before": 16,
+   "height": 16,
+   "standard": true,
+   "saved": {
+    "ht": 16
+   },
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "times-new-roman-12-two-lines": {
+   "before": 34,
+   "height": 34,
+   "standard": true,
+   "saved": {
+    "ht": 34
+   },
+   "cells": {
+    "0": {
+     "formula": "Один\nДва",
+     "wrap": true
+    }
+   }
+  },
+  "times-new-roman-13-one-line": {
+   "before": 17,
+   "height": 17,
+   "standard": true,
+   "saved": {
+    "ht": 17
+   },
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "times-new-roman-13-two-lines": {
+   "before": 36,
+   "height": 36,
+   "standard": true,
+   "saved": {
+    "ht": 36
+   },
+   "cells": {
+    "0": {
+     "formula": "Один\nДва",
+     "wrap": true
+    }
+   }
+  },
+  "times-new-roman-14-one-line": {
+   "before": 18,
+   "height": 18,
+   "standard": true,
+   "saved": {
+    "ht": 18
+   },
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "times-new-roman-14-two-lines": {
+   "before": 38,
+   "height": 38,
+   "standard": true,
+   "saved": {
+    "ht": 38
+   },
+   "cells": {
+    "0": {
+     "formula": "Один\nДва",
+     "wrap": true
+    }
+   }
+  }
+ }
+}

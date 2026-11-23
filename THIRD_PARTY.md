@@ -10,6 +10,9 @@ xlcalc has no runtime dependencies. Part of its code is ported (copied, typed an
 
 Font metrics: `src/numfmt/advances.ts` holds the advance widths (numbers alone, no glyphs) of [Carlito](https://github.com/googlefonts/carlito), a font metrically compatible with Calibri, under the SIL Open Font License 1.1; Copyright (c) 2010-2013 by tyPoland Łukasz Dziedzic with Reserved Font Name "Carlito".
 
+`src/numfmt/liberation.ts` holds regular advance widths from [Liberation Fonts 2.1.5](https://github.com/liberationfonts/liberation-fonts/releases/tag/2.1.5), Sans and Serif. Digitized data Copyright (c) 2010 Google Corporation and Copyright (c) 2012 Red Hat, Inc. The [SIL Open Font License 1.1](https://github.com/liberationfonts/liberation-fonts/blob/2.1.5/LICENSE) applies to the source fonts. Only numeric advance widths and their Unicode characters are included.
+
+
 The MIT license asks that the copyright notice and the license text be kept with copies of the code, the Apache License 2.0 that its notice and terms be given with the work and that changed files say so: they are below, `bessel.ts` names its changes, and the package ships this file.
 
 Development only (not in the package): `@formulajs/formulajs` 4.6.1 (MIT; with its dependencies `jstat` and `bessel`, Apache-2.0) is the measured object of the coverage measurement in `bench/coverage`; `exceljs` (MIT) writes workbooks for the LibreOffice oracle and the measurement, `esbuild` (MIT) builds the browser bundle in the tests, plus `vitest`, `tsx`, `typescript`, `publint` and `@arethetypeswrong/cli`.

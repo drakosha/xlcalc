@@ -6,11 +6,12 @@
  * whose width nobody set widens the column.
  */
 import type { BookInput, CellStyle, CellValue, ColumnInput, ComputeResult, EntryWidthOptions, LayoutEdit, LinePatch, NumberFormat, RowInput, SheetInput } from '../contract.js'
-import { bookGeometry } from '../column-width.js'
+import { bookGeometry, columnPadding } from '../column-width.js'
 import { epochOf } from '../dates.js'
 import type { EngineState } from '../engine.js'
 import { checkCellValue, checkEntryWidthOptions } from '../input.js'
 import { displayRules, type Rules } from '../locale/rules.js'
+import { styleMeasures, type FontMeasure } from '../numfmt/font-metrics.js'
 import { columnPoints, widthOf } from '../numfmt.js'
 import { outCell } from '../result.js'
 import { applyLayout, type SetLayoutEdit } from '../session/book.js'
@@ -39,11 +40,14 @@ function fitWidths(rules: Rules, styles: readonly CellStyle[], sheet: SheetInput
   const across = (sheet.merges ?? []).map((m) => parseMerge(m)!).filter((x) => x.c2 > x.c1 && x.c2 >= lo && x.c1 <= hi)
   const widest = new Map<number, number>()
   const turned = turnedStyles(styles)
+  const measure = styleMeasures(font, styles)
   for (const [r, c, v] of cells) {
     if (c < lo || c > hi || v === null || across.some((x) => hasCell(x, r, c))) continue
-    // a book without turned styles looks up no cell's style
-    const id = turned && formats.look(r, c).style
-    const points = id !== null && id !== undefined && turned!.has(id) ? turnedCell(rules, v, formats.format(r, c), styles[id]) : rules.fitPoints(v, formats.format(r, c))
+    const id = turned || measure ? formats.look(r, c).style : undefined
+    const format = formats.format(r, c)
+    const points = id !== undefined && turned?.has(id)
+      ? turnedCell(rules, v, format, styles[id])
+      : rules.fitPoints(v, format, measure?.(id))
     if (points !== null && points > (widest.get(c) ?? 0)) widest.set(c, points)
   }
   return Object.fromEntries([...widest].sort((a, b) => a[0] - b[0]).map(([c, points]) => [spanKey(c, c, 'c'), widthAt(points, digit)]))
@@ -126,9 +130,9 @@ export function entryWidth(value: CellValue, opts?: EntryWidthOptions): number |
 }
 
 /** The typed width in the geometry of the input's workbook. */
-export function widthForEntry(value: CellValue, o: EntryWidthOptions, font?: BookInput['font']): number | undefined {
+export function widthForEntry(value: CellValue, o: EntryWidthOptions, font?: BookInput['font'], measure?: FontMeasure): number | undefined {
   if (o.width !== undefined && !o.bestFit) return undefined
   const [digit] = bookGeometry(font)
-  const points = displayRules(o.locale, epochOf(o.dateSystem)).typedPoints(value, o.numberFormat, columnPoints(o.width, digit))
+  const points = displayRules(o.locale, epochOf(o.dateSystem)).typedPoints(value, o.numberFormat, columnPoints(o.width, digit), measure, columnPadding(digit))
   return points === null ? undefined : Math.min(MAX_WIDTH, widthOf(points, digit))
 }

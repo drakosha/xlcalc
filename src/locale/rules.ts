@@ -10,6 +10,7 @@ import { inner } from '../model.js'
 import { EN_CRIT, type CritRules } from '../criteria.js'
 import { decimalFirst, enCritNumber, enDates, enNumber, enTypedNumber, inSystem, textReaders, type DateSyntax } from '../dates.js'
 import { builtinCodes, builtinIn, EN_CODES, EN_NAMES, generalFormat, generalText, styleIn, type Dialect, type Laid, type Names, type Style } from '../numfmt.js'
+import type { FontMeasure } from '../numfmt/font-metrics.js'
 import { ERROR_TEXT } from '../syntax.js'
 import { coercions, compareOp, compareValues, type CErr, type V } from '../values.js'
 import { EN_US } from '../locales/en-US.js'
@@ -55,13 +56,13 @@ export interface Rules extends CritRules {
   /** TEXT(value, format); null for a format the locale does not read. */
   formatText(value: number | string | boolean, format: string): string | null
   /** What a cell shows: a value by its format (an xlsx code or a built-in format's number) in `space` points of room. */
-  display(value: CellValue, format: NumberFormat | undefined, space: number): CellDisplay
+  display(value: CellValue, format: NumberFormat | undefined, space: number, font?: FontMeasure): CellDisplay
   /** The text AutoFit lays out of a cell holding a value by its format, and its kind (`fitLaid`); null when it shows nothing. */
   fitLaid(value: CellValue, format: NumberFormat | undefined): Laid | null
   /** The points of the column AutoFit gives a cell holding a value by its format (`fitPoints`); null when it shows nothing. */
-  fitPoints(value: CellValue, format: NumberFormat | undefined): number | null
+  fitPoints(value: CellValue, format: NumberFormat | undefined, font?: FontMeasure): number | null
   /** The points Excel widens a column of `now` points to as a value is typed into it (`typedPoints`); null when it keeps them. */
-  typedPoints(value: CellValue, format: NumberFormat | undefined, now: number): number | null
+  typedPoints(value: CellValue, format: NumberFormat | undefined, now: number, font?: FontMeasure, columnMargin?: number): number | null
   /** Excel's order of two values that are not errors (lookups, sorting), text by the locale's order. */
   compare(a: V, b: V): number
   /** The order of the comparison operators: `compare` with numbers equal to 15 significant digits. */

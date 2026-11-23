@@ -73,7 +73,7 @@ describe('xlsx styles: reading', () => {
       { border: { left: { style: 'thin', color: '#00B050' }, right: { style: 'medium' }, bottom: { style: 'double' } }, alignment: { horizontal: 'center', vertical: 'top', wrap: true, indent: 2 } },
     ])
     expect(r.book.sheets[0].cells).toEqual({ A1: { value: 1, style: 0, numberFormat: '#,##0.00" ₽"' }, B1: { value: 1, style: 1, numberFormat: 3 }, C1: { value: 1, style: 0, numberFormat: 49 }, D1: { value: 1, style: 1, numberFormat: 14 } })
-    expect(codes(r.issues)).toEqual(['defaultFont'])
+    expect(codes(r.issues)).toEqual([])
     expect(r.book.font).toEqual({ name: 'Arial', size: 10 })
   })
 
@@ -83,7 +83,7 @@ describe('xlsx styles: reading', () => {
     expect(file.issues).toEqual([])
     const back = await readXlsx(file.data)
     expect([back.book.font, back.book.styles]).toEqual([book.font, book.styles])
-    expect(codes(back.issues)).toEqual(['defaultFont'])
+    expect(codes(back.issues)).toEqual([])
     // Calibri 11 is the model's own: neither read into the book nor reported
     const plain = await readXlsx((await writeXlsx({ book: { ...book, font: { name: 'Calibri', size: 11 } } }, { values: 'omit' })).data)
     expect([plain.book.font, codes(plain.issues)]).toEqual([undefined, []])

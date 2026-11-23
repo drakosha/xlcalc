@@ -7,7 +7,8 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { FitPrediction } from '../bench/coverage/fit/engine.js'
-import { FIT_KNOWN, FIT_REASONS } from './fit-known.js'
+import { columnPoints } from '../src/column-width.js'
+import { FIT_KNOWN, FIT_REASONS, LIBERATION_EXCESS } from './fit-known.js'
 import { currentCases, engineAnswer, excelWidth, fitSets } from './fit-sets.js'
 
 const SETS = fitSets('')
@@ -17,10 +18,13 @@ describe.each(SETS)('fit $tag $name (Excel for Mac)', (set) => {
     expect((await currentCases(set.name, set.tag)).find((x) => x.id === c.id), "the stored case is the generator's current one").toEqual(c)
     const a = set.answers[c.id]
     const e = engineAnswer(set, c)
-    const got = c.readWidth ? e.points : { width: e.width, texts: e.texts }
-    const excel = c.readWidth ? a.points : { width: excelWidth(a), texts: a.texts }
+    const got = c.readWidth ? { points: e.points, ...(c.bookFont ? {} : { texts: e.texts }) } : { width: e.width, texts: e.texts }
+    const excel = c.readWidth ? { points: a.points, ...(c.bookFont ? {} : { texts: a.texts }) } : { width: excelWidth(a), texts: a.texts }
     const reason = FIT_KNOWN.get(`${set.tag}:${set.name}:${c.id}`)
-    if (reason) expect(got, `${c.id} is known to differ: ${FIT_REASONS[reason]}`).not.toEqual(excel)
+    if (reason === 'liberation') {
+      expect(e.texts).toEqual(a.texts)
+      expect(columnPoints(e.width ?? undefined)).toBe(a.points + LIBERATION_EXCESS[c.id])
+    } else if (reason) expect(got, `${c.id} is known to differ: ${FIT_REASONS[reason]}`).not.toEqual(excel)
     else expect(got).toEqual(excel)
   })
 })
@@ -38,6 +42,7 @@ const CONFIRMED: Record<string, number> = {
   'en-US:rotation-held': 73,
   'ru-RU:held': 74,
   'ru-RU:normal-fonts-held': 21,
+  'ru-RU:cell-fonts-held': 21,
 }
 
 describe('fit sets (Excel for Mac)', () => {

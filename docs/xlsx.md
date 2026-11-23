@@ -317,7 +317,7 @@ xlsx has no place for the workbook's locale. The writer stores it in a custom do
 | `name` | built-in names, names of a sheet that was left out; a linked workbook's name for a sheet it does not have |
 | `calculation` | manual mode, automatic except for data tables, precision as displayed, an iteration count or change out of range |
 | `style` | pattern and gradient fills, diagonal borders, shrink to fit, subscript and superscript |
-| `defaultFont` | a default font other than Calibri 11, kept in `font` and measured with Calibri 11 text width metrics |
+| `defaultFont` | a Normal font with unmeasured geometry, kept in `font` and using Calibri 11 default widths and heights |
 | `defaultWidth` | a default column width other than 8 digits |
 | `numberFormat` | an East Asian built-in format (50 to 58), or an unknown one |
 | `hidden` | a file whose worksheets are all hidden (next to chart sheets): its first worksheet is read as visible |
