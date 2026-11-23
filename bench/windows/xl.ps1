@@ -675,7 +675,14 @@ try {
     $t0 = Get-Date
     $res = try {
       if ($xl.Workbooks.Count -ne 0) { throw 'Excel has open books' }
-      $wb = $xl.Workbooks.Open((Join-Path $dir $b.file), 0, $false)
+      $file = Join-Path $dir $b.file
+      if ($b.repair) {
+        # CorruptLoad is the fifteenth argument. xlRepairFile = 1.
+        $missing = [Type]::Missing
+        $wb = $xl.Workbooks.Open($file, 0, $false, $missing, $missing, $missing, $missing, $missing, $missing, $missing, $missing, $missing, $missing, $missing, 1)
+      } else {
+        $wb = $xl.Workbooks.Open($file, 0, $false)
+      }
       try {
         $answers = foreach ($s in $b.steps) { Step $xl $wb $s }
         '{"answers":' + (List $answers)

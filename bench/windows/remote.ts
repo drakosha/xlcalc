@@ -157,6 +157,8 @@ export type Step = { do: string } & Record<string, unknown>
 export interface Book {
   file: string
   steps: Step[]
+  /** Open the book with Excel's xlRepairFile mode. */
+  repair?: true
 }
 
 /** A book's answer: one value per step (and the file a `saveAs` step saved, the copies `copy` steps saved, from 1), or why Excel did not open it; undefined when the job stopped before it. */
@@ -176,7 +178,7 @@ export async function runJob(label: string, books: Book[], timeout = 120_000 + 2
   mkdirSync(local, { recursive: true })
   for (const script of ['xl.ps1', 'cond.ps1', 'pivot.ps1']) copyFileSync(join(HERE, script), join(local, script))
   books.forEach((b, i) => copyFileSync(b.file, join(local, `${i}.xlsx`)))
-  writeFileSync(join(local, 'job.json'), JSON.stringify({ books: books.map((b, i) => ({ file: `${i}.xlsx`, steps: b.steps })) }))
+  writeFileSync(join(local, 'job.json'), JSON.stringify({ books: books.map((b, i) => ({ file: `${i}.xlsx`, steps: b.steps, ...(b.repair ? { repair: true } : {}) })) }))
   try {
     exec('scp', ['-q', '-r', ...OPTS, local, `${HOST}:C:/xlcalc/work/`], 300_000)
     const timedOut = await new Promise<boolean>((resolve, reject) => {
