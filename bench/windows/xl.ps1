@@ -662,6 +662,11 @@ function Step($xl, $wb, $s) {
     }
     # the book as Excel saves it (xlsx), beside its answer: out\<n>.saved.xlsx
     'saveAs' { $wb.SaveAs((Join-Path $out "$i.saved.xlsx"), 51); 'null' }
+    'saveXlsbPair' {
+      $wb.SaveAs((Join-Path $out "$i.saved.xlsx"), 51)
+      $wb.SaveAs((Join-Path $out "$i.saved.xlsb"), 50)
+      'null'
+    }
     default { throw "unknown step $($s.do)" }
   }
 }
