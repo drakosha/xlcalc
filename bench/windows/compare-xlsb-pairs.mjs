@@ -18,6 +18,7 @@ let calculate
 if (option === '--recalculate') {
   const [{ compute, registerPivot }, { pivotEngine }] = await Promise.all([
     import('../../dist/index.js'), import('../../dist/pivot/index.js'),
+    import('../../dist/locales/ru-RU.js'),
   ])
   registerPivot(pivotEngine)
   const clock = { now: '2026-10-04T12:00:00Z', seed: 7 }
@@ -49,8 +50,9 @@ function checkCalculation(pair, expected, actual, same) {
   let expectedResult
   try {
     expectedResult = calculate(expected)
-  } catch {
+  } catch (error) {
     calculation.xlsxCannotCalculate++
+    console.log(JSON.stringify({ pair, xlsxCalculationError: String(error) }))
     return
   }
   let actualResult = expectedResult

@@ -3,7 +3,7 @@
  * or omit them for the small probe: XLWIN_HOST=… XLWIN_CODEPAGE=any npx tsx bench/windows/xlsb-pairs.ts OUT [XLSX…]
  */
 import { createHash } from 'node:crypto'
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs'
 import { basename, join } from 'node:path'
 import { writeXlsx } from '../../src/xlsx.js'
 import { metaOf, runJob, withWindowsExcel, type Book, type Step } from './remote.js'
@@ -54,34 +54,46 @@ if (!files.length || sources.includes('--formulas')) {
   }
 }
 
-const pending = cases.filter(({ id }) => !existsSync(join(out, `${id}.xlsx`)) || !existsSync(join(out, `${id}.xlsb`)))
+const available = ({ id }: { id: string }) => existsSync(join(out, `${id}.xlsx`)) && existsSync(join(out, `${id}.xlsb`))
+const pending = cases.filter((item) => !available(item))
+
+function publish(name: string, data: string | Uint8Array): void {
+  const destination = join(out, name)
+  const temporary = `${destination}.${process.pid}.tmp`
+  writeFileSync(temporary, data)
+  renameSync(temporary, destination)
+}
+
 const batchSize = 25
 const elapsed = Date.now()
 let failures = 0
 while (pending.length) {
   const batch = pending.splice(0, batchSize)
   const start = Date.now()
-  const { answers, meta } = await withWindowsExcel(locale, async (env) => ({
-    answers: await runJob('xlsb-pairs', batch.map(({ book }) => book), 45_000 + 4_000 * batch.length),
-    meta: metaOf(env, locale),
-  }))
-  const firstUnfinished = answers.indexOf(undefined)
-  answers.forEach((answer, i) => {
-    const item = batch[i]
-    if (firstUnfinished >= 0 && i > firstUnfinished) {
-      pending.push(item)
-      return
-    }
-    const refused = !answer ? 'Excel stopped while opening or saving this book' : 'rejected' in answer ? answer.rejected : undefined
-    if (answer && 'answers' in answer && answer.saved && answer.savedXlsb) {
-      writeFileSync(join(out, `${item.id}.xlsx`), answer.saved)
-      writeFileSync(join(out, `${item.id}.xlsb`), answer.savedXlsb)
-    } else {
-      failures++
-      console.error(`${item.id}: ${refused ?? 'Excel did not save both files'}`)
-    }
-    const details = answer && 'answers' in answer ? { steps: answer.answers } : { refused }
-    writeFileSync(join(out, `${item.id}.json`), JSON.stringify({ meta, seconds: answer?.seconds, ...details }, null, 2) + '\n')
+  await withWindowsExcel(locale, async (env) => {
+    // A second run might have saved these pairs while this one waited for Excel.
+    const missing = batch.filter((item) => !available(item))
+    if (!missing.length) return
+    const answers = await runJob('xlsb-pairs', missing.map(({ book }) => book), 45_000 + 4_000 * missing.length)
+    const meta = metaOf(env, locale)
+    const firstUnfinished = answers.indexOf(undefined)
+    answers.forEach((answer, i) => {
+      const item = missing[i]
+      if (firstUnfinished >= 0 && i > firstUnfinished) {
+        pending.push(item)
+        return
+      }
+      const refused = !answer ? 'Excel stopped while opening or saving this book' : 'rejected' in answer ? answer.rejected : undefined
+      if (answer && 'answers' in answer && answer.saved && answer.savedXlsb) {
+        publish(`${item.id}.xlsx`, answer.saved)
+        publish(`${item.id}.xlsb`, answer.savedXlsb)
+      } else {
+        failures++
+        console.error(`${item.id}: ${refused ?? 'Excel did not save both files'}`)
+      }
+      const details = answer && 'answers' in answer ? { steps: answer.answers } : { refused }
+      publish(`${item.id}.json`, JSON.stringify({ meta, seconds: answer?.seconds, ...details }, null, 2) + '\n')
+    })
   })
   console.log(`${batch.length} books in ${((Date.now() - start) / 1000).toFixed(1)} s, ${pending.length} left`)
 }
