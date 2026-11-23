@@ -107,7 +107,9 @@ export function workbook({ bytes, path, xml, pending, context }: Part): void {
         payload.done()
         const calcMode = mode === 0 ? ' calcMode="manual"' : mode === 2 ? ' calcMode="autoNoTable"' : ''
         const fullPrecision = flags & 8 ? '' : ' fullPrecision="0"'
-        const iteration = flags & 4 ? ` iterate="1" iterateCount="${count}" iterateDelta="${delta}"` : ''
+        const iterations = count === 100 ? '' : ` iterateCount="${count}"`
+        const convergence = delta === 0.001 ? '' : ` iterateDelta="${delta}"`
+        const iteration = flags & 4 ? ` iterate="1"${iterations}${convergence}` : ''
         xml.add(`<calcPr${calcMode}${fullPrecision}${iteration}/>`)
         break
       }
