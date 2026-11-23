@@ -5,6 +5,12 @@
 
 import type { BookInput } from './contract.js'
 
+/**
+ * The deepest outline of rows or columns Excel allows: seven levels of groups below the sheet's own level. Declared before
+ * the functions: esbuild inlines it into `xlcalc/a1` only from there, and leaves this module out of that bundle.
+ */
+export const MAX_OUTLINE = 7
+
 export type BookGeometry = readonly [digit: number, height: number, size: number]
 
 export function fontFamily(name: string | undefined): 'sans' | 'serif' | undefined {
@@ -61,6 +67,3 @@ export const DEFAULT_ROW_HEIGHT = 15
 
 /** The maximum row height Excel allows, in points. */
 export const MAX_ROW_HEIGHT = 409.5
-
-/** The deepest outline of rows or columns Excel allows: seven levels of groups below the sheet's own level. */
-export const MAX_OUTLINE = 7
