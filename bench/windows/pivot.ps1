@@ -63,15 +63,21 @@ function PRead($wb, $s) {
   $pt = PTable $wb $s
   $r2 = $pt.TableRange2
   $body = PRange $pt 'DataBodyRange'
-  $texts = for ($r = 1; $r -le $r2.Rows.Count; $r++) {
-    $row = for ($c = 1; $c -le $r2.Columns.Count; $c++) { Str ([string]$r2.Cells.Item($r, $c).Text) }
-    List $row
+  $text = '[]'
+  $format = '[]'
+  if (!$s.valuesOnly) {
+    $texts = for ($r = 1; $r -le $r2.Rows.Count; $r++) {
+      $row = for ($c = 1; $c -le $r2.Columns.Count; $c++) { Str ([string]$r2.Cells.Item($r, $c).Text) }
+      List $row
+    }
+    $formats = for ($r = 1; $r -le $r2.Rows.Count; $r++) {
+      $row = for ($c = 1; $c -le $r2.Columns.Count; $c++) { Str ([string]$r2.Cells.Item($r, $c).NumberFormat) }
+      List $row
+    }
+    $text = List $texts
+    $format = List $formats
   }
-  $formats = for ($r = 1; $r -le $r2.Rows.Count; $r++) {
-    $row = for ($c = 1; $c -le $r2.Columns.Count; $c++) { Str ([string]$r2.Cells.Item($r, $c).NumberFormat) }
-    List $row
-  }
-  List @((Str $pt.TableRange1.Address($false, $false)), (Str $r2.Address($false, $false)), (Str $body), (Grid $r2.Value2), (List $texts), (List $formats), (Str (PRange $pt 'PageRange')), (Str (PRange $pt 'RowRange')), (Str (PRange $pt 'ColumnRange')))
+  List @((Str $pt.TableRange1.Address($false, $false)), (Str $r2.Address($false, $false)), (Str $body), (Grid $r2.Value2), $text, $format, (Str (PRange $pt 'PageRange')), (Str (PRange $pt 'RowRange')), (Str (PRange $pt 'ColumnRange')))
 }
 
 # a pivot item as a pair [its field's SourceName, its Name]
@@ -309,7 +315,7 @@ function Pivot($xl, $wb, $s) {
       # every pivot table of the book, [sheet, name], in the order of the sheets
       'list' { List (PAll $wb | ForEach-Object { List @((Str $_[0]), (Str $_[1])) }) }
       # each pivot table of the book read, [sheet, name, its area]
-      'readAll' { List (PAll $wb | ForEach-Object { List @((Str $_[0]), (Str $_[1]), (PRead $wb @{ sheet = $_[0]; pt = $_[1] })) }) }
+      'readAll' { List (PAll $wb | ForEach-Object { List @((Str $_[0]), (Str $_[1]), (PRead $wb @{ sheet = $_[0]; pt = $_[1]; valuesOnly = $s.valuesOnly })) }) }
       # each pivot table of the book refreshed, [sheet, name, what RefreshTable answered or its error]
       'refreshAll' {
         List (PAll $wb | ForEach-Object {
