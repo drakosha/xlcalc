@@ -26,6 +26,7 @@ const WIN_SAME_WIDTH: Record<string, number> = {
   'en-US:rotation': 5,
   'en-US:rotation-2': 0,
   'en-US:rotation-held': 2,
+  'ru-RU:normal-fonts-held': 27,
 }
 
 describe.each(SETS)('fit $tag $name (Excel for Windows)', (set) => {

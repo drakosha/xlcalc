@@ -1,0 +1,512 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "ru-RU",
+  "ui": "ru-RU (Excel 1049)",
+  "format": "ru-RU (decimal \",\", thousands U+0020, list \";\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "date": "2026-11-23",
+  "seconds": 18.2
+ },
+ "cases": [
+  {
+   "id": "arial-8-one-line",
+   "bookFont": {
+    "name": "Arial",
+    "size": 8
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "arial-8-two-lines",
+   "bookFont": {
+    "name": "Arial",
+    "size": 8
+   },
+   "cells": {
+    "0": {
+     "value": "One\nДва",
+     "look": {
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-10-one-line",
+   "bookFont": {
+    "name": "Arial",
+    "size": 10
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "arial-10-two-lines",
+   "bookFont": {
+    "name": "Arial",
+    "size": 10
+   },
+   "cells": {
+    "0": {
+     "value": "One\nДва",
+     "look": {
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-11-one-line",
+   "bookFont": {
+    "name": "Arial",
+    "size": 11
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "arial-11-two-lines",
+   "bookFont": {
+    "name": "Arial",
+    "size": 11
+   },
+   "cells": {
+    "0": {
+     "value": "One\nДва",
+     "look": {
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-8-one-line",
+   "bookFont": {
+    "name": "Arial Cyr",
+    "size": 8
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-8-two-lines",
+   "bookFont": {
+    "name": "Arial Cyr",
+    "size": 8
+   },
+   "cells": {
+    "0": {
+     "value": "One\nДва",
+     "look": {
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-10-one-line",
+   "bookFont": {
+    "name": "Arial Cyr",
+    "size": 10
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-10-two-lines",
+   "bookFont": {
+    "name": "Arial Cyr",
+    "size": 10
+   },
+   "cells": {
+    "0": {
+     "value": "One\nДва",
+     "look": {
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-11-one-line",
+   "bookFont": {
+    "name": "Arial Cyr",
+    "size": 11
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "arial-cyr-11-two-lines",
+   "bookFont": {
+    "name": "Arial Cyr",
+    "size": 11
+   },
+   "cells": {
+    "0": {
+     "value": "One\nДва",
+     "look": {
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-8-one-line",
+   "bookFont": {
+    "name": "Times New Roman",
+    "size": 8
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-8-two-lines",
+   "bookFont": {
+    "name": "Times New Roman",
+    "size": 8
+   },
+   "cells": {
+    "0": {
+     "value": "One\nДва",
+     "look": {
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-10-one-line",
+   "bookFont": {
+    "name": "Times New Roman",
+    "size": 10
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-10-two-lines",
+   "bookFont": {
+    "name": "Times New Roman",
+    "size": 10
+   },
+   "cells": {
+    "0": {
+     "value": "One\nДва",
+     "look": {
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-11-one-line",
+   "bookFont": {
+    "name": "Times New Roman",
+    "size": 11
+   },
+   "cells": {
+    "0": {
+     "value": "Один"
+    }
+   }
+  },
+  {
+   "id": "times-new-roman-11-two-lines",
+   "bookFont": {
+    "name": "Times New Roman",
+    "size": 11
+   },
+   "cells": {
+    "0": {
+     "value": "One\nДва",
+     "look": {
+      "alignment": {
+       "wrap": true
+      }
+     }
+    }
+   }
+  }
+ ],
+ "answers": {
+  "arial-8-one-line": {
+   "before": 11.25,
+   "height": 11.25,
+   "standard": true,
+   "saved": null,
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "arial-8-two-lines": {
+   "before": 22.5,
+   "height": 22.5,
+   "standard": true,
+   "saved": {
+    "ht": 22.5
+   },
+   "cells": {
+    "0": {
+     "formula": "One\nДва",
+     "wrap": true
+    }
+   }
+  },
+  "arial-10-one-line": {
+   "before": 12.75,
+   "height": 12.75,
+   "standard": true,
+   "saved": null,
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "arial-10-two-lines": {
+   "before": 25.5,
+   "height": 25.5,
+   "standard": true,
+   "saved": {
+    "ht": 25.5
+   },
+   "cells": {
+    "0": {
+     "formula": "One\nДва",
+     "wrap": true
+    }
+   }
+  },
+  "arial-11-one-line": {
+   "before": 14.25,
+   "height": 14.25,
+   "standard": true,
+   "saved": null,
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "arial-11-two-lines": {
+   "before": 28.5,
+   "height": 28.5,
+   "standard": true,
+   "saved": {
+    "ht": 28.5
+   },
+   "cells": {
+    "0": {
+     "formula": "One\nДва",
+     "wrap": true
+    }
+   }
+  },
+  "arial-cyr-8-one-line": {
+   "before": 11.25,
+   "height": 11.25,
+   "standard": true,
+   "saved": null,
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "arial-cyr-8-two-lines": {
+   "before": 22.5,
+   "height": 22.5,
+   "standard": true,
+   "saved": {
+    "ht": 22.5
+   },
+   "cells": {
+    "0": {
+     "formula": "One\nДва",
+     "wrap": true
+    }
+   }
+  },
+  "arial-cyr-10-one-line": {
+   "before": 12.75,
+   "height": 12.75,
+   "standard": true,
+   "saved": null,
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "arial-cyr-10-two-lines": {
+   "before": 25.5,
+   "height": 25.5,
+   "standard": true,
+   "saved": {
+    "ht": 25.5
+   },
+   "cells": {
+    "0": {
+     "formula": "One\nДва",
+     "wrap": true
+    }
+   }
+  },
+  "arial-cyr-11-one-line": {
+   "before": 14.25,
+   "height": 14.25,
+   "standard": true,
+   "saved": null,
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "arial-cyr-11-two-lines": {
+   "before": 28.5,
+   "height": 28.5,
+   "standard": true,
+   "saved": {
+    "ht": 28.5
+   },
+   "cells": {
+    "0": {
+     "formula": "One\nДва",
+     "wrap": true
+    }
+   }
+  },
+  "times-new-roman-8-one-line": {
+   "before": 11.25,
+   "height": 11.25,
+   "standard": true,
+   "saved": null,
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "times-new-roman-8-two-lines": {
+   "before": 22.5,
+   "height": 22.5,
+   "standard": true,
+   "saved": {
+    "ht": 22.5
+   },
+   "cells": {
+    "0": {
+     "formula": "One\nДва",
+     "wrap": true
+    }
+   }
+  },
+  "times-new-roman-10-one-line": {
+   "before": 12.75,
+   "height": 12.75,
+   "standard": true,
+   "saved": null,
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "times-new-roman-10-two-lines": {
+   "before": 25.5,
+   "height": 25.5,
+   "standard": true,
+   "saved": {
+    "ht": 25.5
+   },
+   "cells": {
+    "0": {
+     "formula": "One\nДва",
+     "wrap": true
+    }
+   }
+  },
+  "times-new-roman-11-one-line": {
+   "before": 15,
+   "height": 15,
+   "standard": true,
+   "saved": null,
+   "cells": {
+    "0": {
+     "formula": "Один",
+     "wrap": false
+    }
+   }
+  },
+  "times-new-roman-11-two-lines": {
+   "before": 30,
+   "height": 30,
+   "standard": true,
+   "saved": {
+    "ht": 30
+   },
+   "cells": {
+    "0": {
+     "formula": "One\nДва",
+     "wrap": true
+    }
+   }
+  }
+ }
+}

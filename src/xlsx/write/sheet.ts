@@ -15,7 +15,8 @@
  * whole format. Notes, hyperlinks and frozen panes are written by `parts.ts`, data validation by `validation.ts`; rows
  * and columns carry their outline levels.
  */
-import type { CellInput, CellLink, CellNote, CellValue, ColumnInput, ErrorCode, RowInput, SheetInput, TextRun } from '../../contract.js'
+import type { BookInput, CellInput, CellLink, CellNote, CellValue, ColumnInput, ErrorCode, RowInput, SheetInput, TextRun } from '../../contract.js'
+import { bookGeometry, columnPoints, widthOf } from '../../column-width.js'
 import { filterXml, sortXml } from './filter.js'
 import { stringXml } from './strings.js'
 import { frozenScroll, sheetViewXml, splitXml } from '../view.js'
@@ -41,12 +42,6 @@ import { clip, countedIf, HEAD, MAIN, MAX_TEXT, REL, rgb } from './xml.js'
 import { protectionXml } from '../protection.js'
 
 /**
- * The default width in xlsx units (8 digits and the padding, as Excel for Mac writes it): a column that has a look
- * but no width of its own needs one, as Excel reads a column without a width as hidden.
- */
-const DEFAULT_WIDTH = '8.83203125'
-
-/**
  * The criteria of the autofilter a filtered sheet gets: a cell equal to nothing or not equal to it, which every row
  * meets. Excel takes the sheet as filtered by them and leaves its rows as the file has them; its Reapply shows every row.
  */
@@ -57,6 +52,8 @@ export const tablePartsXml = (ids: string[]) => countedIf('tableParts', ids.map(
 
 export interface SheetContext extends FileNames {
   styles: CellFormats
+  /** The Normal font that determines unset widths and heights. */
+  font?: BookInput['font']
   /** The index of a string in the shared strings table; `xml`, its item's body where it has runs. */
   string(s: string, xml?: string): number
   /** Text values as inline strings (`t="inlineStr"`), not through the shared strings: a file written over another keeps its table as it is. */
@@ -321,9 +318,12 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
   const minCol = Math.min(extent.c1, looked?.c1 ?? MAX_COLS)
   const maxCol = Math.max(extent.c2, looked?.c2 ?? 0)
   const dim = any ? `${indexToCol(minCol)}${rowLo + 1}:${indexToCol(maxCol)}${rowHi + 1}` : 'A1'
+  const [digit, defaultHeight] = bookGeometry(ctx.font)
+  // A styled column needs an explicit width because Excel opens a column without one as hidden.
+  const defaultWidth = widthOf(columnPoints(undefined, digit), digit)
   const cols = colLines.map(([lo, hi, e]) => {
     const xf = styles.xf(e.style, e.numberFormat)
-    const size = e.width !== undefined ? ` width="${e.width}" customWidth="1"${e.bestFit ? ' bestFit="1"' : ''}` : ` width="${DEFAULT_WIDTH}"`
+    const size = e.width !== undefined ? ` width="${e.width}" customWidth="1"${e.bestFit ? ' bestFit="1"' : ''}` : ` width="${defaultWidth}"`
     return `<col min="${lo + 1}" max="${hi + 1}"${size}${e.hidden ? ' hidden="1"' : ''}${xf ? ` style="${xf}"` : ''}${outlineAttrs(e)}/>`
   })
   const merges = sheet.merges ?? []
@@ -367,7 +367,7 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
     dimension: dim,
     views: sheetViewXml(view, pane, ctx.active),
     // without it Excel for Mac takes a standard width of 10 digits, not the 8 the model assumes
-    formatPr: `<sheetFormatPr defaultRowHeight="15"${deepest(rowLines, 'outlineLevelRow')}${deepest(colLines, 'outlineLevelCol')}/>`,
+    formatPr: `<sheetFormatPr defaultRowHeight="${defaultHeight}"${deepest(rowLines, 'outlineLevelRow')}${deepest(colLines, 'outlineLevelCol')}/>`,
     cols: cols.length ? `<cols>${cols.join('')}</cols>` : '',
     rows: data,
     protection: protectionXml(sheet.protection),

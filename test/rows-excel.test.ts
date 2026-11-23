@@ -88,6 +88,7 @@ const WIN_SAME_HEIGHT: Record<string, number> = {
   'en-US:rotation-held': 4,
   'en-US:rotation-held-2': 1,
   'en-US:rotation-held-3': 2,
+  'ru-RU:normal-fonts-held': 1,
 }
 
 describe('rows sets', () => {

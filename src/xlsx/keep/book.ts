@@ -322,6 +322,7 @@ class Kept {
   private context(book: BookInput, w: BookWriting, i: number, result: Record<string, ResultCell> | undefined, issues: Issues): SheetContext {
     return {
       styles: this.styles.of(book.styles),
+      font: book.font,
       string: () => {
         throw new Error('xlsx/keep: text goes inline')
       },
