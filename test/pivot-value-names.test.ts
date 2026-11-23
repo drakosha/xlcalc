@@ -39,7 +39,7 @@ describe.each(SETS.flatMap((set) => LOCALES.map((locale) => [set, locale] as con
 })
 
 /** Excel for Mac's ru-RU labels of months, including within the labels of groups by day of year. */
-const MAC_MONTHS: Record<string, string> = { фев: 'февр', мар: 'март', июн: 'июнь', июл: 'июль', сен: 'сент', ноя: 'нояб' }
+const KNOWN_MAC_MONTHS: Record<string, string> = { фев: 'февр', мар: 'март', июн: 'июнь', июл: 'июль', сен: 'сент', ноя: 'нояб' }
 const MONTH_COLUMNS: Record<string, number> = { months: 0, days: 0, 'years-quarters-months': 2 }
 const PLATFORM_SET = 'period-names-platforms-held'
 const PLATFORM_LOCALE = 'ru-RU'
@@ -47,13 +47,20 @@ const macGroups = JSON.parse(readFileSync(new URL(`excel/pivot/${PLATFORM_LOCALE
   answers: Record<string, { values: CellValue[][] }>
 }
 
-describe('Russian labels of range groups in Excel for Mac', () => {
-  it.each(platformCases())('$id has the recorded Mac differences', async (c) => {
+const winGroups = JSON.parse(readFileSync(new URL(`excel/win/pivot/${PLATFORM_LOCALE}/${PLATFORM_SET}.json`, import.meta.url), 'utf8')) as {
+  answers: Record<string, PivotAnswer>
+}
+
+describe('Russian labels of range groups in Excel for Windows and Mac', () => {
+  it.each(platformCases())('$id matches Windows and the recorded Mac differences', async (c) => {
     const [area] = await predictedNames(c, PLATFORM_LOCALE)
+    const [win] = winGroups.answers[c.id].phases
+    expect(win.errors ?? []).toEqual([])
+    expect(win.pivots.PT1).toMatchObject({ values: area })
     const macArea = area.map((row) => row.map((value, column) => {
       if (typeof value !== 'string') return value
       if (column === MONTH_COLUMNS[c.id]) {
-        return value.replace(/^(\d{2}\.)?(фев|мар|июн|июл|сен|ноя)$/, (_, prefix = '', month: string) => prefix + MAC_MONTHS[month])
+        return value.replace(/^(\d{2}\.)?(фев|мар|июн|июл|сен|ноя)$/, (_, prefix = '', month: string) => prefix + KNOWN_MAC_MONTHS[month])
       }
       if (c.id === 'hours-minutes-seconds' && column === 0) return value.replace(/^\d( Итог)?$/, '0$&')
       return value
