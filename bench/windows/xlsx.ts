@@ -19,6 +19,9 @@ import { FILL_FILES, fillBook } from '../coverage/xlsx/fills-read.js'
 import { FILTER_FILES, filterFile } from '../coverage/xlsx/filters.js'
 import { FORMAT_IDS, formatBook } from '../coverage/xlsx/formats.js'
 import { FORM_CASES, FORMS_BOOK } from '../coverage/xlsx/forms.js'
+import { TABLE_STYLE_CASES, tableStyleFile } from '../coverage/xlsx/table-style-names.js'
+import { attributes, element } from '../../src/xlsx/xml/scan.js'
+import { openArchive } from '../../src/xlsx/zip/read.js'
 import { writeXlsx } from '../../src/xlsx.js'
 import { STORED_FILES, storedFile } from '../coverage/xlsx/stored.js'
 import { partsHash } from '../coverage/xlsx/sent.js'
@@ -129,4 +132,32 @@ export async function stepXlsxFillsRead(tag: Tag, e: WinEnv): Promise<void> {
   }
   writeAnswers(winFile('xlsx/fills-read.json'), { meta: { ...metaOf(e, tag), seconds: secondsSince(t0) }, cells })
   console.log(`xlsx fills-read ${tag}: ${Object.keys(cells).length} cells read`)
+}
+
+/** Which style Excel uses for a table with each name, including its appearance and the name in the saved file. */
+export async function stepXlsxTableStyleNames(tag: Tag, e: WinEnv): Promise<void> {
+  mkdirSync(OUT, { recursive: true })
+  const books = await Promise.all(TABLE_STYLE_CASES.map(async (c) => {
+    const file = join(OUT, `table-style-names-${c.id}.xlsx`)
+    writeFileSync(file, await tableStyleFile(c))
+    const steps: Step[] = [
+      { do: 'tableStyleName', sheet: 'S', name: 'Amounts' },
+      { do: 'fills', sheet: 'S', cells: ['A1', 'A2', 'A3'] },
+      { do: 'saveAs' },
+    ]
+    return { file, steps }
+  }))
+  const t0 = Date.now()
+  const results = await runJob('xlsx-table-style-names', books)
+  const entries = await Promise.all(TABLE_STYLE_CASES.map(async ({ id }, index) => {
+    const result = results[index]
+    if (!result) throw new Error(`${id}: the Excel job did not finish`)
+    if ('rejected' in result) return [id, { rejected: result.rejected }] as const
+    if (!result.saved) throw new Error(`${id}: Excel did not save the workbook`)
+    const xml = await openArchive(result.saved).text('xl/tables/table1.xml')
+    const savedStyle = xml ? attributes(element(xml, 'tableStyleInfo')?.attrs ?? '') : null
+    const [openedStyle, fills] = result.answers
+    return [id, { openedStyle, fills, savedStyle }] as const
+  }))
+  writeAnswers(winFile('xlsx/table-style-names.json'), { meta: { ...metaOf(e, tag), seconds: secondsSince(t0) }, answers: Object.fromEntries(entries) })
 }

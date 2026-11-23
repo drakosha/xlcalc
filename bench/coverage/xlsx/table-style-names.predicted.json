@@ -1,0 +1,64 @@
+{
+ "no-style": {
+  "style": {
+   "rowStripes": true
+  },
+  "issues": []
+ },
+ "default": {
+  "style": null,
+  "issues": []
+ },
+ "light-1": {
+  "style": {
+   "name": "TableStyleLight1",
+   "rowStripes": true
+  },
+  "issues": []
+ },
+ "light": {
+  "style": null,
+  "issues": [
+   {
+    "code": "table",
+    "message": "the custom table style \"TableStyleLight\" of the table Amounts is not in the model: the table is read with Excel's default style"
+   }
+  ]
+ },
+ "medium": {
+  "style": null,
+  "issues": [
+   {
+    "code": "table",
+    "message": "the custom table style \"TableStyleMedium\" of the table Amounts is not in the model: the table is read with Excel's default style"
+   }
+  ]
+ },
+ "dark": {
+  "style": null,
+  "issues": [
+   {
+    "code": "table",
+    "message": "the custom table style \"TableStyleDark\" of the table Amounts is not in the model: the table is read with Excel's default style"
+   }
+  ]
+ },
+ "custom-missing": {
+  "style": null,
+  "issues": [
+   {
+    "code": "table",
+    "message": "the custom table style \"UnregisteredStyle\" of the table Amounts is not in the model: the table is read with Excel's default style"
+   }
+  ]
+ },
+ "custom-light": {
+  "style": null,
+  "issues": [
+   {
+    "code": "table",
+    "message": "the custom table style \"TableStyleLight\" of the table Amounts is not in the model: the table is read with Excel's default style"
+   }
+  ]
+ }
+}

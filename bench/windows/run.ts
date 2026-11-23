@@ -54,7 +54,7 @@ import { fileURLToPath } from 'node:url'
 import { stepDisplay, stepSpill, stepStruct, stepTables, stepWorkbook } from './books.js'
 import { localeDir, parseTag } from '../coverage/locales.js'
 import { stepFunctions } from './functions.js'
-import { stepXlsxFilters, stepXlsxForms, stepXlsxBarsHeld, stepXlsxColorsHeld, stepXlsxFillsRead, stepXlsxFormats, stepXlsxStored } from './xlsx.js'
+import { stepXlsxFilters, stepXlsxForms, stepXlsxBarsHeld, stepXlsxColorsHeld, stepXlsxFillsRead, stepXlsxFormats, stepXlsxStored, stepXlsxTableStyleNames } from './xlsx.js'
 import { stepParts } from './parts.js'
 import { stepHidden } from './hidden.js'
 import { stepLinks } from './links.js'
@@ -137,6 +137,7 @@ else if (step === 'xlsx' && a === 'stored') await withWindowsExcel('en-US', (e) 
 else if (step === 'xlsx' && a === 'colors-held') await withWindowsExcel('en-US', (e) => stepXlsxColorsHeld('en-US', e))
 else if (step === 'xlsx' && a === 'bars-held') await withWindowsExcel('en-US', (e) => stepXlsxBarsHeld('en-US', e))
 else if (step === 'xlsx' && a === 'fills-read') await withWindowsExcel('en-US', (e) => stepXlsxFillsRead('en-US', e))
+else if (step === 'xlsx' && a === 'table-style-names') await withWindowsExcel(parseTag(b), (e) => stepXlsxTableStyleNames(parseTag(b), e))
 else if (step === 'xlsx' && a === 'formats') await withWindowsExcel(parseTag(b), (e) => stepXlsxFormats(parseTag(b), e))
 else if (step === 'entry' && a) await withWindowsExcel(parseTag(b), (e) => stepEntry(a, parseTag(b), e))
 else if (step === 'fit' && a) await withWindowsExcel(parseTag(b), (e) => stepFit(a, parseTag(b), e))

@@ -326,6 +326,11 @@ function Step($xl, $wb, $s) {
       List ($s.cells | ForEach-Object { Shown $ws.Range($_) $s.codes })
     }
     # cells' fills: each [Interior.Color, Interior.Pattern, Font.Color]
+    'tableStyleName' {
+      $table = $wb.Worksheets.Item($s.sheet).ListObjects.Item($s.name)
+      $style = $table.TableStyle
+      if ($style -is [string]) { Str $style } elseif ($null -ne $style) { Str ([string]$style.Name) } else { 'null' }
+    }
     'fills' {
       $ws = $wb.Worksheets.Item($s.sheet)
       List ($s.cells | ForEach-Object { $c = $ws.Range($_); List @((Cell ([double]$c.Interior.Color)), (Cell ([double]$c.Interior.Pattern)), (Cell ([double]$c.Font.Color))) })
