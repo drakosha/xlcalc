@@ -119,7 +119,7 @@ function checked(e: Entry, data: Uint8Array, crc = crc32(data)): Uint8Array {
   return data
 }
 
-export function openArchive(bytes: Uint8Array, limits: XlsxLimits = {}): Archive {
+export function openArchive(bytes: Uint8Array, limits: XlsxLimits = {}, budget = { spent: 0 }): Archive {
   const list = entries(bytes)
   const v = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength)
   // records over the same bytes let a small file inflate many times over (a zip bomb's way)
@@ -136,7 +136,6 @@ export function openArchive(bytes: Uint8Array, limits: XlsxLimits = {}): Archive
     byName.set(key, e)
   }
   const { entryBytes = ENTRY_BYTES, totalBytes = TOTAL_BYTES, ratio } = limits
-  let spent = 0
   const bytesOf = async (name: string): Promise<Uint8Array | undefined> => {
     const e = byName.get(name.toLowerCase())
     if (!e) return undefined
@@ -149,7 +148,7 @@ export function openArchive(bytes: Uint8Array, limits: XlsxLimits = {}): Archive
     // a stored part is its bytes in the file; a deflated one is refused as it inflates past the size it declares
     const size = e.method === 0 ? raw.length : e.usize
     if (size > entryBytes) fail(`entry ${e.name} is larger than ${entryBytes} bytes (limits.entryBytes)`)
-    if ((spent += size) > totalBytes) fail(`the parts read add up to more than ${totalBytes} bytes (limits.totalBytes)`)
+    if ((budget.spent += size) > totalBytes) fail(`the parts read add up to more than ${totalBytes} bytes (limits.totalBytes)`)
     if (e.method === 0) return checked(e, raw)
     if (ratio !== undefined && e.usize > RATIO_FROM && e.usize > ratio * e.csize) fail(`entry ${e.name} inflates to ${e.usize} bytes from ${e.csize}, more than ${ratio} times its size (limits.ratio)`)
     // a platform without the codec throws as it is; damaged data fails the stream

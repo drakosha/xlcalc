@@ -21,6 +21,15 @@ const lib = (file: string) => JSON.stringify(fileURLToPath(libUrl(file)))
 const locales = (used: string[]) => used.filter((f) => /\/locales\//.test(f)).map((f) => f.replace(/^.*\/locales\//, ''))
 
 describe('bundle size', () => {
+  it('XLSB has its own budget and its converters stay outside the other entry points', async () => {
+    const xlsb = await minified(`export * from ${lib('xlsb.js')}`)
+    expect(xlsb.bytes).toBeLessThan(320 * 1024)
+    for (const entry of ['index.js', 'xlsx.js', 'xlsx-keep.js']) {
+      const { used } = await minified(`export * from ${lib(entry)}`)
+      expect(used.filter((file) => /\/xlsb(?:\/|\.(?:js|ts)$)/.test(file))).toEqual([])
+    }
+  }, 60_000)
+
   it('compute alone: under 412 KB minified, with en-US alone of the locales, the functions\' arguments by their specs', async () => {
     const { bytes, used } = await minified(`export { compute } from ${lib('index.js')}`)
     expect(locales(used)).toEqual([expect.stringMatching(/^en-US\.(ts|js)$/)])

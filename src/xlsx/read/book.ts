@@ -14,6 +14,7 @@ import { InputError, what } from '../../input-error.js'
 import { checkNumber, object, onlyKeys, onlyOptions } from '../../input/basic.js'
 import { optionalLocale } from '../../locale/load.js'
 import { LOCALES, PACKAGE_LOCALES } from '../../locale/registry.js'
+import type { Locale } from '../../locale/types.js'
 import { Issues, type XlsxMessage } from '../issues.js'
 import { LOCALE_PROPERTY } from '../property.js'
 import { palette } from '../styles/color.js'
@@ -156,18 +157,32 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOp
   return (await readStyled(data, opts)).read
 }
 
-/** `readXlsx`, with the file's styles part and its cell formats as read (`xlsx/keep` adds to them). */
-export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOptions): Promise<{ read: XlsxRead; stylesXml: string | undefined; table: StyleTable }> {
+export function workbookInput(data: Uint8Array | ArrayBuffer, opts: ReadXlsxOptions | undefined) {
   const bytes = fileBytes(data)
   const o = opts === undefined ? {} : object(opts, 'opts', "options such as { locale: 'ru-RU' }")
   onlyOptions(o, 'opts', ['locale', 'limits'])
   const language = optionalLocale(o.locale, 'opts.locale')
   if (OLE.every((b, i) => bytes[i] === b)) throw unreadable('an .xls or password-protected file')
-  const archive = openArchive(bytes, o.limits === undefined ? undefined : checkLimits(o.limits))
-  const issues = new Issues()
+  return { bytes, language, limits: o.limits === undefined ? undefined : checkLimits(o.limits) }
+}
+
+/** `readXlsx`, with the file's styles part and its cell formats as read (`xlsx/keep` adds to them). */
+export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOptions): Promise<{ read: XlsxRead; stylesXml: string | undefined; table: StyleTable }> {
+  const { bytes, language, limits } = workbookInput(data, opts)
+  const archive = openArchive(bytes, limits)
   const root = await relsOf(archive, '')
   const wbPath = root.find((r) => r.kind === 'officeDocument' && !r.external)?.target ?? 'xl/workbook.xml'
-  if (wbPath.endsWith('.bin')) throw unreadable('an .xlsb')
+  if (wbPath.toLowerCase().endsWith('.bin')) {
+    throw new InputError('data', language?.tag === 'ru-RU'
+      ? 'Откройте файл .xlsb через readXlsb из xlcalc/xlsb или сохраните его в формате .xlsx'
+      : 'read an .xlsb file with readXlsb from xlcalc/xlsb, or save it as .xlsx')
+  }
+  return readStyledArchive(archive, root, wbPath, language)
+}
+
+/** Reads SpreadsheetML from its package. The XLSB adapter serves XML for the binary parts at their original paths. */
+export async function readStyledArchive(archive: Archive, root: Rel[], wbPath: string, language: Locale | undefined): Promise<{ read: XlsxRead; stylesXml: string | undefined; table: StyleTable }> {
+  const issues = new Issues()
   const wb = await archive.text(wbPath)
   if (wb === undefined) throw new Error(`xlsx: the file has no workbook part (${wbPath})`)
   const rels = await relsOf(archive, wbPath)

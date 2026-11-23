@@ -12,6 +12,7 @@ examples are the [README](../README.md) and the other files of `docs/`. This fil
 - [`xlcalc/entry`](#xlcalcentry)
 - [`xlcalc/xlsx`](#xlcalcxlsx)
 - [`xlcalc/xlsx/keep`](#xlcalcxlsxkeep)
+- [`xlcalc/xlsb`](#xlcalcxlsb)
 - [`xlcalc/csv`](#xlcalccsv)
 - [`xlcalc/worker`](#xlcalcworker)
 - [`xlcalc/function-text`](#xlcalcfunction-text)
@@ -484,7 +485,8 @@ Excel's limit on the length of a formula's text: 8,192 characters.
 const MAX_OUTLINE: 7
 ```
 
-The deepest outline of rows or columns Excel allows: seven levels of groups below the sheet's own level.
+The deepest outline of rows or columns Excel allows: seven levels of groups below the sheet's own level. Declared before
+the functions: esbuild inlines it into `xlcalc/a1` only from there, and leaves this module out of that bundle.
 
 ### <a id="xlcalc-max_row_height"></a>`MAX_ROW_HEIGHT`
 
@@ -1127,6 +1129,16 @@ function writeKept(original: ArrayBuffer | Uint8Array<ArrayBufferLike>, snapshot
 Writes a book over the xlsx file it was read from ([`openKept`](#xlcalcxlsxkeep-openkept)): what the book changed is written, the rest is the
 file's as it was, the parts the model does not have among it. Refuses ([`KeptRefusal`](#xlcalcxlsxkeep-keptrefusal), its message in the language of
 `opts.locale`) a change that would leave references the model does not hold pointing at other cells.
+
+## xlcalc/xlsb
+
+### <a id="xlcalcxlsb-readxlsb"></a>`readXlsb`
+
+```ts
+function readXlsb(data: ArrayBuffer | Uint8Array<ArrayBufferLike>, opts?: ReadXlsxOptions): Promise<XlsxRead>
+```
+
+Reads an XLSB workbook's cells, saved values and issues using the SpreadsheetML reader.
 
 ## xlcalc/csv
 

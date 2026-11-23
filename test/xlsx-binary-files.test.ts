@@ -21,8 +21,8 @@ describe('a binary workbook', () => {
   it('an .xlsb is refused by name, not read as a workbook with no sheets', async () => {
     const file = await xlsb('xl/workbook.bin')
     await expect(readXlsx(file)).rejects.toThrow(InputError)
-    await expect(readXlsx(file)).rejects.toThrow(/xlsb/)
-    await expect(openKept(file)).rejects.toThrow(/xlsb/)
+    await expect(readXlsx(file)).rejects.toThrow(/readXlsb from xlcalc\/xlsb/)
+    await expect(openKept(file)).rejects.toThrow(/readXlsb from xlcalc\/xlsb/)
   })
 
   it('an .xls or a password-protected file says what it may be', async () => {
