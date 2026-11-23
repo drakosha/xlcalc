@@ -11,6 +11,7 @@ Changed:
 Fixed:
 
 - `IRR` finds the rate where Excel finds it: secant steps from the guess, then restarts from 0.1, −1/11 and 2. On cash flows such as 14 outflows followed by 47 inflows Newton's method from 0.1 ran to a root below −1 and gave `#NUM!`, where Excel answers the rate; with several roots the guess picks the same root as in Excel. Checked against Excel for Mac and Windows on 17 cases (`irr-iteration`).
+- A number format with a condition past the second section, or a numeric fourth section, which Excel does not open a file with: `readXlsx` reads it as written and reports it under `numberFormat` for each cell that has it, and `writeXlsx` and `writeKept` refuse it naming that rule; they said text in a format goes in quotes. Checked against Excel for Windows on the set `number-format-conditions`.
 - `readXlsx` reads a table whose style is `TableStyleLight`, `TableStyleMedium` or `TableStyleDark` without a number with no style, as Excel opens it, and reports nothing; it read the table with Excel's default style and reported a custom style for each table. A custom style of the same name still applies.
 - `readXlsx` leaves out a defined name with an empty reference, as Excel's repair does; it was read as a formula the engine does not parse, with a `formula` issue.
 
