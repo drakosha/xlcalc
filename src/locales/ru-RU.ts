@@ -476,6 +476,7 @@ const MESSAGES: Messages = {
   styleLost: (p) => `${upper(stylePart(p.part))} в стиле не поддерживается`,
   eastAsianFormat: () => 'Встроенный восточноазиатский формат даты (от 50 до 58) не поддерживается: прочитан код, который показывает Excel для Mac en-US',
   unknownFormat: () => 'Неизвестный встроенный формат числа не прочитан',
+  formatLayout: (p) => `Excel не открывает файл с форматом числа ${q(p.code)}: ${p.problem === 'conditionPlace' ? 'условия допускаются только в первых двух секциях' : 'четвёртая секция только для текста'}; формат прочитан как записан, writeXlsx его не запишет`,
   // reading xlsx: tables; the reason a table is left out is the check's own, in English
   tablePartBad: () => 'Таблица без имени или диапазона не прочитана',
   tableLeftOut: (p) => `Таблица ${q(p.table)} не прочитана, модель не может её хранить (${p.reason})`,

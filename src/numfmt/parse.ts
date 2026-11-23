@@ -279,14 +279,17 @@ function readSections(parts: string[], codes: Codes): Section[] | null {
   return sections.every((section): section is Section => section !== null) ? sections : null
 }
 
-function sectionProblem(sections: Section[]): string | undefined {
-  if (sections.slice(2).some((section) => section.cond)) return 'conditions go in the first two sections'
+/** Why Excel refuses a code by its sections: a condition past the second section, or a fourth section that is not text. */
+export type SectionProblem = 'conditionPlace' | 'fourthSection'
+
+function sectionProblem(sections: Section[]): SectionProblem | undefined {
+  if (sections.slice(2).some((section) => section.cond)) return 'conditionPlace'
   const text = sections[3]?.toks
-  if (text && (text.some(dated) || misplaced(text, new Map()))) return 'the fourth section is for text'
+  if (text && (text.some(dated) || misplaced(text, new Map()))) return 'fourthSection'
 }
 
 /** The section layout reason Excel refuses an otherwise parsed xlsx code. */
-export function formatSectionProblem(code: string): string | undefined {
+export function formatSectionProblem(code: string): SectionProblem | undefined {
   if (!code.includes(';')) return undefined
   const parts = splitSections(code)
   if (parts.length < 3) return undefined

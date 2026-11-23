@@ -165,8 +165,7 @@ A fill is read as Excel displays it. The file's first two fills are no fill and 
 
 A custom number format is read as its code. A built-in one is stored in the file as a number, and the reader returns that number, 1 to 49, which the workbook displays according to its locale, as Excel does: format 14 displays 2025-01-31 as `1/31/2025` in en-US and `31.01.2025` in ru-RU ([docs/formats.md](formats.md)). Formats 50 to 58, East Asian dates, are not in the model: they are read as the code Excel for Mac en-US displays, `m/d/yy`, and reported. That code is the Mac's short date, format 14; Excel for Windows displays them as its own format 14 too, `m/d/yyyy` in en-US and `ДД.ММ.ГГГГ` in ru-RU, so where the engine displays 2025-01-31 as `1/31/25` (`1.31.25` in ru-RU), Excel for Windows displays `1/31/2025` (`31.01.2025`), as the engine displays format 14 (`test/xlsx-win.test.ts`).
 
-The reader and writer refuse an invalid section layout in a custom code. Conditions belong in the first two sections, and a fourth section is for text. Excel for Windows refused the five files with misplaced conditions or a fourth numeric section in the `number-format-conditions` set. A comparator inside quoted text reads as text.
-
+Conditions belong in the first two sections of a custom code, and a fourth section is for text. Excel for Windows refused to open the five files of the `number-format-conditions` set with a condition in the third section or a fourth numeric section. The reader reads such a code as written and reports it under `numberFormat` for each cell that has it, so that a workbook another program wrote still opens; `writeXlsx` and `writeKept` refuse to write it, naming the rule. A comparator inside quoted text reads as text.
 
 Excel for Mac saves some built-in formats other than by their number: the currency and accounting ones (5 to 8, 41 to 44) as codes in the locale it runs in, 23 to 26 as General, and the East Asian 27 to 36 as 14 and 21. A file saved by Excel contains them that way.
 
@@ -322,7 +321,7 @@ xlsx has no place for the workbook's locale. The writer stores it in a custom do
 | `style` | pattern and gradient fills, diagonal borders, shrink to fit, subscript and superscript |
 | `defaultFont` | a default font other than Calibri 11, kept in `font` and measured as Calibri 11 |
 | `defaultWidth` | a default column width other than 8 digits |
-| `numberFormat` | an East Asian built-in format (50 to 58), or an unknown one |
+| `numberFormat` | an East Asian built-in format (50 to 58), or an unknown one; a custom code Excel does not open a file with for its sections (a condition past the second section, a fourth section that is not text), read as written |
 | `hidden` | a file whose worksheets are all hidden (next to chart sheets): its first worksheet is read as visible |
 | `autoFilter` | unsupported filter properties, an advanced filter; an AutoFilter over a table or over no range of cells, left out |
 | `sheetKind` | chart, dialog and macro sheets, left out |

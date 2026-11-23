@@ -1,4 +1,5 @@
-import { checkFormatSectionLayout } from '../../numfmt/refused.js'
+import { formatLayoutProblem } from '../../numfmt/refused.js'
+import type { SectionProblem } from '../../numfmt/parse.js'
 /**
  * styles.xml as the model's style table: each cell format (`<xf>` of `<cellXfs>`) becomes a style of the book
  * (font, solid fill, borders, alignment, protection; equal ones shared) and a number format, a code or a built-in format's number.
@@ -26,6 +27,8 @@ export interface Xf {
   eastAsian?: number
   /** A built-in number format this reader does not know. */
   unknownFormat?: number
+  /** Why Excel does not open a file with the custom code: misplaced conditions or a numeric fourth section. */
+  formatLayout?: SectionProblem
   /** What the style table cannot hold. */
   lost: StyleLoss[]
 }
@@ -200,9 +203,7 @@ export function readStyles(xml: string | undefined, p: Palette): StyleTable {
   for (const e of within(xml, 'numFmts', 'numFmt')) {
     const a = attributes(e.attrs)
     if (a.numFmtId !== undefined && a.formatCode !== undefined) {
-      const code = decodeXml(a.formatCode)
-      checkFormatSectionLayout(code)
-      formats.set(Number(a.numFmtId), code)
+      formats.set(Number(a.numFmtId), decodeXml(a.formatCode))
     }
   }
   const fonts = within(xml, 'fonts', 'font').map((e) => font(e, p))
@@ -237,6 +238,9 @@ export function readStyles(xml: string | undefined, p: Palette): StyleTable {
     const id = Number(a.numFmtId ?? 0)
     const format = numberFormatOf(formats, id)
     if (format !== undefined) xf.format = format
+    // read as written, as other codes Excel would not open are: the cell reports it, and the writer refuses it
+    const layout = typeof format === 'string' ? formatLayoutProblem(format) : undefined
+    if (layout !== undefined) xf.formatLayout = layout
     if (!formats.has(id) && !isBuiltin(id)) {
       if (format !== undefined) xf.eastAsian = id
       else xf.unknownFormat = id

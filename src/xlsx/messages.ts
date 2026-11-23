@@ -4,6 +4,7 @@
  * without its own text of one gives this one.
  */
 import { ownText, type StyleLoss, type StylePart, type XlsxMessageParams } from '../locale/messages.js'
+import { SECTION_RULES } from '../numfmt/refused.js'
 import type { Locale } from '../locale/types.js'
 import type { XlsxMessage } from './issues.js'
 
@@ -106,6 +107,7 @@ export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: Xl
   styleLost: (p) => `a style's ${stylePart(p.part)} is not in the model`,
   eastAsianFormat: () => 'a built-in East Asian date format the model does not have (50 to 58) is read as the code Excel for Mac en-US displays',
   unknownFormat: () => 'a built-in number format this reader does not know is left out',
+  formatLayout: (p) => `Excel does not open a file with the number format ${JSON.stringify(p.code)}: ${SECTION_RULES[p.problem]}; it is read as written, and writeXlsx refuses it`,
   // reading: tables
   tablePartBad: () => 'a table part without a name or a range is left out',
   tableLeftOut: (p) => `the table ${p.table} is left out: ${p.reason}`,

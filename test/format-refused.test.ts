@@ -106,11 +106,15 @@ describe('conditional sections of an xlsx number format', () => {
     answers: Record<string, { rejected?: string; saved?: boolean }>
   }
 
-  it.each(FORMAT_CONDITION_CASES.filter(({ id }) => id !== 'quoted-third'))('$id is refused with the section rule', async ({ id, code }) => {
+  it.each(FORMAT_CONDITION_CASES.filter(({ id }) => id !== 'quoted-third'))('$id is reported on reading and refused on writing, with the section rule', async ({ id, code }) => {
     expect(answers[id].rejected).toBeDefined()
     expect(formatRefused(code)).toBe(true)
     const reason = id === 'two-conditions' ? 'the fourth section is for text' : 'conditions go in the first two sections'
-    await expect(readXlsx(await conditionFormatFile(code))).rejects.toThrow(reason)
+    // the reader keeps the code and reports it, so a workbook another program wrote still opens; the writer refuses it
+    const read = await readXlsx(await conditionFormatFile(code))
+    expect(read.book.sheets[0].cells.A1.numberFormat).toBe(code)
+    expect(read.issues.filter((i) => i.code === 'numberFormat').map((i) => [i.cells, i.message.includes(reason)])).toEqual([[['A1'], true]])
+    await expect(writeXlsx({ book: read.book })).rejects.toThrow(reason)
     await expect(writeXlsx({ book: { sheets: [{ name: 'S', cells: { A1: { value: 0.75, numberFormat: code } } }] } })).rejects.toThrow(reason)
   })
 
