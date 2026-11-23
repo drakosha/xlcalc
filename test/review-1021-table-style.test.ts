@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 /**
  * A table's style (fix-u330): read from a file's `tableStyleInfo`, checked as input, written back, and kept by the
  * operations on tables, in an `editStructure` and in a session of each kind. Without it a table is written with
@@ -8,6 +9,7 @@ import { compute, createSession, editStructure, InputError, type BookInput, type
 import { ruRU } from '../src/locales/ru-RU.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { openArchive } from '../src/xlsx/zip/read.js'
+import { TABLE_STYLE_CASES, tableStyleFile } from '../bench/coverage/xlsx/table-style-names.js'
 import { closeCalcs, KINDS, openerFor } from './session-kinds.js'
 import { pack } from './xlsx-fixtures.js'
 
@@ -64,6 +66,32 @@ describe('a table\'s style in xlsx (fix-u330)', () => {
     expect(r.book.sheets[0].tables?.[0]).not.toHaveProperty('style')
     expect(r.issues).toEqual([{ code: 'table', sheet: 'S', message: 'the custom table style "My Style" of the table Sales is not in the model: the table is read with Excel\'s default style' }])
     expect((await withInfo(info, { locale: ruRU })).issues[0].message).toBe('Собственный стиль «My Style» таблицы Sales не поддерживается: таблица прочитана со стилем Excel по умолчанию')
+  })
+})
+
+describe('table style family names as read by Excel', () => {
+  const { answers } = JSON.parse(readFileSync(new URL('excel/win/xlsx/table-style-names.json', import.meta.url), 'utf8')) as {
+    answers: Record<string, { openedStyle: string; savedStyle: { name?: string } }>
+  }
+  const families = TABLE_STYLE_CASES.filter((c) => c.id === 'light' || c.id === 'medium' || c.id === 'dark')
+
+  it.each(families)('$id without a custom definition opens without a style', async (c) => {
+    expect(answers[c.id].openedStyle).toBe(answers['no-style'].openedStyle)
+    expect(answers[c.id].savedStyle.name).toBe(c.name)
+    const { book, issues } = await readXlsx(await tableStyleFile(c))
+    expect(issues).toEqual([])
+    expect(book.sheets[0].tables?.[0]?.style).toEqual({ rowStripes: true })
+    const rewritten = await readXlsx((await writeXlsx({ book })).data)
+    expect(rewritten.book.sheets[0].tables?.[0]?.style).toEqual({ rowStripes: true })
+    expect(rewritten.issues).toEqual([])
+  })
+
+  it('a defined custom style with a matching name still produces the custom-style issue', async () => {
+    const c = TABLE_STYLE_CASES.find((candidate) => candidate.id === 'custom-light')!
+    expect(answers[c.id].openedStyle).toBe(c.name)
+    const { book, issues } = await readXlsx(await tableStyleFile(c))
+    expect(book.sheets[0].tables?.[0]).not.toHaveProperty('style')
+    expect(issues).toEqual([expect.objectContaining({ code: 'table', message: expect.stringContaining(c.name) })])
   })
 })
 
