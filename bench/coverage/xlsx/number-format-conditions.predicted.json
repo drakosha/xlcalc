@@ -1,0 +1,32 @@
+{
+ "three-conditions": {
+  "imported": "[>=1][Green]0.0%;[>=0.8][Blue]0.0%;[>=0.6][Magenta]0.0%;[Red]0.0%",
+  "issues": [],
+  "refusal": "numberFormat: Excel does not open a file with the number format \"[>=1][Green]0.0%;[>=0.8][Blue]0.0%;[>=0.6][Magenta]0.0%;[Red]0.0%\": text in a format goes in quotes (0 \"kg\", 0 \"шт/ч\")"
+ },
+ "two-conditions": {
+  "imported": "[>=1][Green]0.0%;[>=0.8][Blue]0.0%;[Magenta]0.0%;[Red]0.0%",
+  "issues": [],
+  "refusal": "numberFormat: Excel does not open a file with the number format \"[>=1][Green]0.0%;[>=0.8][Blue]0.0%;[Magenta]0.0%;[Red]0.0%\": text in a format goes in quotes (0 \"kg\", 0 \"шт/ч\")"
+ },
+ "three-sections": {
+  "imported": "[>=1][Green]0.0%;[>=0.8][Blue]0.0%;[>=0.6][Magenta]0.0%",
+  "issues": [],
+  "refusal": "numberFormat: Excel does not open a file with the number format \"[>=1][Green]0.0%;[>=0.8][Blue]0.0%;[>=0.6][Magenta]0.0%\": text in a format goes in quotes (0 \"kg\", 0 \"шт/ч\")"
+ },
+ "only-third": {
+  "imported": "0.0%;[Blue]0.0%;[>=0.6][Magenta]0.0%",
+  "issues": [],
+  "refusal": "numberFormat: Excel does not open a file with the number format \"0.0%;[Blue]0.0%;[>=0.6][Magenta]0.0%\": text in a format goes in quotes (0 \"kg\", 0 \"шт/ч\")"
+ },
+ "only-fourth": {
+  "imported": "0.0%;[Blue]0.0%;[Magenta]0.0%;[>=0.6]@",
+  "issues": [],
+  "refusal": "numberFormat: Excel does not open a file with the number format \"0.0%;[Blue]0.0%;[Magenta]0.0%;[>=0.6]@\": text in a format goes in quotes (0 \"kg\", 0 \"шт/ч\")"
+ },
+ "quoted-third": {
+  "imported": "0.0%;[Blue]0.0%;0.0%\"[>=0.6]\"",
+  "issues": [],
+  "refusal": null
+ }
+}
