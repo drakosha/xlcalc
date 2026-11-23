@@ -21,6 +21,7 @@ import { checkAddress, checkRange } from './input/range.js'
 
 export { checkCellValue }
 import { checkColor, checkFormat, checkStyleIndex, checkStyles, givenIn } from './input/styles.js'
+import { checkTableStyleData } from './input/table-style-data.js'
 import { checkSheetView } from './input-view.js'
 import { checkSheetProtection } from './input/protection.js'
 import { checkPivots } from './input/pivot.js'
@@ -217,9 +218,10 @@ export const SHEET_STATES = new Map<true | 'very', string>([
  */
 export function checkBook(v: unknown, path = 'book', looked = false, keys?: Map<object, string[]>): BookInput {
   const book = object(v, path, 'a workbook such as { sheets: [{ name: "Sheet1", cells: {} }] }')
-  onlyKeys(book, path, ['sheets', 'names', 'styles', 'locale', 'dateSystem', 'iteration', 'calculation', 'externalBooks', 'activeSheet', 'font', 'pivotCaches', 'slicerCaches', 'timelineCaches'])
+  onlyKeys(book, path, ['sheets', 'names', 'styles', 'locale', 'dateSystem', 'iteration', 'calculation', 'externalBooks', 'activeSheet', 'font', 'tableStyles', 'pivotCaches', 'slicerCaches', 'timelineCaches'])
   given(book, path, {
     locale: checkBookLocale,
+    tableStyles: checkTableStyleData,
     font: (x, p) => {
       const f = object(x, p, "a font such as { name: 'Arial', size: 10 }")
       onlyKeys(f, p, ['name', 'size'])
