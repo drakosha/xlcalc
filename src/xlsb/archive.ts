@@ -6,7 +6,7 @@ import type { Archive } from '../xlsx/zip/read.js'
 import { comments } from './comments.js'
 import { externalIndex, externalLink, type ExternalSource } from './external.js'
 import { metadata } from './metadata.js'
-import { workbook, type Context, type Part } from './parts.js'
+import { connections, workbook, type Context, type Part } from './parts.js'
 import { cacheDefinition, cacheRecords } from './pivot-cache.js'
 import { pivotTable } from './pivot-table.js'
 import { records } from './records.js'
@@ -26,6 +26,7 @@ const converters: Readonly<Partial<Record<string, Convert>>> = {
   'application/vnd.ms-excel.sheetmetadata': metadata,
   'application/vnd.ms-excel.table': table,
   'application/vnd.ms-excel.comments': comments,
+  'application/vnd.ms-excel.connections': connections,
   'application/vnd.ms-excel.pivottable': pivotTable,
   'application/vnd.ms-excel.slicer': slicers,
   'application/vnd.ms-excel.slicercache': slicerCache,
@@ -39,7 +40,8 @@ export async function convertingArchive(
   const types = new Map<string, string>()
   const external = new Map<string, ExternalSource>()
   const context: Context = {
-    fonts: [], strings: 0, dxfs14: [], sheets: [], names: [], xti: [], linkSources: [], external, metadata: { cell: 0, value: 0 }, tables: new Map(),
+    fonts: [], strings: 0, dxfs14: [], sheets: [], sheetsByRel: new Map(), names: [], xti: [], linkSources: [], external,
+    metadata: { cell: 0, value: 0 }, tables: new Map(),
   }
   const contentTypes = await source.text('[Content_Types].xml')
   for (const { attrs } of elements(contentTypes ?? '', 'Override')) {
@@ -53,6 +55,7 @@ export async function convertingArchive(
   const relsText = await source.text(workbookRelsPath)
   const sourceText = (path: string) => path.toLowerCase() === workbookRelsPath.toLowerCase() ? Promise.resolve(relsText) : source.text(path)
   const links = await relsOf({ ...source, text: sourceText }, workbookPath)
+  const sheetRels = new Map(links.filter((r) => r.kind === 'worksheet' && !r.external).map((r) => [r.target.toLowerCase(), r.id]))
   const stylesPath = links.find((r) => r.kind === 'styles' && !r.external)?.target.toLowerCase()
   for (const { id, kind, target, external: outside } of links) {
     if (kind !== 'externalLink' || outside || !target.toLowerCase().endsWith('.bin')) continue
@@ -93,7 +96,9 @@ export async function convertingArchive(
       const pending = () => unfinished.add(path)
       const xml = new Xml(path, limits, budget)
       const kind = types.get(key) ?? ''
-      const part = { bytes, path, xml, context, pending }
+      const sheetRel = sheetRels.get(key)
+      const sheet = sheetRel === undefined ? undefined : context.sheetsByRel.get(sheetRel)
+      const part = { bytes, path, xml, context, sheet, pending }
       if (kind === 'application/vnd.ms-excel.externallink') {
         externalLink(part, (name) => invalidExternalDefinition(path, name))
         return xml.text()

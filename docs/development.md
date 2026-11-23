@@ -25,6 +25,14 @@ Functions live in `src/functions/<category>.ts` (`math`, `statistical`, `logical
 
 The measurements behind each guide's "Checked against Excel" section: the harness steps, the sets, what each predicted set showed, and what its misses changed.
 
+### Reading xlsb
+
+`src/xlsb` converts requested binary parts to internal SpreadsheetML. The XLSX reader consumes that text through its existing archive interface. When the XLSX reader starts using another element or attribute, check how XLSB stores that information and have the converter emit it. The paired test detects a gap when a fixture contains the affected feature.
+
+`npx tsx bench/windows/xlsb-pairs.ts OUT --files-from PATH` takes a manifest with one input workbook per line. Excel saves both formats from one opening. The harness releases the Excel lock between batches and resumes by skipping pairs already in `OUT`. After building, `node bench/windows/compare-xlsb-pairs.mjs OUT` compares the books, their saved values and their issues. It reports the first difference in each of those sections. Add `--recalculate` to compare the calculated results at cells where the engine reproduces the XLSX file's saved value.
+
+On Node 26.13 with a fresh process per read, the 34,000-row workbook took 450 ms as XLSX and 540 ms as XLSB, medians of three runs. The highest heap sizes observed at collection or at the end of reading were 105 and 135 MiB, respectively. Excel's paired files were 4,169,533 and 2,609,251 bytes.
+
 ### Array operations in formulas
 
 From [Array operations in formulas](arrays-incell.md).

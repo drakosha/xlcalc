@@ -145,7 +145,7 @@ function list(tokens: Payload, extra: Payload, context: Context): string {
       } else cols = [first]
     }
     const source = context.xti[xti] && context.linkSources[context.xti[xti][0]]
-    return source?.number ? `[${source.number}]${linkedTableText({ name, spec: { areas, cols } }, true)}` : '#REF!'
+    return source?.number ? `[${source.number}]!${linkedTableText({ name, spec: { areas, cols } }, true)}` : '#REF!'
   }
   const table = context.tables.get(id)
   if (!table) return tokens.fail(`table index ${id} out of bounds`)
@@ -158,7 +158,7 @@ function list(tokens: Payload, extra: Payload, context: Context): string {
   return linkedTableText({ name: table.name, spec: { areas, cols } }, true)
 }
 
-export function formulaText({ tokens, extra }: Formula, context: Context, row = 0, col = 0, relative = false): FormulaText {
+export function formulaText({ tokens, extra }: Formula, context: Context, row = 0, col = 0, relative = false, implicitSheet?: string): FormulaText {
   const stack: string[] = []
   let space = ''
   let openSpace = ''
@@ -179,7 +179,9 @@ export function formulaText({ tokens, extra }: Formula, context: Context, row = 
       const op = BINARY[type - 3]
       const gap = space
       space = ''
-      push(a + gap + op + b)
+      // Excel quotes the explicitly repeated external sheet after a range operator.
+      const right = type === 0x11 ? b.replace(/^(\[\d+\][^!]+)!/, "'$1'!") : b
+      push(a + gap + op + right)
       continue
     }
     switch (type) {
@@ -285,7 +287,10 @@ export function formulaText({ tokens, extra }: Formula, context: Context, row = 
       case 0x2a: case 0x2b: case 0x3c: case 0x3d: {
         const prefix = type >= 0x3c ? sheetPrefix(context, tokens.u16(), tokens) : ''
         tokens.skip(type === 0x2a || type === 0x3c ? 6 : 12)
-        push(prefix.endsWith('#REF!') ? prefix : prefix + '#REF!')
+        // A conditional format in SpreadsheetML has its own sheet as the implicit reference.
+        if (prefix.endsWith('#REF!')) push(prefix)
+        else if (implicitSheet !== undefined && prefix === qualifier('', implicitSheet)) push('#REF!')
+        else push(prefix + '#REF!')
         break
       }
       case 0x39: {

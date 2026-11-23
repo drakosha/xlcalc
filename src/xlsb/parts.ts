@@ -12,6 +12,7 @@ export interface Part {
   path: string
   xml: Xml
   context: Context
+  sheet?: string
   pending(): void
 }
 
@@ -22,6 +23,7 @@ export interface Context {
   styles?: number
   dxfs14: string[]
   sheets: string[]
+  sheetsByRel: Map<string, string>
   names: Defined[]
   xti: [book: number, first: number, last: number][]
   linkSources: { number?: number; sheets?: string[]; names?: string[]; scopes?: number[] }[]
@@ -29,6 +31,25 @@ export interface Context {
   metadata: { cell: number; value: number }
   tables: Map<number, TableIndex>
   pivotNames?: string[]
+}
+
+/** The SpreadsheetML reader needs connection names and IDs to tell a data model source from other external sources. */
+export function connections({ bytes, path, xml }: Part): void {
+  xml.add('<connections>')
+  for (const { type, payload } of records(bytes, path)) {
+    if (type !== 201) continue // BrtBeginExtConnection
+    payload.skip(8)
+    const flags = payload.u16()
+    payload.skip(8)
+    const id = payload.u32()
+    payload.skip(1)
+    for (const optionalString of [1, 2, 4]) if (flags & optionalString) payload.wide()
+    const name = payload.wide()
+    if (flags & 16) payload.wide()
+    payload.done()
+    xml.add(`<connection id="${id}" name="${escapeAttr(name)}"/>`)
+  }
+  xml.add('</connections>')
 }
 
 export function workbook({ bytes, path, xml, pending, context }: Part): void {
@@ -43,6 +64,7 @@ export function workbook({ bytes, path, xml, pending, context }: Part): void {
         const rel = payload.nullableWide()
         const name = payload.wide()
         context.sheets.push(name)
+        if (rel) context.sheetsByRel.set(rel, name)
         payload.done()
         if (state > 2) payload.fail(`invalid sheet state ${state}`)
         const hidden = state ? ` state="${state === 1 ? 'hidden' : 'veryHidden'}"` : ''

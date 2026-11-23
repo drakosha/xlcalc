@@ -122,7 +122,8 @@ function cell(type: number, payload: Payload, row: number, vm: number): string {
   const metadata = vm ? ` vm="${vm}"` : ''
   if (type === 367) return `<cell r="${ref}"${metadata}/>`
   const kind = type === 369 ? 'b' : type === 370 ? 'e' : type === 371 ? 'str' : 'n'
-  const value = type === 368 ? payload.f64() : type === 369 ? payload.u8() : type === 370 ? errorText(payload.u8()) : escapeText(payload.wide())
+  const value = type === 368 ? payload.f64() : type === 369 ? payload.u8()
+    : type === 370 ? errorText(payload.u8()) : escapeText(payload.nullableWide() ?? '')
   return `<cell r="${ref}"${metadata} t="${kind}"><v>${value}</v></cell>`
 }
 

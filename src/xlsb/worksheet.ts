@@ -267,8 +267,9 @@ function selection(payload: Payload, hasPane: boolean): string {
   payload.done()
   if (!selectedPane) payload.fail('invalid selection pane')
   const paneAttr = hasPane ? ` pane="${selectedPane}"` : ''
-  if (active === 'A1' && ranges.length === 1 && ranges[0] === 'A1') return paneAttr ? `<selection${paneAttr}/>` : ''
-  return `<selection${paneAttr} activeCell="${active}" sqref="${ranges.join(' ')}"/>`
+  const activeAttr = active === 'A1' ? '' : ` activeCell="${active}"`
+  const rangesAttr = ranges.length === 1 && ranges[0] === 'A1' ? '' : ` sqref="${ranges.join(' ')}"`
+  return paneAttr || activeAttr || rangesAttr ? `<selection${paneAttr}${activeAttr}${rangesAttr}/>` : ''
 }
 
 function sheetFormat(payload: Payload): { height: number; xml: string } {

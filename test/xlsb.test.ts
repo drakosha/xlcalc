@@ -1,9 +1,13 @@
 import { readFile } from 'node:fs/promises'
 import { describe, expect, it } from 'vitest'
+import { FUNCTION_COUNTS } from '../src/function-words.js'
+import { compute } from '../src/index.js'
 import { readXlsb } from '../src/xlsb.js'
 import { readXlsx } from '../src/xlsx.js'
+import { FTAB } from '../src/xlsb/ftab.js'
 import { records } from '../src/xlsb/records.js'
 import { Xml } from '../src/xlsb/xml.js'
+import { XLFN, XLWS } from '../src/xlsx/formulas/prefixes.js'
 import { zip } from '../src/xlsx/zip/write.js'
 import { rels } from './xlsx-fixtures.js'
 
@@ -13,6 +17,16 @@ const sheet = 'xl/worksheets/sheet1.bin'
 const link = 'xl/externalLinks/externalLink1.bin'
 const bytes = (value: string) => new TextEncoder().encode(value)
 const related = (type: string, target: string, id = 'rId1') => `<Relationship Id="${id}" Type="${REL}/${type}" Target="${target}"/>`
+const excelPair = (name: string) => Promise.all(['xlsb', 'xlsx'].map((ext) =>
+  readFile(new URL(`./excel/win/xlsb-read/${name}.${ext}`, import.meta.url))))
+const sheetData = (cells: number[]) => Uint8Array.of(
+  0x81, 1, 0, // BrtBeginSheet
+  0x91, 1, 0, // BrtBeginSheetData
+  0, 17, ...Array<number>(17).fill(0), // BrtRowHdr, row 1 without formatting or column spans
+  ...cells,
+  0x92, 1, 0, // BrtEndSheetData
+  0x82, 1, 0, // BrtEndSheet
+)
 
 const fixture = (data: Uint8Array, external?: Uint8Array) => zip([
   {
@@ -43,10 +57,52 @@ const fixture = (data: Uint8Array, external?: Uint8Array) => zip([
 ])
 
 describe('XLSB archive', () => {
-  it.each(['probe', 'formulas', 'pivot-calculated', 'slicers-and-timeline', 'icon-filter', 'array-exact', 'array-convert'])('reads both of Excel’s %s saves identically', async (name) => {
-    const path = `./excel/win/xlsb-read/${name}`
-    const [binary, xml] = await Promise.all(['xlsb', 'xlsx'].map((ext) => readFile(new URL(`${path}.${ext}`, import.meta.url))))
+  it('checks native function arities and the names supplied by Excel prefixes', () => {
+    const native = new Set<string>()
+    const incompatible: string[] = []
+    for (const entry of Object.values(FTAB)) {
+      if (!entry) continue
+      const [name, arity] = entry
+      native.add(name)
+      const range = FUNCTION_COUNTS.get(name)
+      if (!range || arity === undefined) continue
+      const [min, max, step] = range
+      if (arity < min || arity > max || (arity - min) % step !== 0) incompatible.push(name)
+    }
+    expect(incompatible).toEqual([])
+    const neither = [...FUNCTION_COUNTS.keys()].filter((name) => !native.has(name) && !XLFN.has(name) && !XLWS.has(name))
+    expect(neither.sort()).toEqual(['EUROCONVERT', 'JIS'])
+  })
+
+  const pairs = [
+    'probe', 'formulas', 'pivot-calculated', 'slicers-and-timeline', 'icon-filter', 'array-exact', 'array-convert',
+    'validation-multi-range', 'conditional-invalid-reference', 'pivot-show-as',
+    'functions-001', 'functions-066', 'functions-131', 'functions-196',
+    'functions-261', 'functions-326', 'functions-391', 'functions-456',
+  ]
+  it.each(pairs)('reads both of Excel’s %s saves identically', async (name) => {
+    const [binary, xml] = await excelPair(name)
     await expect(readXlsb(binary)).resolves.toStrictEqual(await readXlsx(xml))
+  })
+
+  it.each([100000, 165536])('keeps the result cached for an external name whose row %i Excel could not store in XLSB', async (row) => {
+    const [binary, xml] = await excelPair(`external-name-${row}`)
+    const expected = await readXlsx(xml)
+    const actual = await readXlsb(binary)
+    const name = expected.book.externalBooks![0].names![0]
+    expect(name).toEqual({ name: 'FarName', ref: `'Source'!$A$${row}` })
+    expect(compute(expected.book).sheets[0].cells.A2.value).toBe(9)
+    expect(actual.cached.sheets[0].cells.A2.value).toBe(9)
+    expect(compute(actual.book).sheets[0].cells.A2.value).toEqual({ error: 'REF' })
+
+    // BrtSupNameFmla contains ExtPtgRefErr3D. Its coordinate bytes are undefined.
+    name.ref = '#REF!'
+    expected.issues.push({
+      code: 'externalLink',
+      name: 'FarName',
+      message: 'the binary part xl/externalLinks/externalLink1.bin stores an invalid reference for this external name',
+    })
+    expect(actual).toStrictEqual(expected)
   })
 
   it('resolves the workbook and worksheets from their original package paths', async () => {
@@ -56,7 +112,7 @@ describe('XLSB archive', () => {
   })
 
   it.each([
-    [0x3a, [1, 0, 3, 0], "'S'!\u0024D\u00242", false],
+    [0x3a, [1, 0, 3, 0], "'S'!$D$2", false],
     [0x3c, [0x9f, 0x86, 0, 0], '#REF!', true],
     [0x3d, [0x9f, 0x86, 0, 0, 2, 0, 4, 0], '#REF!', true],
   ] as const)('reads external definition token %i and reports a stored invalid reference', async (token, coordinates, ref, invalid) => {
@@ -85,6 +141,20 @@ describe('XLSB archive', () => {
   it('refuses a string field beyond the end of its record', () => {
     const record = records(Uint8Array.of(156, 1, 4, 8, 0, 0, 0), workbook).next().value
     expect(() => record!.payload.wide()).toThrow(/workbook\.bin at offset 7: record 156: expected 16 bytes/)
+  })
+
+  it('refuses a cell index into a missing shared string', async () => {
+    const cell = [7, 12, ...Array<number>(12).fill(0)] // BrtCellIsst, A1, shared string 0
+    await expect(readXlsb(await fixture(sheetData(cell)))).rejects.toThrow(/sheet1\.bin at offset \d+: record 7: shared string index 0 out of bounds/)
+  })
+
+  it('refuses a shared formula that points back to its own anchor', async () => {
+    const anchor = [5, 0, 0, 0, 1, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0] // PtgExp, A1
+    const data = await fixture(sheetData([
+      9, 35, ...Array<number>(18).fill(0), ...anchor, // BrtFmlaNum, A1
+      0xab, 3, 33, ...Array<number>(16).fill(0), ...anchor, // BrtShrFmla, A1:A1
+    ]))
+    await expect(readXlsb(data)).rejects.toThrow(/sheet1\.bin at offset \d+: record 427: array or shared formula references another anchor/)
   })
 
   it('charges expanded UTF-8 XML before joining it', () => {

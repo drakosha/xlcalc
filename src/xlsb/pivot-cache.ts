@@ -82,16 +82,7 @@ export function cacheDefinition(part: Part): Field[] {
         break
       }
       case 186: xml.add('</cacheSource>'); break
-      case 187: {
-        const named = payload.u8()
-        const builtin = payload.u8()
-        const flags = payload.u8()
-        const sheet = flags & 2 ? payload.wide() : undefined
-        const book = flags & 1 ? payload.nullableWide() : undefined
-        const ref = named ? attr('name', (builtin ? '_xlnm.' : '') + payload.wide()) : attr('ref', range(payload))
-        xml.add(`<worksheetSource${ref}${sheet ? attr('sheet', sheet) : ''}${book ? attr('r:id', book) : ''}/>`)
-        break
-      }
+      case 187: xml.add(`<worksheetSource${sourceRange(payload)}/>`); break
       case 181:
         fields = []
         xml.add(`<cacheFields count="${payload.u32()}">`)
@@ -135,8 +126,14 @@ export function cacheDefinition(part: Part): Field[] {
       case 190: xml.add('</sharedItems>'); items = undefined; break
       case 191: cacheRun(part, payload, items); break
       case 195: xml.add('<cacheHierarchies/>'); continue
-      case 207: xml.add('<consolidation><rangeSets>'); continue
-      case 208: xml.add('</rangeSets></consolidation>'); break
+      case 207: payload.skip(2); xml.add('<consolidation>'); break
+      case 208: xml.add('</consolidation>'); break
+      case 215: xml.add(`<rangeSets count="${payload.u32()}">`); break
+      case 216: xml.add('</rangeSets>'); break
+      case 217:
+        payload.skip(16)
+        xml.add(`<rangeSet${sourceRange(payload)}/>`)
+        break
       case 219: {
         const parent = payload.i32()
         const base = payload.i32()
@@ -195,9 +192,6 @@ export function cacheDefinition(part: Part): Field[] {
         }
         break
       }
-      case 217:
-        pending()
-        continue
       case 1066: {
         payload.u32()
         payload.u8()
@@ -211,6 +205,16 @@ export function cacheDefinition(part: Part): Field[] {
     payload.done()
   }
   return fields
+}
+
+function sourceRange(payload: Payload): string {
+  const named = payload.u8()
+  const builtin = payload.u8()
+  const flags = payload.u8()
+  const sheet = flags & 2 ? payload.wide() : undefined
+  const book = flags & 1 ? payload.nullableWide() : undefined
+  const ref = named ? attr('name', (builtin ? '_xlnm.' : '') + payload.wide()) : attr('ref', range(payload))
+  return ref + (sheet ? attr('sheet', sheet) : '') + (book ? attr('r:id', book) : '')
 }
 
 function writeCalculatedItem(part: Part, calculated: CalculatedItem, items: (string | undefined)[][]): void {

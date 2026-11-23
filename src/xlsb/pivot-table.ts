@@ -3,9 +3,9 @@ import { escapeAttr } from '../xlsx/xml/text.js'
 import { rangeAt } from './fields.js'
 import { Filters } from './filter.js'
 import { NS, type Part } from './parts.js'
+import { PIVOT_AGGREGATES as AGGREGATES, pivotAreaRecord, pivotBit as bit } from './pivot-area.js'
 import { records, type Payload } from './records.js'
 
-const AGGREGATES = ['sum', 'count', 'average', 'max', 'min', 'product', 'countNums', 'stdDev', 'stdDevp', 'var', 'varp'] as const
 const LINE_TYPES = ['data', 'default', ...AGGREGATES.map((fn) => SUBTOTAL_ATTR[fn]), 'grand', 'blank']
 const SHOW_AS = ['normal', 'difference', 'percent', 'percentDiff', 'runTotal', 'percentOfRow', 'percentOfCol',
   'percentOfTotal', 'index', 'percentOfParentRow', 'percentOfParentCol', 'percentOfParent', 'percentOfRunningTotal',
@@ -20,10 +20,9 @@ const FILTER_TYPES = ['', 'count', 'percent', 'sum', 'captionEqual', 'captionNot
   'dateNotEqual', 'dateOlderThanOrEqual', 'dateNewerThanOrEqual', 'dateNotBetween']
 
 const attr = (key: string, value: string | number | undefined): string => value === undefined ? '' : ` ${key}="${escapeAttr(String(value))}"`
-const bit = (value: number, index: number): number => (value >>> index) & 1
 const optional = (payload: Payload, flag: number): string | undefined => flag ? payload.wide() : undefined
 
-export function pivotTable({ bytes, path, xml, pending }: Part): void {
+export function pivotTable({ bytes, path, xml }: Part): void {
   const filters = new Filters(xml)
   let lineItems = 0
   for (const { type, payload } of records(bytes, path)) {
@@ -84,7 +83,8 @@ export function pivotTable({ bytes, path, xml, pending }: Part): void {
       case 1044: {
         payload.skip(4)
         const show = SHOW_AS[payload.u32()]
-        payload.skip(8)
+        payload.i32()
+        if (payload.u8() & 1) payload.wide()
         if (show) xml.add(`<x14:dataField pivotShowAs="${show}"/>`)
         break
       }
@@ -100,15 +100,49 @@ export function pivotTable({ bytes, path, xml, pending }: Part): void {
       case 600: xml.add('</filters>'); break
       case 601: xml.add(pivotFilter(payload)); break
       case 602: xml.add('</filter>'); break
-      case 303: case 459: case 558: case 1147:
-        pending()
-        continue
+      case 305: xml.add(`<formats count="${payload.u32()}">`); break
+      case 306: xml.add('</formats>'); break
+      case 303: {
+        const action = payload.u16()
+        const dxf = payload.u32()
+        xml.add(`<format${action ? '' : ' action="blank"'}${dxf === 0xffffffff ? '' : attr('dxfId', dxf)}>`)
+        break
+      }
+      case 304: xml.add('</format>'); break
+      case 459: xml.add('<autoSortScope>'); break
+      case 460: xml.add('</autoSortScope>'); break
+      case 560: case 1149:
+        if (type === 1149) payload.skip(4)
+        xml.add(`<conditionalFormats count="${payload.u32()}">`)
+        break
+      case 561: case 1150: xml.add('</conditionalFormats>'); break
+      case 558: case 1147:
+        xml.add(conditionalFormat(payload, type === 1147))
+        break
+      case 559: case 1148: xml.add('</conditionalFormat>'); break
+      case 641: case 1159:
+        if (type === 1159) payload.skip(4)
+        xml.add(`<pivotAreas count="${payload.u32()}">`)
+        break
+      case 642: case 1160: xml.add('</pivotAreas>'); break
+      case 483: // Chart formats are reported by the XLSX reader.
+        payload.u32()
+        xml.add('<chartFormats/>')
+        break
       default:
-        filters.take(type, payload)
+        if (!pivotAreaRecord(xml, type, payload)) filters.take(type, payload)
         continue
     }
     payload.done()
   }
+}
+
+function conditionalFormat(payload: Payload, extended: boolean): string {
+  if (extended) payload.skip(20) // FRT header and the rule's GUID
+  const scope = ['selection', 'data', 'field'][payload.u32()]
+  const kind = [undefined, 'all', 'row', 'column'][payload.u32()]
+  const priority = payload.u32()
+  return `<conditionalFormat priority="${priority}"${attr('scope', scope)}${attr('type', kind)}>`
 }
 
 function pivotFilter(payload: Payload): string {

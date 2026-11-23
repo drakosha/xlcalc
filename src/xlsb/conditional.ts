@@ -1,11 +1,10 @@
-import { parseAddress } from '../model.js'
 import { X14_CF } from '../xlsx/read/conditional.js'
 import { escapeAttr, escapeText } from '../xlsx/xml/text.js'
 import { differential } from './dxf.js'
 import { colorAttrs } from './fields.js'
 import { ICONS } from './filter.js'
 import { formula, formulaText, type Formula } from './formula.js'
-import { future, guid, ranges } from './future.js'
+import { future, guid, rangeOrigin, ranges } from './future.js'
 import type { Part } from './parts.js'
 import type { Payload } from './records.js'
 import type { Xml } from './xml.js'
@@ -51,7 +50,7 @@ export class Conditional {
         const pivot = payload.u32()
         const refs = ranges(payload)
         if (!refs.length) payload.fail('conditional formatting has no ranges')
-        const corner = parseAddress(refs[0].split(':', 1)[0])
+        const corner = rangeOrigin(refs)
         this.row = corner.row
         this.col = corner.col
         text = `<conditionalFormatting sqref="${refs.join(' ')}"${pivot ? ' pivot="1"' : ''}>`
@@ -103,7 +102,7 @@ export class Conditional {
         payload.u32()
         const pivot = payload.u32()
         if (!header.ranges.length) payload.fail('extended conditional formatting has no range')
-        const corner = parseAddress(header.ranges[0].split(':', 1)[0])
+        const corner = rangeOrigin(header.ranges)
         this.row = corner.row
         this.col = corner.col
         this.futureRefs = header.ranges.join(' ')
@@ -226,7 +225,7 @@ export class Conditional {
     if (ownDxf !== undefined) text += `<x14:dxf>${ownDxf}</x14:dxf>`
     else if (useOwnDxf) this.awaitingDxf = true
     for (const parsed of extended ?? counts.flatMap((count) => count ? [formula(payload)] : [])) {
-      const value = formulaText(parsed, context, this.row, this.col, true)
+      const value = formulaText(parsed, context, this.row, this.col, true, this.part.sheet)
       if (!value || !('text' in value)) pending()
       else {
         const tag = extended ? 'xm:f' : 'formula'
@@ -246,7 +245,7 @@ export class Conditional {
     if (kind === 'num' || kind === 'percent' || kind === 'percentile') value = number
     const parsed = extended ? extendedFormula : count ? formula(payload) : undefined
     if (parsed) {
-      const decoded = formulaText(parsed, this.part.context, this.row, this.col, true)
+      const decoded = formulaText(parsed, this.part.context, this.row, this.col, true, this.part.sheet)
       if (decoded && 'text' in decoded) value = decoded.text
       else this.part.pending()
     }

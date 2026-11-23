@@ -10,6 +10,18 @@ export function ranges(payload: Payload): string[] {
   return values
 }
 
+/** The corner of all the ranges, even when the first range starts farther down or to the right. */
+export function rangeOrigin(refs: readonly string[]): { row: number; col: number } {
+  let row = Infinity
+  let col = Infinity
+  for (const ref of refs) {
+    const first = parseAddress(ref.split(':', 1)[0])
+    row = Math.min(row, first.row)
+    col = Math.min(col, first.col)
+  }
+  return { row, col }
+}
+
 interface Future {
   ranges: string[]
   formulas: Formula[]
@@ -60,3 +72,4 @@ export function guid(payload: Payload): string {
   for (let i = 0; i < 6; i++) last += hex(payload.u8(), 2)
   return `{${first}-${second}-${third}-${fourth}-${last}}`
 }
+import { parseAddress } from '../model.js'

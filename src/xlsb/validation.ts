@@ -1,7 +1,6 @@
-import { parseAddress } from '../model.js'
 import { escapeAttr, escapeText } from '../xlsx/xml/text.js'
 import { formula, formulaText } from './formula.js'
-import { future, ranges } from './future.js'
+import { future, rangeOrigin, ranges } from './future.js'
 import type { Part } from './parts.js'
 import type { Payload } from './records.js'
 import type { Xml } from './xml.js'
@@ -24,7 +23,7 @@ export function validation(part: Part, type: number, payload: Payload, extension
       const refs = ranges(payload)
       if (!refs.length) payload.fail('data validation has no ranges')
       const attributes = validationAttrs(flags, payload)
-      const corner = parseAddress(refs[0].split(':', 1)[0])
+      const corner = rangeOrigin(refs)
       xml.add(`<dataValidation sqref="${refs.join(' ')}"${attributes}>`)
       for (const tag of ['formula1', 'formula2']) {
         const parsed = formula(payload)
@@ -55,7 +54,7 @@ export function validation(part: Part, type: number, payload: Payload, extension
       const flags = payload.u32()
       const attrs = validationAttrs(flags, payload)
       if (!header.ranges.length) payload.fail('extended data validation has no ranges')
-      const corner = parseAddress(header.ranges[0].split(':', 1)[0])
+      const corner = rangeOrigin(header.ranges)
       extensions.add(`<x14:dataValidation${attrs}>`)
       for (let i = 0; i < header.formulas.length; i++) {
         const value = formulaText(header.formulas[i], context, corner.row, corner.col, true)

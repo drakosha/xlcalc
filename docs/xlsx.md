@@ -86,7 +86,7 @@ Pass the locale the user reading the messages has chosen. A file does not record
 - `cached` holds the values the file stores for formulas and for the cells their arrays spilled into, by sheet in the workbook's order, in the shape of a result: `cached.sheets[0].cells.B1.value` like `compute(book).sheets[0].cells.B1.value`. A formula whose array spilled has `spill`, its range, and each other cell of the range has `spillOf`, the formula's address, as in a result. These are what Excel calculated when it saved the file, so you can compare them with the engine's result cell by cell, or write the file again with them (`writeXlsx({ book, result: cached })`). A workbook with a circular reference opens with them as Excel opens the file, with `compute(book, { cached })` or `createSession(book, { cached })`: the formulas the cycle stops keep the stored values ([cycles.md](cycles.md)).
 - `issues` lists what the workbook cannot represent of a file's cells, formulas, names and looks, with the sheet and the cells or the name it concerns; [What is not reported](#what-is-not-reported) names the rest. Each issue has a code for programs and a message for users, in English or in the language of `opts.locale` ([The language of the messages](#the-language-of-the-messages)).
 
-An `.xlsb`, an `.xls` and a password-protected workbook cause an `InputError` that names them. Any other file that is not a zip archive, a damaged archive (an entry cut short, two entries of one name, bytes that do not match their CRC-32), a part that is not valid XML because a character reference in it is past U+10FFFF, an encrypted file, a ZIP64 archive and a file without a workbook part cause errors. Data that is not bytes, such as the file's path, causes an `InputError` that says to pass the bytes.
+For an `.xlsb` file, use [`readXlsb`](#reading-xlsb). An `.xls` file and a password-protected workbook cause an `InputError` that names them. Any other file that is not a zip archive, a damaged archive (an entry cut short, two entries of one name, bytes that do not match their CRC-32), a part that is not valid XML because a character reference in it is past U+10FFFF, an encrypted file, a ZIP64 archive and a file without a workbook part cause errors. Data that is not bytes, such as the file's path, causes an `InputError` that says to pass the bytes.
 
 `opts.limits` bounds how large the file's parts may be once inflated: `entryBytes` for one part, 512 MiB by default; `totalBytes` for all parts read together, 1 GiB by default; and `ratio`, how many times its compressed size a part larger than 16 MiB may inflate to, not bounded unless given. A file beyond these limits causes an error, as a damaged file does. A host that reads files uploaded by users passes lower limits, and a ratio if it wants a small file refused before it inflates:
 
@@ -356,6 +356,20 @@ An issue's `message` is in English by default. `readXlsx(data, { locale })` and 
 The host passes the language the user reading the messages has chosen. A file does not record it: Excel stores no language in xlsx, and the locale the writer stores in `xlcalc.locale` is the workbook's, the rules it calculates by, and a user working in another language may open the same workbook. So neither function takes the language from the workbook.
 
 The messages are part of the locale's module, alongside its other messages ([docs/locale.md](locale.md#messages)), and the English ones are part of the subpath, so the subpath includes no locale other than en-US, and a locale without its own text for an issue falls back to the English one: a host that displays Russian loads `xlcalc/locales/ru-RU`, as it does for workbooks in ru-RU. One part of one message stays in English: why a table is left out, which comes from the table check's own text (`Таблица «Over» не прочитана, модель не может её хранить (B1:C2 overlaps the table T)`).
+
+## Reading xlsb
+
+`readXlsb(data, opts)` from `xlcalc/xlsb` takes the bytes of an Excel binary workbook and returns the same `book`, `cached` and `issues` as `readXlsx`. Its options are `locale` and `limits`. It reads cells and formulas, styles, workbook names, tables, filters, conditional formatting, validation, notes, external links, PivotTables, slicers and timelines. The byte limits also cover the intermediate XML made from binary parts. Use `writeXlsx` to save the resulting workbook as xlsx.
+
+```js
+import { readXlsb } from 'xlcalc/xlsb'
+
+const { book, cached, issues } = await readXlsb(await file.arrayBuffer())
+```
+
+Excel can save an external name as an invalid reference in xlsb when its definition points beyond the first 65,536 rows or 256 columns of the external sheet. The reader returns `#REF!` for that definition and an `externalLink` issue. Any stored formula result is still in `cached`.
+
+The tests compare paired files that Excel for Windows saved as xlsx and xlsb from the same open workbook. The binary extension has its own import so applications can include the converter when they read xlsb.
 
 ## Writing
 
