@@ -33,6 +33,7 @@ import type { FileTables } from './slicers.js'
 import { pivotRuleScopes } from './pivot-table.js'
 import { renamedIn, repairNames } from './sheet-names.js'
 import { readActiveSheet } from '../view.js'
+import { customTableStyleNames } from './tables.js'
 import { readStrings } from './strings.js'
 import { formatAddress } from '../../model.js'
 import { parseRange } from '../../structure/area.js'
@@ -172,6 +173,7 @@ export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsx
   )
   const colors = palette(themeXml, stylesXml)
   const table = readStyles(stylesXml, colors)
+  const customTableStyles = customTableStyleNames(stylesXml)
   // a cell or a row that a crossing line's look does not reach is read with a style with nothing set
   let plainStyle: number | undefined
   const plain = () => (plainStyle ??= table.styles.push({}) - 1)
@@ -235,7 +237,7 @@ export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsx
     const pivotRules = new Map<number, PivotRuleScope>()
     for (const p of pivotParts) if (p !== undefined) pivotRuleScopes(p, pivotRules)
     const read = readSheet(
-      { name: d.name, xml, rels: sheetRels, sheets: all, legacy, tables: tableParts.filter((x): x is string => x !== undefined), parts: { comments, vml, threads, persons }, cond, formulas, pivotRules, drawing: drawn },
+      { name: d.name, xml, rels: sheetRels, sheets: all, legacy, tables: tableParts.filter((x): x is string => x !== undefined), parts: { comments, vml, threads, persons }, customTableStyles, cond, formulas, pivotRules, drawing: drawn },
       { sheet: d.name, strings, xfs: table.xfs, palette: colors, baseFont: table.baseFont, meta, epoch: epochOf(dateSystem), issues, plain, isPlain },
     )
     for (const t of tableParts) {

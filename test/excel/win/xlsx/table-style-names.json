@@ -1,0 +1,229 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "ru-RU",
+  "ui": "ru-RU (Excel 1049)",
+  "format": "ru-RU (decimal \",\", thousands U+0020, list \";\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96,
+  "seconds": 16.9
+ },
+ "answers": {
+  "no-style": {
+   "openedStyle": "\u0000",
+   "fills": [
+    [
+     16777215,
+     -4142,
+     0
+    ],
+    [
+     16777215,
+     -4142,
+     0
+    ],
+    [
+     16777215,
+     -4142,
+     0
+    ]
+   ],
+   "savedStyle": {
+    "showFirstColumn": "0",
+    "showLastColumn": "0",
+    "showRowStripes": "1",
+    "showColumnStripes": "0"
+   }
+  },
+  "default": {
+   "openedStyle": "TableStyleMedium2",
+   "fills": [
+    [
+     16777215,
+     -4142,
+     0
+    ],
+    [
+     16777215,
+     -4142,
+     0
+    ],
+    [
+     16777215,
+     -4142,
+     0
+    ]
+   ],
+   "savedStyle": {
+    "name": "TableStyleMedium2",
+    "showFirstColumn": "0",
+    "showLastColumn": "0",
+    "showRowStripes": "1",
+    "showColumnStripes": "0"
+   }
+  },
+  "light-1": {
+   "openedStyle": "TableStyleLight1",
+   "fills": [
+    [
+     16777215,
+     -4142,
+     0
+    ],
+    [
+     16777215,
+     -4142,
+     0
+    ],
+    [
+     16777215,
+     -4142,
+     0
+    ]
+   ],
+   "savedStyle": {
+    "name": "TableStyleLight1",
+    "showFirstColumn": "0",
+    "showLastColumn": "0",
+    "showRowStripes": "1",
+    "showColumnStripes": "0"
+   }
+  },
+  "light": {
+   "openedStyle": "\u0000",
+   "fills": [
+    [
+     16777215,
+     -4142,
+     0
+    ],
+    [
+     16777215,
+     -4142,
+     0
+    ],
+    [
+     16777215,
+     -4142,
+     0
+    ]
+   ],
+   "savedStyle": {
+    "name": "TableStyleLight",
+    "showFirstColumn": "0",
+    "showLastColumn": "0",
+    "showRowStripes": "1",
+    "showColumnStripes": "0"
+   }
+  },
+  "medium": {
+   "openedStyle": "\u0000",
+   "fills": [
+    [
+     16777215,
+     -4142,
+     0
+    ],
+    [
+     16777215,
+     -4142,
+     0
+    ],
+    [
+     16777215,
+     -4142,
+     0
+    ]
+   ],
+   "savedStyle": {
+    "name": "TableStyleMedium",
+    "showFirstColumn": "0",
+    "showLastColumn": "0",
+    "showRowStripes": "1",
+    "showColumnStripes": "0"
+   }
+  },
+  "dark": {
+   "openedStyle": "\u0000",
+   "fills": [
+    [
+     16777215,
+     -4142,
+     0
+    ],
+    [
+     16777215,
+     -4142,
+     0
+    ],
+    [
+     16777215,
+     -4142,
+     0
+    ]
+   ],
+   "savedStyle": {
+    "name": "TableStyleDark",
+    "showFirstColumn": "0",
+    "showLastColumn": "0",
+    "showRowStripes": "1",
+    "showColumnStripes": "0"
+   }
+  },
+  "custom-missing": {
+   "openedStyle": "\u0000",
+   "fills": [
+    [
+     16777215,
+     -4142,
+     0
+    ],
+    [
+     16777215,
+     -4142,
+     0
+    ],
+    [
+     16777215,
+     -4142,
+     0
+    ]
+   ],
+   "savedStyle": {
+    "name": "UnregisteredStyle",
+    "showFirstColumn": "0",
+    "showLastColumn": "0",
+    "showRowStripes": "1",
+    "showColumnStripes": "0"
+   }
+  },
+  "custom-light": {
+   "openedStyle": "TableStyleLight",
+   "fills": [
+    [
+     16777215,
+     -4142,
+     0
+    ],
+    [
+     16777215,
+     -4142,
+     0
+    ],
+    [
+     16777215,
+     -4142,
+     0
+    ]
+   ],
+   "savedStyle": {
+    "name": "TableStyleLight",
+    "showFirstColumn": "0",
+    "showLastColumn": "0",
+    "showRowStripes": "1",
+    "showColumnStripes": "0"
+   }
+  }
+ }
+}
