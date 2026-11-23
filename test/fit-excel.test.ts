@@ -17,15 +17,15 @@ describe.each(SETS)('fit $tag $name (Excel for Mac)', (set) => {
     expect((await currentCases(set.name, set.tag)).find((x) => x.id === c.id), "the stored case is the generator's current one").toEqual(c)
     const a = set.answers[c.id]
     const e = engineAnswer(set, c)
-    const got = { width: e.width, texts: e.texts }
-    const excel = { width: excelWidth(a), texts: a.texts }
+    const got = c.readWidth ? e.points : { width: e.width, texts: e.texts }
+    const excel = c.readWidth ? a.points : { width: excelWidth(a), texts: a.texts }
     const reason = FIT_KNOWN.get(`${set.tag}:${set.name}:${c.id}`)
     if (reason) expect(got, `${c.id} is known to differ: ${FIT_REASONS[reason]}`).not.toEqual(excel)
     else expect(got).toEqual(excel)
   })
 })
 
-/** How many of each set's predictions Excel for Mac confirmed (the width of the column), by `<tag>:<set>`. */
+/** How many of each set's predictions Excel for Mac confirmed (stored width, or points for a read-only case), by `<tag>:<set>`. */
 const CONFIRMED: Record<string, number> = {
   'en-US:autofit': 11,
   'ru-RU:autofit': 11,
@@ -37,6 +37,7 @@ const CONFIRMED: Record<string, number> = {
   'en-US:rotation-2': 3,
   'en-US:rotation-held': 73,
   'ru-RU:held': 74,
+  'ru-RU:normal-fonts-held': 21,
 }
 
 describe('fit sets (Excel for Mac)', () => {
@@ -47,6 +48,6 @@ describe('fit sets (Excel for Mac)', () => {
   it.each(SETS.map((s) => [`${s.tag}:${s.name}`, s] as const))('%s: the predictions written before Excel ran it', (key, set) => {
     const predicted = JSON.parse(readFileSync(new URL(`../bench/coverage/fit/${set.name}.predicted.json`, import.meta.url), 'utf8')).locales[set.tag] as Record<string, FitPrediction>
     expect(Object.keys(predicted)).toEqual(set.cases.map((c) => c.id))
-    expect(set.cases.filter((c) => predicted[c.id].width === excelWidth(set.answers[c.id])).length).toBe(CONFIRMED[key])
+    expect(set.cases.filter((c) => c.readWidth ? predicted[c.id].points === set.answers[c.id].points : predicted[c.id].width === excelWidth(set.answers[c.id])).length).toBe(CONFIRMED[key])
   })
 })

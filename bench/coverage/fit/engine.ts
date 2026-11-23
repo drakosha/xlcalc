@@ -5,7 +5,7 @@
  * show at that width. The engine's functions come as arguments, so a test passes the ones it tests (`src` or `dist`).
  */
 import type { BookInput, CellInput, CellValue, ColumnInput, ComputeResult, EntryOptions, EntryResult, EntryWidthOptions } from '../../../src/contract.js'
-import { columnPoints } from '../../../src/column-width.js'
+import { bookGeometry, columnPoints } from '../../../src/column-width.js'
 import { caseRows, fitBook, fitsColumn, type FitCase } from './cases.js'
 import { numberFormatOf } from '../stored.js'
 
@@ -59,5 +59,7 @@ export function engineFit(e: FitEngine, c: FitCase, tag: string, now: string, wi
     setWidth(e.entryWidth(value, { locale: tag, ...(numberFormat !== undefined ? { numberFormat } : {}), ...(col.width !== undefined ? { width: col.width } : {}), ...(col.bestFit ? { bestFit: true } : {}) }), col)
   }
   const cells = e.compute(book).sheets[0].cells
-  return { width: columns[COL]?.width ?? null, ...(c.readWidth ? { points: columnPoints(columns[COL]?.width) } : {}), ...(fitted ? { fitted } : {}), texts: Object.fromEntries(caseRows(c).map((r) => [r, cells[`${COL}${r}`]?.text ?? ''])) }
+  const width = columns[COL]?.width
+  const [digit] = bookGeometry(book.font)
+  return { width: width ?? null, ...(c.readWidth ? { points: columnPoints(width, digit) } : {}), ...(fitted ? { fitted } : {}), texts: Object.fromEntries(caseRows(c).map((r) => [r, cells[`${COL}${r}`]?.text ?? ''])) }
 }

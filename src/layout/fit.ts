@@ -6,6 +6,7 @@
  * whose width nobody set widens the column.
  */
 import type { BookInput, CellStyle, CellValue, ColumnInput, ComputeResult, EntryWidthOptions, LayoutEdit, LinePatch, NumberFormat, RowInput, SheetInput } from '../contract.js'
+import { bookGeometry } from '../column-width.js'
 import { epochOf } from '../dates.js'
 import type { EngineState } from '../engine.js'
 import { checkCellValue, checkEntryWidthOptions } from '../input.js'
@@ -26,13 +27,14 @@ import { fontSize, turnedPoints, turnedStyles, turnOf } from './turned.js'
 const MAX_WIDTH = 255
 
 /** The width of a column of `points`: null for the default width, which Excel writes as no width at all. */
-const widthAt = (points: number): number | null => (points === columnPoints(undefined) ? null : Math.min(MAX_WIDTH, widthOf(points)))
+const widthAt = (points: number, digit: number): number | null => (points === columnPoints(undefined, digit) ? null : Math.min(MAX_WIDTH, widthOf(points, digit)))
 
 /**
  * The widths AutoFit gives the columns `lo` to `hi` of a sheet whose cells hold `cells` (in any order), as
  * `ColumnInput.width`, null for the default width; a column with nothing to show is left out, as it keeps its width.
  */
-function fitWidths(rules: Rules, styles: readonly CellStyle[], sheet: SheetInput, cells: Iterable<Placed>, lo: number, hi: number): Record<string, number | null> {
+function fitWidths(rules: Rules, styles: readonly CellStyle[], sheet: SheetInput, cells: Iterable<Placed>, lo: number, hi: number, font: BookInput['font']): Record<string, number | null> {
+  const [digit] = bookGeometry(font)
   const formats = sheetLines(sheet)
   const across = (sheet.merges ?? []).map((m) => parseMerge(m)!).filter((x) => x.c2 > x.c1 && x.c2 >= lo && x.c1 <= hi)
   const widest = new Map<number, number>()
@@ -44,7 +46,7 @@ function fitWidths(rules: Rules, styles: readonly CellStyle[], sheet: SheetInput
     const points = id !== null && id !== undefined && turned!.has(id) ? turnedCell(rules, v, formats.format(r, c), styles[id]) : rules.fitPoints(v, formats.format(r, c))
     if (points !== null && points > (widest.get(c) ?? 0)) widest.set(c, points)
   }
-  return Object.fromEntries([...widest].sort((a, b) => a[0] - b[0]).map(([c, points]) => [spanKey(c, c, 'c'), widthAt(points)]))
+  return Object.fromEntries([...widest].sort((a, b) => a[0] - b[0]).map(([c, points]) => [spanKey(c, c, 'c'), widthAt(points, digit)]))
 }
 
 /** The points AutoFit gives a turned cell (`turnedPoints`), its line breaks lines across the column when it wraps; null when it shows nothing. */
@@ -88,12 +90,12 @@ export function fitEdits(s: EngineState, edits: LayoutEdit[]): SetLayoutEdit[] {
     if ('fit' in e && 'columns' in e) {
       const i = index(e.sheet)
       const [lo, hi] = parseSpan(e.columns, 'c')!
-      for (const [col, width] of Object.entries(fitWidths(s.ctx.rules, scratch.styles ?? [], scratch.sheets[i], stateCells(s, i, lo, hi), lo, hi))) set.push({ sheet: e.sheet, columns: col, set: fitted(width) })
+      for (const [col, width] of Object.entries(fitWidths(s.ctx.rules, scratch.styles ?? [], scratch.sheets[i], stateCells(s, i, lo, hi), lo, hi, scratch.font))) set.push({ sheet: e.sheet, columns: col, set: fitted(width) })
     } else if ('fit' in e) {
       const i = index(e.sheet)
       const [lo, hi] = parseSpan(e.rows, 'r')!
       const { cells, spans } = stateRows(s, i, lo, hi)
-      for (const [rows, height] of Object.entries(fitHeights(s.ctx.rules, scratch.styles ?? [], scratch.sheets[i], cells, lo, hi, spans))) set.push({ sheet: e.sheet, rows, set: rowFitted(height) })
+      for (const [rows, height] of Object.entries(fitHeights(s.ctx.rules, scratch.styles ?? [], scratch.sheets[i], cells, lo, hi, spans, scratch.font))) set.push({ sheet: e.sheet, rows, set: rowFitted(height) })
     } else set.push(e)
     applyLayout(scratch, set, index)
     out.push(...set)
@@ -107,7 +109,7 @@ export function fitEdits(s: EngineState, edits: LayoutEdit[]): SetLayoutEdit[] {
  */
 export function fitColumns(book: BookInput, result: ComputeResult, sheet: string, columns: string): Record<string, number | null> {
   const x = resultSheet(book, result, sheet, columns, 'c')
-  return fitWidths(displayRules(x.book.locale, epochOf(x.book.dateSystem)), x.book.styles ?? [], x.book.sheets[x.i], x.cells, x.lo, x.hi)
+  return fitWidths(displayRules(x.book.locale, epochOf(x.book.dateSystem)), x.book.styles ?? [], x.book.sheets[x.i], x.cells, x.lo, x.hi, x.book.font)
 }
 
 /**
@@ -120,7 +122,13 @@ export function fitColumns(book: BookInput, result: ComputeResult, sheet: string
 export function entryWidth(value: CellValue, opts?: EntryWidthOptions): number | undefined {
   const o = checkEntryWidthOptions(opts)
   checkCellValue(value, 'value')
+  return widthForEntry(value, o)
+}
+
+/** The typed width in the geometry of the input's workbook. */
+export function widthForEntry(value: CellValue, o: EntryWidthOptions, font?: BookInput['font']): number | undefined {
   if (o.width !== undefined && !o.bestFit) return undefined
-  const points = displayRules(o.locale, epochOf(o.dateSystem)).typedPoints(value, o.numberFormat, columnPoints(o.width))
-  return points === null ? undefined : Math.min(MAX_WIDTH, widthOf(points))
+  const [digit] = bookGeometry(font)
+  const points = displayRules(o.locale, epochOf(o.dateSystem)).typedPoints(value, o.numberFormat, columnPoints(o.width, digit))
+  return points === null ? undefined : Math.min(MAX_WIDTH, widthOf(points, digit))
 }

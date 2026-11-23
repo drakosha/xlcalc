@@ -72,6 +72,7 @@ const CONFIRMED: Record<string, number> = {
   'en-US:patched-held': 4,
   'en-US:rotation-held-2': 43,
   'en-US:rotation-held-3': 14,
+  'ru-RU:normal-fonts-held': 0,
 }
 
 /** The cases whose height Excel for Windows gave as the Mac did, by `<tag>:<set>`. */
