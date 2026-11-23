@@ -14,6 +14,7 @@
 import ExcelJS from 'exceljs'
 import JSZip from 'jszip'
 import { readFileSync, writeFileSync } from 'node:fs'
+import type { BookInput } from '../../src/contract.js'
 import type { Case } from './cases.js'
 import { DATA_SHEET, dataCells } from './data.js'
 import type { SheetCells } from './probes.js'
@@ -25,6 +26,19 @@ export const PART = 400
 
 /** Items in parts of `size`, in order. */
 export const inParts = <T>(items: T[], size = PART): T[][] => Array.from({ length: Math.ceil(items.length / size) }, (_, k) => items.slice(k * size, (k + 1) * size))
+
+/** Cases with a different Normal font need their own workbook. */
+export function fontParts<T extends { bookFont?: BookInput['font'] }>(cases: T[], size: number): T[][] {
+  const groups = new Map<string, T[]>()
+  for (const c of cases) {
+    const key = JSON.stringify(c.bookFont ?? null)
+    const part = groups.get(key)
+    if (part) part.push(c)
+    else groups.set(key, [c])
+  }
+  return [...groups.values()].flatMap((part) => inParts(part, size))
+}
+
 
 /** The measurement's cases in parts of whole functions, at most PART cases each but a function of more. */
 export function functionParts<T extends { fn?: string }>(cases: T[]): T[][] {

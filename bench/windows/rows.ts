@@ -7,7 +7,7 @@
  */
 import { writeFileSync } from 'node:fs'
 import { writeXlsx } from '../../src/xlsx.js'
-import { inParts } from '../coverage/book.js'
+import { fontParts } from '../coverage/book.js'
 import { cellOf, keptRows, partAnswers, ROWS_PART, rowsFile } from '../coverage/rows.js'
 import { caseCells, caseRow, fitsRow, ownBook, rowsBook, type RowCase, type RowSet } from '../coverage/rows/cases.js'
 import { answeredLine, answerSaver, setModule } from '../coverage/stored.js'
@@ -20,7 +20,7 @@ export async function stepRows(set: string, tag: Tag, e: WinEnv): Promise<void> 
   const t0 = Date.now()
   const save = answerSaver(file, metaOf(e, tag), true, t0, cases, answers)
   const todo = cases.filter((c) => !answers[c.id])
-  const parts = [...inParts(todo.filter((c) => !ownBook(c)), ROWS_PART), ...todo.filter(ownBook).map((c) => [c])]
+  const parts = [...fontParts(todo.filter((c) => !ownBook(c)), ROWS_PART), ...todo.filter(ownBook).map((c) => [c])]
   const book = async (part: RowCase[], f: string) => {
     const { data, issues } = await writeXlsx({ book: rowsBook(part) }, { values: 'omit' })
     if (issues.length) throw new Error(`rows ${set}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
