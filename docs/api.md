@@ -1597,10 +1597,9 @@ interface BookInput {
   externalBooks?: ExternalBook[]
   /**
    * The workbook's default font, its Normal style's (in xlsx the first font), in points: what a cell shows whose style
-   * gives no font name or size. Without it, Calibri 11. It is kept, read and written, and the engine measures as for
-   * Calibri 11 whatever it is: column widths in characters, fitted row heights, `####` in a column too narrow and
-   * `entryWidth`, which Excel measures in the default font, so for another font they can differ from Excel's. It is
-   * included in `inputHash` when given.
+   * gives no font name or size. Without it, Calibri 11. The workbook uses measured column geometry and row heights for
+   * Arial, Arial Cyr and Times New Roman at 8, 10 and 11 points. Text width measurements still use Calibri metrics.
+   * The font is read and written and is included in `inputHash` when given.
    */
   font?: { name: string; size: number }
   /** The caches of the workbook's PivotTables (`SheetInput.pivotTables`), by `id`. Not part of calculation or `inputHash`. */
@@ -7378,7 +7377,7 @@ What the workbook cannot hold from a file, or what writing changed. The codes:
 - `calculation`: calculation settings the workbook does not keep: manual mode, automatic except for data tables,
   precision as displayed; an iteration count or maximum change out of range, read as Excel's default.
 - `style`: what a style cannot hold (pattern and gradient fills, diagonal borders, rotation and the like).
-- `defaultFont`: a default font other than Calibri 11, kept in [`BookInput.font`](#bookinput) and measured as Calibri 11.
+- `defaultFont`: a default font other than Calibri 11, kept in [`BookInput.font`](#bookinput) and measured with Calibri 11 text width metrics.
 - `defaultWidth`: a sheet's default column width other than Excel's standard of 8 digits, which the model assumes
   (Excel for Mac starts its own workbooks at 10).
 - `numberFormat`: a built-in East Asian date format the model does not have (50 to 58, read as its en-US code), or

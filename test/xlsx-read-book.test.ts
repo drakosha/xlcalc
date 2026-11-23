@@ -193,7 +193,7 @@ describe('xlsx reader: the workbook and the sheet around the cells', () => {
     expect((await read({ sheets: [{ name: 'S', body: one(1) }], parts: custom('ru-RU') })).book.locale).toBe('ru-RU')
     const unknown = await read({ sheets: [{ name: 'S', body: one(1) }], parts: custom('de-DE'), styles: '<fonts count="1"><font><sz val="10"/><name val="Arial"/></font></fonts>' })
     expect([unknown.book.locale, unknown.book.font]).toEqual([undefined, { name: 'Arial', size: 10 }])
-    expect(unknown.issues.map((i) => i.message)).toEqual(['the default font Arial 10 is kept, and measured as Calibri 11', 'the locale "de-DE" is not one of the package\'s locales and is left out'])
+    expect(unknown.issues.map((i) => i.message)).toEqual(['the default font Arial 10 is kept, and text widths use Calibri 11 metrics', 'the locale "de-DE" is not one of the package\'s locales and is left out'])
   })
 
   it('a sheet without sheetData is an empty sheet', async () => {
