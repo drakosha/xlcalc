@@ -1,0 +1,78 @@
+{
+ "none": {
+  "points": [
+   53,
+   72
+  ],
+  "shown": [
+   "12345.67",
+   "12345.67"
+  ],
+  "issues": []
+ },
+ "narrow": {
+  "points": [
+   53,
+   72
+  ],
+  "shown": [
+   "12345.67",
+   "12345.67"
+  ],
+  "issues": [
+   "defaultWidth"
+  ]
+ },
+ "fractional": {
+  "points": [
+   53,
+   72
+  ],
+  "shown": [
+   "12345.67",
+   "12345.67"
+  ],
+  "issues": [
+   "defaultWidth"
+  ]
+ },
+ "wide": {
+  "points": [
+   53,
+   72
+  ],
+  "shown": [
+   "12345.67",
+   "12345.67"
+  ],
+  "issues": [
+   "defaultWidth"
+  ]
+ },
+ "base": {
+  "points": [
+   53,
+   72
+  ],
+  "shown": [
+   "12345.67",
+   "12345.67"
+  ],
+  "issues": [
+   "defaultWidth"
+  ]
+ },
+ "both": {
+  "points": [
+   53,
+   72
+  ],
+  "shown": [
+   "12345.67",
+   "12345.67"
+  ],
+  "issues": [
+   "defaultWidth"
+  ]
+ }
+}
