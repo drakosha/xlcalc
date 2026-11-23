@@ -621,7 +621,8 @@ export interface BookInput {
   /**
    * The workbook's default font, its Normal style's (in xlsx the first font), in points: what a cell shows whose style
    * gives no font name or size. Without it, Calibri 11. The workbook uses measured column geometry and row heights for
-   * Arial, Arial Cyr and Times New Roman at 8, 10 and 11 points. Text width measurements still use Calibri metrics.
+   * Arial, Arial Cyr and Times New Roman at 8, 10 and 11 points. Unrotated cells of those families at 8 to 14 points
+   * use regular Liberation metrics for text width.
    * The font is read and written and is included in `inputHash` when given.
    */
   font?: { name: string; size: number }

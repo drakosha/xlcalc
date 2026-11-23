@@ -1598,7 +1598,8 @@ interface BookInput {
   /**
    * The workbook's default font, its Normal style's (in xlsx the first font), in points: what a cell shows whose style
    * gives no font name or size. Without it, Calibri 11. The workbook uses measured column geometry and row heights for
-   * Arial, Arial Cyr and Times New Roman at 8, 10 and 11 points. Text width measurements still use Calibri metrics.
+   * Arial, Arial Cyr and Times New Roman at 8, 10 and 11 points. Unrotated cells of those families at 8 to 14 points
+   * use regular Liberation metrics for text width.
    * The font is read and written and is included in `inputHash` when given.
    */
   font?: { name: string; size: number }
@@ -7377,7 +7378,7 @@ What the workbook cannot hold from a file, or what writing changed. The codes:
 - `calculation`: calculation settings the workbook does not keep: manual mode, automatic except for data tables,
   precision as displayed; an iteration count or maximum change out of range, read as Excel's default.
 - `style`: what a style cannot hold (pattern and gradient fills, diagonal borders, rotation and the like).
-- `defaultFont`: a default font other than Calibri 11, kept in [`BookInput.font`](#bookinput) and measured with Calibri 11 text width metrics.
+- `defaultFont`: a Normal font with unmeasured geometry. It stays in [`BookInput.font`](#bookinput) and uses Calibri 11 default widths and heights.
 - `defaultWidth`: a sheet's default column width other than Excel's standard of 8 digits, which the model assumes
   (Excel for Mac starts its own workbooks at 10).
 - `numberFormat`: a built-in East Asian date format the model does not have (50 to 58, read as its en-US code), or
