@@ -33,6 +33,8 @@ const ORDER = [
   'legacyDrawing', 'legacyDrawingHF', 'drawingHF', 'picture', 'oleObjects', 'controls', 'webPublishItems', 'tableParts', 'extLst',
 ]
 
+export { ORDER as WORKSHEET_CHILD_ORDER }
+
 /** The extensions of a worksheet that hold the model's conditional formats and data validation. */
 export const EXT_CF = '{78C0D931-6437-407D-A8EE-F0AAD7539E65}'
 export const EXT_DV = '{CCE6A557-97BC-4B89-ADB6-D9C93CAAB3DF}'

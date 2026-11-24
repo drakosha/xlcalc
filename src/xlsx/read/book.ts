@@ -60,6 +60,7 @@ async function locale(archive: Archive, rels: Rel[], issues: Issues): Promise<st
 
 interface SheetDecl {
   name: string
+  fileName?: string
   kind?: string
   part?: string
   /** xlsx `state`: hidden, or very hidden. */
@@ -167,8 +168,20 @@ export function workbookInput(data: Uint8Array | ArrayBuffer, opts: ReadXlsxOpti
   return { bytes, language, limits: o.limits === undefined ? undefined : checkLimits(o.limits) }
 }
 
+/** A worksheet and its original workbook part as they occur in the package. */
+export interface WorksheetPart {
+  name: string
+  fileName: string
+  /** Zero-based position in <sheets>, including non-worksheets. */
+  index: number
+  xml: string
+  workbook: string
+}
+
+export type ReadWorksheetPart = (part: WorksheetPart) => void
+
 /** `readXlsx`, with the file's styles part and its cell formats as read (`xlsx/keep` adds to them). */
-export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOptions): Promise<{ read: XlsxRead; stylesXml: string | undefined; table: StyleTable }> {
+export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOptions, visitWorksheet?: ReadWorksheetPart): Promise<{ read: XlsxRead; stylesXml: string | undefined; table: StyleTable }> {
   const { bytes, language, limits } = workbookInput(data, opts)
   const archive = openArchive(bytes, limits)
   const root = await relsOf(archive, '')
@@ -178,11 +191,11 @@ export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsx
       ? 'Откройте файл .xlsb через readXlsb из xlcalc/xlsb или сохраните его в формате .xlsx'
       : 'read an .xlsb file with readXlsb from xlcalc/xlsb, or save it as .xlsx')
   }
-  return readStyledArchive(archive, root, wbPath, language)
+  return readStyledArchive(archive, root, wbPath, language, visitWorksheet)
 }
 
 /** Reads SpreadsheetML from its package. The XLSB adapter serves XML for the binary parts at their original paths. */
-export async function readStyledArchive(archive: Archive, root: Rel[], wbPath: string, language: Locale | undefined): Promise<{ read: XlsxRead; stylesXml: string | undefined; table: StyleTable }> {
+export async function readStyledArchive(archive: Archive, root: Rel[], wbPath: string, language: Locale | undefined, visitWorksheet?: ReadWorksheetPart): Promise<{ read: XlsxRead; stylesXml: string | undefined; table: StyleTable }> {
   const issues = new Issues()
   const wb = await archive.text(wbPath)
   if (wb === undefined) throw new Error(`xlsx: the file has no workbook part (${wbPath})`)
@@ -218,7 +231,10 @@ export async function readStyledArchive(archive: Archive, root: Rel[], wbPath: s
   const repaired = repairNames(worksheets.map((d) => d.name))
   worksheets.forEach((d, i) => {
     const name = repaired.names[i]
-    if (name !== d.name) issues.add('part', { key: 'sheetNameRepaired', name: d.name, sheet: name }, { sheet: name, name: d.name })
+    if (name !== d.name) {
+      d.fileName = d.name
+      issues.add('part', { key: 'sheetNameRepaired', name: d.name, sheet: name }, { sheet: name, name: d.name })
+    }
     d.name = name
   })
   const strings = readStrings(stringsXml, issues, colors, table.baseFont)
@@ -235,7 +251,7 @@ export async function readStyledArchive(archive: Archive, root: Rel[], wbPath: s
   const legacy = legacyConverter(names)
   const sheets: SheetInput[] = []
   const cached: XlsxRead['cached'] = { sheets: [] }
-  for (const d of decls) {
+  for (const [index, d] of decls.entries()) {
     if (d.kind !== 'worksheet') {
       issues.add('sheetKind', { key: 'sheetKind' }, { sheet: d.name })
       continue
@@ -245,6 +261,7 @@ export async function readStyledArchive(archive: Archive, root: Rel[], wbPath: s
       issues.add('part', { key: 'sheetPartMissing' }, { sheet: d.name })
       continue
     }
+    visitWorksheet?.({ name: d.name, fileName: d.fileName ?? d.name, index, xml, workbook: wb })
     const sheetRels = await relsOf(archive, d.part!)
     const tableParts = await Promise.all(sheetRels.filter((r) => r.kind === 'table' && !r.external).map((r) => archive.text(r.target)))
     // the VML drawing that shows the notes is the sheet's legacy drawing, searched from the tag before its name's first

@@ -661,6 +661,28 @@ function Step($xl, $wb, $s) {
       } catch { Err $_ }
     }
     # the book as Excel saves it (xlsx), beside its answer: out\<n>.saved.xlsx
+    # PDF output and the print settings and nominal sheet geometry visible to COM.
+    'printPdf' {
+      $ws = $wb.Worksheets.Item($s.sheet)
+      $setup = $ws.PageSetup
+      $file = Join-Path $out "$i.print.pdf"
+      if ($s.workbook) { $wb.ExportAsFixedFormat(0, $file) } else { $ws.ExportAsFixedFormat(0, $file) }
+      try {
+        $quality = try { List (@($setup.PrintQuality) | ForEach-Object { Cell ([double]$_) }) } catch { 'null' }
+        $zoom = $setup.Zoom
+        if ($zoom -isnot [bool]) { $zoom = [double]$zoom }
+        $rowBreaks = List @($ws.HPageBreaks | ForEach-Object { Cell ([double]$_.Location.Row) })
+        $columnBreaks = List @($ws.VPageBreaks | ForEach-Object { Cell ([double]$_.Location.Column) })
+        $range = $ws.Range($s.range)
+        $margins = List @((Cell ([double]$setup.TopMargin)), (Cell ([double]$setup.BottomMargin)), (Cell ([double]$setup.LeftMargin)), (Cell ([double]$setup.RightMargin)))
+        '{"printer":' + (Str $xl.ActivePrinter) + ',"quality":' + $quality + ',"margins":' + $margins + ',"zoom":' + (Cell $zoom) +
+          ',"rangeWidth":' + (Cell ([double]$range.Width)) + ',"rangeHeight":' + (Cell ([double]$range.Height)) +
+          ',"rowBreaks":' + $rowBreaks + ',"columnBreaks":' + $columnBreaks +
+          ',"pdf":' + (Str ([Convert]::ToBase64String([IO.File]::ReadAllBytes($file)))) + '}'
+      } finally {
+        Remove-Item -LiteralPath $file
+      }
+    }
     'saveAs' { $wb.SaveAs((Join-Path $out "$i.saved.xlsx"), 51); 'null' }
     'saveXlsbPair' {
       $wb.SaveAs((Join-Path $out "$i.saved.xlsx"), 51)

@@ -10,9 +10,14 @@ import { strict } from './strict-args.js'
 import * as inspect from './xlsx/keep/inspect.js'
 import * as open from './xlsx/keep/open.js'
 import * as write from './xlsx/keep/book.js'
+import type { WriteKeptOptions } from './xlsx/keep/types.js'
+import type { ReadXlsxOptions, XlsxRead, XlsxSnapshot, XlsxWritten } from './xlsx/types.js'
 
-export const openKept = /* @__PURE__ */ strict(open.openKept)
-export const writeKept = /* @__PURE__ */ strict(write.writeKept)
+type OpenKept = (data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOptions) => Promise<XlsxRead>
+type WriteKept = (original: Uint8Array | ArrayBuffer, snapshot: XlsxSnapshot, opts?: WriteKeptOptions) => Promise<XlsxWritten>
+
+export const openKept = /* @__PURE__ */ strict<OpenKept>(open.openKept, 'openKept', 2)
+export const writeKept = /* @__PURE__ */ strict<WriteKept>(write.writeKept, 'writeKept', 3)
 export const inspectKept = /* @__PURE__ */ strict(inspect.inspectKept)
 export { KeptRefusal, type KeptRefusalCode } from './xlsx/keep/refusals.js'
 export type { InspectKeptOptions, KeptInspection, KeptSheet, WriteKeptOptions } from './xlsx/keep/types.js'
