@@ -33,11 +33,12 @@ export class Filters {
         break
       }
       case 164: text = '</filterColumn>'; break
-      case 165:
+      case 165: case 5081:
+        if (type === 5081) payload.skip(4) // The rich filter starts with an FRT header.
         text = `<filters${payload.u32() ? ' blank="1"' : ''}>`
         payload.u32()
         break
-      case 166: text = '</filters>'; break
+      case 166: case 5082: text = '</filters>'; break
       case 167: case 1177: {
         const prefix = type === 1177 ? 'x14:' : ''
         if (prefix) payload.skip(4)
@@ -96,6 +97,12 @@ export class Filters {
         text = ''
         break
       case 175: text = dateGroup(payload); break
+      case 5094:
+        payload.skip(4) // FRT header
+        text = dateGroup(payload)
+        // The model keeps the dates and has no field for the rich-value key.
+        payload.nullableWide()
+        break
       case 530: {
         const flags = payload.u16()
         const ref = range(payload)
