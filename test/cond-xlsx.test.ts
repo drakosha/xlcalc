@@ -146,13 +146,12 @@ describe('conditional formats in xlsx', () => {
       '<conditionalFormatting sqref="D1" pivot="1"><cfRule type="expression" priority="5"><formula>1</formula></cfRule></conditionalFormatting>'
     const r = await read({ sheets: [{ name: 'S', body }], styles })
     expect(r.book.sheets[0].conditionalFormats).toEqual([
-      { ranges: ['A:A', 'B2'], type: 'expression', formula: 'TRUE' },
+      { ranges: ['A:A', 'B2'], type: 'expression', formula: 'TRUE', style: { fill: { color: '#FF0000', pattern: 'gray125' } } },
       { ranges: ['A:A', 'B2'], type: 'cellIs', operator: 'equal', formulas: ['1'], style: { numberFormat: '0.00%', fill: { color: '#FF0000' } } },
       { ranges: ['C1'], type: 'aboveAverage', below: true, equal: true, style: { border: { left: { style: 'thin' } } } },
     ])
     expect(r.issues.map((i) => i.message)).toEqual([
       "a conditional format's font sz is not in the model",
-      "a conditional format's pattern fill is not in the model",
       'an average rule with both equal and standard deviations is read with equal only, as Excel keeps it',
       'a conditional format of type unknownKind is not in the model',
       "a PivotTable's conditional format that no PivotTable of the sheet names is left out",

@@ -33,6 +33,7 @@ import { appearanceOf, windowLooks } from '../cond/looks.js'
 import { hasLook, layerOf } from '../looks/sheet.js'
 import { ownerOf } from '../spill/place.js'
 import { sheetExtent } from './extent.js'
+import { openTableStyleWindow } from '../table-style-hook.js'
 
 /** The cells a window gives by default, as many as the window of a sheet a server sends. */
 const MAX_CELLS = 20_000
@@ -207,6 +208,7 @@ export function* windowOf(src: WindowSource, w: WindowLines, o: ViewportOptions)
   // the cells errors began in, shared by the cells on one way to them
   const origins = new Map<string, Place>()
   const cells: Record<string, ViewportCell> = {}
+  const tableStyles = openTableStyleWindow?.(book, s, w.rects)
   // a cell without an input shows its look of the sheet's looks as its own
   const layer = layerOf(sheet)
   for (const r of w.rows) {
@@ -218,7 +220,8 @@ export function* windowOf(src: WindowSource, w: WindowLines, o: ViewportOptions)
       const col = lines.column(c)
       const shown = lookOf(own, row, col)
       // an empty cell is listed when it shows something: a style or a number format of its row or column (a grid's format list shows it), a look, a note or a link
-      const out = src.cell(r, c, addr, own, hasLook(shown))
+      const tableStyle = tableStyles?.at(r, c)
+      const out = src.cell(r, c, addr, own, hasLook(shown) || !!(tableStyle?.border || tableStyle?.fill))
       if (!out) continue
       if (o.formulaLocal && out.formula !== undefined) out.formulaLocal = local(out.formula, r, c)
       if (own?.array !== undefined) out.array = own.array
@@ -229,6 +232,10 @@ export function* windowOf(src: WindowSource, w: WindowLines, o: ViewportOptions)
         out.numberFormatSource = formatSource(own, row, col)
       }
       src.appearance(out, r, c, own)
+      if (tableStyle && tableStyles) {
+        const direct = shown.style === undefined ? undefined : book.styles![shown.style]
+        out.resolvedStyle = tableStyles.resolve(tableStyle, direct, out.appearance?.style)
+      }
       // copies, as a pool's are: a host that edits them does not change the workbook
       if (own?.richText !== undefined) out.richText = copyRuns(own.richText)
       if (own?.note !== undefined) out.note = { ...own.note }
@@ -248,6 +255,7 @@ export function* windowOf(src: WindowSource, w: WindowLines, o: ViewportOptions)
     truncated: w.truncated,
     cells,
     styles,
+    ...(tableStyles?.styles ? { resolvedStyles: tableStyles.styles } : {}),
     columns: w.cols.map((c) => {
       const col = lines.column(c)
       return col && isHiddenColumn(col) ? { column: c + 1, width: col.width ?? defaultWidth, hidden: true } : { column: c + 1, width: col?.width ?? defaultWidth }

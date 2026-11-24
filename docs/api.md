@@ -21,6 +21,7 @@ examples are the [README](../README.md) and the other files of `docs/`. This fil
 - [`xlcalc/locales/ru-RU`](#xlcalclocalesru-ru)
 - [`xlcalc/regex`](#xlcalcregex)
 - [`xlcalc/pivot`](#xlcalcpivot)
+- [`xlcalc/table-styles`](#xlcalctable-styles)
 - [`xlcalc/contract`](#xlcalccontract)
 - [Types](#types)
 
@@ -1245,6 +1246,34 @@ const pivotEngine: PivotEngine
 
 The PivotTable engine, which `registerPivot(pivotEngine)` loads: caches refreshed from their sources, PivotTables calculated and laid out ([PivotTables](pivot-tables.md)).
 
+## xlcalc/table-styles
+
+Types: see [Types](#types).
+
+### <a id="xlcalctable-styles-preset_differential_formats"></a>`PRESET_DIFFERENTIAL_FORMATS`
+
+```ts
+const PRESET_DIFFERENTIAL_FORMATS: readonly string[]
+```
+
+ECMA-376 differential formats in SpreadsheetML, shared by the presets.
+
+### <a id="xlcalctable-styles-preset_table_styles"></a>`PRESET_TABLE_STYLES`
+
+```ts
+const PRESET_TABLE_STYLES: Readonly<Record<string, readonly PresetStyleElement[]>>
+```
+
+The ECMA-376 built-in style regions by style name.
+
+### <a id="xlcalctable-styles-registertablestyles"></a>`registerTableStyles`
+
+```ts
+function registerTableStyles(): void
+```
+
+Enables styles of tables and PivotTables in viewports and workbook style definitions in XLSX.
+
 ## xlcalc/contract
 
 Described under an entry above: [`MAX_FORMULA_DEPTH`](#xlcalc-max_formula_depth), [`MAX_FORMULA_LENGTH`](#xlcalc-max_formula_length).
@@ -1615,6 +1644,8 @@ interface BookInput {
    * The font is read and written and is included in `inputHash` when given.
    */
   font?: { name: string; size: number }
+  /** The workbook's theme palette and custom table style definitions, used by `xlcalc/table-styles`. Display metadata outside `inputHash`. */
+  tableStyles?: WorkbookTableStyles
   /** The caches of the workbook's PivotTables (`SheetInput.pivotTables`), by `id`. Not part of calculation or `inputHash`. */
   pivotCaches?: PivotCache[]
   /** The caches of its slicers and timelines, by name. */
@@ -2157,8 +2188,7 @@ A cell style in the workbook's style table ([`BookInput.styles`](#bookinput)), l
 ```ts
 interface CellStyle {
   font?: FontStyle
-  /** A solid fill. */
-  fill?: { color: Color }
+  fill?: FillStyle
   border?: { top?: BorderLine; right?: BorderLine; bottom?: BorderLine; left?: BorderLine }
   alignment?: AlignmentStyle
   protection?: CellProtection
@@ -2667,7 +2697,7 @@ The formatting a rule applies to the cells that meet its condition, like an xlsx
 interface ConditionalStyle {
   /** `bold: false` removes bold from a cell that has it, and so on. */
   font?: Pick<FontStyle, 'bold' | 'italic' | 'underline' | 'strike' | 'color'>
-  fill?: { color: Color }
+  fill?: FillStyle
   border?: CellStyle['border']
   /** The number format used to display the cell's value. */
   numberFormat?: NumberFormat
@@ -3443,6 +3473,31 @@ A stored value of an external workbook's cell.
 
 ```ts
 type ExternalValue = number | string | boolean | { error: ErrorCode }
+```
+
+### `FillPattern`
+
+Excel's fill patterns other than solid, as xlsx names them (Format Cells, Fill, Pattern Style): `gray125` and
+`gray0625` are the two lightest dots, `dark…` and `light…` the thick and thin lines.
+
+```ts
+type FillPattern =
+  | 'darkGray' | 'mediumGray' | 'lightGray' | 'gray125' | 'gray0625'
+  | 'darkHorizontal' | 'darkVertical' | 'darkDown' | 'darkUp' | 'darkGrid' | 'darkTrellis'
+  | 'lightHorizontal' | 'lightVertical' | 'lightDown' | 'lightUp' | 'lightGrid' | 'lightTrellis'
+```
+
+### `FillStyle`
+
+A cell's fill: solid in `color`, or with a `pattern` its lines in `patternColor` (Excel's automatic colour, black,
+without it) over `color`. A pattern whose file names no background is read over white, as Excel shows it.
+
+```ts
+interface FillStyle {
+  color: Color
+  pattern?: FillPattern
+  patternColor?: Color
+}
 ```
 
 ### `FillTextOptions`
@@ -5183,6 +5238,14 @@ occur in the locale's formulas).
 type PointAction = { action: 'insert'; at: number; equals?: true } | { action: 'commit' } | { action: 'none' }
 ```
 
+### `PresetStyleElement`
+
+A style region, its stripe size, and its index in the differential formats.
+
+```ts
+type PresetStyleElement = readonly [type: string, size: number, differentialFormat: number]
+```
+
 ### `PreviewCell`
 
 A cell of a preview of text written into cells ([`Session.previewCellTexts`](#session), `previewPasteText`, `previewFillCellText`): its input and its value as the call would leave them.
@@ -6367,6 +6430,8 @@ type StructureOp =
   | { op: 'addTable'; sheet: string; table: TableInput }
   /** A new name for the table, following the rules of `TableInput.name`; every structured reference to it is updated. */
   | { op: 'renameTable'; table: string; name: string }
+  /** Replaces a table's style and its options. Omit the style for Excel's default, or pass an empty object for no style. */
+  | { op: 'setTableStyle'; table: string; style?: TableStyle }
   /** Deletes the table and its cells (Excel's Delete Table): structured references to it become #REF!. */
   | { op: 'deleteTable'; table: string }
   /**
@@ -6683,7 +6748,7 @@ interface TableInput {
   columns: TableColumn[]
   /**
    * How Excel draws the table (xlsx `tableStyleInfo`); without it, Excel's default, `TableStyleMedium2` with banded rows.
-   * The engine does not draw it: it stays with the table through operations and is written to the file.
+   * The style stays with the table through operations and in XLSX. Register `xlcalc/table-styles` to see it in viewports.
    */
   style?: TableStyle
   /**
@@ -6717,7 +6782,7 @@ false by default, as the checkboxes of Excel's Table Style Options.
 
 ```ts
 interface TableStyle {
-  /** One of Excel's table styles, `TableStyleLight1` to `TableStyleLight21`, `TableStyleMedium1` to `TableStyleMedium28`, `TableStyleDark1` to `TableStyleDark11`; none without it. */
+  /** A built-in table style or a name in `BookInput.tableStyles.custom`; none without it. */
   name?: string
   firstColumn?: boolean
   lastColumn?: boolean
@@ -6725,6 +6790,34 @@ interface TableStyle {
   rowStripes?: boolean
   /** Banded columns. */
   columnStripes?: boolean
+}
+```
+
+### `TableStyleDefinition`
+
+A custom definition by name in [`WorkbookTableStyles.custom`](#workbooktablestyles).
+
+```ts
+interface TableStyleDefinition {
+  table?: boolean
+  pivot?: boolean
+  elements: TableStyleElement[]
+}
+```
+
+### `TableStyleElement`
+
+One region of a custom table style, with the size of a stripe when the region is one. `style`'s border runs round
+the region; `inside` draws between its cells. A `numberFormat` shows the region's cells whose own format is General,
+as Excel for Windows shows them (`test/excel/win/xlsx/table-style-inside-held.json`).
+
+```ts
+interface TableStyleElement {
+  type: string
+  size?: number
+  style: CellStyle
+  inside?: { horizontal?: BorderLine; vertical?: BorderLine }
+  numberFormat?: NumberFormat
 }
 ```
 
@@ -7085,6 +7178,8 @@ interface Viewport {
   cells: Record<string, ViewportCell>
   /** The styles the viewport's cells have or use (`ViewportCell.style`, `effectiveStyle`), by their index in the workbook's `styles`: copies owned by the result. */
   styles: Record<number, CellStyle>
+  /** Final visual styles of the cells in this window. Their indices are local to this response. */
+  resolvedStyles?: Record<number, CellStyle>
   /** The columns of `range` from left to right, or those of `ViewportOptions.columns`. */
   columns: ViewportColumn[]
   /** The rows of `range` from top to bottom, or those of `ViewportOptions.rows`. */
@@ -7132,6 +7227,8 @@ interface ViewportCell extends Partial<CellDisplay> {
    * be a style of the cell's own (`Session.patchCells`).
    */
   effectiveStyle?: number
+  /** The final visual style's index in this window's `resolvedStyles`, when a table or PivotTable style contributes. */
+  resolvedStyle?: number
   /** The number format the cell is displayed in, as a format code: its own, or else its row's, or else its column's; a built-in format as its code in the workbook's locale (14 is `dd/mm/yyyy` in ru-RU). */
   numberFormat?: string
   /** Where `numberFormat` comes from. */
@@ -7234,6 +7331,18 @@ interface WorkbookStatistics {
   sheet: StatisticsCounts & { end: string | null }
   /** The workbook's counts over all its sheets, hidden ones too, and the number of sheets. */
   workbook: StatisticsCounts & { sheets: number }
+}
+```
+
+### `WorkbookTableStyles`
+
+The theme colours and custom differential styles used to display tables and PivotTables.
+
+```ts
+interface WorkbookTableStyles {
+  /** The 12 theme colours in xlsx theme-index order. */
+  theme?: string[]
+  custom?: Record<string, TableStyleDefinition>
 }
 ```
 

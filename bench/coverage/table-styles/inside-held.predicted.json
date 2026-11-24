@@ -1,0 +1,1366 @@
+{
+  "note": "Written by hand before the Excel run, the engine not yet drawing these. Excel's units: fill and colours BGR, pattern XlPattern, edges [LineStyle, Weight, Color] left, top, bottom, right. Hypotheses: a region's inside borders draw between its cells; a pattern shows with its colour, an automatic background white and an automatic pattern colour black; a number format in a table style is not applied.",
+  "inside": {
+    "C2": {
+      "text": "Qty",
+      "fill": 65535,
+      "pattern": 14,
+      "patternColor": 255,
+      "numberFormat": "General",
+      "edges": [
+        [
+          -4115,
+          2,
+          16711680
+        ],
+        [
+          1,
+          2,
+          0
+        ],
+        [
+          1,
+          2,
+          255
+        ],
+        [
+          -4115,
+          2,
+          16711680
+        ]
+      ]
+    },
+    "B3": {
+      "text": "1234,5",
+      "fill": 16777215,
+      "pattern": 9,
+      "patternColor": 16711680,
+      "bold": true,
+      "numberFormat": "General",
+      "edges": [
+        [
+          1,
+          2,
+          0
+        ],
+        [
+          1,
+          2,
+          255
+        ],
+        [
+          1,
+          2,
+          255
+        ],
+        [
+          -4115,
+          2,
+          16711680
+        ]
+      ]
+    },
+    "C4": {
+      "text": "4",
+      "fill": 65280,
+      "pattern": 17,
+      "patternColor": 0,
+      "numberFormat": "General",
+      "edges": [
+        [
+          -4115,
+          2,
+          16711680
+        ],
+        [
+          1,
+          2,
+          255
+        ],
+        [
+          1,
+          2,
+          255
+        ],
+        [
+          -4115,
+          2,
+          16711680
+        ]
+      ]
+    },
+    "E7": {
+      "text": "",
+      "fill": 16777215,
+      "pattern": 9,
+      "patternColor": 16711680,
+      "numberFormat": "General",
+      "edges": [
+        [
+          -4115,
+          2,
+          16711680
+        ],
+        [
+          1,
+          2,
+          255
+        ],
+        [
+          1,
+          2,
+          255
+        ],
+        [
+          1,
+          2,
+          0
+        ]
+      ]
+    },
+    "C8": {
+      "text": "25",
+      "fill": 14540253,
+      "pattern": 1,
+      "numberFormat": "General",
+      "edges": [
+        [
+          -4115,
+          2,
+          16711680
+        ],
+        [
+          1,
+          2,
+          255
+        ],
+        [
+          1,
+          2,
+          0
+        ],
+        [
+          -4115,
+          2,
+          16711680
+        ]
+      ]
+    },
+    "D8": {
+      "text": "0,5",
+      "fill": 14540253,
+      "pattern": 1,
+      "numberFormat": "General"
+    },
+    "G3": {
+      "text": "1",
+      "pattern": -4142,
+      "edges": [
+        [
+          -4142,
+          2,
+          0
+        ],
+        [
+          -4142,
+          2,
+          0
+        ],
+        [
+          1,
+          2,
+          5287936
+        ],
+        [
+          1,
+          -4138,
+          10498160
+        ]
+      ]
+    },
+    "G4": {
+      "text": "2",
+      "pattern": -4142,
+      "edges": [
+        [
+          -4142,
+          2,
+          0
+        ],
+        [
+          1,
+          2,
+          5287936
+        ],
+        [
+          -4142,
+          2,
+          0
+        ],
+        [
+          1,
+          -4138,
+          10498160
+        ]
+      ]
+    },
+    "G5": {
+      "text": "3",
+      "fill": 49407,
+      "pattern": 1,
+      "edges": [
+        [
+          -4142,
+          2,
+          0
+        ],
+        [
+          -4142,
+          2,
+          0
+        ],
+        [
+          -4142,
+          2,
+          0
+        ],
+        [
+          -4142,
+          2,
+          0
+        ]
+      ]
+    }
+  },
+  "precedence": {
+    "B5": {
+      "text": "3,0"
+    },
+    "B8": {
+      "text": "700,00%"
+    },
+    "C8": {
+      "text": "2500,00%"
+    },
+    "D8": {
+      "text": "0,5"
+    },
+    "D3": {
+      "text": "0,25"
+    }
+  },
+  "cells": {
+    "B4": {
+      "fill": 65535,
+      "pattern": 14,
+      "patternColor": 255
+    },
+    "C5": {
+      "fill": 16777215,
+      "pattern": 10,
+      "patternColor": 65280
+    },
+    "D6": {
+      "fill": 16711935,
+      "pattern": 1
+    },
+    "C4": {
+      "fill": 65280,
+      "pattern": 17,
+      "patternColor": 0
+    }
+  },
+  "hidden": {
+    "note": "The engine's viewport before the run: text and resolved style by cell.",
+    "cells": {
+      "B2": {
+        "text": "Name",
+        "style": {
+          "fill": {
+            "color": "#FFFF00",
+            "pattern": "lightUp",
+            "patternColor": "#FF0000"
+          },
+          "font": {
+            "bold": true
+          },
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#000000"
+            },
+            "right": {
+              "style": "dashed",
+              "color": "#0000FF"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "left": {
+              "style": "thin",
+              "color": "#000000"
+            }
+          }
+        }
+      },
+      "C2": {
+        "text": "Qty",
+        "style": {
+          "fill": {
+            "color": "#FFFF00",
+            "pattern": "lightUp",
+            "patternColor": "#FF0000"
+          },
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#000000"
+            },
+            "right": {
+              "style": "dashed",
+              "color": "#0000FF"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "left": {
+              "style": "dashed",
+              "color": "#0000FF"
+            }
+          }
+        }
+      },
+      "D2": {
+        "text": "Share",
+        "style": {
+          "fill": {
+            "color": "#FFFF00",
+            "pattern": "lightUp",
+            "patternColor": "#FF0000"
+          },
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#000000"
+            },
+            "right": {
+              "style": "dashed",
+              "color": "#0000FF"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "left": {
+              "style": "dashed",
+              "color": "#0000FF"
+            }
+          }
+        }
+      },
+      "E2": {
+        "text": "Note",
+        "style": {
+          "fill": {
+            "color": "#FFFF00",
+            "pattern": "lightUp",
+            "patternColor": "#FF0000"
+          },
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#000000"
+            },
+            "right": {
+              "style": "thin",
+              "color": "#000000"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "left": {
+              "style": "dashed",
+              "color": "#0000FF"
+            }
+          }
+        }
+      },
+      "F2": {
+        "text": "",
+        "style": {
+          "border": {
+            "left": {
+              "style": "thin",
+              "color": "#000000"
+            }
+          }
+        }
+      },
+      "G2": {
+        "text": "K",
+        "style": null
+      },
+      "H2": {
+        "text": "V",
+        "style": null
+      },
+      "B3": {
+        "text": "1 234,500",
+        "style": {
+          "fill": {
+            "color": "#FFFFFF",
+            "pattern": "darkGrid",
+            "patternColor": "#0000FF"
+          },
+          "font": {
+            "bold": true
+          },
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "right": {
+              "style": "dashed",
+              "color": "#0000FF"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "left": {
+              "style": "thin",
+              "color": "#000000"
+            }
+          }
+        }
+      },
+      "C3": {
+        "text": "3",
+        "style": {
+          "fill": {
+            "color": "#FFFFFF",
+            "pattern": "darkGrid",
+            "patternColor": "#0000FF"
+          },
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "right": {
+              "style": "dashed",
+              "color": "#0000FF"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "left": {
+              "style": "dashed",
+              "color": "#0000FF"
+            }
+          }
+        }
+      },
+      "D3": {
+        "text": "0,25",
+        "style": {
+          "fill": {
+            "color": "#FFFFFF",
+            "pattern": "darkGrid",
+            "patternColor": "#0000FF"
+          },
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "right": {
+              "style": "dashed",
+              "color": "#0000FF"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "left": {
+              "style": "dashed",
+              "color": "#0000FF"
+            }
+          }
+        }
+      },
+      "E3": {
+        "text": "a",
+        "style": {
+          "fill": {
+            "color": "#FFFFFF",
+            "pattern": "darkGrid",
+            "patternColor": "#0000FF"
+          },
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "right": {
+              "style": "thin",
+              "color": "#000000"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "left": {
+              "style": "dashed",
+              "color": "#0000FF"
+            }
+          }
+        }
+      },
+      "F3": {
+        "text": "",
+        "style": {
+          "border": {
+            "left": {
+              "style": "thin",
+              "color": "#000000"
+            }
+          }
+        }
+      },
+      "G3": {
+        "text": "1",
+        "style": {
+          "border": {
+            "right": {
+              "style": "medium",
+              "color": "#7030A0"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#00B050"
+            }
+          }
+        }
+      },
+      "H3": {
+        "text": "1",
+        "style": {
+          "border": {
+            "bottom": {
+              "style": "thin",
+              "color": "#00B050"
+            },
+            "left": {
+              "style": "medium",
+              "color": "#7030A0"
+            }
+          }
+        }
+      },
+      "B4": {
+        "text": "2,000",
+        "style": {
+          "font": {
+            "bold": true
+          },
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "right": {
+              "style": "dashed",
+              "color": "#0000FF"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "left": {
+              "style": "thin",
+              "color": "#000000"
+            }
+          }
+        }
+      },
+      "C4": {
+        "text": "4",
+        "style": {
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "right": {
+              "style": "dashed",
+              "color": "#0000FF"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "left": {
+              "style": "dashed",
+              "color": "#0000FF"
+            }
+          }
+        }
+      },
+      "D4": {
+        "text": "0,5",
+        "style": {
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "right": {
+              "style": "dashed",
+              "color": "#0000FF"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "left": {
+              "style": "dashed",
+              "color": "#0000FF"
+            }
+          }
+        }
+      },
+      "E4": {
+        "text": "",
+        "style": {
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "right": {
+              "style": "thin",
+              "color": "#000000"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "left": {
+              "style": "dashed",
+              "color": "#0000FF"
+            }
+          }
+        }
+      },
+      "F4": {
+        "text": "",
+        "style": {
+          "border": {
+            "left": {
+              "style": "thin",
+              "color": "#000000"
+            }
+          }
+        }
+      },
+      "G4": {
+        "text": "2",
+        "style": {
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#00B050"
+            },
+            "right": {
+              "style": "medium",
+              "color": "#7030A0"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#00B050"
+            }
+          }
+        }
+      },
+      "H4": {
+        "text": "",
+        "style": {
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#00B050"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#00B050"
+            },
+            "left": {
+              "style": "medium",
+              "color": "#7030A0"
+            }
+          }
+        }
+      },
+      "B5": {
+        "text": "3,000",
+        "style": {
+          "fill": {
+            "color": "#00FF00",
+            "pattern": "gray125"
+          },
+          "font": {
+            "bold": true
+          },
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "right": {
+              "style": "dashed",
+              "color": "#0000FF"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "left": {
+              "style": "thin",
+              "color": "#000000"
+            }
+          }
+        }
+      },
+      "C5": {
+        "text": "5",
+        "style": {
+          "fill": {
+            "color": "#00FF00",
+            "pattern": "gray125"
+          },
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "right": {
+              "style": "dashed",
+              "color": "#0000FF"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "left": {
+              "style": "dashed",
+              "color": "#0000FF"
+            }
+          }
+        }
+      },
+      "D5": {
+        "text": "0,75",
+        "style": {
+          "fill": {
+            "color": "#00FF00",
+            "pattern": "gray125"
+          },
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "right": {
+              "style": "dashed",
+              "color": "#0000FF"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "left": {
+              "style": "dashed",
+              "color": "#0000FF"
+            }
+          }
+        }
+      },
+      "E5": {
+        "text": "",
+        "style": {
+          "fill": {
+            "color": "#00FF00",
+            "pattern": "gray125"
+          },
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "right": {
+              "style": "thin",
+              "color": "#000000"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "left": {
+              "style": "dashed",
+              "color": "#0000FF"
+            }
+          }
+        }
+      },
+      "F5": {
+        "text": "",
+        "style": {
+          "border": {
+            "left": {
+              "style": "thin",
+              "color": "#000000"
+            }
+          }
+        }
+      },
+      "G5": {
+        "text": "3",
+        "style": {
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#00B050"
+            },
+            "right": {
+              "style": "medium",
+              "color": "#7030A0"
+            }
+          }
+        }
+      },
+      "H5": {
+        "text": "",
+        "style": {
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#00B050"
+            },
+            "left": {
+              "style": "medium",
+              "color": "#7030A0"
+            }
+          }
+        }
+      },
+      "B6": {
+        "text": "4,000",
+        "style": {
+          "fill": {
+            "color": "#FFFFFF",
+            "pattern": "darkGrid",
+            "patternColor": "#0000FF"
+          },
+          "font": {
+            "bold": true
+          },
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "right": {
+              "style": "dashed",
+              "color": "#0000FF"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "left": {
+              "style": "thin",
+              "color": "#000000"
+            }
+          }
+        }
+      },
+      "C6": {
+        "text": "6",
+        "style": {
+          "fill": {
+            "color": "#FFFFFF",
+            "pattern": "darkGrid",
+            "patternColor": "#0000FF"
+          },
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "right": {
+              "style": "dashed",
+              "color": "#0000FF"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "left": {
+              "style": "dashed",
+              "color": "#0000FF"
+            }
+          }
+        }
+      },
+      "D6": {
+        "text": "",
+        "style": {
+          "fill": {
+            "color": "#FFFFFF",
+            "pattern": "darkGrid",
+            "patternColor": "#0000FF"
+          },
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "right": {
+              "style": "dashed",
+              "color": "#0000FF"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "left": {
+              "style": "dashed",
+              "color": "#0000FF"
+            }
+          }
+        }
+      },
+      "E6": {
+        "text": "",
+        "style": {
+          "fill": {
+            "color": "#FFFFFF",
+            "pattern": "darkGrid",
+            "patternColor": "#0000FF"
+          },
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "right": {
+              "style": "thin",
+              "color": "#000000"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "left": {
+              "style": "dashed",
+              "color": "#0000FF"
+            }
+          }
+        }
+      },
+      "F6": {
+        "text": "",
+        "style": {
+          "border": {
+            "left": {
+              "style": "thin",
+              "color": "#000000"
+            }
+          }
+        }
+      },
+      "G6": {
+        "text": "4",
+        "style": {
+          "fill": {
+            "color": "#FFC000"
+          }
+        }
+      },
+      "H6": {
+        "text": "",
+        "style": {
+          "fill": {
+            "color": "#FFC000"
+          }
+        }
+      },
+      "B7": {
+        "text": "5,000",
+        "style": {
+          "fill": {
+            "color": "#00FF00",
+            "pattern": "gray125"
+          },
+          "font": {
+            "bold": true
+          },
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "right": {
+              "style": "dashed",
+              "color": "#0000FF"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "left": {
+              "style": "thin",
+              "color": "#000000"
+            }
+          }
+        }
+      },
+      "C7": {
+        "text": "7",
+        "style": {
+          "fill": {
+            "color": "#00FF00",
+            "pattern": "gray125"
+          },
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "right": {
+              "style": "dashed",
+              "color": "#0000FF"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "left": {
+              "style": "dashed",
+              "color": "#0000FF"
+            }
+          }
+        }
+      },
+      "D7": {
+        "text": "",
+        "style": {
+          "fill": {
+            "color": "#00FF00",
+            "pattern": "gray125"
+          },
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "right": {
+              "style": "dashed",
+              "color": "#0000FF"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "left": {
+              "style": "dashed",
+              "color": "#0000FF"
+            }
+          }
+        }
+      },
+      "E7": {
+        "text": "",
+        "style": {
+          "fill": {
+            "color": "#00FF00",
+            "pattern": "gray125"
+          },
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "right": {
+              "style": "thin",
+              "color": "#000000"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "left": {
+              "style": "dashed",
+              "color": "#0000FF"
+            }
+          }
+        }
+      },
+      "F7": {
+        "text": "",
+        "style": {
+          "border": {
+            "left": {
+              "style": "thin",
+              "color": "#000000"
+            }
+          }
+        }
+      },
+      "G7": {
+        "text": "5",
+        "style": {
+          "fill": {
+            "color": "#FFC000"
+          }
+        }
+      },
+      "H7": {
+        "text": "",
+        "style": {
+          "fill": {
+            "color": "#FFC000"
+          }
+        }
+      },
+      "B8": {
+        "text": "Total",
+        "style": {
+          "fill": {
+            "color": "#DDDDDD"
+          },
+          "font": {
+            "bold": true
+          },
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "right": {
+              "style": "dashed",
+              "color": "#0000FF"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#000000"
+            },
+            "left": {
+              "style": "thin",
+              "color": "#000000"
+            }
+          }
+        }
+      },
+      "C8": {
+        "text": "2500,00%",
+        "style": {
+          "fill": {
+            "color": "#DDDDDD"
+          },
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "right": {
+              "style": "dashed",
+              "color": "#0000FF"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#000000"
+            },
+            "left": {
+              "style": "dashed",
+              "color": "#0000FF"
+            }
+          }
+        }
+      },
+      "D8": {
+        "text": "50,00%",
+        "style": {
+          "fill": {
+            "color": "#DDDDDD"
+          },
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "right": {
+              "style": "dashed",
+              "color": "#0000FF"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#000000"
+            },
+            "left": {
+              "style": "dashed",
+              "color": "#0000FF"
+            }
+          }
+        }
+      },
+      "E8": {
+        "text": "",
+        "style": {
+          "fill": {
+            "color": "#DDDDDD"
+          },
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#FF0000"
+            },
+            "right": {
+              "style": "thin",
+              "color": "#000000"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#000000"
+            },
+            "left": {
+              "style": "dashed",
+              "color": "#0000FF"
+            }
+          }
+        }
+      },
+      "F8": {
+        "text": "",
+        "style": {
+          "border": {
+            "left": {
+              "style": "thin",
+              "color": "#000000"
+            }
+          }
+        }
+      },
+      "G8": {
+        "text": "6",
+        "style": {
+          "border": {
+            "right": {
+              "style": "medium",
+              "color": "#7030A0"
+            },
+            "bottom": {
+              "style": "thin",
+              "color": "#00B050"
+            }
+          }
+        }
+      },
+      "H8": {
+        "text": "",
+        "style": {
+          "border": {
+            "bottom": {
+              "style": "thin",
+              "color": "#00B050"
+            },
+            "left": {
+              "style": "medium",
+              "color": "#7030A0"
+            }
+          }
+        }
+      },
+      "B9": {
+        "text": "",
+        "style": {
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#000000"
+            }
+          }
+        }
+      },
+      "C9": {
+        "text": "",
+        "style": {
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#000000"
+            }
+          }
+        }
+      },
+      "D9": {
+        "text": "",
+        "style": {
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#000000"
+            }
+          }
+        }
+      },
+      "E9": {
+        "text": "",
+        "style": {
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#000000"
+            }
+          }
+        }
+      },
+      "G9": {
+        "text": "7",
+        "style": {
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#00B050"
+            },
+            "right": {
+              "style": "medium",
+              "color": "#7030A0"
+            }
+          }
+        }
+      },
+      "H9": {
+        "text": "",
+        "style": {
+          "border": {
+            "top": {
+              "style": "thin",
+              "color": "#00B050"
+            },
+            "left": {
+              "style": "medium",
+              "color": "#7030A0"
+            }
+          }
+        }
+      }
+    }
+  }
+}

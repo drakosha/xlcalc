@@ -67,6 +67,7 @@ const FIELDS: Record<string, string[]> = {
   unhideSheet: ['sheet'],
   addTable: ['sheet', 'table'],
   renameTable: ['table', 'name'],
+  setTableStyle: ['table', 'style'],
   deleteTable: ['table'],
   convertTable: ['table'],
   ...OUTLINE_FIELDS,
@@ -253,9 +254,10 @@ function applied(book: BookInput, op: StructureOp, values: ValuesIn, whole: bool
     }
     case 'addTable':
     case 'renameTable':
+    case 'setTableStyle':
     case 'deleteTable':
     case 'convertTable':
-      r = tableOp(book, op as Extract<StructureOp, { op: 'addTable' | 'renameTable' | 'deleteTable' | 'convertTable' }>)
+      r = tableOp(book, op as Extract<StructureOp, { op: 'addTable' | 'renameTable' | 'setTableStyle' | 'deleteTable' | 'convertTable' }>)
       break
     case 'group':
     case 'ungroup':

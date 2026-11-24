@@ -19,6 +19,7 @@ import * as worker from '../src/worker/index.js'
 import * as functionText from '../src/function-text/index.js'
 import * as typedEntry from '../src/typed-entry.js'
 import * as regex from '../src/regex/index.js'
+import * as tableStyles from '../src/table-styles.js'
 import * as pivot from '../src/pivot/index.js'
 import * as core from '../src/core.js'
 import * as groups from '../src/groups/index.js'
@@ -147,6 +148,7 @@ describe('the functions of the package take no options they do not', () => {
     ['xlcalc/regex', regex, {}],
     // its engine is an object, which registerPivot takes
     ['xlcalc/pivot', pivot, {}],
+    ['xlcalc/table-styles', tableStyles, { registerTableStyles: 0 }],
   ]
 
   for (const [entry, mod, table] of FUNCTIONS)

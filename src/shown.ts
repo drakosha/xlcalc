@@ -14,6 +14,7 @@ import { columnPoints } from './numfmt.js'
 import { styleMeasures, type FontMeasure } from './numfmt/font-metrics.js'
 import { turnedStyles } from './layout/turned.js'
 import { bookGeometry, columnPadding, MAX_POINTS } from './column-width.js'
+import { tableFormatsOf } from './table-style-hook.js'
 
 /** What the cell at sheet `s`, row `r`, column `c` (zero-based) shows when it holds `v`; `own`, its input when the caller has it. */
 export type Looks = (s: number, r: number, c: number, v: CellValue, own?: CellInput) => CellDisplay
@@ -21,10 +22,25 @@ export type Looks = (s: number, r: number, c: number, v: CellValue, own?: CellIn
 /** The looks of cells of the state's book as it is now; a new one after a change of formats or layout. */
 export const cellLooks = (state: EngineState): Looks => bookLooks(state.input, state.ctx.rules, state)
 
-/** A sheet's lines, and its merged areas by their top-left cell (`Merged.ends`): their last column. */
+/**
+ * A sheet's lines, its merged areas by their top-left cell (`Merged.ends`): their last column, and where a table
+ * style gives number formats (`xlcalc/table-styles`), the format it gives a cell.
+ */
 interface SheetLook {
   lines: SheetLines
   merges: Map<number, number>
+  tableFormat?: (r: number, c: number) => NumberFormat | undefined
+}
+
+const isGeneral = (f: NumberFormat | undefined) => f === undefined || f === 0 || (typeof f === 'string' && /^General$/i.test(f))
+
+/**
+ * A cell's number format; where it is General, a table style region's, which Excel shows the cell by and a format of
+ * the cell's own (a row's, a column's) beats (`test/excel/win/xlsx/table-style-inside-held.json`).
+ */
+function formatAt(x: SheetLook, r: number, c: number, own?: CellInput): NumberFormat | undefined {
+  const format = x.lines.format(r, c, own)
+  return x.tableFormat && isGeneral(format) ? (x.tableFormat(r, c) ?? format) : format
 }
 
 /** Each sheet's lines and merged areas, read when the sheet is first looked at; with a session's `state`, its lines read once for it. */
@@ -34,7 +50,8 @@ function sheetLooks(book: BookInput, state?: EngineState): (s: number) => SheetL
     let x = sheets.get(s)
     if (!x) {
       const sh = book.sheets[s]
-      sheets.set(s, (x = { lines: sheetLines(sh, state), merges: mergedOf(sh, state).ends }))
+      const tableFormat = tableFormatsOf?.(book, s)
+      sheets.set(s, (x = { lines: sheetLines(sh, state), merges: mergedOf(sh, state).ends, ...(tableFormat ? { tableFormat } : {}) }))
     }
     return x
   }
@@ -66,7 +83,7 @@ export function bookLooks(book: BookInput, rules: Rules, state?: EngineState, wi
   // a cell without `own` shows by the sheet's input there, or its look of the sheet's looks (`sheetLines`)
   return (s, r, c, v, own) => {
     const x = sheetLook(s)
-    const format = x.lines.format(r, c, own)
+    const format = formatAt(x, r, c, own)
     const font = measure ? measure(x.lines.look(r, c, own).style) : undefined
     return rules.display(v, format, wide ? Infinity : pointsAt(x, r, c, turned, digit, own) - padding, font)
   }
@@ -84,6 +101,6 @@ export function lookParts(state: EngineState): (s: number, r: number, c: number,
   return (s, r, c, own) => {
     const x = sheetLook(s)
     const font = measure?.(x.lines.look(r, c, own).style)
-    return [x.lines.format(r, c, own), pointsAt(x, r, c, turned, digit, own), font]
+    return [formatAt(x, r, c, own), pointsAt(x, r, c, turned, digit, own), font]
   }
 }

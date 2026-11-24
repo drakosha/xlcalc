@@ -126,6 +126,10 @@
       "types": "./dist/pivot/index.d.ts",
       "default": "./dist/pivot/index.js"
     },
+    "./table-styles": {
+      "types": "./dist/table-styles.d.ts",
+      "default": "./dist/table-styles.js"
+    },
     "./package.json": "./package.json"
   },
   "main": "./dist/index.js",

@@ -1,6 +1,6 @@
 /** Structure operations (`editStructure`) and their answers, and a sheet's outline groups and commands over its rows and columns (`outlineGroups`, `outlineEdit`). */
 import type { CellRef, LineSpan, RangeRef, Refusal } from './values.js'
-import type { Book, ColumnInput, FilterCriteria, FilterSort, RowInput, TableInput } from './book.js'
+import type { Book, ColumnInput, FilterCriteria, FilterSort, RowInput, TableInput, TableStyle } from './book.js'
 import type { PivotGrouping, PivotRefusalReason, PivotRef, PivotSource, PivotTablePatch, Slicer, SlicerCachePatch, SlicerPatch, Timeline, TimelineCachePatch, TimelinePatch } from './pivot.js'
 import type { EditResult } from './edits.js'
 
@@ -88,6 +88,8 @@ export type StructureOp =
   | { op: 'addTable'; sheet: string; table: TableInput }
   /** A new name for the table, following the rules of `TableInput.name`; every structured reference to it is updated. */
   | { op: 'renameTable'; table: string; name: string }
+  /** Replaces a table's style and its options. Omit the style for Excel's default, or pass an empty object for no style. */
+  | { op: 'setTableStyle'; table: string; style?: TableStyle }
   /** Deletes the table and its cells (Excel's Delete Table): structured references to it become #REF!. */
   | { op: 'deleteTable'; table: string }
   /**

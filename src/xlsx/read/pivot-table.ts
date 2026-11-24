@@ -5,7 +5,6 @@
  * (chart formats) is reported.
  */
 import type {
-  CellStyle,
   NumberFormat,
   PivotArea,
   PivotAreaReference,
@@ -25,7 +24,7 @@ import type {
 } from '../../contract.js'
 import type { DateSystemOptions } from '../../date-serial.js'
 import { serialToUtcMs } from '../../model.js'
-import type { Dxf } from '../styles/dxf.js'
+import { dxfCellStyle, type Dxf } from '../styles/dxf.js'
 import { attributes, attrsAt, element, elements, flag, within, type Element } from '../xml/scan.js'
 import { pivotAreas } from '../../pivot/area.js'
 import { attrText, take, values } from './pivot-cache.js'
@@ -178,13 +177,9 @@ function formatOf(e: Element, dxfs: Dxf[]): PivotFormat {
   if (a.action === 'blank') out.blank = true
   const d = a.dxfId === undefined ? undefined : dxfs[Number(a.dxfId)]
   if (d) {
-    const { numberFormat, font, ...rest } = d.style
-    const { name, size, ...cell } = d.cell ?? {}
-    const style: CellStyle = { ...rest, ...cell }
-    const full = { ...font, ...(name === undefined ? {} : { name }), ...(size === undefined ? {} : { size }) }
-    if (Object.keys(full).length) style.font = full
+    const style = dxfCellStyle(d)
     if (Object.keys(style).length) out.style = style
-    if (numberFormat !== undefined) out.numberFormat = numberFormat
+    if (d.style.numberFormat !== undefined) out.numberFormat = d.style.numberFormat
   }
   return out
 }

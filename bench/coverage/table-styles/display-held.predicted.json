@@ -1,0 +1,122 @@
+{
+ "banded-table": {
+  "A1": {
+   "style": null,
+   "appearance": null
+  },
+  "B1": {
+   "style": null,
+   "appearance": null
+  },
+  "C1": {
+   "style": null,
+   "appearance": null
+  },
+  "A2": {
+   "style": null,
+   "appearance": null
+  },
+  "B2": {
+   "style": {
+    "font": {
+     "color": "#112233"
+    },
+    "fill": {
+     "color": "#FFFF00"
+    }
+   },
+   "appearance": {
+    "style": {
+     "font": {
+      "bold": true
+     },
+     "fill": {
+      "color": "#00FF00"
+     }
+    }
+   }
+  },
+  "A3": {
+   "style": {
+    "fill": {
+     "color": "#FF00FF"
+    }
+   },
+   "appearance": null
+  },
+  "B3": {
+   "style": null,
+   "appearance": null
+  },
+  "A4": {
+   "style": null,
+   "appearance": null
+  },
+  "B4": {
+   "style": null,
+   "appearance": null
+  },
+  "A5": {
+   "style": null,
+   "appearance": null
+  },
+  "B5": {
+   "style": null,
+   "appearance": null
+  }
+ },
+ "saved-pivot": {
+  "A3": {
+   "style": null,
+   "appearance": null
+  },
+  "B3": {
+   "style": null,
+   "appearance": null
+  },
+  "A4": {
+   "style": null,
+   "appearance": null
+  },
+  "B4": {
+   "style": null,
+   "appearance": null
+  },
+  "A5": {
+   "style": {
+    "alignment": {
+     "horizontal": "left"
+    }
+   },
+   "appearance": null
+  },
+  "A6": {
+   "style": {
+    "alignment": {
+     "horizontal": "left"
+    }
+   },
+   "appearance": null
+  },
+  "A7": {
+   "style": {
+    "alignment": {
+     "horizontal": "left"
+    }
+   },
+   "appearance": null
+  },
+  "A8": {
+   "style": {
+    "alignment": {
+     "horizontal": "left"
+    }
+   },
+   "appearance": null
+  },
+  "B8": {
+   "style": null,
+   "appearance": null
+  }
+ }
+}
