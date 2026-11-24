@@ -61,12 +61,12 @@ export function writtenFont(f: FontStyle, issues?: Issues): FontStyle {
 export const fillXml = (f: NonNullable<CellStyle['fill']>) => `<fill><patternFill patternType="solid"><fgColor rgb="${rgb(f.color)}"/><bgColor indexed="64"/></patternFill></fill>`
 
 /** A cell format's alignment, empty without one. */
-function alignmentXml(a: CellStyle['alignment']): string {
+export function alignmentXml(a: CellStyle['alignment']): string {
   return a ? `<alignment${a.horizontal ? ` horizontal="${a.horizontal}"` : ''}${a.vertical ? ` vertical="${a.vertical}"` : ''}${a.wrap ? ' wrapText="1"' : ''}${a.indent ? ` indent="${a.indent}"` : ''}${a.rotation ? ` textRotation="${a.rotation === 'vertical' ? 255 : a.rotation > 0 ? a.rotation : 90 - a.rotation}"` : ''}/>` : ''
 }
 
 /** A cell format's protection, empty without one. */
-function cellProtectionXml(p: CellStyle['protection']): string {
+export function cellProtectionXml(p: CellStyle['protection']): string {
   return p && (p.locked === false || p.hidden) ? `<protection${p.locked === false ? ' locked="0"' : ''}${p.hidden ? ' hidden="1"' : ''}/>` : ''
 }
 
@@ -221,7 +221,12 @@ export class StyleWriter implements CellFormats {
 
   /** The differential format of a conditional format's style: its index in `<dxfs>`. */
   dxf(s: ConditionalStyle, filter = false): number {
-    return this.dxfs.of(dxfXml(s, (c) => this.numFmt(c), filter))
+    return this.addDxf(dxfXml(s, (c) => this.numFmt(c), filter))
+  }
+
+  /** A differential format's XML, sharing the indices used by the sheet and PivotTable writers. */
+  addDxf(xml: string): number {
+    return this.dxfs.of(xml)
   }
 
   /** The body of a dxf, as an Excel 2010 rule holds it (`x14:dxf`). */
@@ -229,7 +234,7 @@ export class StyleWriter implements CellFormats {
     return this.dxfs.items[i].slice(5, -6)
   }
 
-  xml(): string {
+  xml(tableStyles = ''): string {
     const numFmts = [...this.formats].map(([code, id]) => `<numFmt numFmtId="${id}" formatCode="${escapeAttr(code)}"/>`)
     return (
       `${HEAD}<styleSheet xmlns="${MAIN}">` +
@@ -241,6 +246,7 @@ export class StyleWriter implements CellFormats {
       counted('cellXfs', this.xfs.items) +
       '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>' +
       (this.dxfs.items.length ? counted('dxfs', this.dxfs.items) : '') +
+      tableStyles +
       '</styleSheet>'
     )
   }

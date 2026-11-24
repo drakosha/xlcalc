@@ -13,14 +13,14 @@ describe('optional table style presets', () => {
     expect(Object.values(styles).every((regions) => regions.every(([, size, index]) => size >= 1 && !!formats[index]))).toBe(true)
   })
 
-  it('the root and core imports do not include the preset module', async () => {
-    for (const entry of ['index.js', 'core.js']) {
+  it('the workbook entry points include neither the style renderer nor the preset data', async () => {
+    for (const entry of ['index.js', 'core.js', 'xlsx.js', 'xlsx-keep.js', 'xlsb.js']) {
       const file = TARGET === 'src' ? entry.replace(/\.js$/, '.ts') : entry
       const bundle = await build({
         stdin: { contents: `export * from ${JSON.stringify(fileURLToPath(libUrl(file)))}`, resolveDir: fileURLToPath(new URL('..', import.meta.url)) },
         bundle: true, logLevel: 'silent', platform: 'browser', write: false, metafile: true,
       })
-      expect(Object.keys(bundle.metafile.inputs).some((file) => /table-styles\.(?:ts|js)$|table-styles\/presets/.test(file))).toBe(false)
+      expect(Object.keys(bundle.metafile.inputs).filter((file) => /(?:^|\/)table-styles(?:\/|\.(?:ts|js)$)/.test(file))).toEqual([])
     }
   })
 })

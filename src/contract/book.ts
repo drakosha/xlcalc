@@ -460,7 +460,7 @@ export interface TableInput {
   columns: TableColumn[]
   /**
    * How Excel draws the table (xlsx `tableStyleInfo`); without it, Excel's default, `TableStyleMedium2` with banded rows.
-   * The engine does not draw it: it stays with the table through operations and is written to the file.
+   * The style stays with the table through operations and in XLSX. Register `xlcalc/table-styles` to see it in viewports.
    */
   style?: TableStyle
   /**

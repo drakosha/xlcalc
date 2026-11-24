@@ -8,6 +8,7 @@
 import type { CellInput, TableColumn, TableInput, TableStyle, TotalsFunction } from '../../contract.js'
 import { InputError } from '../../input-error.js'
 import { localeBooleans } from '../../locale/registry.js'
+import { tableKey } from '../../tables/model.js'
 import { formatAddress } from '../../model.js'
 import { parseRange } from '../../structure/area.js'
 import { DEFAULT_TABLE_STYLE, sheetTables, STYLE_OPTIONS, TABLE_STYLE, TOTALS } from '../../tables/check.js'
@@ -21,24 +22,26 @@ import { readCriteria, filterPrefixes, type FilterRead } from './filter.js'
 /** Whether two styles are the same: the same name and options, an option false when it is absent. */
 const sameStyle = (a: TableStyle, b: TableStyle) => a.name === b.name && STYLE_OPTIONS.every(([k]) => !a[k] === !b[k])
 
-/** Names of the workbook's custom table style definitions, independent of what any table refers to. */
+/** Names declared in styles.xml, also needed when custom style reading is disabled. */
 export function customTableStyleNames(styles: string | undefined): ReadonlySet<string> {
-  return new Set(within(styles ?? '', 'tableStyles', 'tableStyle').map((style) => readText(attributes(style.attrs).name ?? '').toLowerCase()))
+  return new Set(within(styles ?? '', 'tableStyles', 'tableStyle').map((style) => tableKey(readText(attributes(style.attrs).name ?? ''))))
 }
 
 const TABLE_STYLE_FAMILY = /^TableStyle(?:Light|Medium|Dark)$/
 
 /**
- * A table part's style: none without `tableStyleInfo` or a name, Excel's default (undefined) as no field; a custom style,
- * which the model has no place for, as its name.
+ * A table part's style: an object for its style and options, undefined for Excel's default, or the name of an unavailable custom style.
  */
-function styleOf(xml: string, customStyles: ReadonlySet<string>): TableStyle | string | undefined {
+function styleOf(xml: string, customStyles: ReadonlySet<string>, keepCustom: boolean): TableStyle | string | undefined {
   const info = element(xml, 'tableStyleInfo')
   const a = attributes(info?.attrs ?? '')
   let name = a.name === undefined ? undefined : readText(a.name)
   // Excel opens an unnumbered family name as no style unless a custom definition gives it one.
-  if (name !== undefined && TABLE_STYLE_FAMILY.test(name) && !customStyles.has(name.toLowerCase())) name = undefined
-  if (name !== undefined && !TABLE_STYLE.test(name)) return name
+  if (name !== undefined && !TABLE_STYLE.test(name)) {
+    const defined = customStyles.has(tableKey(name))
+    if (defined ? !keepCustom : !TABLE_STYLE_FAMILY.test(name)) return name
+    if (!defined) name = undefined
+  }
   const style: TableStyle = name === undefined ? {} : { name }
   for (const [k, attr] of STYLE_OPTIONS) if (flag(a[attr])) style[k] = true
   return sameStyle(style, DEFAULT_TABLE_STYLE) ? undefined : style
@@ -48,7 +51,7 @@ function styleOf(xml: string, customStyles: ReadonlySet<string>): TableStyle | s
  * A table part's table with its calculated column formulas as read (by column), and the name of a custom style it
  * has; null when it has no name or range.
  */
-function tableOf(xml: string, opts: FormulaOptions, customStyles: ReadonlySet<string>): { t: TableInput; formulas: (ReadFormula | undefined)[]; custom?: string } | null {
+function tableOf(xml: string, opts: FormulaOptions, customStyles: ReadonlySet<string>, keepCustom: boolean): { t: TableInput; formulas: (ReadFormula | undefined)[]; custom?: string } | null {
   const root = element(xml, 'table')
   if (!root) return null
   const a = attributes(root.attrs)
@@ -72,19 +75,19 @@ function tableOf(xml: string, opts: FormulaOptions, customStyles: ReadonlySet<st
   const t: TableInput = { name, range, columns }
   if (a.headerRowCount !== undefined && Number(a.headerRowCount) === 0) t.headers = false
   if (Number(a.totalsRowCount ?? 0) > 0) t.totals = true
-  const style = styleOf(xml, customStyles)
+  const style = styleOf(xml, customStyles, keepCustom)
   if (typeof style === 'object') t.style = style
   return { t, formulas, ...(typeof style === 'string' ? { custom: style } : {}) }
 }
 
 /** The tables of a sheet's table parts; `cells` (the sheet's) get the header names they lack, a cell made going to `added`; `opts` read their formulas. */
-export function readTables(parts: string[], sheet: string, cells: Record<string, CellInput>, merges: string[] | undefined, issues: Issues, opts: FormulaOptions, customStyles: ReadonlySet<string>, added?: Set<string>, filters?: FilterRead): TableInput[] {
+export function readTables(parts: string[], sheet: string, cells: Record<string, CellInput>, merges: string[] | undefined, issues: Issues, opts: FormulaOptions, customStyles: ReadonlySet<string>, keepCustom: boolean, added?: Set<string>, filters?: FilterRead): TableInput[] {
   const out: TableInput[] = []
   if (!parts.length) return out
   // each table checked against those kept before it, its header cells as it would make them
-  const tables = sheetTables({ cells, merges }, localeBooleans(undefined), new Map(), new Map())
+  const tables = sheetTables({ cells, merges }, localeBooleans(undefined), new Map(), new Map(), customStyles)
   for (const xml of parts) {
-    const read = tableOf(xml, opts, customStyles)
+    const read = tableOf(xml, opts, customStyles, keepCustom)
     if (!read) {
       issues.add('table', { key: 'tablePartBad' }, { sheet })
       continue

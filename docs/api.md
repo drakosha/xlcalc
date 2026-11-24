@@ -21,6 +21,7 @@ examples are the [README](../README.md) and the other files of `docs/`. This fil
 - [`xlcalc/locales/ru-RU`](#xlcalclocalesru-ru)
 - [`xlcalc/regex`](#xlcalcregex)
 - [`xlcalc/pivot`](#xlcalcpivot)
+- [`xlcalc/table-styles`](#xlcalctable-styles)
 - [`xlcalc/contract`](#xlcalccontract)
 - [Types](#types)
 
@@ -1245,6 +1246,34 @@ const pivotEngine: PivotEngine
 
 The PivotTable engine, which `registerPivot(pivotEngine)` loads: caches refreshed from their sources, PivotTables calculated and laid out ([PivotTables](pivot-tables.md)).
 
+## xlcalc/table-styles
+
+Types: see [Types](#types).
+
+### <a id="xlcalctable-styles-preset_differential_formats"></a>`PRESET_DIFFERENTIAL_FORMATS`
+
+```ts
+const PRESET_DIFFERENTIAL_FORMATS: readonly string[]
+```
+
+ECMA-376 differential formats in SpreadsheetML, shared by the presets.
+
+### <a id="xlcalctable-styles-preset_table_styles"></a>`PRESET_TABLE_STYLES`
+
+```ts
+const PRESET_TABLE_STYLES: Readonly<Record<string, readonly PresetStyleElement[]>>
+```
+
+The ECMA-376 built-in style regions by style name.
+
+### <a id="xlcalctable-styles-registertablestyles"></a>`registerTableStyles`
+
+```ts
+function registerTableStyles(): void
+```
+
+Enables styles of tables and PivotTables in viewports and workbook style definitions in XLSX.
+
 ## xlcalc/contract
 
 Described under an entry above: [`MAX_FORMULA_DEPTH`](#xlcalc-max_formula_depth), [`MAX_FORMULA_LENGTH`](#xlcalc-max_formula_length).
@@ -1615,7 +1644,7 @@ interface BookInput {
    * The font is read and written and is included in `inputHash` when given.
    */
   font?: { name: string; size: number }
-  /** The workbook's theme palette and custom table style definitions. */
+  /** The workbook's theme palette and custom table style definitions, used by `xlcalc/table-styles`. Display metadata outside `inputHash`. */
   tableStyles?: WorkbookTableStyles
   /** The caches of the workbook's PivotTables (`SheetInput.pivotTables`), by `id`. Not part of calculation or `inputHash`. */
   pivotCaches?: PivotCache[]
@@ -5185,6 +5214,14 @@ occur in the locale's formulas).
 type PointAction = { action: 'insert'; at: number; equals?: true } | { action: 'commit' } | { action: 'none' }
 ```
 
+### `PresetStyleElement`
+
+A style region, its stripe size, and its index in the differential formats.
+
+```ts
+type PresetStyleElement = readonly [type: string, size: number, differentialFormat: number]
+```
+
 ### `PreviewCell`
 
 A cell of a preview of text written into cells ([`Session.previewCellTexts`](#session), `previewPasteText`, `previewFillCellText`): its input and its value as the call would leave them.
@@ -6369,6 +6406,8 @@ type StructureOp =
   | { op: 'addTable'; sheet: string; table: TableInput }
   /** A new name for the table, following the rules of `TableInput.name`; every structured reference to it is updated. */
   | { op: 'renameTable'; table: string; name: string }
+  /** Replaces a table's style and its options. Omit the style for Excel's default, or pass an empty object for no style. */
+  | { op: 'setTableStyle'; table: string; style?: TableStyle }
   /** Deletes the table and its cells (Excel's Delete Table): structured references to it become #REF!. */
   | { op: 'deleteTable'; table: string }
   /**
@@ -6685,7 +6724,7 @@ interface TableInput {
   columns: TableColumn[]
   /**
    * How Excel draws the table (xlsx `tableStyleInfo`); without it, Excel's default, `TableStyleMedium2` with banded rows.
-   * The engine does not draw it: it stays with the table through operations and is written to the file.
+   * The style stays with the table through operations and in XLSX. Register `xlcalc/table-styles` to see it in viewports.
    */
   style?: TableStyle
   /**
@@ -6719,7 +6758,7 @@ false by default, as the checkboxes of Excel's Table Style Options.
 
 ```ts
 interface TableStyle {
-  /** One of Excel's table styles, `TableStyleLight1` to `TableStyleLight21`, `TableStyleMedium1` to `TableStyleMedium28`, `TableStyleDark1` to `TableStyleDark11`; none without it. */
+  /** A built-in table style or a name in `BookInput.tableStyles.custom`; none without it. */
   name?: string
   firstColumn?: boolean
   lastColumn?: boolean

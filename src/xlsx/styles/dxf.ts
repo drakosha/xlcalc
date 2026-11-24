@@ -100,5 +100,13 @@ export function readDxf(e: Element, p: Palette): Dxf {
   return { style, lost, ...(pattern ? { pattern } : {}), ...(Object.keys(cell).length ? { cell } : {}) }
 }
 
+/** The cell styling of a dxf, also used by PivotTable and custom table style definitions. */
+export function dxfCellStyle(d: Dxf): CellStyle {
+  const { font, numberFormat: _, ...style } = d.style
+  const { name, size, ...cell } = d.cell ?? {}
+  const fullFont = { ...font, ...(name === undefined ? {} : { name }), ...(size === undefined ? {} : { size }) }
+  return { ...style, ...cell, ...(Object.keys(fullFont).length ? { font: fullFont } : {}) }
+}
+
 /** The dxfs of styles.xml in order. */
 export const readDxfs = (xml: string | undefined, p: Palette): Dxf[] => (xml ? within(xml, 'dxfs', 'dxf').map((e) => readDxf(e, p)) : [])

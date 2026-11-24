@@ -6,6 +6,7 @@
  */
 import type { BookInput, CellResult } from '../../contract.js'
 import { checkBook } from '../../input.js'
+import { tableStyleFiles } from '../../table-style-hook.js'
 import { checkPivotShapes } from '../../pivot/check.js'
 import { InputError, what } from '../../input-error.js'
 import { object, onlyKeys } from '../../input/basic.js'
@@ -80,6 +81,10 @@ export function writeArgs(snapshot: XlsxSnapshot, opts: unknown): WriteArgs {
   // a sheet without looks is written as given, its entries in their order; one with looks as the engine takes it
   const listed = new Map<object, string[]>()
   const book = checkBook(given.book, 'snapshot.book', true, listed)
+  if (book.tableStyles !== undefined) {
+    if (!tableStyleFiles) throw new InputError('snapshot.book.tableStyles', 'call registerTableStyles from xlcalc/table-styles before writing this workbook')
+    tableStyleFiles.check(book.tableStyles, 'snapshot.book.tableStyles')
+  }
   checkPivotShapes(book, 'snapshot.book')
   // a sheet checkBook gave anew (formulas without their `=`, looks alone taken out) is listed here
   const keys = book.sheets.map((s) => listed.get(s.cells) ?? Object.keys(s.cells))

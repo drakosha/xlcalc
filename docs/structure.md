@@ -35,7 +35,7 @@ The operations are:
 - `insertRows` and `deleteRows` (`row`, a row number, and `count`), `insertColumns` and `deleteColumns` (`column`, letters, and `count`);
 - `moveRange` (`from: { sheet, range }`, `to: { sheet, cell }`) and `copyRange` (`from` and `to` as `{ sheet, range }`; a destination that is a whole multiple of the source is tiled, as in fill down; copies have no `meta` unless `withMeta: true`; `paste`, `transpose`, `operation` and `skipBlanks` for [Paste Special](#paste-special));
 - `renameSheet` (`name`, by Excel's rules for sheet names), `deleteSheet`, `insertSheet` (`name`, `before`), `moveSheet` (`sheet`, `before`; Excel positions a sheet relative to the visible ones), `hideSheet` (`sheet`, `very` for a very hidden sheet) and `unhideSheet` (`sheet`);
-- for tables, `addTable` (`sheet`, `table`), `renameTable` (`table`, `name`), `deleteTable` and `convertTable` (`table`; [docs/tables.md](tables.md));
+- for tables, `addTable` (`sheet`, `table`), `renameTable` (`table`, `name`), `setTableStyle` (`table`, `style`), `deleteTable` and `convertTable` (`table`; [docs/tables.md](tables.md));
 - Excel's outline commands `group` and `ungroup` (`sheet`, `rows` or `columns`), `hideDetail` and `showDetail` (`sheet`, `row` or `column`) and `showLevels` (`sheet`, `rows`, `columns`; [docs/outline.md](outline.md));
 - Excel's Merge Cells and Unmerge Cells, `mergeCells` (`sheet`, `range`, `across` for Merge Across, `center` for Merge & Center) and `unmergeCells` (`sheet`, `range`): a merge keeps the top-left cell, or moves the area's first value into it when it is empty, and clears the rest ([docs/structure.md](structure.md#merging-cells));
 - Excel's fill handle, `fillRange` (`sheet`, `range`, and `to`, which contains `range` and extends beyond it; `type` is `default`, `series` or `copy`): copies of the source, with numbers, dates, times, text with a number, and names of days and months continuing as Excel continues them ([docs/structure.md](structure.md#the-fill-handle)).
@@ -84,6 +84,7 @@ type StructureOp =
   | { op: 'unmergeCells'; sheet: string; range: string }
   | { op: 'addTable'; sheet: string; table: TableInput }    // Format as Table
   | { op: 'renameTable'; table: string; name: string }
+  | { op: 'setTableStyle'; table: string; style?: TableStyle }
   | { op: 'deleteTable' | 'convertTable'; table: string }   // Delete Table, Convert to Range
   | { op: 'group' | 'ungroup'; sheet: string; rows: string }        // 5:7, or one row 5
   | { op: 'group' | 'ungroup'; sheet: string; columns: string }     // B:D, or one column C
@@ -305,7 +306,7 @@ console.log(editStructure(book, { op: 'deleteSheet', sheet: 'Keys' }).code) // â
 
 ## Tables
 
-Tables move with their cells and grow and shrink with the rows and columns inserted and deleted inside them; structured references follow them by name. Inserted rows get the formulas of calculated columns and inserted columns get a name (`Column1`); references to a deleted column or table become `#REF!`. Inserting rows or columns into two tables at once, deleting from two tables unless both are deleted entirely, and deleting a header row alone are rejected with `table`. `addTable`, `renameTable`, `deleteTable` and `convertTable` change tables themselves. [Tables](tables.md) has the rules.
+Tables move with their cells and grow and shrink with the rows and columns inserted and deleted inside them; structured references follow them by name. Inserted rows get the formulas of calculated columns and inserted columns get a name (`Column1`); references to a deleted column or table become `#REF!`. Inserting rows or columns into two tables at once, deleting from two tables unless both are deleted entirely, and deleting a header row alone are rejected with `table`. `addTable`, `renameTable`, `setTableStyle`, `deleteTable` and `convertTable` change tables themselves. [Tables](tables.md) has the rules.
 
 ## Names, references across sheets and legacy arrays
 

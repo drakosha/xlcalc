@@ -30,6 +30,7 @@ import { sheetPieces, sheetXml, type SheetContext } from './sheet.js'
 import { writeArgs } from './snapshot.js'
 import { StyleWriter } from './styles.js'
 import { tableXml } from './tables.js'
+import { tableStyleFiles } from '../../table-style-hook.js'
 import { pivotPackage } from './pivot-parts.js'
 import { sheetSlicerExt, SLICER_RELS, slicerPackage, workbookSlicerExt } from './slicers.js'
 import { HEAD, MAIN, REL, relsXml as rels, TYPE } from './xml.js'
@@ -282,9 +283,15 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
   files.push(...slicers.files)
   contentTypes.push(...slicers.contentTypes)
   const wbExt = workbookSlicerExt(slicers.caches.map((c) => ({ kind: c.kind, id: `rId${wbRels.push([SLICER_RELS[c.kind], c.target])}`, ...(c.table ? { table: c.table } : {}) })))
-  files.push({ name: 'xl/styles.xml', text: styles.xml() })
+  const tableStyles = book.tableStyles && tableStyleFiles?.write(book.tableStyles, (xml) => styles.addDxf(xml))
+  files.push({ name: 'xl/styles.xml', text: styles.xml(tableStyles?.styles) })
   contentTypes.push(['/xl/styles.xml', `${TYPE}.styles+xml`])
   wbRels.push([`${REL}/styles`, 'styles.xml'])
+  if (tableStyles?.theme) {
+    files.push({ name: 'xl/theme/theme1.xml', text: tableStyles.theme })
+    contentTypes.push(['/xl/theme/theme1.xml', 'application/vnd.openxmlformats-officedocument.theme+xml'])
+    wbRels.push([`${REL}/theme`, 'theme/theme1.xml'])
+  }
   if (strings.size) {
     const items = [...strings.keys()].map((s) => `<si>${s}</si>`)
     files.push({ name: 'xl/sharedStrings.xml', text: `${HEAD}<sst xmlns="${MAIN}" count="${refs}" uniqueCount="${strings.size}">${items.join('')}</sst>` })

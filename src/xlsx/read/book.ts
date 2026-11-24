@@ -18,6 +18,7 @@ import type { Locale } from '../../locale/types.js'
 import { Issues, type XlsxMessage } from '../issues.js'
 import { LOCALE_PROPERTY } from '../property.js'
 import { palette } from '../styles/color.js'
+import { tableStyleFiles } from '../../table-style-hook.js'
 import { readStyles, type StyleTable } from '../styles/read.js'
 import { readDxfs } from '../styles/dxf.js'
 import type { ReadXlsxOptions, XlsxLimits, XlsxRead } from '../types.js'
@@ -192,12 +193,13 @@ export async function readStyledArchive(archive: Archive, root: Rel[], wbPath: s
   )
   const colors = palette(themeXml, stylesXml)
   const table = readStyles(stylesXml, colors)
-  const customTableStyles = customTableStyleNames(stylesXml)
   // a cell or a row that a crossing line's look does not reach is read with a style with nothing set
   let plainStyle: number | undefined
   const plain = () => (plainStyle ??= table.styles.push({}) - 1)
   const isPlain = (style: number) => style === plainStyle
   const cond = { dxfs: readDxfs(stylesXml, colors), palette: colors }
+  const tableStyles = tableStyleFiles?.read(stylesXml, colors, cond.dxfs)
+  const customTableStyles = customTableStyleNames(stylesXml)
   // a non-default Normal font stays in the book, with an issue when its geometry is unmeasured
   const read = table.font && { name: table.font.name || 'Calibri', size: table.font.size || 11 }
   const font = read && (read.name !== 'Calibri' || read.size !== 11) ? read : undefined
@@ -257,7 +259,7 @@ export async function readStyledArchive(archive: Archive, root: Rel[], wbPath: s
     const pivotRules = new Map<number, PivotRuleScope>()
     for (const p of pivotParts) if (p !== undefined) pivotRuleScopes(p, pivotRules)
     const read = readSheet(
-      { name: d.name, xml, rels: sheetRels, sheets: all, legacy, tables: tableParts.filter((x): x is string => x !== undefined), parts: { comments, vml, threads, persons }, customTableStyles, columnDigit, cond, formulas, pivotRules, drawing: drawn },
+      { name: d.name, xml, rels: sheetRels, sheets: all, legacy, tables: tableParts.filter((x): x is string => x !== undefined), parts: { comments, vml, threads, persons }, customTableStyles, keepCustomTableStyles: tableStyles?.custom !== undefined, columnDigit, cond, formulas, pivotRules, drawing: drawn },
       { sheet: d.name, strings, xfs: table.xfs, palette: colors, baseFont: table.baseFont, meta, epoch: epochOf(dateSystem), issues, plain, isPlain },
     )
     for (const t of tableParts) {
@@ -294,6 +296,7 @@ export async function readStyledArchive(archive: Archive, root: Rel[], wbPath: s
   if (names.length) book.names = names
   if (table.styles.length) book.styles = table.styles
   if (font) book.font = font
+  if (tableStyles) book.tableStyles = tableStyles
   const tag = await locale(archive, root, issues)
   if (tag) book.locale = tag
   if (dateSystem === 1904) book.dateSystem = 1904

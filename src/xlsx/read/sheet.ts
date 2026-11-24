@@ -47,6 +47,7 @@ export interface SheetSource {
   tables: string[]
   /** The names of the book's custom table style definitions. */
   customTableStyles: ReadonlySet<string>
+  keepCustomTableStyles: boolean
   /** The width of a digit in the workbook's Normal font. */
   columnDigit: number
   /** The sheet's comments, its VML drawing and threaded comments, and the book's persons, when there are any. */
@@ -436,7 +437,7 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   const m = merges(tail, name, ctx.issues)
   if (m) sheet.merges = m
   const filters: FilterRead = { dxfs: src.cond.dxfs, prefixes: filterPrefixes(src.xml), lost: (part) => ctx.issues.add('autoFilter', { key: 'filterPart', part }, { sheet: name }) }
-  const tables = readTables(src.tables, name, read.cells, m, ctx.issues, src.formulas, src.customTableStyles, added, filters)
+  const tables = readTables(src.tables, name, read.cells, m, ctx.issues, src.formulas, src.customTableStyles, src.keepCustomTableStyles, added, filters)
   if (tables.length) sheet.tables = tables
   const filter = autoFilter(tail, sheet, ctx.issues, filters)
   // the sheet's own sort, not the AutoFilter's within it
