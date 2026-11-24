@@ -6,12 +6,14 @@ import { parseRange, rectText } from '../../structure/area.js'
 import { MAX_PAGE_FIELD } from './types.js'
 import type {
   PrintAxisGeometry, PrintBreak, PrintDeviceGeometry, PrintLayout, PrintLayoutIssue, PrintMargins, PrintPage, PrintPageBand, PrintRect,
-  PrintRegion, PrintSheetGeometry, PrintSpan, PrintTarget, SheetPrint,
+  PrintRegion, PrintSheetGeometry, PrintSpan, PrintTarget, PrintWorkbookLayout, PrintWorkbookOptions, PrintWorkbookPage,
+  PrintWorkbookSheet, SheetPrint,
 } from './types.js'
 
 const POINTS_PER_INCH = 72
 const DEFAULT_MARGINS: PrintMargins = { left: 0.7, right: 0.7, top: 0.75, bottom: 0.75, header: 0.3, footer: 0.3 }
 const EPSILON = 1e-8
+const MAX_PAGES = 10_000
 
 interface Axis {
   geometry: PrintAxisGeometry
@@ -234,11 +236,17 @@ function headerFooter(settings: SheetPrint, page: PrintPage, target: PrintTarget
 
 /** Page regions map sheet points to paper points, independently of the host's cell and drawing renderer. */
 export function layoutPrintPages(settings: SheetPrint, geometry: PrintSheetGeometry, target: PrintTarget): PrintLayout {
+  return layoutSheetPages(settings, geometry, target, 0, 1)
+}
+
+function layoutSheetPages(
+  settings: SheetPrint, geometry: PrintSheetGeometry, target: PrintTarget, precedingPages: number, automaticNumber: number,
+): PrintLayout {
   geometryCheck(geometry.rows, 'geometry.rows', MAX_ROWS)
   geometryCheck(geometry.columns, 'geometry.columns', MAX_COLS)
   checkNumber(target.width, 'target.width', EPSILON, Number.MAX_SAFE_INTEGER)
   checkNumber(target.height, 'target.height', EPSILON, Number.MAX_SAFE_INTEGER)
-  const maxPages = integer(target.maxPages ?? 10_000, 'target.maxPages', 1, Number.MAX_SAFE_INTEGER)
+  const maxPages = integer(target.maxPages ?? MAX_PAGES, 'target.maxPages', 1, Number.MAX_SAFE_INTEGER)
   const issues: PrintLayoutIssue[] = []
   const report = (area: number, reason: PrintLayoutIssue['reason']) => {
     if (!issues.some((issue) => issue.area === area && issue.reason === reason)) issues.push({ area, reason })
@@ -265,7 +273,7 @@ export function layoutPrintPages(settings: SheetPrint, geometry: PrintSheetGeome
   const availableHeight = fitHeight - headingHeight
   const firstNumber = settings.setup?.useFirstPageNumber
     ? integer(settings.setup.firstPageNumber ?? 1, 'print.setup.firstPageNumber', -MAX_PAGE_FIELD, MAX_PAGE_FIELD)
-    : 1
+    : automaticNumber
   const pages: PrintPage[] = []
   const paper = { width: target.width, height: target.height }
 
@@ -291,7 +299,7 @@ export function layoutPrintPages(settings: SheetPrint, geometry: PrintSheetGeome
       const y = body.y + (settings.options?.verticalCentered ? Math.max(0, body.height - height) / 2 : 0)
       const regions = pageRegions(area, row, column, x + headingWidth, y + headingHeight, scale)
       const page: PrintPage = { number: firstNumber + pages.length, area: area.index, scale, paper, body, regions }
-      headerFooter(settings, page, target, margins, pages.length)
+      headerFooter(settings, page, target, margins, precedingPages + pages.length)
       pages.push(page)
     }
     if (settings.setup?.pageOrder === 'overThenDown') {
@@ -301,4 +309,32 @@ export function layoutPrintPages(settings: SheetPrint, geometry: PrintSheetGeome
     }
   }
   return { pages, issues }
+}
+
+/** Print the supplied visible worksheets in order, with Excel's workbook-level numbering and header variants. */
+export function layoutPrintWorkbook(sheets: readonly PrintWorkbookSheet[], options: PrintWorkbookOptions = {}): PrintWorkbookLayout {
+  if (!Array.isArray(sheets)) throw new InputError('sheets', 'expected an array of worksheets')
+  const maxPages = integer(options.maxPages ?? MAX_PAGES, 'options.maxPages', 1, Number.MAX_SAFE_INTEGER)
+  const fromPage = integer(options.fromPage ?? 1, 'options.fromPage', 1, Number.MAX_SAFE_INTEGER)
+  const toPage = integer(options.toPage ?? Number.MAX_SAFE_INTEGER, 'options.toPage', fromPage, Number.MAX_SAFE_INTEGER)
+  const pages: PrintWorkbookPage[] = []
+  const issues: PrintWorkbookLayout['issues'] = []
+  let nextNumber = 1
+  for (const { settings, geometry, target, hidden } of sheets as readonly PrintWorkbookSheet[]) {
+    if (hidden) continue
+    const remaining = maxPages - pages.length
+    const sheetLimit = Math.max(1, remaining)
+    const requestedLimit = integer(target.maxPages ?? sheetLimit, 'target.maxPages', 1, Number.MAX_SAFE_INTEGER)
+    const sheetTarget = { ...target, maxPages: Math.min(requestedLimit, sheetLimit) }
+    const plan = layoutSheetPages(settings, geometry, sheetTarget, pages.length, nextNumber)
+    for (const issue of plan.issues) issues.push({ ...issue, sheet: settings.sheet })
+    if (!plan.pages.length) continue
+    if (plan.pages.length > remaining) throw new InputError('options.maxPages', 'print layout exceeds the page limit')
+    // Excel starts the first subsequent automatic sheet at the first explicit number even if the first sheet spanned pages.
+    const firstNumber = plan.pages[0].number
+    nextNumber = pages.length === 0 && settings.setup?.useFirstPageNumber ? firstNumber : firstNumber + plan.pages.length
+    for (const page of plan.pages) pages.push({ ...page, sheet: settings.sheet, position: pages.length + 1 })
+  }
+  const totalPages = pages.length
+  return { pages: fromPage === 1 && toPage >= totalPages ? pages : pages.slice(fromPage - 1, toPage), totalPages, issues }
 }

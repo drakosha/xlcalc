@@ -104,7 +104,7 @@ function worksheetParts(given: Record<string, unknown>, path: string, sheet: str
   }
 }
 
-export function printParts(book: BookInput, print: unknown): ReadonlyMap<string, WorksheetPrintParts> {
+export function printParts(book: BookInput, print: unknown, place?: ReadonlyMap<string, number>): ReadonlyMap<string, WorksheetPrintParts> {
   if (!Array.isArray(print)) throw new InputError('print', 'expected settings by sheet, as an array')
   const sheets = new Map(book.sheets.map((sheet, index) => [sheetKey(sheet.name), { name: sheet.name, index }]))
   const parts = new Map<string, WorksheetPrintParts>()
@@ -115,7 +115,7 @@ export function printParts(book: BookInput, print: unknown): ReadonlyMap<string,
     const sheet = typeof given.sheet === 'string' ? sheets.get(sheetKey(given.sheet)) : undefined
     if (!sheet) throw new InputError(`${path}.sheet`, `unknown worksheet ${JSON.stringify(given.sheet)}`)
     if (parts.has(sheet.name)) throw new InputError(`${path}.sheet`, `repeated worksheet ${JSON.stringify(sheet.name)}`)
-    parts.set(sheet.name, worksheetParts(given, path, sheet.name, sheet.index))
+    parts.set(sheet.name, worksheetParts(given, path, sheet.name, place?.get(sheetKey(sheet.name)) ?? sheet.index))
   })
   return parts
 }

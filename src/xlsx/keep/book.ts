@@ -52,7 +52,7 @@ import { attrsOf, childrenOf, DOC_REL, Rels, relType, rootOf, setAttrs, TYPE, ty
 const VML = 'application/vnd.openxmlformats-officedocument.vmlDrawing'
 const STRICT = 'http://purl.oclc.org/ooxml/spreadsheetml/main'
 /** The children of a workbook the schema puts before its names, and before its calculation settings. */
-const BEFORE_NAMES = ['fileVersion', 'fileSharing', 'workbookPr', 'workbookProtection', 'bookViews', 'sheets', 'functionGroups', 'externalReferences']
+export const BEFORE_NAMES = ['fileVersion', 'fileSharing', 'workbookPr', 'workbookProtection', 'bookViews', 'sheets', 'functionGroups', 'externalReferences']
 const BEFORE_CALC = [...BEFORE_NAMES, 'definedNames']
 
 /** The parts written: new text by part name in lower case, those removed, those added in order. */
@@ -162,9 +162,14 @@ async function setup(src: Source, edits: Edit[], styles: KeptStyles): Promise<Se
  * file's as it was, the parts the model does not have among it. Refuses (`KeptRefusal`, its message in the language of
  * `opts.locale`) a change that would leave references the model does not hold pointing at other cells.
  */
-export async function writeKept(original: Uint8Array | ArrayBuffer, snapshot: XlsxSnapshot, opts?: WriteKeptOptions): Promise<XlsxWritten> {
+export type KeptPartView = Pick<Kept, 'book' | 'src' | 'parts' | 'sheetParts' | 'id'>
+export type EditKeptParts = (view: KeptPartView) => boolean
+
+export async function writeKept(
+  original: Uint8Array | ArrayBuffer, snapshot: XlsxSnapshot, opts?: WriteKeptOptions, editParts?: EditKeptParts,
+): Promise<XlsxWritten> {
   try {
-    return await writeOver(original, snapshot, opts)
+    return await writeOver(original, snapshot, opts, editParts)
   } catch (e) {
     // a refusal comes once the options are checked: in the language of their locale
     throw e instanceof KeptRefusal ? refusalIn(e, opts?.locale) : e
@@ -172,7 +177,9 @@ export async function writeKept(original: Uint8Array | ArrayBuffer, snapshot: Xl
 }
 
 /** `writeKept`'s writing, its refusals in English. */
-async function writeOver(original: Uint8Array | ArrayBuffer, snapshot: XlsxSnapshot, opts?: WriteKeptOptions): Promise<XlsxWritten> {
+async function writeOver(
+  original: Uint8Array | ArrayBuffer, snapshot: XlsxSnapshot, opts: WriteKeptOptions | undefined, editParts?: EditKeptParts,
+): Promise<XlsxWritten> {
   const bytes = fileBytes(original)
   const o = opts === undefined ? {} : object(opts, 'opts', "options such as { values: 'preserve' }")
   onlyOptions(o, 'opts', ['values', 'locale', 'limits', 'writeValues', 'prefixes'])
@@ -198,6 +205,7 @@ async function writeOver(original: Uint8Array | ArrayBuffer, snapshot: XlsxSnaps
   const strict = src.wb.slice(root.start, root.open).includes(STRICT)
   try {
     k.write()
+    if (editParts?.(k)) k.changed = true
   } catch (e) {
     // a Strict file's sheets are in other namespaces than the model's elements
     throw strict ? new KeptRefusal({ key: 'keptStrict' }, 'file') : e
@@ -264,7 +272,7 @@ class Kept {
   private tableId: number
   /** The file's parts removed, by name in lower case. */
   private readonly gone = new Set<string>()
-  private readonly sheetParts: string[] = []
+  readonly sheetParts: string[] = []
   private readonly tableIds = new Map<string, { id: number; columns: Map<string, number> }>()
   private readonly slicers: KeptSlicers
   private readonly pivots: KeptPivots

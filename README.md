@@ -69,6 +69,7 @@ A bundle includes only the entry points it imports. Sizes are for the browser, b
 | `xlcalc/functions` | the groups: `engineering`, `finance`, `lambda`, `statistics`, `xml`, `allFunctions` | 102 KB (41) |
 | `xlcalc/xlsx` | `readXlsx`, `writeXlsx`, `fromLegacy` | 345 KB (129) |
 | `xlcalc/xlsx/print` | read and write print settings and lay out worksheet pages ([Worksheet printing](docs/xlsx-print.md)) | |
+| `xlcalc/xlsx/print/keep` | write print settings over the original file with its drawings and other parts ([Worksheet printing](docs/xlsx-print.md)) | |
 | `xlcalc/xlsx/keep` | `openKept`, `writeKept`, `inspectKept`: a workbook written over the file it was read from, keeping its charts, pictures and everything else the workbook does not hold ([Writing over the original file](docs/xlsx-keep.md)) | 438 KB (163) |
 | `xlcalc/xlsb` | `readXlsb`: a binary Excel workbook, its saved values and issues ([Reading xlsb](docs/xlsx.md#reading-xlsb)) | 318 KB (117) |
 | `xlcalc/csv` | `readCsv`, `writeCsv`: a CSV file as Excel opens it, a sheet as Excel saves it ([Reading and writing CSV](docs/csv.md)) | 194 KB (72) |

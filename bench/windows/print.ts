@@ -9,7 +9,7 @@ import { mkdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import type { BookInput, CellInput } from '../../src/contract.js'
 import { indexToCol } from '../../src/model.js'
-import { layoutPrintPages, printSheetGeometry, writeXlsxWithPrint, type PrintBreak, type PrintHeaderFooter, type PrintSpan, type SheetPrint } from '../../src/xlsx-print.js'
+import { layoutPrintPages, layoutPrintWorkbook, printSheetGeometry, writeXlsxWithPrint, type PrintBreak, type PrintHeaderFooter, type PrintSpan, type SheetPrint } from '../../src/xlsx-print.js'
 import { metaOf, runJob, withWindowsExcel } from './remote.js'
 
 interface Case {
@@ -32,6 +32,8 @@ interface Case {
   fitHeight?: number
   hiddenRows?: number[]
   markAllColumns?: boolean
+  noteMode?: 'sample' | 'many' | 'long' | 'displayed'
+  workbook?: { first?: number; second?: number; firstRows?: number; secondRows?: number; hidden?: boolean }
   font?: BookInput['font']
 }
 
@@ -97,6 +99,20 @@ const cases: Case[] = [
   { name: 'footer-terminal-long', height: 15, zoom: 100, headerFooter: { oddFooter: '&RTERMINAL[&P+12' } },
   { name: 'footer-terminal-minus', height: 15, zoom: 100, headerFooter: { oddFooter: '&RTERMINAL[&P-12' } },
   { name: 'footer-negative-page', height: 15, zoom: 100, firstNumber: -2, headerFooter: { oddFooter: '&RPage &P of &N' } },
+  { name: 'workbook-auto', height: 15, zoom: 100, workbook: {} },
+  { name: 'workbook-first', height: 15, zoom: 100, workbook: { first: 4 } },
+  { name: 'workbook-second', height: 15, zoom: 100, workbook: { second: 9 } },
+  { name: 'workbook-both', height: 15, zoom: 100, workbook: { first: -2, second: 9 } },
+  { name: 'workbook-first-two', height: 15, zoom: 100, workbook: { first: 4, firstRows: 40 } },
+  { name: 'workbook-second-one', height: 15, zoom: 100, workbook: { second: 9, secondRows: 10 } },
+  { name: 'workbook-first-negative', height: 15, zoom: 100, workbook: { first: -2 } },
+  { name: 'workbook-first-one', height: 15, zoom: 100, workbook: { first: 1 } },
+  { name: 'workbook-hidden', height: 15, zoom: 100, workbook: { hidden: true } },
+  { name: 'notes-sample', height: 15, zoom: 100, areas: ['A1:C20'], repeats: 0, noteMode: 'sample' },
+  { name: 'notes-scale50', height: 15, zoom: 50, areas: ['A1:C20'], repeats: 0, noteMode: 'sample' },
+  { name: 'notes-many', height: 15, zoom: 100, areas: ['A1:A32'], repeats: 0, noteMode: 'many' },
+  { name: 'notes-long', height: 15, zoom: 100, areas: ['A1:C20'], repeats: 0, noteMode: 'long' },
+  { name: 'notes-displayed', height: 15, zoom: 100, areas: ['A1:C20'], repeats: 0, noteMode: 'displayed' },
   { name: 'no-repeat', height: 15, zoom: 100, repeats: 0 },
   { name: 'height-18-zoom-90', height: 18, zoom: 90 },
   { name: 'arial', height: 15, zoom: 100, font: { name: 'Arial', size: 10 } },
@@ -105,22 +121,45 @@ const cases: Case[] = [
 
 const LAST_ROW = 125
 
+function noteCells(mode: NonNullable<Case['noteMode']>): Record<string, CellInput> {
+  if (mode === 'many') {
+    return Object.fromEntries(Array.from({ length: 32 }, (_, i) => [
+      'A' + (i + 1), { value: 'V' + (i + 1), note: { text: 'NOTE-' + (i + 1), author: 'Author' } },
+    ]))
+  }
+  if (mode === 'long') {
+    return { A1: { note: { text: 'START ' + 'Long annotation text. '.repeat(400) + ' FINISH', author: 'Author' } } }
+  }
+  return {
+    A1: { value: 'REPORT-BODY' },
+    A2: { value: 'Note1', note: { text: 'First body', author: 'First author' } },
+    B2: { value: 'Note2', note: { text: 'Second first line\nSecond next line', author: 'Second author', shown: true } },
+    A4: { value: 'Hidden', note: { text: 'Hidden row annotation' } },
+    E3: { note: { text: 'Outside on column E' } },
+    A22: { note: { text: 'Outside below area' } },
+    C17: { note: { text: 'Explicitly blank author' } },
+  }
+}
+
 /** Scale 100 labels both axes, in cells wide enough to print with their neighbors filled. */
 function make(c: Case) {
-  const columns = c.columnWidth ? 4 : 1
+  const columns = c.noteMode ? 5 : c.columnWidth ? 4 : 1
   const lastColumn = indexToCol(columns - 1)
   const range = `A1:${lastColumn}${LAST_ROW}`
-  const cells: Record<string, CellInput> = {}
-  for (let row = 1; row <= LAST_ROW; row++) cells[`A${row}`] = { value: 'R' + String(row).padStart(3, '0') }
-  for (let column = 1; column < columns; column++) {
-    const name = indexToCol(column)
-    cells[`${name}1`] = { value: 'C' + String(column + 1).padStart(2, '0') }
-    if (c.markAllColumns) for (let row = 2; row <= LAST_ROW; row++) {
-      cells[`${name}${row}`] = { value: 'R' + String(row).padStart(3, '0') + '-' + name }
+  const cells: Record<string, CellInput> = c.noteMode ? noteCells(c.noteMode) : {}
+  if (!c.noteMode) {
+    for (let row = 1; row <= LAST_ROW; row++) cells[`A${row}`] = { value: 'R' + String(row).padStart(3, '0') }
+    for (let column = 1; column < columns; column++) {
+      const name = indexToCol(column)
+      cells[`${name}1`] = { value: 'C' + String(column + 1).padStart(2, '0') }
+      if (c.markAllColumns) for (let row = 2; row <= LAST_ROW; row++) {
+        cells[`${name}${row}`] = { value: 'R' + String(row).padStart(3, '0') + '-' + name }
+      }
     }
   }
-  const rows = c.hiddenRows
-    ? Object.fromEntries(Array.from({ length: LAST_ROW }, (_, i) => [String(i + 1), { height: c.height, ...(c.hiddenRows?.includes(i + 1) ? { hidden: true as const } : {}) }]))
+  const hiddenRows = c.noteMode === 'sample' || c.noteMode === 'displayed' ? [4] : c.hiddenRows
+  const rows = hiddenRows
+    ? Object.fromEntries(Array.from({ length: LAST_ROW }, (_, i) => [String(i + 1), { height: c.height, ...(hiddenRows.includes(i + 1) ? { hidden: true as const } : {}) }]))
     : { [`1:${LAST_ROW}`]: { height: c.height } }
   const sheet = {
     name: 'Report', cells, rows,
@@ -136,13 +175,34 @@ function make(c: Case) {
     columnBreaks: c.columnBreaks,
     setup: {
       orientation: 'landscape', paperSize: c.paper ?? 9, pageOrder: c.pageOrder,
+      ...(c.noteMode ? { cellComments: c.noteMode === 'displayed' ? 'asDisplayed' as const : 'atEnd' as const } : {}),
       ...(c.firstNumber === undefined ? {} : { useFirstPageNumber: true, firstPageNumber: c.firstNumber }),
       ...(c.zoom === 'fit' ? { fitToPage: true, fitToWidth: 1, fitToHeight: c.fitHeight ?? 0 } : { scale: c.zoom }),
     },
     margins: { left: 0.5, right: 0.5, top: c.top ?? 0.5, bottom: c.bottom ?? 0.5, header: 0.2, footer: 0.2 },
     headerFooter: c.headerFooter ?? { oddFooter: '&RPage &P of &N' },
   }
-  return { book, settings, range }
+  const print = [settings]
+  if (c.workbook) {
+    const setup = (firstNumber: number | undefined) => ({
+      ...settings.setup,
+      ...(firstNumber === undefined ? {} : { useFirstPageNumber: true, firstPageNumber: firstNumber }),
+    })
+    settings.areas = [`A1:A${c.workbook.firstRows ?? 15}`]
+    settings.setup = setup(c.workbook.first)
+    settings.headerFooter = { oddFooter: '&RREPORT &A &P of &N' }
+    book.sheets.push({ ...sheet, name: 'Other', ...(c.workbook.hidden ? { hidden: true as const } : {}) })
+    print.push({
+      ...settings, sheet: 'Other', areas: [`A1:A${c.workbook.secondRows ?? 39}`], setup: setup(c.workbook.second),
+      headerFooter: { differentOddEven: true, oddFooter: '&RODD &A &P of &N', evenFooter: '&REVEN &A &P of &N' },
+    })
+    book.sheets.push({ ...sheet, name: 'Last' })
+    print.push({
+      ...settings, sheet: 'Last', areas: ['A1:A42'], setup: { orientation: 'landscape', paperSize: 9, scale: 100 },
+      headerFooter: { differentFirst: true, firstFooter: '&RFIRST &A &P of &N', oddFooter: '&RREST &A &P of &N' },
+    })
+  }
+  return { book, settings, range, print }
 }
 
 interface PdfAnswer {
@@ -157,7 +217,7 @@ interface PdfAnswer {
   pdf: string
 }
 
-function printFacts(file: string) {
+function printFacts(file: string, keepWords = false) {
   const xml = execFileSync('pdftotext', ['-bbox', file, '-'], { encoding: 'utf8', maxBuffer: 64 << 20 })
   return [...xml.matchAll(/<page width="([^"]+)" height="([^"]+)">([\s\S]*?)<\/page>/g)].map(([, width, height, page]) => {
     const words = [...page.matchAll(/<word xMin="([^"]+)" yMin="([^"]+)" xMax="[^"]+" yMax="[^"]+">([^<]+)<\/word>/g)]
@@ -179,11 +239,14 @@ function printFacts(file: string) {
         return [column, { first: labels.slice(0, 3), last: labels.at(-1), count: labels.length }]
       })) } : {}),
       band,
+      ...(keepWords ? { words: words.map(([, x, y, text]) => ({ x: Number(x), y: Number(y), text })) } : {}),
     }
   })
 }
 
-const [locale, directory, ...names] = process.argv.slice(2)
+const [locale, directory, ...options] = process.argv.slice(2)
+const localOnly = options.includes('--make')
+const names = options.filter((name) => name !== '--make')
 if (!locale || !directory) throw new Error('usage: print.ts <Excel locale> <output directory> [case names or prefixes]')
 const selected = names.length ? cases.filter((c) => names.some((name) => c.name === name || c.name.startsWith(name))) : cases
 if (!selected.length) throw new Error('no matching print cases')
@@ -191,25 +254,31 @@ mkdirSync(directory, { recursive: true })
 const entries = await Promise.all(selected.map(async (c) => {
   const data = make(c)
   const file = join(directory, c.name + '.xlsx')
-  const written = await writeXlsxWithPrint({ book: data.book }, [data.settings])
+  const written = await writeXlsxWithPrint({ book: data.book }, data.print)
   if (written.issues.length) throw new Error(`${c.name}: ${JSON.stringify(written.issues)}`)
   writeFileSync(file, written.data)
-  return { c, ...data, job: { file, steps: [{ do: 'printPdf', sheet: data.settings.sheet, range: data.range }] } }
+  return { c, ...data, job: { file, steps: [{ do: 'printPdf', sheet: data.settings.sheet, range: data.range, workbook: c.workbook !== undefined }] } }
 }))
 
-await withWindowsExcel(locale, async (env) => {
+if (!localOnly) await withWindowsExcel(locale, async (env) => {
   const answers = await runJob('print-pages', entries.map((entry) => entry.job), 120_000 + 15_000 * entries.length)
-  const results = entries.map(({ c, book, settings, range }, i) => {
+  const results = entries.map(({ c, book, settings, range, print }, i) => {
     const answer = answers[i]
     if (!answer || !('answers' in answer)) throw new Error(`${c.name}: ${answer?.rejected ?? 'no Excel answer'}`)
     const { pdf, ...setup } = answer.answers[0] as PdfAnswer
     const file = join(directory, c.name + '.pdf')
     writeFileSync(file, Buffer.from(pdf, 'base64'))
-    const pages = printFacts(file)
+    const pages = printFacts(file, c.noteMode !== undefined)
     if (!pages.length) throw new Error(`${c.name}: no PDF pages`)
-    const geometry = printSheetGeometry(book.sheets[0], { font: book.font, usedRange: range })
-    const plan = layoutPrintPages(settings, geometry, pages[0])
-    const nominal = plan.pages.map((page) => ({ scale: page.scale, ranges: page.regions.map((region) => region.range) }))
+    const plan = c.workbook
+      ? layoutPrintWorkbook(book.sheets.map((sheet, i) => ({
+        settings: print[i],
+        geometry: printSheetGeometry(sheet, { font: book.font, usedRange: range }),
+        target: pages[0],
+        hidden: sheet.hidden,
+      })))
+      : layoutPrintPages(settings, printSheetGeometry(book.sheets[0], { font: book.font, usedRange: range }), pages[0])
+    const nominal = plan.pages.map((page) => ({ number: page.number, scale: page.scale, ranges: page.regions.map((region) => region.range) }))
     console.log(c.name, 'Excel:', pages.map((page) => page.last?.row ?? '-').join(','), 'xlcalc:', nominal.map((page) => page.ranges.at(-1)).join(','))
     return { case: c, setup, pages, nominal }
   })

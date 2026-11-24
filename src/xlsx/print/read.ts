@@ -5,6 +5,7 @@ import { sheetKey } from '../../syntax/print.js'
 import { areasOf } from '../keep/refs.js'
 import { attrsOf, childrenOf, rootOf, type Placed } from '../keep/xml.js'
 import type { WorksheetPart } from '../read/book.js'
+import type { XlsxRead } from '../types.js'
 import { attr, attributes, flag, within } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
 import {
@@ -126,6 +127,12 @@ function worksheetDefaults(xml: string, nodes: Placed[], sheet: string, invalid:
   return defaults
 }
 
+export interface XlsxPrintRead extends XlsxRead {
+  print: SheetPrint[]
+  printIssues: PrintReadIssue[]
+  sheetDefaults: PrintSheetDefaults[]
+}
+
 export function printReader() {
   const print: SheetPrint[] = []
   const sheetDefaults: PrintSheetDefaults[] = []
@@ -196,5 +203,6 @@ export function printReader() {
     if (Object.keys(settings).length > 1) print.push(settings)
   }
 
-  return { print, sheetDefaults, issues, readWorksheet }
+  const result = (read: XlsxRead): XlsxPrintRead => ({ ...read, print, printIssues: issues, sheetDefaults })
+  return { readWorksheet, result }
 }

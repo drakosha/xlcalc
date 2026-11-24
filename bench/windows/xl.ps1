@@ -666,7 +666,7 @@ function Step($xl, $wb, $s) {
       $ws = $wb.Worksheets.Item($s.sheet)
       $setup = $ws.PageSetup
       $file = Join-Path $out "$i.print.pdf"
-      $ws.ExportAsFixedFormat(0, $file)
+      if ($s.workbook) { $wb.ExportAsFixedFormat(0, $file) } else { $ws.ExportAsFixedFormat(0, $file) }
       try {
         $quality = try { List (@($setup.PrintQuality) | ForEach-Object { Cell ([double]$_) }) } catch { 'null' }
         $zoom = $setup.Zoom

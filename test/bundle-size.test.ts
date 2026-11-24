@@ -22,11 +22,14 @@ const locales = (used: string[]) => used.filter((f) => /\/locales\//.test(f)).ma
 
 describe('bundle size', () => {
   it('print codecs and pagination belong to the opt-in xlsx/print entry', async () => {
-    const isPrint = (file: string) => /\/xlsx(?:\/print\/|-print\.(?:ts|js)$)/.test(file)
+    const isPrint = (file: string) => /\/xlsx(?:\/print\/|-print(?:-keep)?\.(?:ts|js)$)/.test(file)
     const { used } = await minified('export * from ' + lib('xlsx-print.js'))
     expect(used.filter(isPrint)).toEqual(expect.arrayContaining([
       expect.stringMatching(/\/print\/layout\./), expect.stringMatching(/\/print\/read\./), expect.stringMatching(/\/print\/write\./),
     ]))
+    expect(used.filter((file) => /\/xlsx\/keep\/book\./.test(file))).toEqual([])
+    const kept = await minified('export * from ' + lib('xlsx-print-keep.js'))
+    expect(kept.used.filter(isPrint)).toEqual(expect.arrayContaining([expect.stringMatching(/\/print\/keep\./)]))
     for (const entry of ['index.js', 'core.js', 'xlsx.js', 'xlsx-keep.js', 'xlsb.js']) {
       const { used: inputs } = await minified('export * from ' + lib(entry))
       expect(inputs.filter(isPrint), entry).toEqual([])

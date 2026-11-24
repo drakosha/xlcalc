@@ -177,7 +177,7 @@ export interface WorksheetPart {
   workbook: string
 }
 
-type ReadWorksheetPart = (part: WorksheetPart) => void
+export type ReadWorksheetPart = (part: WorksheetPart) => void
 
 /** `readXlsx`, with the file's styles part and its cell formats as read (`xlsx/keep` adds to them). */
 export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOptions, visitWorksheet?: ReadWorksheetPart): Promise<{ read: XlsxRead; stylesXml: string | undefined; table: StyleTable }> {

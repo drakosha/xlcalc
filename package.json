@@ -82,6 +82,10 @@
       "types": "./dist/xlsx-print.d.ts",
       "default": "./dist/xlsx-print.js"
     },
+    "./xlsx/print/keep": {
+      "types": "./dist/xlsx-print-keep.d.ts",
+      "default": "./dist/xlsx-print-keep.js"
+    },
     "./xlsx/keep": {
       "types": "./dist/xlsx-keep.d.ts",
       "default": "./dist/xlsx-keep.js"

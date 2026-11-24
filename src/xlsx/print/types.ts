@@ -183,3 +183,31 @@ export interface PrintLayout {
   pages: PrintPage[]
   issues: PrintLayoutIssue[]
 }
+
+export interface PrintWorkbookSheet {
+  settings: SheetPrint
+  geometry: PrintSheetGeometry
+  target: PrintTarget
+  hidden?: boolean | 'very'
+}
+
+export interface PrintWorkbookOptions {
+  /** Maximum number of pages in the job before selecting output pages (10,000 by default). */
+  maxPages?: number
+  /** Inclusive interval of physical pages to output, from one. */
+  fromPage?: number
+  toPage?: number
+}
+
+export interface PrintWorkbookPage extends PrintPage {
+  sheet: string
+  /** Physical page in the job, from one. The page number field may be restarted by the sheet. */
+  position: number
+}
+
+export interface PrintWorkbookLayout {
+  pages: PrintWorkbookPage[]
+  /** Full job page count, including pages outside the selected interval. */
+  totalPages: number
+  issues: (PrintLayoutIssue & { sheet: string })[]
+}
