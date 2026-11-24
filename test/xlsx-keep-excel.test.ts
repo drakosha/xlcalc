@@ -241,7 +241,7 @@ const FORMATS_KNOWN: Record<string, string[]> = {
   'formats-insert-below-row': ['G25', 'G26', 'H23', 'row 26'],
   'formats-insert-after-column': ['I23', 'column 9'],
   'formats-insert-in-colour': ['G26', 'H24'],
-  'formats-insert-in-blocks': ['C17', 'C18', 'H25', 'I23'],
+  'formats-insert-in-blocks': ['H25', 'I23'],
   'formats-delete-across': ['G23', 'H21'],
   'formats-insert-below-block': ['B14', 'C14', 'G26', 'H24'],
   'formats-delete-colour-column': ['H23'],
