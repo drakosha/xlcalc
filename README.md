@@ -57,36 +57,36 @@ How each rule was checked: [Development](docs/development.md#how-the-rules-were-
 
 ESM with TypeScript types, no dependencies. From CommonJS use `await import('xlcalc')`, or `require()` on Node 20.19+ and 22.12+.
 
-A bundle includes only the entry points it imports. Sizes are for the browser, bundled with esbuild and minified (22.11.2026, 0.89.3 for the main entry points and xlsx; the worker's as of 0.71.0), gzipped in brackets; `test/bundle-size.test.ts` keeps `compute` under 406 KB.
+A bundle includes only the entry points it imports. Sizes are for the browser, bundled with esbuild and minified (24.11.2026, 0.90.0 for the main entry points and xlsx; the worker's as of 0.71.0), gzipped in brackets; `test/bundle-size.test.ts` keeps `compute` under 416 KB.
 
 | import | for | size |
 |---|---|---:|
-| `compute` from `xlcalc` | calculating a workbook | 406 KB (156) |
-| `createSession` from `xlcalc` | a session: edits, structure operations, undo, AutoFit, conditional formats, data validation | 718 KB (271) |
+| `compute` from `xlcalc` | calculating a workbook | 412 KB (158) |
+| `createSession` from `xlcalc` | a session: edits, structure operations, undo, AutoFit, conditional formats, data validation | 723 KB (273) |
 | `liveBook` from `xlcalc` | a session's cells as objects: `cells.A1.value = 100`, listeners ([Live objects](docs/live-objects.md)) | |
-| all of `xlcalc` | also `createInlineCalc`, `registerLocale`, `registerRegex`, `functionSignature` and `FUNCTION_CATEGORIES` for tooltips | 805 KB (301) |
-| `xlcalc/core` | the same API without five groups of rarely used functions, which `registerFunctions` loads from `xlcalc/functions` ([Groups of functions](docs/function-groups.md)) | `compute` 335 KB (127), all 730 KB (270) |
-| `xlcalc/functions` | the groups: `engineering`, `finance`, `lambda`, `statistics`, `xml`, `allFunctions` | 102 KB (41) |
-| `xlcalc/xlsx` | `readXlsx`, `writeXlsx`, `fromLegacy` | 345 KB (129) |
-| `xlcalc/xlsx/print` | read and write print settings and lay out worksheet pages and drawings ([Worksheet printing](docs/xlsx-print.md)) | |
-| `xlcalc/xlsx/charts` | read chart data and resolve series against a session ([Chart data](docs/xlsx-print.md#chart-data)) | |
-| `xlcalc/xlsx/print/keep` | write print settings over the original file with its drawings and other parts ([Worksheet printing](docs/xlsx-print.md)) | |
-| `xlcalc/xlsx/keep` | `openKept`, `writeKept`, `inspectKept`: a workbook written over the file it was read from, keeping its charts, pictures and everything else the workbook does not hold ([Writing over the original file](docs/xlsx-keep.md)) | 438 KB (163) |
-| `xlcalc/xlsb` | `readXlsb`: a binary Excel workbook, its saved values and issues ([Reading xlsb](docs/xlsx.md#reading-xlsb)) | 318 KB (117) |
-| `xlcalc/csv` | `readCsv`, `writeCsv`: a CSV file as Excel opens it, a sheet as Excel saves it ([Reading and writing CSV](docs/csv.md)) | 194 KB (72) |
+| all of `xlcalc` | also `createInlineCalc`, `registerLocale`, `registerRegex`, `functionSignature` and `FUNCTION_CATEGORIES` for tooltips | 813 KB (303) |
+| `xlcalc/core` | the same API without five groups of rarely used functions, which `registerFunctions` loads from `xlcalc/functions` ([Groups of functions](docs/function-groups.md)) | `compute` 341 KB (129), all 738 KB (273) |
+| `xlcalc/functions` | the groups: `engineering`, `finance`, `lambda`, `statistics`, `xml`, `allFunctions` | 101 KB (40) |
+| `xlcalc/xlsx` | `readXlsx`, `writeXlsx`, `fromLegacy` | 349 KB (130) |
+| `xlcalc/xlsx/print` | read and write print settings and lay out worksheet pages and drawings ([Worksheet printing](docs/xlsx-print.md)) | 390 KB (146) |
+| `xlcalc/xlsx/charts` | read chart data and resolve series against a session ([Chart data](docs/xlsx-print.md#chart-data)) | 47 KB (18) |
+| `xlcalc/xlsx/print/keep` | write print settings over the original file with its drawings and other parts ([Worksheet printing](docs/xlsx-print.md)) | 454 KB (169) |
+| `xlcalc/xlsx/keep` | `openKept`, `writeKept`, `inspectKept`: a workbook written over the file it was read from, keeping its charts, pictures and everything else the workbook does not hold ([Writing over the original file](docs/xlsx-keep.md)) | 443 KB (164) |
+| `xlcalc/xlsb` | `readXlsb`: a binary Excel workbook, its saved values and issues ([Reading xlsb](docs/xlsx.md#reading-xlsb)) | 325 KB (119) |
+| `xlcalc/csv` | `readCsv`, `writeCsv`: a CSV file as Excel opens it, a sheet as Excel saves it ([Reading and writing CSV](docs/csv.md)) | 199 KB (74) |
 | `xlcalc/worker` | `createCalcPool`: worker threads | 35 KB (13), its worker 960 KB (330), 630 KB (238) loaded first where a bundler splits off the locales, regex levels, groups of functions, the PivotTable engine and the table styles it loads |
-| `xlcalc/a1` | A1 addresses, a sheet's outline commands | 16 KB (7) |
-| `xlcalc/text` | references in typed formula text, AutoComplete, number format categories, Increase and Decrease Decimal, Find over a host's text, sort order, what a PivotTable's cells are, a value field's name and the field list's place for a field, the Accounting Number Format menu | 72 KB (28) |
-| `xlcalc/entry` | typed entries and the text a cell opens with in edit mode ([Cell entry](docs/entry.md)) | 112 KB (42) |
+| `xlcalc/a1` | A1 addresses, a sheet's outline commands | 16 KB (6) |
+| `xlcalc/text` | references in typed formula text, AutoComplete, number format categories, Increase and Decrease Decimal, Find over a host's text, sort order, what a PivotTable's cells are, a value field's name and the field list's place for a field, the Accounting Number Format menu | 72 KB (27) |
+| `xlcalc/entry` | typed entries and the text a cell opens with in edit mode ([Cell entry](docs/entry.md)) | 112 KB (41) |
 | `xlcalc/function-text` | what a function does, in a line; Russian in `xlcalc/function-text/ru-RU` | |
-| `xlcalc/locales/ru-RU` | ru-RU, loaded by importing it; en-US is built in | 153 KB (24) |
+| `xlcalc/locales/ru-RU` | ru-RU, loaded by importing it; en-US is built in | 153 KB (23) |
 | `xlcalc/locales` | `loadLocale(tag)`, a package's locale by its tag | 8 KB (3), and the locale's module |
-| `xlcalc/pivot` | `pivotEngine`, which `registerPivot` loads: PivotTables refreshed and laid out ([PivotTables](docs/pivot-tables.md)) | 74 KB (27) over the root |
+| `xlcalc/pivot` | `pivotEngine`, which `registerPivot` loads: PivotTables refreshed and laid out ([PivotTables](docs/pivot-tables.md)) | 73 KB (27) over the root |
 | `xlcalc/table-styles` | `registerTableStyles`: styles of tables and PivotTables in viewports, workbook themes and custom styles in XLSX ([Tables](docs/tables.md)) | |
-| `xlcalc/regex` | `pcreSyntax` and `pcreEngine`, Excel's syntax and match limit for match mode 3 ([Regular expressions](docs/regex.md)) | 36 KB (14) |
+| `xlcalc/regex` | `pcreSyntax` and `pcreEngine`, Excel's syntax and match limit for match mode 3 ([Regular expressions](docs/regex.md)) | 35 KB (13) |
 | `xlcalc/contract` | types, and the formula limits `MAX_FORMULA_LENGTH` and `MAX_FORMULA_DEPTH` | |
 
-`xlcalc/xlsx`, `xlcalc/xlsx/print`, `xlcalc/xlsx/keep`, `xlcalc/xlsb`, `xlcalc/csv`, `xlcalc/a1`, `xlcalc/text`, `xlcalc/entry`, `xlcalc/function-text`, `xlcalc/locales` (`loadLocale`, a package locale by its tag) and `xlcalc/contract` do not load the engine.
+`xlcalc/xlsx`, `xlcalc/xlsx/print`, `xlcalc/xlsx/print/keep`, `xlcalc/xlsx/charts`, `xlcalc/xlsx/keep`, `xlcalc/xlsb`, `xlcalc/csv`, `xlcalc/a1`, `xlcalc/text`, `xlcalc/entry`, `xlcalc/function-text`, `xlcalc/locales` (`loadLocale`, a package locale by its tag) and `xlcalc/contract` do not load the engine.
 
 ## Recipes
 
