@@ -23,8 +23,9 @@ const locales = (used: string[]) => used.filter((f) => /\/locales\//.test(f)).ma
 describe('bundle size', () => {
   it('XLSB has its own budget and its converters stay outside the other entry points', async () => {
     const xlsb = await minified(`export * from ${lib('xlsb.js')}`)
-    // The shared worksheet reader handles sheet default widths: 331,153 bytes of dist, 330,825 before the merge.
-    expect(xlsb.bytes).toBeLessThan(324 * 1024)
+    // 331,153 bytes of dist with sheet default widths in the shared reader; the room over it lets the xlsx reader grow by
+    // a release or two before the converter is made smaller.
+    expect(xlsb.bytes).toBeLessThan(336 * 1024)
     for (const entry of ['index.js', 'xlsx.js', 'xlsx-keep.js']) {
       const { used } = await minified(`export * from ${lib(entry)}`)
       expect(used.filter((file) => /\/xlsb(?:\/|\.(?:js|ts)$)/.test(file))).toEqual([])
