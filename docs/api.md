@@ -2182,6 +2182,9 @@ interface CellResult extends Partial<CellDisplay> {
 
 ### `CellStyle`
 
+A cell style in the workbook's style table ([`BookInput.styles`](#bookinput)), like an xlsx cell format without its number format
+(which is the cell's `numberFormat`). Styles play no part in calculation or in the values hash.
+
 ```ts
 interface CellStyle {
   font?: FontStyle
