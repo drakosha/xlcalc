@@ -86,7 +86,7 @@ export function bookFacts(state: EngineState, file: BookFile | undefined): BookF
         format: look.numberFormat === undefined ? 'General' : enCode(look.numberFormat),
         horizontal: style?.alignment?.horizontal,
         locked: style?.protection?.locked !== false,
-        width: charsOfPoints(columnPoints(width, digit), digit),
+        width: charsOfPoints(columnPoints(x.width(c), digit), digit),
         defaultWidth: width === undefined,
       }
     },

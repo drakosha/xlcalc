@@ -13,7 +13,7 @@ import { caseKey } from '../../collate.js'
 import { quoteSheet, sheetKey } from '../../syntax/print.js'
 import { plain } from '../../syntax/links.js'
 import { escapeAttr, escapeText } from '../xml/text.js'
-import { columnPoints, DEFAULT_ROW_HEIGHT } from '../../column-width.js'
+import { bookGeometry, columnPoints, DEFAULT_ROW_HEIGHT } from '../../column-width.js'
 import { formatAddress } from '../../model.js'
 import { entryAt, lines } from '../../layout/spans.js'
 import { attributes } from '../xml/scan.js'
@@ -154,7 +154,9 @@ export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Car
   }
   /** A sheet's lines in EMUs as a book has them (the one read, `book0`, or the one written): a row's height (its sheet's default where it has none), a column's width; hidden ones none. */
   const geometry = (k: number | undefined, read: boolean): Geometry => {
-    const s = k === undefined ? undefined : read ? book0.sheets[k] : book1.sheets[out.target.get(k)!]
+    const book = read ? book0 : book1
+    const s = k === undefined ? undefined : book.sheets[read ? k : out.target.get(k)!]
+    const [digit] = bookGeometry(book.font)
     const rows = lines(s?.rows, 'r')
     const cols = lines(s?.columns, 'c')
     const fp = k === undefined ? {} : attributes(/<(?:[\w.-]+:)?sheetFormatPr\b([^>]*)>/.exec(src.sheets[k].xml)?.[1] ?? '')
@@ -166,7 +168,7 @@ export function refusals(src: Source, book0: BookInput, book1: BookInput, c: Car
       },
       col: (c) => {
         const e = entryAt(cols, c)
-        return e?.hidden ? 0 : columnPoints(e?.width) * EMU
+        return e?.hidden ? 0 : columnPoints(e?.width ?? s?.defaultColumnWidth, digit) * EMU
       },
     }
   }

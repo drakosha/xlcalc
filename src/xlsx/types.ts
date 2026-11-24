@@ -31,8 +31,7 @@ import type { Locale } from '../locale/types.js'
  *   precision as displayed; an iteration count or maximum change out of range, read as Excel's default.
  * - `style`: what a style cannot hold (pattern and gradient fills, diagonal borders, rotation and the like).
  * - `defaultFont`: a Normal font with unmeasured geometry. It stays in `BookInput.font` and uses Calibri 11 default widths and heights.
- * - `defaultWidth`: a sheet's default column width other than Excel's standard of 8 digits, which the model assumes
- *   (Excel for Mac starts its own workbooks at 10).
+ * - `defaultWidth`: an invalid default column width, replaced with Excel's standard of eight characters.
  * - `numberFormat`: a built-in East Asian date format the model does not have (50 to 58, read as its en-US code), or
  *   one this reader does not know (left out).
  * - `hidden`: hidden sheets, read as visible ones.

@@ -319,11 +319,12 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
   const maxCol = Math.max(extent.c2, looked?.c2 ?? 0)
   const dim = any ? `${indexToCol(minCol)}${rowLo + 1}:${indexToCol(maxCol)}${rowHi + 1}` : 'A1'
   const [digit, defaultHeight] = bookGeometry(ctx.font)
+  const defaultWidth = sheet.defaultColumnWidth
   // A styled column needs an explicit width because Excel opens a column without one as hidden.
-  const defaultWidth = widthOf(columnPoints(undefined, digit), digit)
+  const inheritedWidth = defaultWidth ?? widthOf(columnPoints(undefined, digit), digit)
   const cols = colLines.map(([lo, hi, e]) => {
     const xf = styles.xf(e.style, e.numberFormat)
-    const size = e.width !== undefined ? ` width="${e.width}" customWidth="1"${e.bestFit ? ' bestFit="1"' : ''}` : ` width="${defaultWidth}"`
+    const size = e.width !== undefined ? ` width="${e.width}" customWidth="1"${e.bestFit ? ' bestFit="1"' : ''}` : ` width="${inheritedWidth}"`
     return `<col min="${lo + 1}" max="${hi + 1}"${size}${e.hidden ? ' hidden="1"' : ''}${xf ? ` style="${xf}"` : ''}${outlineAttrs(e)}/>`
   })
   const merges = sheet.merges ?? []
@@ -366,8 +367,7 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
     sheetPr: (filter && sheet.filtered) || prBody ? `<sheetPr${filter && sheet.filtered ? ' filterMode="1"' : ''}${prBody ? `>${prBody}</sheetPr>` : '/>'}` : '',
     dimension: dim,
     views: sheetViewXml(view, pane, ctx.active),
-    // without it Excel for Mac takes a standard width of 10 digits, not the 8 the model assumes
-    formatPr: `<sheetFormatPr defaultRowHeight="${defaultHeight}"${deepest(rowLines, 'outlineLevelRow')}${deepest(colLines, 'outlineLevelCol')}/>`,
+    formatPr: `<sheetFormatPr defaultRowHeight="${defaultHeight}"${defaultWidth === undefined ? '' : ` defaultColWidth="${defaultWidth}"`}${deepest(rowLines, 'outlineLevelRow')}${deepest(colLines, 'outlineLevelCol')}/>`,
     cols: cols.length ? `<cols>${cols.join('')}</cols>` : '',
     rows: data,
     protection: protectionXml(sheet.protection),

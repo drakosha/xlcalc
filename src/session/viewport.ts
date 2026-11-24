@@ -37,8 +37,6 @@ import { sheetExtent } from './extent.js'
 /** The cells a window gives by default, as many as the window of a sheet a server sends. */
 const MAX_CELLS = 20_000
 
-/** Excel's width of a column without its own (8 digits and the padding), in points (Calibri 11). */
-
 /** Line numbers asked of a window or a query (`rows`): whole numbers from 1 to `max`, ascending, each once. */
 export function checkLineNumbers(v: unknown, path: string, max: number) {
   const xs = array(v, path, 'an array of line numbers such as [2, 5, 9]')
@@ -196,8 +194,8 @@ export function sessionEditTexts(state: EngineState, now: string): (s: number, r
 export function* windowOf(src: WindowSource, w: WindowLines, o: ViewportOptions): Steps<Omit<Viewport, 'revision'>> {
   const { book, s, lines, tables } = src
   const [digit, defaultHeight] = bookGeometry(book.font)
-  const defaultWidth = widthOf(columnPoints(undefined, digit), digit)
   const sheet = book.sheets[s]
+  const defaultWidth = sheet.defaultColumnWidth ?? widthOf(columnPoints(undefined, digit), digit)
   // each style the window's cells show, copied once: the answer's own
   const styles: Record<number, CellStyle> = {}
   const shows = (i: number) => {

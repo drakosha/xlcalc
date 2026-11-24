@@ -1,4 +1,4 @@
-import { normalGeometry } from '../../column-width.js'
+import { bookGeometry, normalGeometry } from '../../column-width.js'
 /**
  * `readXlsx`: an xlsx file as a book. The workbook part is found through the package's relationships, its
  * sheets taken in the order the workbook lists them (not by part names), each linked to its part by id; shared
@@ -202,6 +202,7 @@ export async function readStyledArchive(archive: Archive, root: Rel[], wbPath: s
   const read = table.font && { name: table.font.name || 'Calibri', size: table.font.size || 11 }
   const font = read && (read.name !== 'Calibri' || read.size !== 11) ? read : undefined
   if (font && !normalGeometry(font)) issues.add('defaultFont', { key: 'defaultFont', ...table.font })
+  const [columnDigit] = bookGeometry(font)
   const iteration = calculation(wb, issues)
   workbookIssues(wb, rels, issues)
   const dateSystem = flag(attrsAt(wb, 'workbookPr').date1904) ? 1904 : 1900
@@ -256,7 +257,7 @@ export async function readStyledArchive(archive: Archive, root: Rel[], wbPath: s
     const pivotRules = new Map<number, PivotRuleScope>()
     for (const p of pivotParts) if (p !== undefined) pivotRuleScopes(p, pivotRules)
     const read = readSheet(
-      { name: d.name, xml, rels: sheetRels, sheets: all, legacy, tables: tableParts.filter((x): x is string => x !== undefined), parts: { comments, vml, threads, persons }, customTableStyles, cond, formulas, pivotRules, drawing: drawn },
+      { name: d.name, xml, rels: sheetRels, sheets: all, legacy, tables: tableParts.filter((x): x is string => x !== undefined), parts: { comments, vml, threads, persons }, customTableStyles, columnDigit, cond, formulas, pivotRules, drawing: drawn },
       { sheet: d.name, strings, xfs: table.xfs, palette: colors, baseFont: table.baseFont, meta, epoch: epochOf(dateSystem), issues, plain, isPlain },
     )
     for (const t of tableParts) {

@@ -243,7 +243,7 @@ export function checkBook(v: unknown, path = 'book', looked = false, keys?: Map<
   array(book.sheets, `${path}.sheets`, 'an array of sheets').forEach((s, i) => {
     const p = `${path}.sheets[${i}]`
     const sheet = object(s, p, 'a sheet such as { name: "Sheet1", cells: {} }')
-    onlyKeys(sheet, p, ['name', 'cells', 'looks', 'columns', 'rows', 'merges', 'filtered', 'autoFilter', 'sort', 'tables', 'frozen', 'conditionalFormats', 'validations', 'outline', 'hidden', 'view', 'protection', 'tabColor', 'pivotTables', 'slicers', 'timelines'])
+    onlyKeys(sheet, p, ['name', 'cells', 'looks', 'defaultColumnWidth', 'columns', 'rows', 'merges', 'filtered', 'autoFilter', 'sort', 'tables', 'frozen', 'conditionalFormats', 'validations', 'outline', 'hidden', 'view', 'protection', 'tabColor', 'pivotTables', 'slicers', 'timelines'])
     const name = checkString(sheet.name, `${p}.name`)
     const problem = sheetNameProblem(name)
     if (problem) throw new InputError(`${p}.name`, english(problem))
@@ -267,6 +267,7 @@ export function checkBook(v: unknown, path = 'book', looked = false, keys?: Map<
     if (arrays.length) checkArrays(cells as Record<string, CellInput>, arrays, p)
     given(sheet, p, {
       looks: (x, q) => checkLooks(x, q, styles),
+      defaultColumnWidth: (x, q) => checkNumber(x, q, 0, 255),
       columns: (x, q) => checkLines(x, q, 'c', styles),
       rows: (x, q) => checkLines(x, q, 'r', styles),
       merges: checkMerges,

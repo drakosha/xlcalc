@@ -162,6 +162,8 @@ export interface SheetInput {
    * return this list in a form of their own (`LookRange`).
    */
   looks?: LookRange[]
+  /** The default width of columns without a width of their own, in xlsx units of the Normal font like `ColumnInput.width`. */
+  defaultColumnWidth?: number
   /** Columns by letter, a single column (`C`) or a span (`B:D`) like xlsx `<col min max>`; spans do not overlap. */
   columns?: Record<string, ColumnInput>
   /** Rows by number, a single row (`5`) or a span (`5:9`); spans do not overlap. */

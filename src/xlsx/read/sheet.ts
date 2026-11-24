@@ -6,6 +6,7 @@
  * the filter mode, notes, hyperlinks and frozen panes (`parts.ts`), data validation (`validation.ts`), outline settings,
  * and what the sheet has that the model does not, reported.
  */
+import { columnPadding, widthOf } from '../../column-width.js'
 import type { AutoFilter, CellInput, CellValue, ColumnInput, OutlineSettings, PivotRuleScope, RowInput, SheetInput } from '../../contract.js'
 import { cellEdits, edited, LookTable, NONE, type Layer } from '../../looks/layer.js'
 import { listOf, lookAlone } from '../../looks/sheet.js'
@@ -46,6 +47,8 @@ export interface SheetSource {
   tables: string[]
   /** The names of the book's custom table style definitions. */
   customTableStyles: ReadonlySet<string>
+  /** The width of a digit in the workbook's Normal font. */
+  columnDigit: number
   /** The sheet's comments, its VML drawing and threaded comments, and the book's persons, when there are any. */
   parts: Pick<PartsSource, 'comments' | 'vml' | 'threads' | 'persons'>
   /** The book's differential formats and colours, which conditional formats use. */
@@ -285,13 +288,23 @@ function features(head: string, tail: string, src: SheetSource, issues: Issues) 
   const where = { sheet: src.name }
   // a drawing of slicers and timelines alone is theirs (`readSheetPivots`)
   for (const [local, code, message] of FEATURES) if (has(outside, local) && !(local === 'drawing' && framesOnly(src.drawing))) issues.add(code, message, where)
-  // the sheet's default column width: 8 digits and the padding, as the model assumes, or another
-  const fp = attrsAt(head, 'sheetFormatPr')
-  const width = fp.defaultColWidth !== undefined ? Number(fp.defaultColWidth) : Number(fp.baseColWidth ?? 8) + 0.84
-  if (!(width >= 8 && width < 9.5)) issues.add('defaultWidth', { key: 'defaultWidth', width: Math.round(width * 100) / 100 }, where)
   const setup = element(tail, 'pageSetup')
   const sa = setup ? attributes(setup.attrs) : {}
   if (sa.orientation === 'landscape' || sa.scale !== undefined || sa.fitToWidth !== undefined || sa.fitToHeight !== undefined) issues.add('print', { key: 'printSettings' }, where)
+}
+
+function defaultWidthOf(head: string, sheet: string, issues: Issues, digit: number): number | undefined {
+  const { defaultColWidth, baseColWidth } = attrsAt(head, 'sheetFormatPr')
+  const source = defaultColWidth ?? baseColWidth
+  if (source === undefined) return undefined
+  const width = source.trim() ? Number(source) : NaN
+  if (!Number.isFinite(width) || width < 0) {
+    issues.add('defaultWidth', { key: 'defaultWidth', width }, { sheet })
+    return undefined
+  }
+  if (defaultColWidth !== undefined) return Math.min(255, width)
+  // baseColWidth is a count of digits without padding. The model stores the full width.
+  return width === 8 ? undefined : Math.min(255, widthOf(width * digit + columnPadding(digit), digit))
 }
 
 /** The addresses of the cells of a look of a layer in a rectangle. */
@@ -410,6 +423,8 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   for (const cell of sortAddresses(read.errors)) ctx.issues.add('errorConstant', { key: 'errorTyped' }, { sheet: name, cell })
   features(head, tail, src, ctx.issues)
   const sheet: SheetInput = { name, cells: read.cells }
+  const defaultWidth = defaultWidthOf(head, name, ctx.issues, src.columnDigit)
+  if (defaultWidth !== undefined) sheet.defaultColumnWidth = defaultWidth
   if (filterMode(head, tail, src, ctx.issues)) sheet.filtered = true
   const sp = element(tail, 'sheetProtection')
   const sheetProtection = sp ? readProtection(attributes(sp.attrs)) : undefined

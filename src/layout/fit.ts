@@ -28,7 +28,7 @@ import { fontSize, turnedPoints, turnedStyles, turnOf } from './turned.js'
 const MAX_WIDTH = 255
 
 /** The width of a column of `points`: null for the default width, which Excel writes as no width at all. */
-const widthAt = (points: number, digit: number): number | null => (points === columnPoints(undefined, digit) ? null : Math.min(MAX_WIDTH, widthOf(points, digit)))
+const widthAt = (points: number, defaultPoints: number, digit: number): number | null => (points === defaultPoints ? null : Math.min(MAX_WIDTH, widthOf(points, digit)))
 
 /**
  * The widths AutoFit gives the columns `lo` to `hi` of a sheet whose cells hold `cells` (in any order), as
@@ -50,7 +50,8 @@ function fitWidths(rules: Rules, styles: readonly CellStyle[], sheet: SheetInput
       : rules.fitPoints(v, format, measure?.(id))
     if (points !== null && points > (widest.get(c) ?? 0)) widest.set(c, points)
   }
-  return Object.fromEntries([...widest].sort((a, b) => a[0] - b[0]).map(([c, points]) => [spanKey(c, c, 'c'), widthAt(points, digit)]))
+  const defaultPoints = columnPoints(sheet.defaultColumnWidth, digit)
+  return Object.fromEntries([...widest].sort((a, b) => a[0] - b[0]).map(([c, points]) => [spanKey(c, c, 'c'), widthAt(points, defaultPoints, digit)]))
 }
 
 /** The points AutoFit gives a turned cell (`turnedPoints`), its line breaks lines across the column when it wraps; null when it shows nothing. */

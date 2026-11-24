@@ -1,0 +1,208 @@
+{
+ "meta": {
+  "version": "16.115",
+  "locale": "ru-RU"
+ },
+ "answers": {
+  "none": {
+   "columns": [
+    [
+     53,
+     8,
+     "12345,67"
+    ],
+    [
+     72,
+     11.17,
+     "12345,67"
+    ]
+   ],
+   "saved": {
+    "baseColWidth": "10",
+    "defaultColWidth": "8.83203125",
+    "defaultRowHeight": "15",
+    "x14ac:dyDescent": "0.2"
+   }
+  },
+  "narrow": {
+   "columns": [
+    [
+     27,
+     3.67,
+     "####"
+    ],
+    [
+     72,
+     11.17,
+     "12345,67"
+    ]
+   ],
+   "saved": {
+    "baseColWidth": "10",
+    "defaultColWidth": "4.5",
+    "defaultRowHeight": "15",
+    "x14ac:dyDescent": "0.2"
+   }
+  },
+  "fractional": {
+   "columns": [
+    [
+     73,
+     11.33,
+     "12345,67"
+    ],
+    [
+     72,
+     11.17,
+     "12345,67"
+    ]
+   ],
+   "saved": {
+    "baseColWidth": "10",
+    "defaultColWidth": "12.1640625",
+    "defaultRowHeight": "15",
+    "x14ac:dyDescent": "0.2"
+   }
+  },
+  "wide": {
+   "columns": [
+    [
+     112,
+     17.83,
+     "12345,67"
+    ],
+    [
+     72,
+     11.17,
+     "12345,67"
+    ]
+   ],
+   "saved": {
+    "baseColWidth": "10",
+    "defaultColWidth": "18.6640625",
+    "defaultRowHeight": "15",
+    "x14ac:dyDescent": "0.2"
+   }
+  },
+  "base": {
+   "columns": [
+    [
+     125,
+     20,
+     "12345,67"
+    ],
+    [
+     72,
+     11.17,
+     "12345,67"
+    ]
+   ],
+   "saved": {
+    "baseColWidth": "10",
+    "defaultColWidth": "20.83203125",
+    "defaultRowHeight": "15",
+    "x14ac:dyDescent": "0.2"
+   }
+  },
+  "both": {
+   "columns": [
+    [
+     27,
+     3.67,
+     "####"
+    ],
+    [
+     72,
+     11.17,
+     "12345,67"
+    ]
+   ],
+   "saved": {
+    "baseColWidth": "10",
+    "defaultColWidth": "4.5",
+    "defaultRowHeight": "15",
+    "x14ac:dyDescent": "0.2"
+   }
+  },
+  "arial-8-default": {
+   "columns": [
+    [
+     18,
+     3.75,
+     "###"
+    ],
+    [
+     48,
+     11.25,
+     "12345,67"
+    ]
+   ],
+   "saved": {
+    "baseColWidth": "10",
+    "defaultColWidth": "4.5",
+    "defaultRowHeight": "11",
+    "x14ac:dyDescent": "0.15"
+   }
+  },
+  "arial-8-base": {
+   "columns": [
+    [
+     83,
+     20,
+     "12345,67"
+    ],
+    [
+     48,
+     11.25,
+     "12345,67"
+    ]
+   ],
+   "saved": {
+    "baseColWidth": "10",
+    "defaultColWidth": "20.75",
+    "defaultRowHeight": "11",
+    "x14ac:dyDescent": "0.15"
+   }
+  },
+  "times-10-default": {
+   "columns": [
+    [
+     61,
+     11.2,
+     "12345,67"
+    ],
+    [
+     60,
+     11,
+     "12345,67"
+    ]
+   ],
+   "saved": {
+    "baseColWidth": "10",
+    "defaultColWidth": "12.19921875",
+    "defaultRowHeight": "13",
+    "x14ac:dyDescent": "0.15"
+   }
+  },
+  "times-10-base": {
+   "columns": [
+    [
+     105,
+     20,
+     "12345,67"
+    ],
+    [
+     60,
+     11,
+     "12345,67"
+    ]
+   ],
+   "saved": {
+    "baseColWidth": "10",
+    "defaultColWidth": "21",
+    "defaultRowHeight": "13",
+    "x14ac:dyDescent": "0.15"
+   }
+  }
+ }
+}

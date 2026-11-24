@@ -126,9 +126,12 @@ export function columnWidening(s: EngineState, i: number, r: number, c: number, 
   // a column's cells of one value, format and font take one width (a fill of a constant): measured once in a call that passes `memo`
   const k = memo && JSON.stringify([i, c, numberFormat ?? null, font ? style ?? -1 : null, value])
   if (k !== undefined && memo!.has(k)) return memo!.get(k)
-  const width = widthForEntry(value, { numberFormat, locale, dateSystem, width: column?.width, bestFit: column?.bestFit }, s.input.font, font)
-  if (k !== undefined) memo!.set(k, width)
-  return width
+  const width = lines.width(c)
+  // A width inherited from the sheet still widens like an unset width.
+  const bestFit = column?.width === undefined || column.bestFit
+  const widened = widthForEntry(value, { numberFormat, locale, dateSystem, width, bestFit }, s.input.font, font)
+  if (k !== undefined) memo!.set(k, widened)
+  return widened
 }
 
 /** A rule's alert: its style (stop by default) and its message, the rule's own or else the library's in the book's locale. */

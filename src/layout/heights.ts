@@ -149,7 +149,7 @@ export function fitHeights(rules: Rules, styles: readonly CellStyle[], sheet: Sh
     const style = id === undefined ? undefined : styles[id]
     const turn = turnOf(style)
     if (turn !== undefined) return m ? null : turnedNeed(rules, v, style!, lines.format(r, c), turn)
-    return cellNeed(v, style, columnPoints(lines.column(c)?.width, digit), geometry, !!m, measure?.(id))
+    return cellNeed(v, style, columnPoints(lines.width(c), digit), geometry, !!m, measure?.(id))
   }
   const rows = new Map<number, Need>()
   for (const [r, c, v] of cells) {

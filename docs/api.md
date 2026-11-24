@@ -5983,6 +5983,8 @@ interface SheetInput {
    * return this list in a form of their own (`LookRange`).
    */
   looks?: LookRange[]
+  /** The default width of columns without a width of their own, in xlsx units of the Normal font like `ColumnInput.width`. */
+  defaultColumnWidth?: number
   /** Columns by letter, a single column (`C`) or a span (`B:D`) like xlsx `<col min max>`; spans do not overlap. */
   columns?: Record<string, ColumnInput>
   /** Rows by number, a single row (`5`) or a span (`5:9`); spans do not overlap. */
@@ -7391,8 +7393,7 @@ What the workbook cannot hold from a file, or what writing changed. The codes:
   precision as displayed; an iteration count or maximum change out of range, read as Excel's default.
 - `style`: what a style cannot hold (pattern and gradient fills, diagonal borders, rotation and the like).
 - `defaultFont`: a Normal font with unmeasured geometry. It stays in [`BookInput.font`](#bookinput) and uses Calibri 11 default widths and heights.
-- `defaultWidth`: a sheet's default column width other than Excel's standard of 8 digits, which the model assumes
-  (Excel for Mac starts its own workbooks at 10).
+- `defaultWidth`: an invalid default column width, replaced with Excel's standard of eight characters.
 - `numberFormat`: a built-in East Asian date format the model does not have (50 to 58, read as its en-US code), or
   one this reader does not know (left out).
 - `hidden`: hidden sheets, read as visible ones.
