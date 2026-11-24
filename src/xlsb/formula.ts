@@ -23,12 +23,13 @@ export interface Defined {
 
 type Operand = string | { text: string; name: Defined }
 const render = (operand: Operand): string => typeof operand === 'string' ? operand : operand.text
+const nativeFunctions = new Set(Object.values(FTAB).map((entry) => entry?.[0]))
 
 function functionName(operand: Operand): string {
   if (typeof operand === 'string' || !operand.name.empty) return render(operand)
   const name = operand.name.name.toUpperCase()
-  // Excel writes a call to an empty, unprefixed placeholder for a newer function as _xludf in XLSX.
-  if (!XLFN.has(name) && !XLWS.has(name)) return operand.text
+  // Excel writes unresolved calls that shadow worksheet functions as _xludf.
+  if (!nativeFunctions.has(name) && !XLFN.has(name) && !XLWS.has(name)) return operand.text
   const space = operand.text.slice(0, operand.text.length - operand.name.name.length)
   return space + '_xludf.' + operand.name.name
 }
