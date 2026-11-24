@@ -77,18 +77,33 @@ describe('XLSB archive', () => {
   const pairs = [
     'probe', 'formulas', 'pivot-calculated', 'slicers-and-timeline', 'icon-filter', 'filter-and', 'filter-or',
     'filter-extended-and', 'filter-extended-or', 'filter-date-day', 'filter-date-month-year',
-    'filter-long-value', 'filter-long-and-short-values', 'filter-no-icon', 'filter-non-blanks',
+    'filter-long-value', 'filter-long-and-short-values', 'filter-no-icon', 'filter-non-blanks', 'filter-sort-stars',
     'array-exact', 'array-convert',
     'validation-multi-range', 'validation-list-comma', 'validation-invalid-reference',
     'conditional-invalid-reference', 'pivot-show-as', 'pivot-item-number',
     'union-arguments', 'unprefixed-function', 'worksheet-function-shadow', 'iteration-default', 'range-sheet-quote',
-    'range-start-name', 'range-sheet-span', 'formula-closing-space',
+    'range-start-name', 'range-sheet-span', 'formula-closing-space', 'formula-small-numbers',
     'functions-001', 'functions-066', 'functions-131', 'functions-196',
     'functions-261', 'functions-326', 'functions-391', 'functions-456', 'functions-references',
   ]
   it.each(pairs)('reads both of Excel’s %s saves identically', async (name) => {
     const [binary, xml] = await excelPair(name)
     await expect(readXlsb(binary)).resolves.toStrictEqual(await readXlsx(xml))
+  })
+
+  it('uses the stored spelling when Excel gives two LET name spellings the same binary index', async () => {
+    const [binary, xml] = await excelPair('let-name-case')
+    const expected = await readXlsx(xml)
+    const actual = await readXlsb(binary)
+    const cell = expected.book.sheets[1].cells.A41
+
+    expect(cell.formula).toBe('LET(X,1,X+1)')
+    expect(compute(expected.book).sheets[1].cells.A41.value).toBe(2)
+    expect(compute(actual.book).sheets[1].cells.A41.value).toBe(2)
+
+    // PtgName refers to the same _xlpm.x record for x and X.
+    cell.formula = 'LET(x,1,x+1)'
+    expect(actual).toStrictEqual(expected)
   })
 
   it.each([100000, 165536])('keeps the result cached for an external name whose row %i Excel could not store in XLSB', async (row) => {

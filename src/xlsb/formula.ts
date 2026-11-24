@@ -1,4 +1,5 @@
 import { quoteSheetIfNeeded } from '../a1.js'
+import { generalText } from '../numfmt/general.js'
 import { quoteSheet } from '../sheet-pattern.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { linkedTableText, type TableSpec } from '../syntax/table.js'
@@ -47,19 +48,6 @@ const BINARY = ['+', '-', '*', '/', '^', '&', '<', '<=', '=', '>=', '>', '<>', '
 const textLiteral = (value: string) => `"${value.replace(/"/g, '""')}"`
 const AREAS: Readonly<Partial<Record<number, TableSpec['areas']>>> = {
   0: [], 1: ['all'], 2: ['headers'], 4: ['data'], 6: ['headers', 'data'], 8: ['totals'], 12: ['data', 'totals'], 16: ['row'],
-}
-
-/** Excel writes a formula's number literals as decimal in the range where its formula parser keeps 15 digits. */
-function numeric(value: number): string {
-  if (!value) return '0'
-  const rounded = value.toPrecision(15).replace(/(?:\.0+|(?<=\.[0-9]*)0+)(?=e|$)/, '')
-  const [digits, power] = rounded.split('e')
-  if (power === undefined) return digits
-  const exponent = Number(power)
-  if (exponent > 20 || exponent < -308) return rounded.replace('e', 'E').replace(/E(\d)/, 'E+$1')
-  const sign = digits[0] === '-' ? '-' : ''
-  const unsigned = digits.slice(sign.length).replace('.', '')
-  return sign + (exponent < 0 ? `0.${'0'.repeat(-exponent - 1)}${unsigned}` : unsigned.padEnd(exponent + 1, '0'))
 }
 
 /** The signed offset and the two relativity bits are separate for each coordinate. */
@@ -125,7 +113,7 @@ function array(extra: Payload): string {
     const type = extra.u8()
     let text: string
     switch (type) {
-      case 0: text = numeric(extra.f64()); break
+      case 0: text = generalText(extra.f64(), 21); break
       case 1: text = textLiteral(extra.wide(extra.u16())); break
       case 2: text = extra.u8() ? 'TRUE' : 'FALSE'; break
       case 4: text = errorText(extra.u8()); extra.skip(3); break
@@ -266,7 +254,7 @@ export function formulaText({ tokens, extra }: Formula, context: Context, row = 
       case 0x1f: {
         const value = tokens.f64()
         if (!Number.isFinite(value)) tokens.fail('non-finite number in formula')
-        push(numeric(value))
+        push(generalText(value, 21))
         break
       }
       case 0x20:

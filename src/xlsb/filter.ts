@@ -182,7 +182,6 @@ function dateGroup(payload: Payload): string {
 }
 
 function sortCondition(payload: Payload, future: boolean): string {
-  if (future) payload.skip(4)
   const flags = payload.u16()
   const by = (flags >>> 1) & 15
   const ref = range(payload)
