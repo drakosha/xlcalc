@@ -78,6 +78,10 @@
       "types": "./dist/xlsx.d.ts",
       "default": "./dist/xlsx.js"
     },
+    "./xlsx/charts": {
+      "types": "./dist/xlsx-charts.d.ts",
+      "default": "./dist/xlsx-charts.js"
+    },
     "./xlsx/print": {
       "types": "./dist/xlsx-print.d.ts",
       "default": "./dist/xlsx-print.js"

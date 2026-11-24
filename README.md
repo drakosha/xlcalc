@@ -68,7 +68,8 @@ A bundle includes only the entry points it imports. Sizes are for the browser, b
 | `xlcalc/core` | the same API without five groups of rarely used functions, which `registerFunctions` loads from `xlcalc/functions` ([Groups of functions](docs/function-groups.md)) | `compute` 335 KB (127), all 730 KB (270) |
 | `xlcalc/functions` | the groups: `engineering`, `finance`, `lambda`, `statistics`, `xml`, `allFunctions` | 102 KB (41) |
 | `xlcalc/xlsx` | `readXlsx`, `writeXlsx`, `fromLegacy` | 345 KB (129) |
-| `xlcalc/xlsx/print` | read and write print settings and lay out worksheet pages ([Worksheet printing](docs/xlsx-print.md)) | |
+| `xlcalc/xlsx/print` | read and write print settings and lay out worksheet pages and drawings ([Worksheet printing](docs/xlsx-print.md)) | |
+| `xlcalc/xlsx/charts` | read chart data and resolve series against a session ([Chart data](docs/xlsx-print.md#chart-data)) | |
 | `xlcalc/xlsx/print/keep` | write print settings over the original file with its drawings and other parts ([Worksheet printing](docs/xlsx-print.md)) | |
 | `xlcalc/xlsx/keep` | `openKept`, `writeKept`, `inspectKept`: a workbook written over the file it was read from, keeping its charts, pictures and everything else the workbook does not hold ([Writing over the original file](docs/xlsx-keep.md)) | 438 KB (163) |
 | `xlcalc/xlsb` | `readXlsb`: a binary Excel workbook, its saved values and issues ([Reading xlsb](docs/xlsx.md#reading-xlsb)) | 318 KB (117) |

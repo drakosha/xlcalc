@@ -51,6 +51,38 @@ the page's regions and their paper positions. When the device changes the line p
 and column. The renderer clips those positions to the page body. The host can include drawing extents in the used
 range when it supplies geometry for them.
 
+## Pictures and note boxes
+
+`readXlsxDrawings(bytes, options?)` reads the file's drawing anchors, embedded picture references, note boxes and
+chart frames. Join a note box to the corresponding `sheet.cells[cell].note` for its text. The box describes its
+position, visibility and saved fill and stroke. A component can use `printDrawingBounds(anchor, geometry)` for the
+sheet coordinates, including for on-screen display. `readImage(part)` loads the bytes of a reported picture on demand
+and shares them across calls. A picture also carries its saved crop, rotation and flips when set.
+
+`projectPrintDrawings(drawings, page, geometry, { setup, device })` projects one sheet's objects in drawing order.
+For a page returned by `layoutPrintWorkbook`, it selects the page's sheet from the supplied drawings. Pass the
+matching `settings.setup` and `target.deviceGeometry`. Each result has the full box in sheet points and its projected
+regions. Pictures and chart frames are clipped to the printed regions. A shown note box in `asDisplayed` mode
+uses its full position on every page where it overlaps the print area. Apply the paper clip when rendering those
+boxes. The host can include object extents in the printable used range it passes to `printSheetGeometry`.
+
+Current object coverage includes embedded pictures anchored over the grid, VML note boxes and chart frames.
+Pictures placed inside cells, header/footer pictures and general DrawingML shapes use additional formats.
+
+## Chart data
+
+`xlcalc/xlsx/charts` is a separate entry for hosts that display or print charts. A chart frame from
+`readXlsxDrawings` identifies the source part and anchor. `readXlsxCharts(bytes, options?)` reads the corresponding
+ChartML and returns frames with their groups, series, axes, cached points and basic fill and line styles. Match
+a chart to a drawing by `frame.id`. It reads bar and column, line, area, pie, doughnut and scatter groups, including
+combinations of these groups. Chart sheets are identified as `frame.sheetKind: 'chartsheet'`. The worksheet
+paginator lays out objects over worksheet grids.
+
+Pass a current session to `resolveChartData(chart, session)` to read ordinary worksheet ranges from that state.
+Pass a reader with `getValues` and `resolve(reference, sheet)` to supply results for other reference forms, such as
+defined names. Unresolved sources and hierarchical category levels keep the file's saved data. The component
+draws the chart using the model, including the axis IDs, sparse point indexes and visible-cells setting.
+
 ## Print several sheets
 
 `layoutPrintWorkbook(sheets, options?)` lays out the supplied visible worksheets in order. Each entry supplies its
@@ -83,8 +115,8 @@ context supplies page counters, sheet and file labels, date and time. Picture ma
 renderer will place an image when it has the source part.
 
 The renderer still needs to draw the cells, gridlines, headings and error display as requested. Printer-specific defaults
-and mixed print targets need their own compatibility cases. On-grid note boxes, embedded objects, chart sheets and
-header/footer images need their source parts and a renderer.
+and mixed print targets need their own compatibility cases. A host supplies rendering for the cell grid and the
+objects it reads, including note boxes, pictures and charts.
 
 The XLSX reader test uses an Excel-saved print area and break. For pagination, compare the generated plan with Excel PDF
 output under a fixed paper size, printer, Excel version and font set. Record the scale, row and column boundaries,
@@ -138,3 +170,8 @@ per area. Excel includes notes on hidden lines inside an area and leaves out not
 titles. It places the cell address and the note body on separate lines, with a column for their labels. A page break
 can fall between those lines or inside the note body. A shown note in `asDisplayed` mode prints as a text box
 where the VML drawing puts it, including on a page that omits its source cell.
+
+Windows Excel also exported an Excel-saved worksheet with a picture through five one-column print areas and a chart
+through three adjacent areas. The picture appeared in pages 2–4 and the chart in pages 1–2, with each object clipped
+to the respective area. The drawing test uses those page memberships and the note box that appears across area
+boundaries. Exact device coordinates depend on the supplied print geometry.

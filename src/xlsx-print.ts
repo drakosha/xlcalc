@@ -2,6 +2,8 @@ import { strict } from './strict-args.js'
 import { readStyled } from './xlsx/read/book.js'
 import { writeXlsxParts } from './xlsx/write/book.js'
 import type { ReadXlsxOptions, WriteXlsxOptions, XlsxSnapshot, XlsxWritten } from './xlsx/types.js'
+import { readXlsxDrawings as readDrawings } from './xlsx/drawings/read.js'
+import { printDrawingBounds as drawingBounds, projectPrintDrawings as projectDrawings } from './xlsx/print/drawings.js'
 import { printSheetGeometry as geometry } from './xlsx/print/geometry.js'
 import { formatPrintHeaderFooter as formatHeaderFooter } from './xlsx/print/header-footer.js'
 import { layoutPrintPages as layout, layoutPrintWorkbook as workbookLayout } from './xlsx/print/layout.js'
@@ -14,6 +16,8 @@ import { printParts } from './xlsx/print/write.js'
 export type {
   PrintHeaderFooterContext, PrintHeaderFooterRun, PrintHeaderFooterSections, PrintHeaderFooterStyle,
 } from './xlsx/print/header-footer.js'
+export type { ChartDrawing, DrawingAnchor, DrawingMarker, DrawingReadIssue, NoteDrawing, PictureDrawing, XlsxDrawing, XlsxDrawings } from './xlsx/drawings/types.js'
+export type { PrintDrawingOptions, PrintDrawingProjection } from './xlsx/print/drawings.js'
 export type { PrintRectProjection } from './xlsx/print/project.js'
 export type { PrintGeometryOptions } from './xlsx/print/geometry.js'
 export type {
@@ -38,6 +42,9 @@ async function writeXlsxWithPrint(snapshot: XlsxSnapshot, print: readonly SheetP
 export const printSheetGeometry = /* @__PURE__ */ strict(geometry, 'printSheetGeometry', 2)
 export const formatPrintHeaderFooter = /* @__PURE__ */ strict(formatHeaderFooter)
 export const printPaperSize = /* @__PURE__ */ strict(paperSize)
+export const readXlsxDrawings = /* @__PURE__ */ strict(readDrawings)
+export const printDrawingBounds = /* @__PURE__ */ strict(drawingBounds)
+export const projectPrintDrawings = /* @__PURE__ */ strict(projectDrawings, 'projectPrintDrawings', 4)
 export const projectPrintRect = /* @__PURE__ */ strict(project)
 export const layoutPrintPages = /* @__PURE__ */ strict(layout)
 export const layoutPrintWorkbook = /* @__PURE__ */ strict(workbookLayout, 'layoutPrintWorkbook', 2)

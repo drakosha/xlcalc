@@ -36,6 +36,19 @@ describe('bundle size', () => {
     }
   }, 60_000)
 
+  it('ChartML and chart source resolution are opt-in, including when using XLSX print', async () => {
+    const isChart = (file: string) => /\/xlsx(?:\/charts\/|-charts\.(?:ts|js)$)/.test(file)
+    const charts = await minified('export * from ' + lib('xlsx-charts.js'))
+    expect(charts.used.filter(isChart)).toEqual(expect.arrayContaining([
+      expect.stringMatching(/\/charts\/read\./), expect.stringMatching(/\/charts\/values\./),
+    ]))
+    expect(charts.used.filter((file) => /\/(?:engine|session|evaluate|compile)\.(?:ts|js)$/.test(file))).toEqual([])
+    for (const entry of ['index.js', 'core.js', 'xlsx.js', 'xlsx-keep.js', 'xlsx-print.js', 'xlsx-print-keep.js', 'xlsb.js']) {
+      const { used } = await minified('export * from ' + lib(entry))
+      expect(used.filter(isChart), entry).toEqual([])
+    }
+  }, 60_000)
+
   it('XLSB has its own budget and its converters stay outside the other entry points', async () => {
     const xlsb = await minified(`export * from ${lib('xlsb.js')}`)
     // 331,153 bytes of dist with sheet default widths in the shared reader; the room over it lets the xlsx reader grow by
