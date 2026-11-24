@@ -25,6 +25,16 @@ Functions live in `src/functions/<category>.ts` (`math`, `statistical`, `logical
 
 The measurements behind each guide's "Checked against Excel" section: the harness steps, the sets, what each predicted set showed, and what its misses changed.
 
+### Reading xlsb
+
+`src/xlsb` converts requested binary parts to internal SpreadsheetML. The XLSX reader consumes that text through its existing archive interface. When the XLSX reader starts using another element or attribute, check how XLSB stores that information and have the converter emit it. The paired test detects a gap when a fixture contains the affected feature.
+
+`npx tsx bench/windows/xlsb-pairs.ts OUT --files-from PATH` takes a manifest with one input workbook per line. Excel saves both formats from one opening. The harness releases the Excel lock between batches and resumes by skipping pairs already in `OUT`. After building, `node bench/windows/compare-xlsb-pairs.mjs OUT` compares the books, their saved values and their issues. It reports the first difference in each of those sections. If the only difference is the absence of `sparkline` issues, the comparison checks the binary worksheets for sparkline records before counting the pair as an expected save difference. Add `--recalculate` to compare the calculated results at cells where the engine reproduces the XLSX file's saved value.
+
+On Node 26.13 with a fresh process per read, the 34,000-row workbook took 498 ms as XLSX and 630 ms as XLSB, medians of three runs. The highest heap sizes observed before garbage collection or at the end of reading were 106 and 137 MiB, respectively. Excel's paired files were 4,169,533 and 2,609,251 bytes.
+
+The largest saved pair in the test corpus had a 222,769-byte XLSX and a 123,689-byte XLSB. Reads took 56 and 80 ms, with observed heap peaks of 23 and 42 MiB.
+
 ### Array operations in formulas
 
 From [Array operations in formulas](arrays-incell.md).

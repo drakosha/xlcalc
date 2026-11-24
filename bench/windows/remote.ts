@@ -160,7 +160,7 @@ export interface Book {
 }
 
 /** A book's answer: one value per step (and the file a `saveAs` step saved, the copies `copy` steps saved, from 1), or why Excel did not open it; undefined when the job stopped before it. */
-export type Answer = { answers: unknown[]; seconds: number; saved?: Uint8Array; copies?: Uint8Array[] } | { rejected: string; seconds: number } | undefined
+export type Answer = { answers: unknown[]; seconds: number; saved?: Uint8Array; savedXlsb?: Uint8Array; copies?: Uint8Array[] } | { rejected: string; seconds: number } | undefined
 
 let jobs = 0
 
@@ -203,9 +203,15 @@ export async function runJob(label: string, books: Book[], timeout = 120_000 + 2
       const a = JSON.parse(readFileSync(join(done, `${i}.json`), 'utf8')) as Answer
       if (!a || !('answers' in a)) return a
       const saved = join(done, `${i}.saved.xlsx`)
+      const savedXlsb = join(done, `${i}.saved.xlsb`)
       const copies: Uint8Array[] = []
       for (let k = 1; existsSync(join(done, `${i}.copy${k}.xlsx`)); k++) copies.push(new Uint8Array(readFileSync(join(done, `${i}.copy${k}.xlsx`))))
-      return { ...a, ...(existsSync(saved) ? { saved: new Uint8Array(readFileSync(saved)) } : {}), ...(copies.length ? { copies } : {}) }
+      return {
+        ...a,
+        ...(existsSync(saved) ? { saved: new Uint8Array(readFileSync(saved)) } : {}),
+        ...(existsSync(savedXlsb) ? { savedXlsb: new Uint8Array(readFileSync(savedXlsb)) } : {}),
+        ...(copies.length ? { copies } : {}),
+      }
     })
   } finally {
     // the machine's copy goes with the next `clean`
