@@ -6,7 +6,10 @@ import { readFile, readdir } from 'node:fs/promises'
 import { join } from 'node:path'
 import { inspect, isDeepStrictEqual } from 'node:util'
 import { readXlsb } from '../../dist/xlsb.js'
+import { records } from '../../dist/xlsb/records.js'
 import { readXlsx } from '../../dist/xlsx.js'
+import { relsOf } from '../../dist/xlsx/read/package.js'
+import { openArchive } from '../../dist/xlsx/zip/read.js'
 
 const [, , directory, option] = process.argv
 if (!directory || (option !== undefined && option !== '--recalculate')) {
@@ -45,6 +48,26 @@ function preview(value) {
   return inspect(value, { depth: 0, maxArrayLength: 8, maxStringLength: 360 })
 }
 
+async function onlyMissingSparklines(expected, actual, binaryData) {
+  const issues = expected.issues.filter(({ code }) => code !== 'sparkline')
+  if (issues.length === expected.issues.length || !isDeepStrictEqual({ ...expected, issues }, actual)) return false
+
+  // Verify the file itself so a reader regression cannot pass as an Excel save difference.
+  const archive = openArchive(binaryData)
+  const workbook = (await relsOf(archive, '')).find(({ kind, external }) => kind === 'officeDocument' && !external)
+  if (!workbook) return false
+  const worksheets = (await relsOf(archive, workbook.target)).filter(({ kind, external }) => kind === 'worksheet' && !external)
+  for (const { target } of worksheets) {
+    if (!target.toLowerCase().endsWith('.bin')) return false
+    const data = await archive.bytes(target)
+    if (!data) return false
+    for (const { type } of records(data, target)) {
+      if (type === 1058) return false // BrtBeginSparklineGroups
+    }
+  }
+  return worksheets.length > 0
+}
+
 /** Compare saved values wherever the engine calculates the Excel result from the XLSX half. */
 function checkCalculation(pair, expected, actual, same) {
   let expectedResult
@@ -81,7 +104,7 @@ function checkCalculation(pair, expected, actual, same) {
 
 const names = await readdir(directory)
 const files = new Set(names)
-const summary = { pairs: 0, exact: 0, different: 0, readErrors: 0, missingXlsx: 0 }
+const summary = { pairs: 0, exact: 0, expectedSparklineLoss: 0, different: 0, readErrors: 0, missingXlsx: 0 }
 for (const binary of names.filter((name) => name.endsWith('.xlsb')).sort()) {
   const spreadsheet = binary.slice(0, -1) + 'x'
   if (!files.has(spreadsheet)) {
@@ -92,10 +115,14 @@ for (const binary of names.filter((name) => name.endsWith('.xlsb')).sort()) {
   summary.pairs++
   try {
     const expected = await readXlsx(await readFile(join(directory, spreadsheet)))
-    const actual = await readXlsb(await readFile(join(directory, binary)))
+    const binaryData = await readFile(join(directory, binary))
+    const actual = await readXlsb(binaryData)
     const same = isDeepStrictEqual(expected, actual)
     if (same) summary.exact++
-    else {
+    else if (await onlyMissingSparklines(expected, actual, binaryData)) {
+      summary.expectedSparklineLoss++
+      console.log(JSON.stringify({ pair: binary, expectedDifference: 'sparkline groups absent from the XLSB save' }))
+    } else {
       summary.different++
       const differences = ['book', 'cached', 'issues'].flatMap((key) => firstDifference(expected[key], actual[key], key) ?? [])
       console.log(JSON.stringify({ pair: binary, differences }))

@@ -371,6 +371,8 @@ Excel can save an external name as an invalid reference in xlsb when its definit
 
 XLSB stores errors in external names as codes. The reader gives them their invariant spelling. If Excel expands shared formulas in XLSB, a formula issue can list the same cells in a different order.
 
+The `sparkline` issue reports sparkline groups stored in the file. In a paired test, Excel for Windows kept these groups in the XLSX save and left them out of the XLSB save.
+
 The tests compare paired files that Excel for Windows saved as xlsx and xlsb from the same open workbook. The binary extension has its own import so applications can include the converter when they read xlsb.
 
 ## Writing
