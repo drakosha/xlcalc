@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+Added:
+
+- `readXlsb` from `xlcalc/xlsb` reads an `.xlsb` workbook into the same `book`, `cached` and `issues` as `readXlsx`, with the same options: cells and formulas, styles, names, tables, conditional formatting, data validation, filters, notes, external links with their stored values, PivotTables, slicers and timelines ([Reading xlsb](docs/xlsx.md#reading-xlsb)). Its binary parts are translated for the xlsx reader, so the other entry points do not grow by the converter. `readXlsx` and `openKept` still refuse an `.xlsb`, and their message now names `readXlsb`. Checked on 7,181 workbooks Excel for Windows saved as xlsx and xlsb from the same open: 7,161 read the same; the rest differ where Excel stores something else in xlsb. An external workbook's name that points past row 65,536 or column IV has no address in the file and reads as `#REF!` with an `externalLink` issue, its formulas' stored values kept; sparklines Excel left out of the xlsb save are not reported; a `LET` name spelled in two cases takes the spelling the file stores once.
+
 Changed:
 
 - `readXlsx`, `openKept` and `inspectKept` no longer bound a part's ratio to its compressed size unless `limits.ratio` gives one; it was 200 by default. `writeXlsx` deflates a PivotTable's large records some 280 times (104 MB into 370 KB, where Excel's file held 724 KB), and a workbook it wrote was refused when read again. The parts read stay bounded by `entryBytes` (512 MiB) and `totalBytes` (1 GiB), which also bound a zip bomb; a host that wants a small file refused before it inflates passes a ratio.
