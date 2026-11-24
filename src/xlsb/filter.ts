@@ -11,15 +11,10 @@ export const ICONS = ['3Arrows', '3ArrowsGray', '3Flags', '3TrafficLights1', '3T
 const OPERATORS = ['', 'lessThan', 'equal', 'lessThanOrEqual', 'greaterThan', 'notEqual', 'greaterThanOrEqual']
 const DATE_FIELDS = ['year', 'month', 'day', 'hour', 'minute', 'second']
 const dx = (id: number) => id === 0xffffffff ? '' : ` dxfId="${id}"`
-interface CustomCondition {
-  type: number
-  comparison: number
-  xml: string
-}
 
 /** Filter records occur in worksheets, tables, and PivotTable filter definitions. */
 export class Filters {
-  private custom?: { prefix: string; and: boolean; conditions: CustomCondition[] }
+  private custom?: { prefix: string; and: boolean; conditions: string[] }
   private inFilter = false
   private skippedAlternate = 0
 
@@ -81,20 +76,16 @@ export class Filters {
         break
       }
       case 172: case 1178:
-        this.custom = { prefix: type === 1178 ? 'x14:' : '', and: payload.u32() === 0, conditions: [] }
+        // Excel uses 1 for AND and 0 for OR in both records. MS-XLSB lists the values in reverse.
+        this.custom = { prefix: type === 1178 ? 'x14:' : '', and: payload.u32() === 1, conditions: [] }
         text = ''
         break
       case 173: {
         const filter = this.custom
         if (!filter) return payload.fail('custom filter end without a start')
-        const two = filter.conditions.length === 2
-        // Excel writes its all-rows placeholder as blank equal OR blank not equal in XLSX.
-        const allRows = two && filter.conditions.every((condition) => condition.type === 12 || condition.type === 14)
-          && filter.conditions.some((condition) => condition.comparison === 2)
-          && filter.conditions.some((condition) => condition.comparison === 5)
-        const and = filter.and && two && !allRows ? ' and="1"' : ''
+        const and = filter.and && filter.conditions.length === 2 ? ' and="1"' : ''
         const tag = filter.prefix + 'customFilters'
-        text = `<${tag}${and}>${filter.conditions.map((condition) => condition.xml).join('')}</${tag}>`
+        text = `<${tag}${and}>${filter.conditions.join('')}</${tag}>`
         this.custom = undefined
         break
       }
@@ -152,7 +143,7 @@ function iconAttrs(payload: Payload): string {
   return ` iconSet="${ICONS[set]}"${icon === 0xffffffff ? '' : ` iconId="${icon}"`}`
 }
 
-function custom(payload: Payload, prefix: string): CustomCondition {
+function custom(payload: Payload, prefix: string): string {
   const type = payload.u8()
   const rule = payload.u8()
   let value = ''
@@ -165,7 +156,7 @@ function custom(payload: Payload, prefix: string): CustomCondition {
   }
   const operator = OPERATORS[rule]
   if (!operator) return payload.fail(`unknown filter operator ${rule}`)
-  return { type, comparison: rule, xml: `<${prefix}customFilter${operator === 'equal' ? '' : ` operator="${operator}"`} val="${escapeAttr(value)}"/>` }
+  return `<${prefix}customFilter${operator === 'equal' ? '' : ` operator="${operator}"`} val="${escapeAttr(value)}"/>`
 }
 
 function dateGroup(payload: Payload): string {
