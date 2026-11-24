@@ -53,7 +53,8 @@ export class Filters {
       case 169: case 1181: {
         const prefix = type === 1181 ? 'x14:' : ''
         if (prefix && payload.remaining === 12) payload.skip(4)
-        const icon = iconAttrs(payload)
+        // Excel writes 3Arrows without an icon ID for the filter that selects cells with no icon.
+        const icon = iconAttrs(payload, '3Arrows')
         text = `<${prefix}iconFilter${icon}/>`
         break
       }
@@ -142,10 +143,10 @@ export class Filters {
   }
 }
 
-function iconAttrs(payload: Payload): string {
+function iconAttrs(payload: Payload, noIconSet = 'NoIcons'): string {
   const set = payload.u32()
   const icon = payload.u32()
-  if (set === 0xffffffff) return ' iconSet="NoIcons"'
+  if (set === 0xffffffff) return ` iconSet="${noIconSet}"`
   if (!ICONS[set]) return payload.fail(`unknown icon set ${set}`)
   return ` iconSet="${ICONS[set]}"${icon === 0xffffffff ? '' : ` iconId="${icon}"`}`
 }
@@ -158,7 +159,12 @@ function custom(payload: Payload, prefix: string): string {
     case 4: value = String(payload.f64()); break
     case 6: payload.skip(8); value = payload.wide(); break
     case 8: value = payload.u8() ? 'TRUE' : 'FALSE'; payload.skip(7); break
-    case 12: case 14: payload.skip(8); break
+    case 12: payload.skip(8); break
+    case 14:
+      // Excel writes the non-blank criterion with a single space.
+      value = ' '
+      payload.skip(8)
+      break
     default: return payload.fail(`unknown filter value type ${type}`)
   }
   const operator = OPERATORS[rule]
