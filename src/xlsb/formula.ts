@@ -74,8 +74,9 @@ function area(payload: Payload, row?: number, col?: number): string {
   const c2 = payload.u16()
   const a = ref(payload, r1, c1, row, col)
   const b = ref(payload, r2, c2, row, col)
-  if (a.r === 0 && b.r === MAX_ROWS - 1) return `${a.col}:${b.col}`
+  // Excel uses whole rows when the range spans both axes of the sheet.
   if (a.c === 0 && b.c === MAX_COLS - 1) return `${a.row}:${b.row}`
+  if (a.r === 0 && b.r === MAX_ROWS - 1) return `${a.col}:${b.col}`
   return `${a.col}${a.row}:${b.col}${b.row}`
 }
 
