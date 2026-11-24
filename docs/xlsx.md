@@ -369,7 +369,7 @@ const { book, cached, issues } = await readXlsb(await file.arrayBuffer())
 
 Excel can save an external name as an invalid reference in xlsb when its definition points beyond the first 65,536 rows or 256 columns of the external sheet. The reader returns `#REF!` for that definition and an `externalLink` issue. Any stored formula result is still in `cached`.
 
-XLSB stores errors in external names as codes. The reader gives them their invariant spelling. If Excel expands shared formulas in XLSB, a formula issue can list the same cells in a different order.
+XLSB stores errors in external names as codes. The reader gives them their invariant spelling. If Excel expands shared formulas in XLSB, a formula issue can list the same cells in a different order. If Excel uses one binary name record for differently capitalized `LET` names, the reader uses the spelling stored in that record.
 
 The `sparkline` issue reports sparkline groups stored in the file. In a paired test, Excel for Windows kept these groups in the XLSX save and left them out of the XLSB save.
 
