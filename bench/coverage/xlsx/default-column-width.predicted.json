@@ -74,5 +74,49 @@
   "issues": [
    "defaultWidth"
   ]
+ },
+ "arial-8-default": {
+  "points": [
+   18,
+   48
+  ],
+  "shown": [
+   "###",
+   "12345.67"
+  ],
+  "issues": []
+ },
+ "arial-8-base": {
+  "points": [
+   83,
+   48
+  ],
+  "shown": [
+   "12345.67",
+   "12345.67"
+  ],
+  "issues": []
+ },
+ "times-10-default": {
+  "points": [
+   61,
+   60
+  ],
+  "shown": [
+   "12345.67",
+   "12345.67"
+  ],
+  "issues": []
+ },
+ "times-10-base": {
+  "points": [
+   105,
+   60
+  ],
+  "shown": [
+   "12345.67",
+   "12345.67"
+  ],
+  "issues": []
  }
 }
