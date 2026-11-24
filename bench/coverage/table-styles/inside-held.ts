@@ -14,6 +14,8 @@ export const INSIDE_CASES = [
   { id: 'precedence', sheet: 'S', range: 'B2:E8' },
   // a cell's own patterned fill and a conditional format's over the table style's
   { id: 'cells', sheet: 'S', range: 'B3:D6' },
+  // stripes over a hidden row and a hidden column count the visible lines
+  { id: 'hidden', sheet: 'S', range: 'B2:H9' },
 ] as const
 
 const black = '<color rgb="FF000000"/>'
@@ -78,6 +80,7 @@ const BOOK: BookInput = {
 function bookOf(id: (typeof INSIDE_CASES)[number]['id']): BookInput {
   if (id === 'inside') return BOOK
   const [sheet] = BOOK.sheets
+  if (id === 'hidden') return { ...BOOK, sheets: [{ ...sheet, rows: { 4: { hidden: true } }, columns: { C: { hidden: true } } }] }
   if (id === 'cells') {
     return {
       ...BOOK,
