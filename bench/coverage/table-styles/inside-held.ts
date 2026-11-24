@@ -19,7 +19,7 @@ const FORMATS: Record<string, string> = {
   '04': '<dxf><fill><patternFill patternType="gray125"><bgColor rgb="FF00FF00"/></patternFill></fill></dxf>',
   '05': '<dxf><numFmt numFmtId="164" formatCode="0.00%"/><fill><patternFill patternType="solid"><bgColor rgb="FFDDDDDD"/></patternFill></fill></dxf>',
   '06': '<dxf><font><b/></font><numFmt numFmtId="165" formatCode="#,##0.000"/></dxf>',
-  '07': '<dxf><border><horizontal style="thin"><color rgb="FF00B050"/></horizontal><vertical style="medium"><color rgb="FF7030A0"/></vertical></border></dxf>',
+  '07': '<dxf><border><vertical style="medium"><color rgb="FF7030A0"/></vertical><horizontal style="thin"><color rgb="FF00B050"/></horizontal></border></dxf>',
   '08': '<dxf><fill><patternFill patternType="solid"><fgColor rgb="FFFFC000"/><bgColor rgb="FFFFC000"/></patternFill></fill></dxf>',
 }
 const marker = (n: string) => ({ fill: { color: `#0101${n}` } })
