@@ -117,13 +117,14 @@ export const filterDatabase = (sheet: string, range: string, place: number) =>
  * The book's names as `<definedNames>`, without the carriers of `openKept` (a file written anew holds none of their parts), each
  * cache of a slicer or a timeline (`caches`) a name of the workbook as Excel writes it, where the book has none, and the sheets' filter databases.
  */
-function definedNames(book: BookInput, issues: Issues, names: FileNames, caches: string[]): string {
+function definedNames(book: BookInput, issues: Issues, names: FileNames, caches: string[], extra: readonly string[]): string {
   const own = book.names?.some((n) => n.hidden && n.name.startsWith(CARRIER_PREFIX)) ? { ...book, names: book.names.filter((n) => !(n.hidden && n.name.startsWith(CARRIER_PREFIX))) } : book
   const out = nameElements(own, issues, names).filter((x) => x !== undefined)
   const held = new Set(own.names?.filter((n) => n.scope === undefined).map((n) => caseKey(n.name)))
   for (const name of caches) if (!held.has(caseKey(name))) out.push(`<definedName name="${escapeAttr(name)}">#N/A</definedName>`)
   book.sheets.forEach((s, i) => s.autoFilter && out.push(filterDatabase(s.name, s.autoFilter.range, i)))
-  return out.length ? `<definedNames>${out.join('')}</definedNames>` : ''
+  const all = extra.length ? out.concat(extra) : out
+  return all.length ? `<definedNames>${all.join('')}</definedNames>` : ''
 }
 
 /** The calculation option and iterative calculation as `calcPr`'s attributes; what the book leaves out is Excel's default (automatic, 100 rounds, a change of 0.001). */
@@ -184,9 +185,28 @@ function pivotButtons(book: BookInput, i: number): ReadonlySet<number> | undefin
  * or only its values (`opts.mode: 'values'`).
  */
 export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions): Promise<XlsxWritten> {
+  return writeXlsxParts(snapshot, opts)
+}
+
+export interface WorksheetPrintParts {
+  /** Inside <sheetPr>, following the outline properties. */
+  properties: string
+  /** Between the hyperlinks and the sheet's drawings. */
+  settings: string
+  /** The sheet-local print area and print titles that belong to <definedNames>. */
+  names: readonly string[]
+}
+
+/** The ordinary writer and the opt-in print writer share the same worksheet and ZIP assembly. */
+export async function writeXlsxParts(
+  snapshot: XlsxSnapshot,
+  opts: WriteXlsxOptions | undefined,
+  preparePrint?: (book: BookInput) => ReadonlyMap<string, WorksheetPrintParts>,
+): Promise<XlsxWritten> {
   const { book: given, keys, cells, resultKeys, mode, unasked, locale } = writeArgs(snapshot, opts)
   const issues = new Issues()
   const book = fitPivots(given, issues)
+  const print = preparePrint?.(book)
   const styles = new StyleWriter(book.styles, book.font, issues)
   const strings = new Map<string, number>()
   let refs = 0
@@ -227,6 +247,7 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
       ...(filterTables[i] ? { filterTable: filterTables[i] } : {}),
       noteBlock,
       active: i === active,
+      pageSetupProperties: print?.get(s.name)?.properties,
       buttons: bw.buttons(i),
     })
     if (w.notes) noteBlock = nextBlock(noteBlock, w.notes.count)
@@ -262,7 +283,13 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
     const add = (type: string, target: string | undefined) => (target === undefined ? undefined : `rId${sheetRels.push([type, target])}`)
     const drawing = add(`${REL}/drawing`, sl.drawing)
     const ext = sheetSlicerExt(add(SLICER_RELS.slicer, sl.slicers), add(SLICER_RELS.timeline, sl.timelines), add(SLICER_RELS.slicer, sl.tableSlicers))
-    files.push({ name: `xl/worksheets/sheet${i + 1}.xml`, text: sheetXml(drawing || ext ? { ...s, legacyDrawing: `${drawing ? `<drawing r:id="${drawing}"/>` : ''}${s.legacyDrawing}`, ext: s.ext + ext } : s) })
+    const worksheet = drawing || ext ? {
+      ...s,
+      legacyDrawing: (drawing ? `<drawing r:id="${drawing}"/>` : '') + s.legacyDrawing,
+      ext: s.ext + ext,
+    } : s
+    const printSettings = print?.get(book.sheets[i].name)?.settings
+    files.push({ name: `xl/worksheets/sheet${i + 1}.xml`, text: sheetXml(worksheet, printSettings) })
     contentTypes.push([`/xl/worksheets/sheet${i + 1}.xml`, `${TYPE}.worksheet+xml`])
     wbRels.push([`${REL}/worksheet`, `worksheets/sheet${i + 1}.xml`])
     for (const { t, id } of parts[i]) {
@@ -313,7 +340,8 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
   // always there: without it Excel keeps the calculation settings it has from the books opened before (iteration on)
   const calc = `<calcPr${formulas ? ' fullCalcOnLoad="1"' : ''}${calcAttrs(book)}/>`
   const pr = book.dateSystem === 1904 ? '<workbookPr date1904="1"/>' : ''
-  files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}">${pr}<bookViews><workbookView${book.activeSheet !== undefined || active ? ` activeTab="${active}"` : ''}/></bookViews><sheets>${sheetList}</sheets>${linkRefs.length ? `<externalReferences>${linkRefs.join('')}</externalReferences>` : ''}${definedNames(book, issues, names, slicers.cacheNames)}${calc}${pivotCaches ? `<pivotCaches>${pivotCaches}</pivotCaches>` : ''}${wbExt ? `<extLst>${wbExt}</extLst>` : ''}</workbook>` })
+  const printNames = print ? [...print.values()].flatMap((sheet) => sheet.names) : []
+  files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}">${pr}<bookViews><workbookView${book.activeSheet !== undefined || active ? ` activeTab="${active}"` : ''}/></bookViews><sheets>${sheetList}</sheets>${linkRefs.length ? `<externalReferences>${linkRefs.join('')}</externalReferences>` : ''}${definedNames(book, issues, names, slicers.cacheNames, printNames)}${calc}${pivotCaches ? `<pivotCaches>${pivotCaches}</pivotCaches>` : ''}${wbExt ? `<extLst>${wbExt}</extLst>` : ''}</workbook>` })
   files.push({ name: 'xl/_rels/workbook.xml.rels', text: rels(wbRels) })
   const rootRels: [string, string][] = [[`${REL}/officeDocument`, 'xl/workbook.xml']]
   if (book.locale !== undefined) {

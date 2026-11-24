@@ -85,6 +85,8 @@ export interface SheetContext extends FileNames {
   noteBlock: number
   /** The sheet is the book's active one (`workbookView activeTab`), its tab selected unless the saved view specifies it. */
   active: boolean
+  /** The optional `pageSetUpPr` child of `sheetPr`, after the outline properties. */
+  pageSetupProperties?: string
   /** The cells with a PivotTable's filter button, by row and column (`BookWriting.buttons`). */
   buttons?: ReadonlySet<number>
 }
@@ -136,12 +138,12 @@ export interface SheetPieces {
 }
 
 /** The worksheet part from its elements. */
-export function sheetXml(p: SheetPieces): string {
+export function sheetXml(p: SheetPieces, pageSettings = ''): string {
   const data = p.rows.map((r) => (r.cells ? `<row r="${r.row + 1}"${r.attrs}>${r.cells}</row>` : `<row r="${r.row + 1}"${r.attrs}/>`)).join('')
   return (
     `${HEAD}<worksheet xmlns="${MAIN}" xmlns:r="${REL}">` +
     p.sheetPr + `<dimension ref="${p.dimension}"/>` + p.views + p.formatPr + p.cols + `<sheetData>${data}</sheetData>` +
-    p.protection + p.autoFilter + p.sort + p.merges + p.conditional + p.validations + p.hyperlinks + p.legacyDrawing + p.tableParts +
+    p.protection + p.autoFilter + p.sort + p.merges + p.conditional + p.validations + p.hyperlinks + pageSettings + p.legacyDrawing + p.tableParts +
     (p.ext ? `<extLst>${p.ext}</extLst>` : '') +
     '</worksheet>'
   )
@@ -358,7 +360,7 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
   const o = sheet.outline
   const outlinePr = o && (o.summaryBelow !== undefined || o.summaryRight !== undefined) ? `<outlinePr${o.summaryBelow !== undefined ? ` summaryBelow="${o.summaryBelow ? 1 : 0}"` : ''}${o.summaryRight !== undefined ? ` summaryRight="${o.summaryRight ? 1 : 0}"` : ''}/>` : ''
   // the tab's colour first, as the schema orders the children of <sheetPr>
-  const prBody = (sheet.tabColor ? `<tabColor rgb="${rgb(sheet.tabColor)}"/>` : '') + outlinePr
+  const prBody = (sheet.tabColor ? `<tabColor rgb="${rgb(sheet.tabColor)}"/>` : '') + outlinePr + (ctx.pageSetupProperties ?? '')
   const deepest = (ls: Line<{ outlineLevel?: number }>[], attr: string) => {
     const n = ls.reduce((m, [, , e]) => Math.max(m, e.outlineLevel ?? 0), 0)
     return n ? ` ${attr}="${n}"` : ''

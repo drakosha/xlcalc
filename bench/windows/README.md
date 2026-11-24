@@ -49,6 +49,19 @@ Each kind has its test beside the Mac's: `test/excel-win.test.ts` (formulas), `d
 
 Numeric edits sent by `comEdit` carry their binary64 bits. The Windows step decodes those bits before assigning `Value2`; the legacy decimal parser can move a value to an adjacent double. Old job descriptions without bits still use their text. New measurements use new set names so the recorded answers from the older input path stay unchanged.
 
+## Worksheet printing
+
+`bench/windows/print.ts` exports synthetic reports to PDF through Excel and examines their page boundaries with
+`pdftotext`. Pass the machine's current Excel locale, an output directory and optional case name prefixes.
+
+```sh
+XLWIN_HOST=your-excel-host XLWIN_CODEPAGE=any npx tsx bench/windows/print.ts ru-RU /tmp/xlcalc-print wide threshold footer
+```
+
+The output directory contains the generated workbooks, the PDFs and `print-pages.json` with the active printer,
+COM geometry, page markers and the library's nominal prediction. [Worksheet printing](../../docs/xlsx-print.md)
+describes the measurements and the device geometry the planner can take.
+
 ## Running it
 
 A command that takes a locale takes `en`, `ru` or the tag of one of the package's locales (`de-DE`), en-US when it names none.
