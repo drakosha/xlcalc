@@ -84,6 +84,7 @@ describe('XLSB archive', () => {
     'union-arguments', 'unprefixed-function', 'worksheet-function-shadow', 'worksheet-function-name-case',
     'iteration-default', 'range-sheet-quote',
     'range-start-name', 'range-sheet-span', 'formula-closing-space', 'formula-small-numbers',
+    'name-local-sheet', 'name-global-self',
     'functions-001', 'functions-066', 'functions-131', 'functions-196',
     'functions-261', 'functions-326', 'functions-391', 'functions-456', 'functions-references',
   ]

@@ -26,7 +26,7 @@ export interface Context {
   sheetsByRel: Map<string, string>
   names: Defined[]
   xti: [book: number, first: number, last: number][]
-  linkSources: { number?: number; sheets?: string[]; names?: string[]; scopes?: number[] }[]
+  linkSources: { number?: number; self?: true; sheets?: string[]; names?: string[]; scopes?: number[] }[]
   external: ReadonlyMap<string, ExternalSource>
   metadata: { cell: number; value: number }
   tables: Map<number, TableIndex>
@@ -139,7 +139,10 @@ export function workbook({ bytes, path, xml, pending, context }: Part): void {
         context.linkSources.push({ number: links.length, ...external })
         break
       }
-      case 357: case 358: case 667:
+      case 357: // BrtSupSelf
+        context.linkSources.push({ self: true })
+        break
+      case 358: case 667:
         context.linkSources.push({})
         break
       case 361: {

@@ -93,15 +93,18 @@ function sheetPrefix(context: Context, index: number, tokens: Payload): string {
   const end = sheets[last]
   if (start === undefined || end === undefined) return `${prefix}#REF!`
   if (first === last) return qualifier(prefix, start)
-  return quoteSheetIfNeeded(start) === start && quoteSheetIfNeeded(end) === end
-    ? `${prefix}${start}:${end}!`
-    : `'${(prefix + start + ':' + end).replace(/'/g, "''")}'!`
+  const span = `${prefix}${start}:${end}`
+  const plain = quoteSheetIfNeeded(start) === start && quoteSheetIfNeeded(end) === end
+  return (plain ? span : quoteSheet(span)) + '!'
 }
 
 function qualifier(prefix: string, sheet: string): string {
-  return quoteSheetIfNeeded(sheet) === sheet
-    ? `${prefix}${sheet}!`
-    : `'${(prefix + sheet).replace(/'/g, "''")}'!`
+  const name = prefix + sheet
+  return (quoteSheetIfNeeded(sheet) === sheet ? name : quoteSheet(name)) + '!'
+}
+
+function definedName(context: Context, index: number, tokens: Payload): Defined {
+  return context.names[index - 1] ?? tokens.fail(`defined name index ${index} out of bounds`)
 }
 
 function array(extra: Payload): string {
@@ -284,9 +287,7 @@ export function formulaText({ tokens, extra }: Formula, context: Context, row = 
         break
       }
       case 0x23: {
-        const index = tokens.u32()
-        const name = context.names[index - 1]
-        if (!name) tokens.fail(`defined name index ${index} out of bounds`)
+        const name = definedName(context, tokens.u32(), tokens)
         push(name.name, name)
         break
       }
@@ -324,6 +325,13 @@ export function formulaText({ tokens, extra }: Formula, context: Context, row = 
         const xti = context.xti[link]
         if (!xti) tokens.fail(`external sheet index ${link} out of bounds`)
         const source = context.linkSources[xti[0]]
+        if (source?.self) {
+          // Excel uses PtgNameX for explicitly qualified names in the same workbook.
+          const name = definedName(context, index, tokens)
+          const sheet = context.sheets[name.scope]
+          push((sheet === undefined ? '[0]!' : qualifier('', sheet)) + name.name)
+          break
+        }
         const name = source?.names?.[index - 1]
         if (!name) return undefined
         const sheet = source.scopes?.[index - 1]
