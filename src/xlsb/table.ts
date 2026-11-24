@@ -91,7 +91,7 @@ export function table({ bytes, path, xml, context, pending }: Part): void {
       case 347: xml.add(`<tableColumn${column(payload).attrs}>`); break
       case 348: xml.add('</tableColumn>'); col++; break
       case 351: case 352: {
-        const flags = type === 351 ? payload.u8() : 0
+        const flags = payload.u8()
         const formulaData = formula(payload)
         const decoded = formulaText(formulaData, context, row, col, true)
         payload.done()
