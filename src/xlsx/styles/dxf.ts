@@ -11,7 +11,7 @@ import { attributes, element, flag, within, type Element } from '../xml/scan.js'
 import { decodeXml } from '../xml/text.js'
 import { colorOf, type Palette } from './color.js'
 import { BUILTIN } from './numfmt.js'
-import { alignment, border, protection, readFill, underlineOf } from './read.js'
+import { alignment, border, protection, readFill, underlineOf, type InsideLines } from './read.js'
 
 export interface Dxf {
   style: ConditionalStyle
@@ -20,6 +20,8 @@ export interface Dxf {
   pattern?: Color
   /** What a cell's style holds beyond a conditional one: the font's name and size, the alignment and protection (a PivotTable's formats take them). */
   cell?: Pick<CellStyle, 'alignment' | 'protection'> & { name?: string; size?: number }
+  /** The lines between a range's cells, which only a table style's region draws. */
+  inside?: InsideLines
 }
 
 /** The elements of a dxf's font that a conditional style has no place for. */
@@ -45,6 +47,7 @@ export function readDxf(e: Element, p: Palette): Dxf {
   const style: ConditionalStyle = {}
   const lost: StyleLoss[] = []
   let pattern: Color | undefined
+  let inside: InsideLines | undefined
   const f = element(b, 'font')
   if (f?.body) {
     const fb = f.body
@@ -72,6 +75,7 @@ export function readDxf(e: Element, p: Palette): Dxf {
   if (bo) {
     const x = border(bo, p)
     if (x.border) style.border = x.border
+    if (x.inside) inside = x.inside
     lost.push(...x.lost)
   }
   const nf = element(b, 'numFmt')
@@ -97,7 +101,7 @@ export function readDxf(e: Element, p: Palette): Dxf {
   if (pr) cell.protection = pr
   if (element(b, 'alignment')) lost.push('alignment')
   if (element(b, 'protection')) lost.push('protection')
-  return { style, lost, ...(pattern ? { pattern } : {}), ...(Object.keys(cell).length ? { cell } : {}) }
+  return { style, lost, ...(pattern ? { pattern } : {}), ...(Object.keys(cell).length ? { cell } : {}), ...(inside ? { inside } : {}) }
 }
 
 /** The cell styling of a dxf, also used by PivotTable and custom table style definitions. */

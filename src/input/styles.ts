@@ -2,7 +2,7 @@
  * The checks of input's looks: number formats, the index of a style of the book, and styles with their fonts, fills,
  * borders, alignments and protection, as a cell's style or a conditional format's. The module needs nothing of the engine.
  */
-import type { AlignmentStyle, BorderLine, CellStyle } from '../contract.js'
+import type { AlignmentStyle, BorderLine, CellStyle, FillPattern } from '../contract.js'
 import { InputError, what } from '../input-error.js'
 import { isBuiltin } from '../numfmt/builtin.js'
 import { array, checkBoolean, checkNumber, checkOneOf, checkString, isObject, object, onlyKeys } from './basic.js'
@@ -53,11 +53,28 @@ export function checkFont(v: unknown, p: string, given: Given, named: boolean) {
   if (given(f, 'color')) checkColor(f.color, `${p}.color`)
 }
 
-/** A solid fill; `example` is the colour its message shows. */
+export const PATTERNS: readonly FillPattern[] = [
+  'darkGray', 'mediumGray', 'lightGray', 'gray125', 'gray0625', 'darkHorizontal', 'darkVertical', 'darkDown', 'darkUp',
+  'darkGrid', 'darkTrellis', 'lightHorizontal', 'lightVertical', 'lightDown', 'lightUp', 'lightGrid', 'lightTrellis',
+]
+
+/** A fill, solid or with a pattern over its colour; `example` is the colour its message shows. */
 export function checkFill(v: unknown, p: string, example: string) {
   const f = object(v, p, `a fill such as { color: "${example}" }`)
-  onlyKeys(f, p, ['color'])
+  onlyKeys(f, p, ['color', 'pattern', 'patternColor'])
   checkColor(f.color, `${p}.color`)
+  if (f.pattern !== undefined) checkOneOf(f.pattern, `${p}.pattern`, PATTERNS)
+  if (f.patternColor === undefined) return
+  if (f.pattern === undefined) throw new InputError(`${p}.patternColor`, 'a pattern colour needs a pattern')
+  checkColor(f.patternColor, `${p}.patternColor`)
+}
+
+/** A border's line: its style and colour. */
+export function checkLine(v: unknown, p: string) {
+  const line = object(v, p, 'a line such as { style: "thin", color: "#000000" }')
+  onlyKeys(line, p, ['style', 'color'])
+  checkOneOf(line.style, `${p}.style`, LINES)
+  if (line.color !== undefined) checkColor(line.color, `${p}.color`)
 }
 
 /** A border's sides; `side` says which of those it names are given. */
@@ -66,11 +83,7 @@ export function checkBorder(v: unknown, p: string, side: Given) {
   onlyKeys(b, p, ['top', 'right', 'bottom', 'left'])
   for (const [k, l] of Object.entries(b)) {
     if (!side(b, k)) continue
-    const lp = `${p}.${k}`
-    const line = object(l, lp, 'a line such as { style: "thin", color: "#000000" }')
-    onlyKeys(line, lp, ['style', 'color'])
-    checkOneOf(line.style, `${lp}.style`, LINES)
-    if (line.color !== undefined) checkColor(line.color, `${lp}.color`)
+    checkLine(l, `${p}.${k}`)
   }
 }
 

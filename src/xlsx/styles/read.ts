@@ -6,8 +6,8 @@ import type { SectionProblem } from '../../numfmt/parse.js'
  * What a style cannot hold (pattern and gradient fills, diagonal borders, rotation, shrinking, sub- and superscript,
  * a font's outline or shadow) is named per cell format, for the reader to report on the cells that use it.
  */
-import type { AlignmentStyle, BorderLine, CellProtection, CellStyle, FontStyle, NumberFormat } from '../../contract.js'
-import { HORIZONTAL, LINES, VERTICAL } from '../../input/styles.js'
+import type { AlignmentStyle, BorderLine, CellProtection, CellStyle, FillPattern, FontStyle, NumberFormat } from '../../contract.js'
+import { HORIZONTAL, LINES, PATTERNS, VERTICAL } from '../../input/styles.js'
 import type { StyleLoss } from '../../locale/messages.js'
 import { isBuiltin } from '../../numfmt/builtin.js'
 import { attributes, element, flag, within, type Element } from '../xml/scan.js'
@@ -97,7 +97,10 @@ export function font(e: Element, p: Palette): Font {
   return { style, lost }
 }
 
-export function border(e: Element, p: Palette): { border?: CellStyle['border']; lost: StyleLoss[] } {
+/** A border's lines between the cells of a range (`<horizontal>`, `<vertical>`), which a table style's region draws inside. */
+export type InsideLines = { horizontal?: BorderLine; vertical?: BorderLine }
+
+export function border(e: Element, p: Palette): { border?: CellStyle['border']; inside?: InsideLines; lost: StyleLoss[] } {
   const b = e.body ?? ''
   const out: NonNullable<CellStyle['border']> = {}
   const lost: StyleLoss[] = []
@@ -117,19 +120,34 @@ export function border(e: Element, p: Palette): { border?: CellStyle['border']; 
   // without either direction nothing is drawn (ECMA-376 18.8.4)
   const at = attributes(e.attrs)
   if ((flag(at.diagonalUp) || flag(at.diagonalDown)) && side(['diagonal'])) lost.push('diagonalBorder')
-  return Object.keys(out).length ? { border: out, lost } : { lost }
+  const inside: InsideLines = {}
+  for (const k of ['horizontal', 'vertical'] as const) {
+    const line = side([k])
+    if (line) inside[k] = line
+  }
+  return {
+    ...(Object.keys(out).length ? { border: out } : {}),
+    ...(Object.keys(inside).length ? { inside } : {}),
+    lost,
+  }
 }
 
 /**
  * A fill (`<fill>`) of a cell format or, with `dxf`, of a conditional format, as Excel for Mac and for Windows show them
  * (the sets `cond/fills-held`, `cond/fills-held-2`). Both read a pattern beside a gradient alone (Excel shows a cell so,
- * and opens no file with a dxf so), name a gradient or a pattern other than solid lost, and take a colour that names
- * none (`auto`, the system's) as Excel's automatic colour, white. They read a pattern fill otherwise, as Excel does:
+ * and opens no file with a dxf so), name a gradient lost, and take a colour that names none (`auto`, the system's) as
+ * Excel's automatic colour, white; a pattern's automatic line colour is black, as the model says without one. They read a pattern fill otherwise, as Excel does:
  * without a pattern type a cell's is none (Excel saves it so) and a dxf's solid (Excel writes its dxfs so); a cell's
  * solid fill shows its `fgColor`, white without one, and a dxf's its `bgColor` alone, keeping the cell's own colour
  * without one (white on a cell without a fill) and changing nothing when it is empty; a dxf's none takes the cell's fill
  * away. The model cannot say a fill kept or taken away: those are named lost.
  */
+/**
+ * The second fill, which Excel reserves and shows as gray125 whatever the file holds there (`xlsx/fills-read`): named
+ * lost, so that `writeKept` keeps such a cell's format by its carrier as before, its fill id the file's own.
+ */
+const RESERVED: { lost: StyleLoss[] } = { lost: ['patternFill'] }
+
 export function readFill(e: Element, p: Palette, dxf = false): { fill?: CellStyle['fill']; lost: StyleLoss[] } {
   const b = e.body ?? ''
   const pf = element(b, 'patternFill')
@@ -138,7 +156,15 @@ export function readFill(e: Element, p: Palette, dxf = false): { fill?: CellStyl
   const a = attributes(pf.attrs)
   const type = a.patternType ?? (dxf ? 'solid' : 'none')
   if (type === 'none') return { lost: dxf ? [...lost, 'fillRemoved'] : lost }
-  if (type !== 'solid') return { lost: [...lost, 'patternFill'] }
+  if (type !== 'solid') {
+    if (!PATTERNS.includes(type as FillPattern)) return { lost: [...lost, 'patternFill'] }
+    // a pattern's lines are its fgColor, Excel's automatic black without one, over its bgColor, white without one,
+    // in a cell's fill and a dxf's alike (`test/excel/win/xlsx/table-style-inside-held.json`)
+    const fg = element(pf.body ?? '', 'fgColor')
+    const lines = fg && !flag(attributes(fg.attrs).auto) ? colorOf(fg, p) : undefined
+    const color = colorOf(element(pf.body ?? '', 'bgColor'), p) ?? '#FFFFFF'
+    return { fill: { color, pattern: type as FillPattern, ...(lines ? { patternColor: lines } : {}) }, lost }
+  }
   const shown = element(pf.body ?? '', dxf ? 'bgColor' : 'fgColor')
   if (shown || !dxf) return { fill: { color: colorOf(shown, p) ?? '#FFFFFF' }, lost }
   return a.patternType !== undefined || element(pf.body ?? '', 'fgColor') ? { lost: [...lost, 'fillWithoutColor'] } : { lost }
@@ -209,7 +235,7 @@ export function readStyles(xml: string | undefined, p: Palette): StyleTable {
   const fonts = within(xml, 'fonts', 'font').map((e) => font(e, p))
   const base = fonts[0]?.style ?? {}
   // Excel takes the first two fills as none and gray125 whatever the file says ([MS-OI29500] 2.1.705; the set `xlsx/fills-read`)
-  const fills = within(xml, 'fills', 'fill').map((e, i): ReturnType<typeof readFill> => (i === 0 ? { lost: [] } : i === 1 ? { lost: ['patternFill'] } : readFill(e, p)))
+  const fills = within(xml, 'fills', 'fill').map((e, i): ReturnType<typeof readFill> => (i === 0 ? { lost: [] } : i === 1 ? RESERVED : readFill(e, p)))
   const borders = within(xml, 'borders', 'border').map((e) => border(e, p))
   const styles: CellStyle[] = []
   const byKey = new Map<string, number>()

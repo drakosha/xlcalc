@@ -1,4 +1,4 @@
-import type { BookInput, BorderLine, CellStyle, WorkbookTableStyles } from '../contract.js'
+import type { BookInput, BorderLine, CellStyle, NumberFormat, TableStyleElement, WorkbookTableStyles } from '../contract.js'
 import { hiddenSpansOf } from '../layout/hidden.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { keyOf } from '../style-table.js'
@@ -6,11 +6,10 @@ import { anyMeets, hasCell, type Rect } from '../structure/area.js'
 import { tableKey } from '../tables/model.js'
 import { DEFAULT_TABLE_STYLE } from '../tables/check.js'
 import type { TableStyleWindow } from '../table-style-hook.js'
-import { colorOf, type Palette } from '../xlsx/styles/color.js'
+import type { Palette } from '../xlsx/styles/color.js'
 import { dxfCellStyle, readDxf } from '../xlsx/styles/dxf.js'
 import { checkTableStyleData } from '../input/table-style-data.js'
-import { LINES } from '../input/styles.js'
-import { attributes, element } from '../xlsx/xml/scan.js'
+import { element } from '../xlsx/xml/scan.js'
 import { PRESET_DIFFERENTIAL_FORMATS, PRESET_TABLE_STYLES } from './presets.js'
 import { pivotArea, tableArea, type StyledArea } from './regions.js'
 import { visibleLines } from './stripe-lines.js'
@@ -19,6 +18,7 @@ interface Differential {
   style: CellStyle
   horizontal?: BorderLine
   vertical?: BorderLine
+  numberFormat?: NumberFormat
 }
 
 interface ElementStyle extends Differential {
@@ -50,19 +50,10 @@ const presetNames = new Map(Object.keys(PRESET_TABLE_STYLES).map((name) => [tabl
 const presetCache = new WeakMap<string[], { formats: Map<number, Differential>; styles: Map<string, Definition> }>()
 
 function presetFormat(xml: string, palette: Palette): Differential {
-  const dxf = element(xml, 'dxf')!
-  const parsed = readDxf(dxf, palette)
+  const parsed = readDxf(element(xml, 'dxf')!, palette)
   const style = dxfCellStyle(parsed)
   if (!style.fill && parsed.pattern) style.fill = { color: parsed.pattern }
-  const border = element(dxf.body ?? '', 'border')?.body ?? ''
-  const inner = (side: string): BorderLine | undefined => {
-    const line = element(border, side)
-    const kind = attributes(line?.attrs ?? '').style as BorderLine['style']
-    if (!LINES.includes(kind)) return
-    const color = colorOf(element(line?.body ?? '', 'color'), palette)
-    return color ? { style: kind, color } : { style: kind }
-  }
-  return { style, horizontal: inner('horizontal'), vertical: inner('vertical') }
+  return { style, ...parsed.inside }
 }
 
 function preset(name: string, theme: string[]): Definition | undefined {
@@ -103,16 +94,22 @@ interface Drawn {
   area: Area
   style: CellStyle
   rank: Partial<Record<Side, number>>
+  numberFormat?: NumberFormat
 }
 
-/** A region's outer edges run round its box. Its inner edges are between cells of that box. */
+/**
+ * A region's outer edges run round its box. Its inner edges are between cells of that box. A later region's number
+ * format wins, as its other fields do: a total row's over a first column's (`table-style-inside-held`).
+ */
 function draw({ area, definition }: Area, r: number, c: number): Omit<Drawn, 'area'> {
   const rank: Drawn['rank'] = {}
   let style: CellStyle = {}
+  let numberFormat: NumberFormat | undefined
   const regions = area.regions(r, c, (name) => definition.get(name)?.size ?? 1)
   regions.forEach(({ type, box }) => {
     const format = definition.get(type)
     if (!format) return
+    if (format.numberFormat !== undefined) numberFormat = format.numberFormat
     const { border, ...look } = format.style
     const sides = [
       r === box.r1 ? border?.top : format.horizontal,
@@ -130,11 +127,15 @@ function draw({ area, definition }: Area, r: number, c: number): Omit<Drawn, 'ar
     })
     style = overlay(style, Object.keys(edges).length ? { ...look, border: edges } : look)
   })
-  return { style, rank }
+  return { style, rank, ...(numberFormat === undefined ? {} : { numberFormat }) }
 }
 
+/** A custom element as the renderer takes a preset's: its lines inside beside its style. */
+const customFormat = ({ size, style, inside, numberFormat }: TableStyleElement): ElementStyle =>
+  ({ style, ...(size === undefined ? {} : { size }), ...inside, ...(numberFormat === undefined ? {} : { numberFormat }) })
+
 function definitions(data: WorkbookTableStyles | undefined) {
-  const custom = new Map(Object.entries(data?.custom ?? {}).map(([name, def]) => [tableKey(name), new Map(def.elements.map((e) => [e.type, e]))]))
+  const custom = new Map(Object.entries(data?.custom ?? {}).map(([name, def]) => [tableKey(name), new Map(def.elements.map((e) => [e.type, customFormat(e)]))]))
   const theme = data?.theme ?? OFFICE
   return (name: string) => {
     const key = tableKey(name)
@@ -142,19 +143,18 @@ function definitions(data: WorkbookTableStyles | undefined) {
   }
 }
 
-export function tableStyleWindow(book: BookInput, sheetIndex: number, rects: Rect[]): TableStyleWindow | undefined {
+/** The styled tables and PivotTables of a sheet, those that meet `near` where it is given; undefined without any. */
+function styledAreas(book: BookInput, sheetIndex: number, near?: Rect[]): Area[] | undefined {
   const sheet = book.sheets[sheetIndex]
   if (!sheet.tables?.length && !sheet.pivotTables?.length) return
   if (book.tableStyles !== undefined) checkTableStyleData(book.tableStyles, 'book.tableStyles')
   const definitionOf = definitions(book.tableStyles)
   const areas: Area[] = []
-  // A border is visible from either cell sharing the edge, even just outside a styled area.
-  const nearby = rects.map(({ r1, r2, c1, c2 }) => ({ r1: r1 - 1, r2: r2 + 1, c1: c1 - 1, c2: c2 + 1 }))
   const add = (name: string | undefined, locate: () => StyledArea) => {
     const definition = name ? definitionOf(name) : undefined
     if (!definition?.size) return
     const area = locate()
-    if (anyMeets(area.bounds, nearby)) areas.push({ area, definition })
+    if (!near || anyMeets(area.bounds, near)) areas.push({ area, definition })
   }
   if (sheet.tables?.length) {
     const rows = visibleLines(hiddenSpansOf(sheet.rows, 'r'))
@@ -162,7 +162,30 @@ export function tableStyleWindow(book: BookInput, sheetIndex: number, rects: Rec
     for (const table of sheet.tables) add((table.style ?? DEFAULT_TABLE_STYLE).name, () => tableArea(table, rows, columns))
   }
   for (const table of sheet.pivotTables ?? []) add(table.style?.name, () => pivotArea(table))
-  if (!areas.length) return
+  return areas.length ? areas : undefined
+}
+
+const areaAt = (areas: Area[], r: number, c: number) => areas.find(({ area }) => area.bounds.some((bounds) => hasCell(bounds, r, c)))
+
+/**
+ * The number format a table style's region shows a cell of the sheet with, where the cell's own is General; undefined
+ * where no style of the book has one, as no preset has.
+ */
+export function tableFormats(book: BookInput, sheetIndex: number): ((r: number, c: number) => NumberFormat | undefined) | undefined {
+  const custom = Object.values(book.tableStyles?.custom ?? {})
+  if (!custom.some((definition) => definition.elements.some((e) => e.numberFormat !== undefined))) return
+  const areas = styledAreas(book, sheetIndex)
+  if (!areas) return
+  return (r, c) => {
+    const area = areaAt(areas, r, c)
+    return area ? draw(area, r, c).numberFormat : undefined
+  }
+}
+
+export function tableStyleWindow(book: BookInput, sheetIndex: number, rects: Rect[]): TableStyleWindow | undefined {
+  // A border is visible from either cell sharing the edge, even just outside a styled area.
+  const areas = styledAreas(book, sheetIndex, rects.map(({ r1, r2, c1, c2 }) => ({ r1: r1 - 1, r2: r2 + 1, c1: c1 - 1, c2: c2 + 1 })))
+  if (!areas) return
 
   const cells = new Map<number, Drawn | null>()
   const drawn = (r: number, c: number): Drawn | null => {
@@ -170,7 +193,7 @@ export function tableStyleWindow(book: BookInput, sheetIndex: number, rects: Rec
     const key = r * MAX_COLS + c
     const cached = cells.get(key)
     if (cached !== undefined) return cached
-    const area = areas.find(({ area }) => area.bounds.some((bounds) => hasCell(bounds, r, c)))
+    const area = areaAt(areas, r, c)
     const look = area ? { area, ...draw(area, r, c) } : null
     cells.set(key, look)
     return look

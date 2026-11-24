@@ -51,7 +51,7 @@ const LOSSES = pack(
     strings: [RICH],
     styles:
       '<fonts count="2"><font><sz val="12"/><name val="Arial"/></font><font><vertAlign val="superscript"/><sz val="12"/><name val="Arial"/></font></fonts>' +
-      '<fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="darkGray"><fgColor rgb="FF00FF00"/></patternFill></fill></fills>' +
+      '<fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="speckled"><fgColor rgb="FF00FF00"/></patternFill></fill></fills>' +
       '<borders count="1"><border/></borders><cellXfs count="2"><xf/><xf fontId="1" fillId="2"><alignment shrinkToFit="1"/></xf></cellXfs>',
     workbook: {
       before: '<workbookProtection lockStructure="1"/>',

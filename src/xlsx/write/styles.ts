@@ -44,8 +44,10 @@ export function fontXml(f: FontStyle, base: BaseFont = DEFAULT_FONT): string {
 
 const line = (side: string, l: BorderLine | undefined) => (l ? `<${side} style="${l.style}">${l.color ? `<color rgb="${rgb(l.color)}"/>` : ''}</${side}>` : `<${side}/>`)
 
-export function borderXml(b: NonNullable<CellStyle['border']>): string {
-  return `<border>${line('left', b.left)}${line('right', b.right)}${line('top', b.top)}${line('bottom', b.bottom)}<diagonal/></border>`
+/** A border's sides, and with `inside` the lines a table style's region draws between its cells. */
+export function borderXml(b: NonNullable<CellStyle['border']>, inside?: { horizontal?: BorderLine; vertical?: BorderLine }): string {
+  const between = inside ? `${line('vertical', inside.vertical)}${line('horizontal', inside.horizontal)}` : ''
+  return `<border>${line('left', b.left)}${line('right', b.right)}${line('top', b.top)}${line('bottom', b.bottom)}<diagonal/>${between}</border>`
 }
 
 /** A written font's name: an empty one falls back to the workbook's, a long one is clipped to Excel's limit. */
@@ -57,8 +59,13 @@ export function writtenFont(f: FontStyle, issues?: Issues): FontStyle {
   return rest
 }
 
-/** A cell's solid fill. */
-export const fillXml = (f: NonNullable<CellStyle['fill']>) => `<fill><patternFill patternType="solid"><fgColor rgb="${rgb(f.color)}"/><bgColor indexed="64"/></patternFill></fill>`
+/** A pattern's lines over its colour, as a cell's fill and a dxf's hold them alike; without a pattern colour, Excel's automatic one. */
+const patternXml = (f: NonNullable<CellStyle['fill']>) =>
+  `<patternFill patternType="${f.pattern}">${f.patternColor ? `<fgColor rgb="${rgb(f.patternColor)}"/>` : ''}<bgColor rgb="${rgb(f.color)}"/></patternFill>`
+
+/** A cell's fill: solid in its foreground, or a pattern. */
+export const fillXml = (f: NonNullable<CellStyle['fill']>) =>
+  `<fill>${f.pattern ? patternXml(f) : `<patternFill patternType="solid"><fgColor rgb="${rgb(f.color)}"/><bgColor indexed="64"/></patternFill>`}</fill>`
 
 /** A cell format's alignment, empty without one. */
 export function alignmentXml(a: CellStyle['alignment']): string {
@@ -95,7 +102,7 @@ export function dxfXml(s: ConditionalStyle, numFmt: (code: NumberFormat) => numb
   // no id for a custom format over the limit (`StyleWriter.numFmt`): its code in the file would count too
   const numFmtXml = id === undefined || (id === 0 && code !== 'General') ? '' : `<numFmt numFmtId="${id}" formatCode="${escapeAttr(code!)}"/>`
   // a dxf's solid fill is its background colour
-  const fill = s.fill ? `<fill><patternFill><bgColor rgb="${rgb(s.fill.color)}"/></patternFill></fill>` : ''
+  const fill = !s.fill ? '' : `<fill>${s.fill.pattern ? patternXml(s.fill) : `<patternFill><bgColor rgb="${rgb(s.fill.color)}"/></patternFill>`}</fill>`
   const border = s.border ? borderXml(s.border) : ''
   return `<dxf>${font}${numFmtXml}${fill}${border}</dxf>`
 }

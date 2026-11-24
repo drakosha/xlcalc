@@ -21,7 +21,14 @@ export function readTableStyles(xml: string | undefined, colors: Palette, dxfs: 
       const style = dxf ? dxfCellStyle(dxf) : {}
       if (!style.fill && dxf?.pattern) style.fill = { color: dxf.pattern }
       const width = Number(size)
-      definition.elements.push({ type, ...(Number.isInteger(width) && width > 0 && width <= 0xffffffff ? { size: width } : {}), style })
+      const numberFormat = dxf?.style.numberFormat
+      definition.elements.push({
+        type,
+        ...(Number.isInteger(width) && width > 0 && width <= 0xffffffff ? { size: width } : {}),
+        style,
+        ...(dxf?.inside ? { inside: dxf.inside } : {}),
+        ...(numberFormat === undefined ? {} : { numberFormat }),
+      })
     }
     custom[name] = definition
   }

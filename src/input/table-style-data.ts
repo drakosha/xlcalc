@@ -1,7 +1,7 @@
 import { tableKey } from '../tables/model.js'
 import { InputError } from '../input-error.js'
 import { array, checkBoolean, checkNumber, checkString, given, object, onlyKeys } from './basic.js'
-import { checkColor, checkStyle } from './styles.js'
+import { checkColor, checkFormat, checkLine, checkStyle } from './styles.js'
 
 /** The palette and custom definitions are workbook metadata, independent of which tables use them. */
 export function checkTableStyleData(v: unknown, path: string): void {
@@ -28,10 +28,16 @@ export function checkTableStyleData(v: unknown, path: string): void {
         for (const [index, value] of elements.entries()) {
           const where = `${scope}.elements[${index}]`
           const element = object(value, where, 'a table style element')
-          onlyKeys(element, where, ['type', 'size', 'style'])
+          onlyKeys(element, where, ['type', 'size', 'style', 'inside', 'numberFormat'])
           if (!checkString(element.type, `${where}.type`)) throw new InputError(`${where}.type`, 'expected a non-empty element type')
           if (element.size !== undefined) checkNumber(element.size, `${where}.size`, 1, 0xffffffff, true)
           checkStyle(element.style, `${where}.style`)
+          if (element.numberFormat !== undefined) checkFormat(element.numberFormat, `${where}.numberFormat`)
+          if (element.inside !== undefined) {
+            const inside = object(element.inside, `${where}.inside`, 'inside borders such as { horizontal: { style: "thin" } }')
+            onlyKeys(inside, `${where}.inside`, ['horizontal', 'vertical'])
+            for (const side of ['horizontal', 'vertical']) if (inside[side] !== undefined) checkLine(inside[side], `${where}.inside.${side}`)
+          }
         }
       }
     },
