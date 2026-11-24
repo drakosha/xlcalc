@@ -18,7 +18,7 @@ export type { PrintRectProjection } from './xlsx/print/project.js'
 export type { PrintGeometryOptions } from './xlsx/print/geometry.js'
 export type {
   PrintAxisGeometry, PrintBreak, PrintDeviceGeometry, PrintHeaderFooter, PrintLayout, PrintLayoutIssue, PrintMargins, PrintOptions, PrintPage,
-  PrintPageBand, PrintReadIssue, PrintRect,
+  PrintNoteLine, PrintNoteMetrics, PrintNotes, PrintPageBand, PrintReadIssue, PrintRect,
   PrintRegion, PrintSetup, PrintSheetDefaults, PrintSheetGeometry, PrintSize, PrintSpan, PrintTarget,
   PrintWorkbookLayout, PrintWorkbookOptions, PrintWorkbookPage, PrintWorkbookSheet, SheetPrint,
 } from './xlsx/print/types.js'

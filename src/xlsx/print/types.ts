@@ -1,3 +1,5 @@
+import type { BookInput, CellNote } from '../../contract.js'
+
 /** Excel's bounds for page counts and explicit first page numbers. */
 export const MAX_PAGE_FIELD = 32767
 
@@ -160,15 +162,41 @@ export interface PrintPageBand {
   scale: number
 }
 
+/** Text measurements for end notes at the current print scale, in paper points. */
+export interface PrintNoteMetrics {
+  lineHeight: number
+  measureText(text: string): number
+}
+
+export interface PrintNotes {
+  /** Cells keyed by address, such as the cells returned by readXlsxWithPrint. */
+  cells: Readonly<Record<string, { note?: CellNote }>>
+  /** The workbook's Normal font. The default measurements use Calibri 11 when omitted. */
+  font?: BookInput['font']
+  labels?: { address: string; body: string }
+  /** Override nominal measurements with the renderer's font and device metrics. */
+  metrics?: (scale: number) => PrintNoteMetrics
+}
+
+export interface PrintNoteLine {
+  cell: string
+  kind: 'address' | 'body'
+  text: string
+  bounds: PrintRect
+  label?: { text: string; bounds: PrintRect }
+}
+
 export interface PrintPage {
   number: number
-  /** The one-based print area index. */
+  /** The one-based print area index, or zero on a sheet-wide page of notes. */
   area: number
   scale: number
   paper: PrintSize
   /** The printable body after page margins. Regions are clipped to this rectangle. */
   body: PrintRect
   regions: PrintRegion[]
+  /** Positioned text lines on an end-notes page. */
+  noteLines?: PrintNoteLine[]
   header?: PrintPageBand
   footer?: PrintPageBand
 }
@@ -188,6 +216,7 @@ export interface PrintWorkbookSheet {
   settings: SheetPrint
   geometry: PrintSheetGeometry
   target: PrintTarget
+  notes?: PrintNotes
   hidden?: boolean | 'very'
 }
 

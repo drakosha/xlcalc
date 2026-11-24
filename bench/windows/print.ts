@@ -32,7 +32,7 @@ interface Case {
   fitHeight?: number
   hiddenRows?: number[]
   markAllColumns?: boolean
-  noteMode?: 'sample' | 'many' | 'long' | 'displayed'
+  noteMode?: 'sample' | 'many' | 'long' | 'order' | 'text' | 'displayed'
   workbook?: { first?: number; second?: number; firstRows?: number; secondRows?: number; hidden?: boolean }
   font?: BookInput['font']
 }
@@ -112,6 +112,13 @@ const cases: Case[] = [
   { name: 'notes-scale50', height: 15, zoom: 50, areas: ['A1:C20'], repeats: 0, noteMode: 'sample' },
   { name: 'notes-many', height: 15, zoom: 100, areas: ['A1:A32'], repeats: 0, noteMode: 'many' },
   { name: 'notes-long', height: 15, zoom: 100, areas: ['A1:C20'], repeats: 0, noteMode: 'long' },
+  { name: 'notes-areas', height: 15, zoom: 100, areas: ['E1:E4', 'A1:B8', 'A2:C18'], repeats: 0, noteMode: 'sample' },
+  { name: 'notes-hidden', height: 15, zoom: 100, areas: ['A4'], repeats: 0, noteMode: 'sample' },
+  { name: 'notes-gap', height: 15, zoom: 100, areas: ['A1:A32'], bottom: 0.78, repeats: 0, noteMode: 'many' },
+  { name: 'notes-fit', height: 15, zoom: 'fit', fitHeight: 1, areas: ['A1:A85'], repeats: 0, noteMode: 'many' },
+  { name: 'notes-down', height: 15, zoom: 100, areas: ['A1:D42'], columnWidth: 85, repeats: 0, noteMode: 'order', pageOrder: 'downThenOver' },
+  { name: 'notes-over', height: 15, zoom: 100, areas: ['A1:D42'], columnWidth: 85, repeats: 0, noteMode: 'order', pageOrder: 'overThenDown' },
+  { name: 'notes-text', height: 15, zoom: 100, areas: ['A1:A12'], repeats: 0, noteMode: 'text' },
   { name: 'notes-displayed', height: 15, zoom: 100, areas: ['A1:C20'], repeats: 0, noteMode: 'displayed' },
   { name: 'no-repeat', height: 15, zoom: 100, repeats: 0 },
   { name: 'height-18-zoom-90', height: 18, zoom: 90 },
@@ -122,6 +129,22 @@ const cases: Case[] = [
 const LAST_ROW = 125
 
 function noteCells(mode: NonNullable<Case['noteMode']>): Record<string, CellInput> {
+  if (mode === 'order') {
+    return Object.fromEntries(['A1', 'C1', 'B11', 'D11', 'B36', 'C36', 'A41', 'D41'].map((cell) =>
+      [cell, { value: cell, note: { text: 'TEXT-' + cell } }]))
+  }
+  if (mode === 'text') {
+    return {
+      A1: { value: 'GRID' },
+      A2: { note: { text: '  indented  words   ' } },
+      A3: { note: { text: 'first\n\n\n' } },
+      A4: { note: { text: '\n\nlast' } },
+      A5: { note: { text: ' ' } },
+      A6: { note: { text: 'breakable-long-word-'.repeat(12) } },
+      A7: { note: { text: 'no\u00a0break '.repeat(20) } },
+      A8: { note: { text: 'after blank' } },
+    }
+  }
   if (mode === 'many') {
     return Object.fromEntries(Array.from({ length: 32 }, (_, i) => [
       'A' + (i + 1), { value: 'V' + (i + 1), note: { text: 'NOTE-' + (i + 1), author: 'Author' } },
@@ -270,6 +293,7 @@ if (!localOnly) await withWindowsExcel(locale, async (env) => {
     writeFileSync(file, Buffer.from(pdf, 'base64'))
     const pages = printFacts(file, c.noteMode !== undefined)
     if (!pages.length) throw new Error(`${c.name}: no PDF pages`)
+    const notes = c.noteMode ? { cells: book.sheets[0].cells, font: book.font } : undefined
     const plan = c.workbook
       ? layoutPrintWorkbook(book.sheets.map((sheet, i) => ({
         settings: print[i],
@@ -277,7 +301,7 @@ if (!localOnly) await withWindowsExcel(locale, async (env) => {
         target: pages[0],
         hidden: sheet.hidden,
       })))
-      : layoutPrintPages(settings, printSheetGeometry(book.sheets[0], { font: book.font, usedRange: range }), pages[0])
+      : layoutPrintPages(settings, printSheetGeometry(book.sheets[0], { font: book.font, usedRange: range }), pages[0], notes)
     const nominal = plan.pages.map((page) => ({ number: page.number, scale: page.scale, ranges: page.regions.map((region) => region.range) }))
     console.log(c.name, 'Excel:', pages.map((page) => page.last?.row ?? '-').join(','), 'xlcalc:', nominal.map((page) => page.ranges.at(-1)).join(','))
     return { case: c, setup, pages, nominal }

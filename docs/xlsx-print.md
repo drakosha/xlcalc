@@ -60,6 +60,21 @@ position within the job for first, odd and even variants. Manual page starts aff
 first printed sheet specifies a starting number, Excel uses that number again for the next automatic sheet. An
 explicit start on a later sheet advances the automatic numbering by the number of pages on that sheet.
 
+## Print notes at the end of a sheet
+
+When `setup.cellComments` is `'atEnd'`, pass `{ cells: sheet.cells, font: book.font }` as the fourth argument to
+`layoutPrintPages` or as the worksheet's `notes` in `layoutPrintWorkbook`. The cells can come directly from
+`readXlsxWithPrint`. The layout appends pages with `area: 0` and `noteLines` after the sheet's grid. These pages take part in
+page numbers, header/footer variants, page selection and job limits. Fit-to-page applies to the grid. The note pages
+use that scale and can add pages beyond the fit count.
+
+Each line identifies its cell and gives the text and label positions in paper points. The positions describe line
+boxes. The host applies its font's baseline and the device's page clip. Excel can start the final line close enough
+to the bottom margin for its glyphs to extend beyond the grid body. The default labels are `Cell:` and `Note:`.
+Supply `notes.labels` for the print locale. For precise line breaks and placement, pass `notes.metrics(scale)` with
+the renderer's scaled line height and text measurements in paper points. The default uses nominal Normal-font
+measurements.
+
 ## Excel compatibility work
 
 The layout selects header/footer variants by physical page position and positions their bands.
@@ -67,9 +82,9 @@ The layout selects header/footer variants by physical page position and position
 context supplies page counters, sheet and file labels, date and time. Picture markers identify the position where a
 renderer will place an image when it has the source part.
 
-The renderer still needs to draw the cells, gridlines, headings and error display as requested. End-of-sheet notes,
-printer-specific defaults and mixed print targets need their own compatibility cases. Embedded objects, chart sheets and header/footer images
-need their source parts and a renderer.
+The renderer still needs to draw the cells, gridlines, headings and error display as requested. Printer-specific defaults
+and mixed print targets need their own compatibility cases. On-grid note boxes, embedded objects, chart sheets and
+header/footer images need their source parts and a renderer.
 
 The XLSX reader test uses an Excel-saved print area and break. For pagination, compare the generated plan with Excel PDF
 output under a fixed paper size, printer, Excel version and font set. Record the scale, row and column boundaries,
@@ -111,12 +126,15 @@ The replay checks page count and the last visible row wherever the PDF includes 
 all 76 cases in the A4, margin, formatting and range batches measured on this printer. The profile is a benchmark
 input. Other printers and unmeasured fonts and row heights need their own measurements for the same precision.
 
-### Note print observations
+### Windows Excel note comparison
 
-The `notes` cases in the Windows harness retain word positions from the PDFs. In `atEnd` mode Excel prints
-a two-column list after the grid, without author labels in these samples. It excludes notes outside the print
-area and includes notes in hidden rows within that area. The list uses the sheet's zoom. With 32 short notes Excel
-printed three list pages, splitting the cell heading and body of one entry across a page boundary. A long note
-continued on the next page without repeating its heading. The renderer will need a text flow for these pages as
-well as the grid regions. In `asDisplayed` mode the sample printed its visible note on the grid and left the
-other notes off the page.
+The `notes` cases retain text and word positions from the PDFs. The replay checks page count, footers, line text,
+horizontal offsets and vertical pitch against the measured device. The eleven end-note cases cover hidden cells,
+overlapping print areas, a margin change, fixed and fitted zooms, both grid page orders, text breaks and a long note
+that flows across pages.
+
+The end list follows print area order, then row and column order within each area. Notes in overlapping areas appear once
+per area. Excel includes notes on hidden lines inside an area and leaves out notes that appear only in the repeated
+titles. It places the cell address and the note body on separate lines, with a column for their labels. A page break
+can fall between those lines or inside the note body. A shown note in `asDisplayed` mode prints as a text box
+where the VML drawing puts it, including on a page that omits its source cell.

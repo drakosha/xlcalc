@@ -1,12 +1,19 @@
 /** Replays the print matrix on the measured Windows Excel 16.0.20430 Microsoft Print to PDF profile. */
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { formatPrintHeaderFooter, layoutPrintPages, layoutPrintWorkbook, printPaperSize, printSheetGeometry, readXlsxWithPrint } from '../../src/xlsx-print.js'
+import { advance } from '../../src/numfmt/glyphs.js'
+import { formatPrintHeaderFooter, layoutPrintPages, layoutPrintWorkbook, printPaperSize, printSheetGeometry, readXlsxWithPrint, type PrintPage, type PrintNotes } from '../../src/xlsx-print.js'
+
+interface Word {
+  x: number
+  y: number
+  text: string
+}
 
 interface Trace {
   case: { name: string; height: number; columnWidth?: number; paper?: number; hiddenRows?: number[]; workbook?: object; noteMode?: string; font?: { name: string } }
   setup: { printer: string }
-  pages: { width: number; height: number; pitch?: number; last?: { row: number }; band?: { text: string }[] }[]
+  pages: { width: number; height: number; pitch?: number; last?: { row: number }; band?: Word[]; words?: Word[] }[]
 }
 
 function traces(directory: string): Trace[] {
@@ -20,6 +27,47 @@ const controlByName = new Map(controls.map((run) => [run.case.name, run]))
 const pointsPerUnit = 0.120023
 const trailingClearance = 0.72
 const wideColumnUnits = 2350
+const noteLabels = { address: 'Ячейка:', body: 'Примечание.' }
+// Excel quantizes both the font size and the line pitch on this device, independently of the grid.
+const noteFont = new Map([
+  [0.42, { pitch: 54, size: 4.56, inkTop: 0.9 }],
+  [0.5, { pitch: 64, size: 5.52, inkTop: 1.14 }],
+  [1, { pitch: 121, size: 11.04, inkTop: 2.28 }],
+])
+
+function checkNotes(pages: Trace['pages'], plan: PrintPage[]): string | undefined {
+  if (pages.length !== plan.length) return 'page count: Excel ' + pages.length + ', xlcalc ' + plan.length
+  const noteStart = pages.findIndex((page) => page.words?.some((word) => word.text === noteLabels.address))
+  if (noteStart !== plan.findIndex((page) => page.noteLines !== undefined)) return 'first end-notes page differs'
+
+  for (const [i, page] of plan.entries()) {
+    const observed = new Map<number, Word[]>()
+    for (const word of pages[i].words ?? []) {
+      const row = observed.get(word.y)
+      if (row) row.push(word)
+      else observed.set(word.y, [word])
+    }
+    const pageText = [...observed.values()].map((row) => row.map((word) => word.text).join(' '))
+    if (!pageText.includes('Page ' + page.number + ' of ' + plan.length)) return 'footer on page ' + (i + 1)
+    if (!page.noteLines) continue
+    const metric = noteFont.get(page.scale)
+    if (!metric) return 'unmeasured note scale ' + page.scale
+    const actual = [...observed.values()].sort((a, b) => a[0].y - b[0].y).slice(0, -1)
+    const expected = page.noteLines.filter((line) => line.label || line.text)
+    if (actual.length !== expected.length) return 'line count on page ' + (i + 1) + ': Excel ' + actual.length + ', xlcalc ' + expected.length
+    for (const [j, line] of expected.entries()) {
+      const words = actual[j].sort((a, b) => a.x - b.x)
+      const text = [line.label?.text, line.text].filter(Boolean).join(' ').replace(/\s+/g, ' ').trim()
+      if (text !== words.map((word) => word.text).join(' ')) {
+        return 'text on page ' + (i + 1) + ', line ' + (j + 1) + ': Excel ' + words.map((word) => word.text).join(' ') + ', xlcalc ' + text
+      }
+      const column = words[line.label ? 1 : 0]
+      if (line.text && Math.abs(column.x - line.bounds.x) > 0.4) return 'text x on page ' + (i + 1) + ', line ' + (j + 1)
+      if (line.label && Math.abs(words[0].x - line.label.bounds.x) > 0.4) return 'label x on page ' + (i + 1) + ', line ' + (j + 1)
+      if (Math.abs(words[0].y - line.bounds.y - metric.inkTop) > 0.05) return 'text y on page ' + (i + 1) + ', line ' + (j + 1)
+    }
+  }
+}
 
 let total = 0
 let unknown = 0
@@ -29,7 +77,11 @@ for (const directory of [controlDirectory, ...also]) {
     const { case: c, setup, pages } = run
     const reference = c.font?.name === 'Times New Roman' ? 'times' : `height-${c.height}`
     const measuredPitch = controlByName.get(reference)?.pages[0].pitch
-    if (c.noteMode || measuredPitch === undefined || !setup.printer.startsWith('Microsoft Print to PDF')) {
+    if (c.noteMode === 'displayed') {
+      console.log(c.name, 'VML reference PDF')
+      continue
+    }
+    if (measuredPitch === undefined || !setup.printer.startsWith('Microsoft Print to PDF')) {
       console.log(c.name, 'missing calibration')
       unknown++
       continue
@@ -43,7 +95,7 @@ for (const directory of [controlDirectory, ...also]) {
     const requested = c.paper === 1 ? printPaperSize(settings.setup) : undefined
     const { width, height } = requested ?? pages[0]
     const baseRowUnits = Math.round(measuredPitch / pointsPerUnit)
-    const hidden = new Set(c.hiddenRows)
+    const hidden = new Set(c.noteMode === 'sample' ? [4] : c.hiddenRows)
     const device = {
       rowEdge: (line: number, scale: number) => {
         let before = line - 1
@@ -70,6 +122,28 @@ for (const directory of [controlDirectory, ...also]) {
       total++
       if (JSON.stringify(observed) !== JSON.stringify(predicted)) {
         console.log(c.name, 'Excel:', observed, 'xlcalc:', predicted)
+        different++
+      }
+      continue
+    }
+    if (c.noteMode) {
+      const notes: PrintNotes = {
+        cells: book.sheets[0].cells,
+        labels: noteLabels,
+        metrics(scale) {
+          const metric = noteFont.get(scale)
+          if (!metric) throw new Error('unmeasured note scale ' + scale)
+          return {
+            lineHeight: metric.pitch * pointsPerUnit,
+            measureText: (text) => [...text].reduce((sum, char) => sum + advance(char), 0) * metric.size / 2048,
+          }
+        },
+      }
+      const plan = layoutPrintPages(settings, inputs[0].geometry, target, notes)
+      const error = checkNotes(pages, plan.pages)
+      total++
+      if (error) {
+        console.log(c.name, error)
         different++
       }
       continue

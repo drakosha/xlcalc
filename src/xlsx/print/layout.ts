@@ -3,9 +3,10 @@ import { checkNumber, integer } from '../../input/basic.js'
 import { InputError } from '../../input-error.js'
 import { MAX_COLS, MAX_ROWS } from '../../model.js'
 import { parseRange, rectText } from '../../structure/area.js'
+import { noteCells, notePages } from './notes.js'
 import { MAX_PAGE_FIELD } from './types.js'
 import type {
-  PrintAxisGeometry, PrintBreak, PrintDeviceGeometry, PrintLayout, PrintLayoutIssue, PrintMargins, PrintPage, PrintPageBand, PrintRect,
+  PrintAxisGeometry, PrintBreak, PrintDeviceGeometry, PrintLayout, PrintLayoutIssue, PrintMargins, PrintNotes, PrintPage, PrintPageBand, PrintRect,
   PrintRegion, PrintSheetGeometry, PrintSpan, PrintTarget, PrintWorkbookLayout, PrintWorkbookOptions, PrintWorkbookPage,
   PrintWorkbookSheet, SheetPrint,
 } from './types.js'
@@ -235,12 +236,14 @@ function headerFooter(settings: SheetPrint, page: PrintPage, target: PrintTarget
 }
 
 /** Page regions map sheet points to paper points, independently of the host's cell and drawing renderer. */
-export function layoutPrintPages(settings: SheetPrint, geometry: PrintSheetGeometry, target: PrintTarget): PrintLayout {
-  return layoutSheetPages(settings, geometry, target, 0, 1)
+export function layoutPrintPages(
+  settings: SheetPrint, geometry: PrintSheetGeometry, target: PrintTarget, notes?: PrintNotes,
+): PrintLayout {
+  return layoutSheetPages(settings, geometry, target, 0, 1, notes)
 }
 
 function layoutSheetPages(
-  settings: SheetPrint, geometry: PrintSheetGeometry, target: PrintTarget, precedingPages: number, automaticNumber: number,
+  settings: SheetPrint, geometry: PrintSheetGeometry, target: PrintTarget, precedingPages: number, automaticNumber: number, notes?: PrintNotes,
 ): PrintLayout {
   geometryCheck(geometry.rows, 'geometry.rows', MAX_ROWS)
   geometryCheck(geometry.columns, 'geometry.columns', MAX_COLS)
@@ -276,8 +279,21 @@ function layoutSheetPages(
     : automaticNumber
   const pages: PrintPage[] = []
   const paper = { width: target.width, height: target.height }
+  const append = (area: number, regions: PrintRegion[], noteLines?: PrintPage['noteLines']) => {
+    if (pages.length === maxPages) throw new InputError('target.maxPages', 'print layout exceeds the page limit')
+    const page: PrintPage = { number: firstNumber + pages.length, area, scale, paper, body, regions }
+    if (noteLines) page.noteLines = noteLines
+    headerFooter(settings, page, target, margins, precedingPages + pages.length)
+    pages.push(page)
+  }
+  const endNotes = notes && settings.setup?.cellComments === 'atEnd' ? noteCells(notes) : undefined
+  const notesInOrder = []
 
   for (const area of areas) {
+    const areaNotes = endNotes?.filter(({ row, col }) =>
+      row >= area.rows.range.first && row <= area.rows.range.last
+      && col >= area.columns.range.first && col <= area.columns.range.last)
+    for (const note of areaNotes ?? []) notesInOrder.push(note)
     if (fitted === 0) report(area.index, 'fitLimit')
     const collect = (axis: Axis, available: number) => {
       const out: Slice[] = []
@@ -289,24 +305,29 @@ function layoutSheetPages(
       return out
     }
     const rows = collect(area.rows, availableHeight)
-    if (!rows.length) continue
-    const columns = collect(area.columns, availableWidth)
+    const columns = rows.length ? collect(area.columns, availableWidth) : []
+    if (!rows.length || !columns.length) {
+      // An area with end notes still has a grid page when its cells are all hidden.
+      if (areaNotes?.length) append(area.index, [])
+      continue
+    }
     if (rows.length * columns.length > maxPages - pages.length) throw new InputError('target.maxPages', 'print layout exceeds the page limit')
-    const append = (row: Slice, column: Slice) => {
+    const appendGrid = (row: Slice, column: Slice) => {
       const width = column.size + headingWidth
       const height = row.size + headingHeight
       const x = body.x + (settings.options?.horizontalCentered ? Math.max(0, body.width - width) / 2 : 0)
       const y = body.y + (settings.options?.verticalCentered ? Math.max(0, body.height - height) / 2 : 0)
       const regions = pageRegions(area, row, column, x + headingWidth, y + headingHeight, scale)
-      const page: PrintPage = { number: firstNumber + pages.length, area: area.index, scale, paper, body, regions }
-      headerFooter(settings, page, target, margins, precedingPages + pages.length)
-      pages.push(page)
+      append(area.index, regions)
     }
     if (settings.setup?.pageOrder === 'overThenDown') {
-      for (const row of rows) for (const column of columns) append(row, column)
+      for (const row of rows) for (const column of columns) appendGrid(row, column)
     } else {
-      for (const column of columns) for (const row of rows) append(row, column)
+      for (const column of columns) for (const row of rows) appendGrid(row, column)
     }
+  }
+  if (notes && notesInOrder.length) {
+    for (const lines of notePages(notesInOrder, notes, body, scale)) append(0, [], lines)
   }
   return { pages, issues }
 }
@@ -320,13 +341,13 @@ export function layoutPrintWorkbook(sheets: readonly PrintWorkbookSheet[], optio
   const pages: PrintWorkbookPage[] = []
   const issues: PrintWorkbookLayout['issues'] = []
   let nextNumber = 1
-  for (const { settings, geometry, target, hidden } of sheets as readonly PrintWorkbookSheet[]) {
+  for (const { settings, geometry, target, notes, hidden } of sheets as readonly PrintWorkbookSheet[]) {
     if (hidden) continue
     const remaining = maxPages - pages.length
     const sheetLimit = Math.max(1, remaining)
     const requestedLimit = integer(target.maxPages ?? sheetLimit, 'target.maxPages', 1, Number.MAX_SAFE_INTEGER)
     const sheetTarget = { ...target, maxPages: Math.min(requestedLimit, sheetLimit) }
-    const plan = layoutSheetPages(settings, geometry, sheetTarget, pages.length, nextNumber)
+    const plan = layoutSheetPages(settings, geometry, sheetTarget, pages.length, nextNumber, notes)
     for (const issue of plan.issues) issues.push({ ...issue, sheet: settings.sheet })
     if (!plan.pages.length) continue
     if (plan.pages.length > remaining) throw new InputError('options.maxPages', 'print layout exceeds the page limit')
