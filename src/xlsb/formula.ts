@@ -190,6 +190,11 @@ export function formulaText({ tokens, extra }: Formula, context: Context, row = 
     return stack.splice(stack.length - length, length)
   }
   const args = (length: number) => operands(length).map(render)
+  const parenthesized = (body: string) => {
+    const text = '(' + body + closeSpace + ')'
+    closeSpace = ''
+    return text
+  }
   while (tokens.remaining) {
     const byte = tokens.u8()
     const type = byte < 0x20 ? byte : 0x20 | (byte & 31)
@@ -221,9 +226,8 @@ export function formulaText({ tokens, extra }: Formula, context: Context, row = 
       case 0x12: case 0x13: push((type === 0x12 ? '+' : '-') + args(1)[0]); break
       case 0x14: push(args(1)[0] + '%'); break
       case 0x15:
-        push(openSpace + '(' + args(1)[0] + closeSpace + ')')
+        push(openSpace + parenthesized(args(1)[0]))
         openSpace = ''
-        closeSpace = ''
         break
       case 0x16: push(''); break
       case 0x17: push(textLiteral(tokens.wide(tokens.u16()))); break
@@ -252,7 +256,7 @@ export function formulaText({ tokens, extra }: Formula, context: Context, row = 
           tokens.skip(2 * (choices + 1))
         } else {
           tokens.u16()
-          if (flag === 0x10) push(`SUM(${args(1)[0]})`)
+          if (flag === 0x10) push('SUM' + parenthesized(args(1)[0]))
         }
         break
       }
@@ -273,7 +277,7 @@ export function formulaText({ tokens, extra }: Formula, context: Context, row = 
         const id = tokens.u16()
         const fn = FTAB[id]
         if (!fn || fn[1] === undefined) return undefined
-        push(`${fn[0]}(${args(fn[1]).join(',')})`)
+        push(fn[0] + parenthesized(args(fn[1]).join(',')))
         break
       }
       case 0x22: {
@@ -288,7 +292,7 @@ export function formulaText({ tokens, extra }: Formula, context: Context, row = 
           fn = callee === undefined ? undefined : functionName(callee)
         }
         if (!fn) return undefined
-        push(`${fn}(${values.map(render).join(',')})`)
+        push(fn + parenthesized(values.map(render).join(',')))
         break
       }
       case 0x23: {
