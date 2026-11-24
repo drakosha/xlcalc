@@ -196,8 +196,8 @@ export function formulaText({ tokens, extra }: Formula, context: Context, row = 
       const op = BINARY[type - 3]
       const gap = space
       space = ''
-      // Excel quotes the explicitly repeated external sheet after a range operator.
-      const right = type === 0x11 ? b.replace(/^(\[\d+\][^!]+)!/, "'$1'!") : b
+      // Excel quotes an explicit sheet after a range operator to distinguish it from a 3D sheet span.
+      const right = type === 0x11 ? b.replace(/^((?:\[\d+\])?[\p{L}\p{N}_.]+)!/u, "'$1'!") : b
       push(a + gap + op + right)
       continue
     }
