@@ -1,0 +1,369 @@
+{
+ "now": "2026-11-23",
+ "locales": {
+  "en-US": {
+   "arial-8-one-line": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-8-two-lines": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "One\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-10-one-line": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-10-two-lines": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "One\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-11-one-line": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-11-two-lines": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "One\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-cyr-8-one-line": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-cyr-8-two-lines": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "One\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-cyr-10-one-line": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-cyr-10-two-lines": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "One\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-cyr-11-one-line": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-cyr-11-two-lines": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "One\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "times-new-roman-8-one-line": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "times-new-roman-8-two-lines": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "One\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "times-new-roman-10-one-line": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "times-new-roman-10-two-lines": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "One\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "times-new-roman-11-one-line": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "times-new-roman-11-two-lines": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "One\nДва",
+      "wrap": true
+     }
+    }
+   }
+  },
+  "ru-RU": {
+   "arial-8-one-line": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-8-two-lines": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "One\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-10-one-line": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-10-two-lines": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "One\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-11-one-line": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-11-two-lines": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "One\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-cyr-8-one-line": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-cyr-8-two-lines": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "One\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-cyr-10-one-line": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-cyr-10-two-lines": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "One\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-cyr-11-one-line": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-cyr-11-two-lines": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "One\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "times-new-roman-8-one-line": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "times-new-roman-8-two-lines": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "One\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "times-new-roman-10-one-line": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "times-new-roman-10-two-lines": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "One\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "times-new-roman-11-one-line": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "times-new-roman-11-two-lines": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "One\nДва",
+      "wrap": true
+     }
+    }
+   }
+  }
+ }
+}

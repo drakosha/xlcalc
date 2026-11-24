@@ -8,9 +8,9 @@
 import { writeFileSync } from 'node:fs'
 import { writeXlsx } from '../../src/xlsx.js'
 import { indexToCol } from '../../src/model.js'
-import { inParts } from '../coverage/book.js'
+import { fontParts } from '../coverage/book.js'
 import { FIT_PART, fitFile, keptAnswers, partAnswers } from '../coverage/fit.js'
-import { caseColumn, caseRows, fitBook, type FitCase, type FitSet } from '../coverage/fit/cases.js'
+import { caseColumn, caseRows, fitBook, fitsColumn, type FitCase, type FitSet } from '../coverage/fit/cases.js'
 import { answeredLine, answerSaver, setModule } from '../coverage/stored.js'
 import { inJobs, metaOf, savedInto, type Step, type Tag, type WinEnv } from './remote.js'
 
@@ -21,14 +21,14 @@ export async function stepFit(set: string, tag: Tag, e: WinEnv): Promise<void> {
   const t0 = Date.now()
   const save = answerSaver(file, metaOf(e, tag), true, t0, cases, answers)
   const todo = cases.filter((c) => !answers[c.id])
-  const parts = inParts(todo, FIT_PART)
+  const parts = fontParts(todo, FIT_PART)
   const book = async (part: FitCase[], f: string) => {
     const { data, issues } = await writeXlsx({ book: fitBook(part) }, { values: 'omit' })
     if (issues.length) throw new Error(`fit ${set}: the book does not go into a file whole: ${JSON.stringify(issues)}`)
     writeFileSync(f, data)
     const cols = part.map((_, k) => indexToCol(caseColumn(k)))
     const acts: Step[] = part.flatMap((c, k) => [
-      ...(!c.typed || c.fitFirst ? [{ do: 'autofit', sheet: 'S', range: `${cols[k]}1` }] : []),
+      ...(fitsColumn(c) ? [{ do: 'autofit', sheet: 'S', range: `${cols[k]}1` }] : []),
       ...(c.typed ?? []).map(([r, text]) => ({ do: 'set', sheet: 'S', cell: `${cols[k]}${r}`, kind: c.via === 'value' ? 's' : 'l2', value: text })),
     ])
     const cells = part.flatMap((c, k) => caseRows(c).map((r) => `${cols[k]}${r}`))
@@ -40,7 +40,7 @@ export async function stepFit(set: string, tag: Tag, e: WinEnv): Promise<void> {
     // the answers of the steps: autofit and set (null, or the error a set got), calc, widths, shown, saveAs
     let i = 0
     const refused = part.map((c) => {
-      if (!c.typed || c.fitFirst) i++
+      if (fitsColumn(c)) i++
       return (c.typed ?? []).map(() => {
         const x = got[i++]
         return x && typeof x === 'object' && 'error' in x ? String((x as { error: string }).error) : ''

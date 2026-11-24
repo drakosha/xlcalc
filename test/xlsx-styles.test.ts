@@ -9,6 +9,7 @@ import type { BookInput } from '../src/contract.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
 import { palette, tinted } from '../src/xlsx/styles/color.js'
 import { readFill, underlineOf } from '../src/xlsx/styles/read.js'
+import { openArchive } from '../src/xlsx/zip/read.js'
 import { element } from '../src/xlsx/xml/scan.js'
 import type { StyleLoss } from '../src/locale/messages.js'
 import { expandBook } from './looks-book.js'
@@ -72,7 +73,7 @@ describe('xlsx styles: reading', () => {
       { border: { left: { style: 'thin', color: '#00B050' }, right: { style: 'medium' }, bottom: { style: 'double' } }, alignment: { horizontal: 'center', vertical: 'top', wrap: true, indent: 2 } },
     ])
     expect(r.book.sheets[0].cells).toEqual({ A1: { value: 1, style: 0, numberFormat: '#,##0.00" ₽"' }, B1: { value: 1, style: 1, numberFormat: 3 }, C1: { value: 1, style: 0, numberFormat: 49 }, D1: { value: 1, style: 1, numberFormat: 14 } })
-    expect(codes(r.issues)).toEqual(['defaultFont'])
+    expect(codes(r.issues)).toEqual([])
     expect(r.book.font).toEqual({ name: 'Arial', size: 10 })
   })
 
@@ -82,10 +83,21 @@ describe('xlsx styles: reading', () => {
     expect(file.issues).toEqual([])
     const back = await readXlsx(file.data)
     expect([back.book.font, back.book.styles]).toEqual([book.font, book.styles])
-    expect(codes(back.issues)).toEqual(['defaultFont'])
+    expect(codes(back.issues)).toEqual([])
     // Calibri 11 is the model's own: neither read into the book nor reported
     const plain = await readXlsx((await writeXlsx({ book: { ...book, font: { name: 'Calibri', size: 11 } } }, { values: 'omit' })).data)
     expect([plain.book.font, codes(plain.issues)]).toEqual([undefined, []])
+  })
+
+  it('writes the Normal font height and preserves the default width of a formatted column', async () => {
+    const book: BookInput = {
+      font: { name: 'Times New Roman', size: 10 },
+      sheets: [{ name: 'S', cells: { A1: { value: 7 } }, columns: { B: { numberFormat: '0.0' } } }],
+    }
+    const { data } = await writeXlsx({ book }, { values: 'omit' })
+    const xml = await openArchive(data).text('xl/worksheets/sheet1.xml')
+    expect(xml).toContain('<sheetFormatPr defaultRowHeight="13"/>')
+    expect(xml).toContain('<col min="2" max="2" width="9" style="1"/>')
   })
 
   it('what a style cannot hold is reported on its cells; an East Asian date format is read as its en-US code, an unknown built-in format is left out', async () => {

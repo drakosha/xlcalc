@@ -1,0 +1,849 @@
+{
+ "now": "2026-11-23",
+ "locales": {
+  "en-US": {
+   "arial-8-one-line": {
+    "before": 15,
+    "height": 11,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-8-two-lines": {
+    "before": 15,
+    "height": 24,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-9-one-line": {
+    "before": 15,
+    "height": 12,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-9-two-lines": {
+    "before": 15,
+    "height": 26,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-10-one-line": {
+    "before": 15,
+    "height": 14,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-10-two-lines": {
+    "before": 15,
+    "height": 30,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-11-one-line": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-11-two-lines": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-12-one-line": {
+    "before": 15,
+    "height": 16,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-12-two-lines": {
+    "before": 15,
+    "height": 34,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-13-one-line": {
+    "before": 15,
+    "height": 17,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-13-two-lines": {
+    "before": 15,
+    "height": 36,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-14-one-line": {
+    "before": 15,
+    "height": 19,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-14-two-lines": {
+    "before": 15,
+    "height": 40,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-cyr-8-one-line": {
+    "before": 15,
+    "height": 11,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-cyr-8-two-lines": {
+    "before": 15,
+    "height": 24,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-cyr-9-one-line": {
+    "before": 15,
+    "height": 12,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-cyr-9-two-lines": {
+    "before": 15,
+    "height": 26,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-cyr-10-one-line": {
+    "before": 15,
+    "height": 14,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-cyr-10-two-lines": {
+    "before": 15,
+    "height": 30,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-cyr-11-one-line": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-cyr-11-two-lines": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-cyr-12-one-line": {
+    "before": 15,
+    "height": 16,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-cyr-12-two-lines": {
+    "before": 15,
+    "height": 34,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-cyr-13-one-line": {
+    "before": 15,
+    "height": 17,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-cyr-13-two-lines": {
+    "before": 15,
+    "height": 36,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-cyr-14-one-line": {
+    "before": 15,
+    "height": 19,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-cyr-14-two-lines": {
+    "before": 15,
+    "height": 40,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "times-new-roman-8-one-line": {
+    "before": 15,
+    "height": 11,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "times-new-roman-8-two-lines": {
+    "before": 15,
+    "height": 24,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "times-new-roman-9-one-line": {
+    "before": 15,
+    "height": 12,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "times-new-roman-9-two-lines": {
+    "before": 15,
+    "height": 26,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "times-new-roman-10-one-line": {
+    "before": 15,
+    "height": 14,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "times-new-roman-10-two-lines": {
+    "before": 15,
+    "height": 30,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "times-new-roman-11-one-line": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "times-new-roman-11-two-lines": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "times-new-roman-12-one-line": {
+    "before": 15,
+    "height": 16,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "times-new-roman-12-two-lines": {
+    "before": 15,
+    "height": 34,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "times-new-roman-13-one-line": {
+    "before": 15,
+    "height": 17,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "times-new-roman-13-two-lines": {
+    "before": 15,
+    "height": 36,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "times-new-roman-14-one-line": {
+    "before": 15,
+    "height": 19,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "times-new-roman-14-two-lines": {
+    "before": 15,
+    "height": 40,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   }
+  },
+  "ru-RU": {
+   "arial-8-one-line": {
+    "before": 15,
+    "height": 11,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-8-two-lines": {
+    "before": 15,
+    "height": 24,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-9-one-line": {
+    "before": 15,
+    "height": 12,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-9-two-lines": {
+    "before": 15,
+    "height": 26,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-10-one-line": {
+    "before": 15,
+    "height": 14,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-10-two-lines": {
+    "before": 15,
+    "height": 30,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-11-one-line": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-11-two-lines": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-12-one-line": {
+    "before": 15,
+    "height": 16,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-12-two-lines": {
+    "before": 15,
+    "height": 34,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-13-one-line": {
+    "before": 15,
+    "height": 17,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-13-two-lines": {
+    "before": 15,
+    "height": 36,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-14-one-line": {
+    "before": 15,
+    "height": 19,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-14-two-lines": {
+    "before": 15,
+    "height": 40,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-cyr-8-one-line": {
+    "before": 15,
+    "height": 11,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-cyr-8-two-lines": {
+    "before": 15,
+    "height": 24,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-cyr-9-one-line": {
+    "before": 15,
+    "height": 12,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-cyr-9-two-lines": {
+    "before": 15,
+    "height": 26,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-cyr-10-one-line": {
+    "before": 15,
+    "height": 14,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-cyr-10-two-lines": {
+    "before": 15,
+    "height": 30,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-cyr-11-one-line": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-cyr-11-two-lines": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-cyr-12-one-line": {
+    "before": 15,
+    "height": 16,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-cyr-12-two-lines": {
+    "before": 15,
+    "height": 34,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-cyr-13-one-line": {
+    "before": 15,
+    "height": 17,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-cyr-13-two-lines": {
+    "before": 15,
+    "height": 36,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "arial-cyr-14-one-line": {
+    "before": 15,
+    "height": 19,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "arial-cyr-14-two-lines": {
+    "before": 15,
+    "height": 40,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "times-new-roman-8-one-line": {
+    "before": 15,
+    "height": 11,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "times-new-roman-8-two-lines": {
+    "before": 15,
+    "height": 24,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "times-new-roman-9-one-line": {
+    "before": 15,
+    "height": 12,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "times-new-roman-9-two-lines": {
+    "before": 15,
+    "height": 26,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "times-new-roman-10-one-line": {
+    "before": 15,
+    "height": 14,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "times-new-roman-10-two-lines": {
+    "before": 15,
+    "height": 30,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "times-new-roman-11-one-line": {
+    "before": 15,
+    "height": 15,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "times-new-roman-11-two-lines": {
+    "before": 15,
+    "height": 32,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "times-new-roman-12-one-line": {
+    "before": 15,
+    "height": 16,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "times-new-roman-12-two-lines": {
+    "before": 15,
+    "height": 34,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "times-new-roman-13-one-line": {
+    "before": 15,
+    "height": 17,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "times-new-roman-13-two-lines": {
+    "before": 15,
+    "height": 36,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   },
+   "times-new-roman-14-one-line": {
+    "before": 15,
+    "height": 19,
+    "cells": {
+     "0": {
+      "formula": "Один",
+      "wrap": false
+     }
+    }
+   },
+   "times-new-roman-14-two-lines": {
+    "before": 15,
+    "height": 40,
+    "cells": {
+     "0": {
+      "formula": "Один\nДва",
+      "wrap": true
+     }
+    }
+   }
+  }
+ }
+}

@@ -3,6 +3,7 @@
  * 11 characters), and as a cell shows it in a column of a given width (`test/excel/display/general.json`).
  */
 import { roundDigits } from '../functions/common.js'
+import type { FontMeasure } from './font-metrics.js'
 import { DIGIT, glyph, hashes, textWidth } from './glyphs.js'
 
 /** Round half away from zero on the decimal representation (1.005 → 1.01). */
@@ -102,12 +103,12 @@ export function generalFormat(n: number): string {
  * positive number from 10^-4 whose rounding is one digit shows it in any width; the shortest scientific form
  * when its own width fits and the number rounds to 6 digits or more, or is under 10^-4; else `#` across the cell.
  */
-export function generalFit(n: number, space: number): string {
+export function generalFit(n: number, space: number, font?: FontMeasure): string {
   if (n === 0) return '0'
   const neg = n < 0
   const a = Math.abs(n)
   const sign = neg ? '-' : ''
-  const cells = Math.floor((space - (neg ? glyph('-') : 0)) / DIGIT)
+  const cells = Math.floor((space - (neg ? glyph('-', font) : 0)) / (font?.digit ?? DIGIT))
   const full = generalFormat(a)
   if (full.length <= cells) return sign + full
   const e = sig15(a)[1]
@@ -128,6 +129,6 @@ export function generalFit(n: number, space: number): string {
   if (whole === '0' && cells >= 1 && cells < 5) return sign + whole
   if (!neg && positional && cells < 1 && whole.length === 1) return whole
   const shortest = sign + sci(a, 0)
-  if ((whole.length > 5 || e < -4) && textWidth(shortest) <= space) return shortest
-  return hashes(space, true)
+  if ((whole.length > 5 || e < -4) && textWidth(shortest, font) <= space) return shortest
+  return hashes(space, true, font)
 }

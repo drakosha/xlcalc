@@ -7,7 +7,7 @@
  * (`sessionSource`), a saved one a book and its result (`saved.ts`); either reads the window's cells, never the whole sheet.
  */
 import { copyRuns } from '../rich-text.js'
-import { DEFAULT_ROW_HEIGHT } from '../column-width.js'
+import { bookGeometry } from '../column-width.js'
 import type { BookInput, CellInput, CellIssueDetail, CellStyle, NumberFormat, SavedViewportOptions, SheetExtent, Viewport, ViewportCell, ViewportOptions } from '../contract.js'
 import type { EngineState } from '../engine.js'
 import { checkedEntryText } from '../entry/text.js'
@@ -36,9 +36,6 @@ import { sheetExtent } from './extent.js'
 
 /** The cells a window gives by default, as many as the window of a sheet a server sends. */
 const MAX_CELLS = 20_000
-
-/** Excel's width of a column without its own (8 digits and the padding), in points (Calibri 11). */
-const DEFAULT_WIDTH = widthOf(columnPoints(undefined))
 
 /** Line numbers asked of a window or a query (`rows`): whole numbers from 1 to `max`, ascending, each once. */
 export function checkLineNumbers(v: unknown, path: string, max: number) {
@@ -196,7 +193,9 @@ export function sessionEditTexts(state: EngineState, now: string): (s: number, r
 /** The window of lines `w` of a sheet from `src` (options checked). The steps yield between cells. */
 export function* windowOf(src: WindowSource, w: WindowLines, o: ViewportOptions): Steps<Omit<Viewport, 'revision'>> {
   const { book, s, lines, tables } = src
+  const [digit, defaultHeight] = bookGeometry(book.font)
   const sheet = book.sheets[s]
+  const defaultWidth = sheet.defaultColumnWidth ?? widthOf(columnPoints(undefined, digit), digit)
   // each style the window's cells show, copied once: the answer's own
   const styles: Record<number, CellStyle> = {}
   const shows = (i: number) => {
@@ -251,11 +250,11 @@ export function* windowOf(src: WindowSource, w: WindowLines, o: ViewportOptions)
     styles,
     columns: w.cols.map((c) => {
       const col = lines.column(c)
-      return col && isHiddenColumn(col) ? { column: c + 1, width: col.width ?? DEFAULT_WIDTH, hidden: true } : { column: c + 1, width: col?.width ?? DEFAULT_WIDTH }
+      return col && isHiddenColumn(col) ? { column: c + 1, width: col.width ?? defaultWidth, hidden: true } : { column: c + 1, width: col?.width ?? defaultWidth }
     }),
     rows: w.rows.map((r) => {
       const row = lines.row(r)
-      return row && isHiddenRow(row) ? { row: r + 1, height: row.height ?? DEFAULT_ROW_HEIGHT, hidden: true } : { row: r + 1, height: row?.height ?? DEFAULT_ROW_HEIGHT }
+      return row && isHiddenRow(row) ? { row: r + 1, height: row.height ?? defaultHeight, hidden: true } : { row: r + 1, height: row?.height ?? defaultHeight }
     }),
     merges: (sheet.merges ?? []).filter((m) => crosses(parseMerge(m)!)),
     tables: tables.list.filter((t) => t.s === s && crosses(t)).map((t) => ({ name: t.name, range: t.input.range, headers: t.headers, totals: t.totals })),

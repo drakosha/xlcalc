@@ -12,9 +12,9 @@ import { join } from 'node:path'
 import { indexToCol } from '../../src/model.js'
 import { declineRepair, ensureExcel, excelVersion, keyedPart, runWatched } from './excel.js'
 import { localeDir, localeMeta } from './locales.js'
-import { inParts } from './book.js'
+import { fontParts } from './book.js'
 import { answeredLine, answerSaver, chosen, keptSame, loadStored, setModule, took } from './stored.js'
-import { caseColumn, caseRows, fitBook, type FitAnswer, type FitCase, type FitSet } from './fit/cases.js'
+import { caseColumn, caseRows, fitBook, fitsColumn, type FitAnswer, type FitCase, type FitSet } from './fit/cases.js'
 import { HERE, ROOT } from './paths.js'
 
 const SCRIPT = join(HERE, 'excel-fit.applescript')
@@ -55,8 +55,8 @@ export async function savedColumns(saved: Uint8Array): Promise<Map<string, FitAn
   return out
 }
 
-/** The cases of a part as the script takes them: [column, fit first, [[row, text, via]], [rows to read]]. */
-export const partSpec = (part: FitCase[]) => part.map((c, k) => [indexToCol(caseColumn(k)), c.fitFirst ? 1 : 0, (c.typed ?? []).map(([r, t]) => [r, t, c.via ?? 'local']), caseRows(c)])
+/** The cases of a part as the script takes them: [column, fit, [[row, text, via]], [rows to read]]. */
+export const partSpec = (part: FitCase[]) => part.map((c, k) => [indexToCol(caseColumn(k)), fitsColumn(c) ? 1 : 0, (c.typed ?? []).map(([r, t]) => [r, t, c.via ?? 'local']), caseRows(c)])
 
 /** The answers of a part from what Excel read of each case's column and the file it saved. */
 export async function partAnswers(part: FitCase[], refused: string[][], read: [number, number, boolean, string[]][], saved: Uint8Array): Promise<Record<string, FitAnswer>> {
@@ -103,7 +103,7 @@ export async function stepFit(set: string, tag: string): Promise<void> {
   const save = answerSaver(target, { version: excelVersion(), locale: localeMeta(tag) }, true, t0, cases, answers, { was: Number(prev?.seconds ?? 0) })
   await ensureExcel(tag)
   try {
-    for (const [k, part] of inParts(todo, FIT_PART).entries()) {
+    for (const [k, part] of fontParts(todo, FIT_PART).entries()) {
       Object.assign(answers, await runPart(part, `${set} ${tag} part ${k + 1}`))
       save()
       console.log(`fit ${set} ${tag}: part ${k + 1}, ${part.length} cases, ${took(t0)} s`)

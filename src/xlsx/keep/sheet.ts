@@ -15,7 +15,7 @@ import { colToIndex, formatAddress, parseAddress } from '../../model.js'
 import { keyOf } from '../../style-table.js'
 import type { RowWritten, SheetPieces } from '../write/sheet.js'
 import { MAIN } from '../write/xml.js'
-import { attributes, element } from '../xml/scan.js'
+import { attrsAt, attributes, element } from '../xml/scan.js'
 import { readCriteria, readSort, type FilterRead } from '../read/filter.js'
 import { parseRange } from '../../structure/area.js'
 import { protectionAttrs } from '../protection.js'
@@ -516,7 +516,11 @@ export function spliceSheet(x: SpliceInput): Spliced {
   if (p0.formatPr !== p1.formatPr) {
     changed = true
     const e = own('sheetFormatPr')
-    put('sheetFormatPr', e ? attrsFrom(e.text, p1.formatPr, ['outlineLevelRow', 'outlineLevelCol']) : p1.formatPr)
+    const before = attrsAt(p0.formatPr, 'sheetFormatPr')
+    const after = attrsAt(p1.formatPr, 'sheetFormatPr')
+    const keys = ['outlineLevelRow', 'outlineLevelCol', 'defaultColWidth'].filter((key) => before[key] !== after[key])
+    if (before.defaultColWidth !== undefined && after.defaultColWidth === undefined) keys.push('baseColWidth')
+    put('sheetFormatPr', e ? attrsFrom(e.text, p1.formatPr, keys) : p1.formatPr)
   }
   if (p0.cols !== p1.cols) {
     changed = true

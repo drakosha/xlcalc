@@ -74,6 +74,9 @@ A calculated column's `formula` is the formula Excel gives a row inserted into t
 
 A table's `style` keeps its look in Excel, which the engine does not draw: `name`, one of Excel's table styles (`TableStyleLight1` to `TableStyleLight21`, `TableStyleMedium1` to `TableStyleMedium28`, `TableStyleDark1` to `TableStyleDark11`), none without it; and the Table Style Options, each false by default: `firstColumn`, `lastColumn`, `rowStripes` (banded rows) and `columnStripes` (banded columns). A table without `style` has Excel's default, `TableStyleMedium2` with banded rows. The style stays with the table when it is renamed, moved, copied or resized, and is read from and written to xlsx ([docs/xlsx.md](xlsx.md#tables)).
 
+On xlsx import, `TableStyleLight`, `TableStyleMedium` and `TableStyleDark` without a number or a matching custom definition select no style, as in Excel for Windows. The table keeps its style options, such as row stripes. Excel may retain an unresolved name in the file it saves.
+
+
 ```js
 { name: 'Sales', range: 'A1:C9', columns: [...], style: { name: 'TableStyleLight9', firstColumn: true, rowStripes: true } }
 ```

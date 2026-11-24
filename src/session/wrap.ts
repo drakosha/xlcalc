@@ -99,7 +99,7 @@ export function fittedHeights(s: EngineState, i: number, spans: [number, number]
   const [lo, hi] = [spans[0][0], spans[spans.length - 1][1]]
   const sheet = s.input.sheets[i]
   const { cells, spans: spills } = stateRows(s, i, lo, hi)
-  const fits = lines(fitHeights(s.ctx.rules, s.input.styles ?? [], sheet, cells, lo, hi, spills), 'r')
+  const fits = lines(fitHeights(s.ctx.rules, s.input.styles ?? [], sheet, cells, lo, hi, spills, s.input.font), 'r')
   const rows = lines(sheet.rows, 'r')
   const out: SetLayoutEdit[] = []
   let run: [a: number, b: number, height: number | null] | null = null

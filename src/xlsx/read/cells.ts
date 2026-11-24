@@ -366,6 +366,7 @@ export function look(xf: Xf | undefined, issues: Issues, where: Where): { style?
   }
   if (xf.eastAsian !== undefined) issues.add('numberFormat', { key: 'eastAsianFormat' }, where)
   if (xf.unknownFormat !== undefined) issues.add('numberFormat', { key: 'unknownFormat' }, where)
+  if (xf.formatLayout !== undefined && typeof xf.format === 'string') issues.add('numberFormat', { key: 'formatLayout', code: xf.format, problem: xf.formatLayout }, where)
   const out: { style?: number; numberFormat?: NumberFormat } = {}
   if (xf.style !== undefined) out.style = xf.style
   if (xf.format !== undefined) out.numberFormat = xf.format

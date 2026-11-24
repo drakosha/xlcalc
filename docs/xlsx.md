@@ -86,7 +86,7 @@ Pass the locale the user reading the messages has chosen. A file does not record
 - `cached` holds the values the file stores for formulas and for the cells their arrays spilled into, by sheet in the workbook's order, in the shape of a result: `cached.sheets[0].cells.B1.value` like `compute(book).sheets[0].cells.B1.value`. A formula whose array spilled has `spill`, its range, and each other cell of the range has `spillOf`, the formula's address, as in a result. These are what Excel calculated when it saved the file, so you can compare them with the engine's result cell by cell, or write the file again with them (`writeXlsx({ book, result: cached })`). A workbook with a circular reference opens with them as Excel opens the file, with `compute(book, { cached })` or `createSession(book, { cached })`: the formulas the cycle stops keep the stored values ([cycles.md](cycles.md)).
 - `issues` lists what the workbook cannot represent of a file's cells, formulas, names and looks, with the sheet and the cells or the name it concerns; [What is not reported](#what-is-not-reported) names the rest. Each issue has a code for programs and a message for users, in English or in the language of `opts.locale` ([The language of the messages](#the-language-of-the-messages)).
 
-An `.xlsb`, an `.xls` and a password-protected workbook cause an `InputError` that names them. Any other file that is not a zip archive, a damaged archive (an entry cut short, two entries of one name, bytes that do not match their CRC-32), a part that is not valid XML because a character reference in it is past U+10FFFF, an encrypted file, a ZIP64 archive and a file without a workbook part cause errors. Data that is not bytes, such as the file's path, causes an `InputError` that says to pass the bytes.
+For an `.xlsb` file, use [`readXlsb`](#reading-xlsb). An `.xls` file and a password-protected workbook cause an `InputError` that names them. Any other file that is not a zip archive, a damaged archive (an entry cut short, two entries of one name, bytes that do not match their CRC-32), a part that is not valid XML because a character reference in it is past U+10FFFF, an encrypted file, a ZIP64 archive and a file without a workbook part cause errors. Data that is not bytes, such as the file's path, causes an `InputError` that says to pass the bytes.
 
 `opts.limits` bounds how large the file's parts may be once inflated: `entryBytes` for one part, 512 MiB by default; `totalBytes` for all parts read together, 1 GiB by default; and `ratio`, how many times its compressed size a part larger than 16 MiB may inflate to, not bounded unless given. A file beyond these limits causes an error, as a damaged file does. A host that reads files uploaded by users passes lower limits, and a ratio if it wants a small file refused before it inflates:
 
@@ -164,6 +164,8 @@ Colors become `#RRGGBB`. A theme color with a tint is calculated as Excel displa
 A fill is read as Excel displays it. The file's first two fills are no fill and `gray125` whatever it holds there, as Excel takes them. A solid fill displays its `fgColor`; without one, or with one that names no color (`auto`, a system color), it is white, Excel's automatic color. A fill without a pattern type is no fill; when a fill has both a gradient and a pattern, the pattern counts. Gradients and patterns other than solid are not in the model: the cell is read without a fill, and that is reported.
 
 A custom number format is read as its code. A built-in one is stored in the file as a number, and the reader returns that number, 1 to 49, which the workbook displays according to its locale, as Excel does: format 14 displays 2025-01-31 as `1/31/2025` in en-US and `31.01.2025` in ru-RU ([docs/formats.md](formats.md)). Formats 50 to 58, East Asian dates, are not in the model: they are read as the code Excel for Mac en-US displays, `m/d/yy`, and reported. That code is the Mac's short date, format 14; Excel for Windows displays them as its own format 14 too, `m/d/yyyy` in en-US and `ДД.ММ.ГГГГ` in ru-RU, so where the engine displays 2025-01-31 as `1/31/25` (`1.31.25` in ru-RU), Excel for Windows displays `1/31/2025` (`31.01.2025`), as the engine displays format 14 (`test/xlsx-win.test.ts`).
+
+Conditions belong in the first two sections of a custom code, and a fourth section is for text. Excel for Windows refused to open the five files of the `number-format-conditions` set with a condition in the third section or a fourth numeric section. The reader reads such a code as written and reports it under `numberFormat` for each cell that has it, so that a workbook another program wrote still opens; `writeXlsx` and `writeKept` refuse to write it, naming the rule. A comparator inside quoted text reads as text.
 
 Excel for Mac saves some built-in formats other than by their number: the currency and accounting ones (5 to 8, 41 to 44) as codes in the locale it runs in, 23 to 26 as General, and the East Asian 27 to 36 as 14 and 21. A file saved by Excel contains them that way.
 
@@ -283,6 +285,8 @@ The calculation option is kept as `calculation`: `manual`, or `autoNoTable` (aut
 
 ### Names
 
+On import, an empty or whitespace-only `definedName` is left out. Excel for Windows refused the synthetic files in a normal open through its object model. Excel for Mac's interactive repair of the empty case dropped the definition, and the cell referring to it gave `#NAME?`.
+
 | in the file | in the workbook |
 |---|---|
 | `Data!$A$1`, `'Data'!$D:$D` | the reference |
@@ -317,9 +321,9 @@ xlsx has no place for the workbook's locale. The writer stores it in a custom do
 | `name` | built-in names, names of a sheet that was left out; a linked workbook's name for a sheet it does not have |
 | `calculation` | manual mode, automatic except for data tables, precision as displayed, an iteration count or change out of range |
 | `style` | pattern and gradient fills, diagonal borders, shrink to fit, subscript and superscript |
-| `defaultFont` | a default font other than Calibri 11, kept in `font` and measured as Calibri 11 |
-| `defaultWidth` | a default column width other than 8 digits |
-| `numberFormat` | an East Asian built-in format (50 to 58), or an unknown one |
+| `defaultFont` | a Normal font with unmeasured geometry, kept in `font` and using Calibri 11 default widths and heights |
+| `defaultWidth` | an invalid default column width, replaced with Excel's standard |
+| `numberFormat` | an East Asian built-in format (50 to 58), or an unknown one; a custom code Excel does not open a file with for its sections (a condition past the second section, a fourth section that is not text), read as written |
 | `hidden` | a file whose worksheets are all hidden (next to chart sheets): its first worksheet is read as visible |
 | `autoFilter` | unsupported filter properties, an advanced filter; an AutoFilter over a table or over no range of cells, left out |
 | `sheetKind` | chart, dialog and macro sheets, left out |
@@ -335,6 +339,9 @@ xlsx has no place for the workbook's locale. The writer stores it in a custom do
 | `drawing`, `print`, `macros`, `sparkline`, `connection` | parts of the file the model does not support |
 | `locale` | a locale the package does not have |
 | `part` | a sheet name Excel would not take, read under another ([Sheet names](#sheet-names)); a missing sheet part, a cell outside the sheet, a Strict file's date that is no date, XML of the cells or the shared strings left open (an element without its closing tag), a width or height that is no size, a row number that is no whole number, a style index or a shared string the file does not have, a value that is no number or no boolean |
+
+An explicit `sheetFormatPr.defaultColWidth` becomes `SheetInput.defaultColumnWidth` in the same units as an individual column width, using the workbook's Normal font. A nonstandard `baseColWidth` alone gives the width of that many digits plus the Normal font's column padding. The sheet's width applies where a column has none of its own. `writeXlsx` writes it as `defaultColWidth`. `writeKept` keeps the original attributes if the width has stayed the same and updates the full default width when it changes.
+
 
 ### What is not reported
 
@@ -354,6 +361,24 @@ An issue's `message` is in English by default. `readXlsx(data, { locale })` and 
 The host passes the language the user reading the messages has chosen. A file does not record it: Excel stores no language in xlsx, and the locale the writer stores in `xlcalc.locale` is the workbook's, the rules it calculates by, and a user working in another language may open the same workbook. So neither function takes the language from the workbook.
 
 The messages are part of the locale's module, alongside its other messages ([docs/locale.md](locale.md#messages)), and the English ones are part of the subpath, so the subpath includes no locale other than en-US, and a locale without its own text for an issue falls back to the English one: a host that displays Russian loads `xlcalc/locales/ru-RU`, as it does for workbooks in ru-RU. One part of one message stays in English: why a table is left out, which comes from the table check's own text (`Таблица «Over» не прочитана, модель не может её хранить (B1:C2 overlaps the table T)`).
+
+## Reading xlsb
+
+`readXlsb(data, opts)` from `xlcalc/xlsb` takes the bytes of an Excel binary workbook and returns the same `book`, `cached` and `issues` as `readXlsx`. Its options are `locale` and `limits`. It reads cells and formulas, styles, workbook names, tables, filters, conditional formatting, validation, notes, external links, PivotTables, slicers and timelines. The byte limits also cover the intermediate XML made from binary parts. Use `writeXlsx` to save the resulting workbook as xlsx.
+
+```js
+import { readXlsb } from 'xlcalc/xlsb'
+
+const { book, cached, issues } = await readXlsb(await file.arrayBuffer())
+```
+
+Excel can save an external name as an invalid reference in xlsb when its definition points beyond the first 65,536 rows or 256 columns of the external sheet. The reader returns `#REF!` for that definition and an `externalLink` issue. Any stored formula result is still in `cached`.
+
+XLSB stores errors in external names as codes. The reader gives them their invariant spelling. If Excel expands shared formulas in XLSB, a formula issue can list the same cells in a different order. If Excel uses one binary name record for differently capitalized `LET` names, the reader uses the spelling stored in that record.
+
+The `sparkline` issue reports sparkline groups stored in the file. In a paired test, Excel for Windows kept these groups in the XLSX save and left them out of the XLSB save.
+
+The tests compare paired files that Excel for Windows saved as xlsx and xlsb from the same open workbook. The binary extension has its own import so applications can include the converter when they read xlsb.
 
 ## Writing
 

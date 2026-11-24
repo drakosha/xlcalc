@@ -273,6 +273,30 @@ function parseSection(text: string, codes: Codes, last: boolean): Section | null
   return (calendar || toks.some(dated)) && (digit || misplaced(toks, subseconds(toks))) ? null : sec
 }
 
+function readSections(parts: string[], codes: Codes): Section[] | null {
+  if (parts.length > 4) return null
+  const sections = parts.map((part, index) => parseSection(part, codes, index === parts.length - 1))
+  return sections.every((section): section is Section => section !== null) ? sections : null
+}
+
+/** Why Excel refuses a code by its sections: a condition past the second section, or a fourth section that is not text. */
+export type SectionProblem = 'conditionPlace' | 'fourthSection'
+
+function sectionProblem(sections: Section[]): SectionProblem | undefined {
+  if (sections.slice(2).some((section) => section.cond)) return 'conditionPlace'
+  const text = sections[3]?.toks
+  if (text && (text.some(dated) || misplaced(text, new Map()))) return 'fourthSection'
+}
+
+/** The section layout reason Excel refuses an otherwise parsed xlsx code. */
+export function formatSectionProblem(code: string): SectionProblem | undefined {
+  if (!code.includes(';')) return undefined
+  const parts = splitSections(code)
+  if (parts.length < 3) return undefined
+  const sections = readSections(parts, EN_CODES)
+  return sections === null ? undefined : sectionProblem(sections)
+}
+
 /** Parsed codes by dialect: books use few, and TEXT over a column repeats one. */
 const CACHE = new WeakMap<Codes, Map<string, Section[] | null>>()
 
@@ -281,11 +305,7 @@ export function parseFormat(code: string, codes: Codes): Section[] | null {
   let cache = CACHE.get(codes)
   if (!cache) CACHE.set(codes, (cache = new Map()))
   return remembered(cache, code, 4096, () => {
-    const parts = splitSections(code)
-    const secs = parts.map((s, i) => parseSection(s, codes, i === parts.length - 1))
-    if (parts.length > 4 || !secs.every((s): s is Section => s !== null)) return null
-    // a condition goes in the first two sections; a fourth is for text, with no date's code, digit, percent or exponent
-    const text = secs[3]?.toks
-    return secs.slice(2).some((s) => s.cond) || (text && (text.some(dated) || misplaced(text, new Map()))) ? null : secs
+    const sections = readSections(splitSections(code), codes)
+    return sections && !sectionProblem(sections) ? sections : null
   })
 }

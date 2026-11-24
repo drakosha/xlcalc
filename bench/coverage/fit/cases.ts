@@ -19,6 +19,8 @@ export type FitCell = StoredCell & { look?: CellStyle }
 
 export interface FitCase {
   id: string
+  /** The font of the book's Normal style. */
+  bookFont?: BookInput['font']
   /** The column's cells by row number, as a stored case names their fields (errors come from formulas). */
   cells?: Record<number, FitCell>
   /** The column before: a width set by hand (xlsx `customWidth`), its format, hidden; the default width without them. */
@@ -33,6 +35,8 @@ export interface FitCase {
   via?: Via
   /** AutoFit before the texts are typed. */
   fitFirst?: boolean
+  /** Read the column's width on opening, with no AutoFit. */
+  readWidth?: true
 }
 
 /** What Excel made of a case's column. */
@@ -53,6 +57,9 @@ export interface FitSet {
   /** The set's cases in a locale (typed texts are written as a user of the locale types them). */
   buildFitCases(tag: string): FitCase[]
 }
+
+/** Whether to AutoFit before typing or reading. */
+export const fitsColumn = (c: FitCase): boolean => !c.readWidth && (!c.typed || !!c.fitFirst)
 
 /** The row hidden across the sheet. */
 export const HIDDEN = 30
@@ -84,7 +91,8 @@ export function fitBook(cases: FitCase[]): BookInput {
     for (const r of c.merged ?? []) merges.push(`${formatAddress(r - 1, col)}:${formatAddress(r - 1, col + 1)}`)
     if (c.mergedDown) merges.push(`${formatAddress(c.mergedDown[0] - 1, col)}:${formatAddress(c.mergedDown[1] - 1, col)}`)
   })
-  return { sheets: [{ name: 'S', cells, columns, rows: { [HIDDEN]: { hidden: true } }, ...(merges.length ? { merges } : {}) }], styles }
+  const font = cases[0]?.bookFont
+  return { ...(font ? { font } : {}), sheets: [{ name: 'S', cells, columns, rows: { [HIDDEN]: { hidden: true } }, ...(merges.length ? { merges } : {}) }], styles }
 }
 
 /** Cases of one group: ids `<group>-<n>`. */

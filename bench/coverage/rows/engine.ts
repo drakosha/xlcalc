@@ -6,7 +6,6 @@
  * passes the ones it tests (`src` or `dist`).
  */
 import type { BookInput, CellInput, Session, SessionOptions } from '../../../src/contract.js'
-import { lineAt } from '../../../src/layout/spans.js'
 import { formatAddress, indexToCol } from '../../../src/model.js'
 import { caseCells, caseRow, cellKey, fitsRow, rowsBook, type RowCase } from './cases.js'
 
@@ -14,7 +13,7 @@ export interface RowsEngine {
   createSession(book: BookInput, opts?: SessionOptions): Session
 }
 
-/** The engine's answer: the row's height when the book opens and after (the default 15 for none, 0 for a hidden row), each read cell's content (as `Formula` reads it) and wrapping, and the heights of the rows the case names. */
+/** The engine's answer: the row's height when the book opens and after (the Normal font's default when unset, 0 for a hidden row), each read cell's content (as `Formula` reads it) and wrapping, and the heights of the rows the case names. */
 export interface RowsPrediction {
   before: number
   height: number
@@ -35,8 +34,8 @@ export function engineRows(e: RowsEngine, c: RowCase, tag: string, now: string):
   const s = e.createSession(book, { clock: { now: `${now}T12:00:00Z`, seed: 1 } })
   const row = caseRow(0)
   const shown = (at = row) => {
-    const r = lineAt(s.getLayout().sheets[0].rows, 'r', at - 1)
-    return r?.hidden || r?.height === 0 ? 0 : (r?.height ?? 15)
+    const [line] = s.getViewport('S', `A${at}`).rows
+    return line.hidden ? 0 : line.height
   }
   const at = (col: number, dr = 0) => formatAddress(row - 1 + dr, 1 + col)
   const before = shown()

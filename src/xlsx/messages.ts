@@ -4,6 +4,7 @@
  * without its own text of one gives this one.
  */
 import { ownText, type StyleLoss, type StylePart, type XlsxMessageParams } from '../locale/messages.js'
+import { SECTION_RULES } from '../numfmt/refused.js'
 import type { Locale } from '../locale/types.js'
 import type { XlsxMessage } from './issues.js'
 
@@ -57,7 +58,7 @@ export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: Xl
   pivotSourceLinked: (p) => `the source of a pivot cache is on the sheet '${p.sheet}', which the workbook no longer has: written as Excel writes it, a link to a file by its path (book.xlsx), which a refresh cannot read`,
   macros: () => 'macros (a VBA project) are not in the model',
   connections: () => 'data connections and queries are not in the model',
-  defaultFont: (p) => `the default font ${p.name ?? '(no name)'} ${p.size ?? '(no size)'} is kept, and measured as Calibri 11`,
+  defaultFont: (p) => `the default font ${p.name ?? '(no name)'} ${p.size ?? '(no size)'} is kept, and its default column and row geometry uses Calibri 11`,
   sheetKind: () => 'a chart, dialog or macro sheet is left out',
   sheetPartMissing: () => 'a sheet whose part is missing is left out',
   sheetNameRepaired: (p) => `the sheet name ${JSON.stringify(p.name)} is not one Excel takes: the sheet is read as ${JSON.stringify(p.sheet)}`,
@@ -77,7 +78,7 @@ export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: Xl
   drawings: () => 'pictures, charts and shapes are not in the model',
   sparklines: () => 'sparklines are not in the model',
   printSettings: () => 'print settings (headers and footers, page breaks, page setup) are not in the model',
-  defaultWidth: (p) => `the sheet's default column width (${p.width} in xlsx units) is not in the model, which uses Excel's standard width of 8 digits`,
+  defaultWidth: (p) => `the sheet's default column width (${p.width} in xlsx units) is invalid, and Excel's standard is used`,
   errorTyped: () => 'an error typed into a cell is read as a formula of that error',
   sheetDataOpen: () => "the sheet's cells have no closing tag (</sheetData>): they are read to the end of the part",
   // reading: formulas
@@ -106,6 +107,7 @@ export const XLSX_EN_MESSAGES: { readonly [K in keyof XlsxMessageParams]: (p: Xl
   styleLost: (p) => `a style's ${stylePart(p.part)} is not in the model`,
   eastAsianFormat: () => 'a built-in East Asian date format the model does not have (50 to 58) is read as the code Excel for Mac en-US displays',
   unknownFormat: () => 'a built-in number format this reader does not know is left out',
+  formatLayout: (p) => `Excel does not open a file with the number format ${JSON.stringify(p.code)}: ${SECTION_RULES[p.problem]}; it is read as written, and writeXlsx refuses it`,
   // reading: tables
   tablePartBad: () => 'a table part without a name or a range is left out',
   tableLeftOut: (p) => `the table ${p.table} is left out: ${p.reason}`,

@@ -13,7 +13,7 @@ import { join } from 'node:path'
 import { formatAddress, indexToCol } from '../../src/model.js'
 import { declineRepair, ensureExcel, excelVersion, keyedPart, runWatched } from './excel.js'
 import { localeDir, localeMeta } from './locales.js'
-import { inParts } from './book.js'
+import { fontParts } from './book.js'
 import { answeredLine, answerSaver, chosen, keptSame, loadStored, setModule, took } from './stored.js'
 import { caseCells, caseColumn, caseRow, cellKey, fitsRow, ownBook, rowsBook, type RowAnswer, type RowCase, type RowSet } from './rows/cases.js'
 import { HERE, ROOT } from './paths.js'
@@ -127,7 +127,7 @@ export async function stepRows(set: string, tag: string): Promise<void> {
   const clipboard = pastes ? execFileSync('pbpaste', { encoding: 'utf8', env: UTF8 }) : ''
   await ensureExcel(tag)
   try {
-    const parts = [...inParts(todo.filter((c) => !ownBook(c)), ROWS_PART), ...todo.filter(ownBook).map((c) => [c])]
+    const parts = [...fontParts(todo.filter((c) => !ownBook(c)), ROWS_PART), ...todo.filter(ownBook).map((c) => [c])]
     for (const [k, part] of parts.entries()) {
       Object.assign(answers, await runPart(part, `${set} ${tag} part ${k + 1}`))
       save()

@@ -210,6 +210,7 @@ export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions)
   const sheets = book.sheets.map((s, i) => {
     const w = sheetPieces(s, i, {
       styles,
+      font: book.font,
       string,
       issues,
       ...names,

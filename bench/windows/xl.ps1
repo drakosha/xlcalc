@@ -326,6 +326,11 @@ function Step($xl, $wb, $s) {
       List ($s.cells | ForEach-Object { Shown $ws.Range($_) $s.codes })
     }
     # cells' fills: each [Interior.Color, Interior.Pattern, Font.Color]
+    'tableStyleName' {
+      $table = $wb.Worksheets.Item($s.sheet).ListObjects.Item($s.name)
+      $style = $table.TableStyle
+      if ($style -is [string]) { Str $style } elseif ($null -ne $style) { Str ([string]$style.Name) } else { 'null' }
+    }
     'fills' {
       $ws = $wb.Worksheets.Item($s.sheet)
       List ($s.cells | ForEach-Object { $c = $ws.Range($_); List @((Cell ([double]$c.Interior.Color)), (Cell ([double]$c.Interior.Pattern)), (Cell ([double]$c.Font.Color))) })
@@ -657,6 +662,11 @@ function Step($xl, $wb, $s) {
     }
     # the book as Excel saves it (xlsx), beside its answer: out\<n>.saved.xlsx
     'saveAs' { $wb.SaveAs((Join-Path $out "$i.saved.xlsx"), 51); 'null' }
+    'saveXlsbPair' {
+      $wb.SaveAs((Join-Path $out "$i.saved.xlsx"), 51)
+      $wb.SaveAs((Join-Path $out "$i.saved.xlsb"), 50)
+      'null'
+    }
     default { throw "unknown step $($s.do)" }
   }
 }

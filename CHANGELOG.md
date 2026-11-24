@@ -2,13 +2,22 @@
 
 ## Unreleased
 
+Added:
+
+- `readXlsb` from `xlcalc/xlsb` reads an `.xlsb` workbook into the same `book`, `cached` and `issues` as `readXlsx`, with the same options: cells and formulas, styles, names, tables, conditional formatting, data validation, filters, notes, external links with their stored values, PivotTables, slicers and timelines ([Reading xlsb](docs/xlsx.md#reading-xlsb)). Its binary parts are translated for the xlsx reader, so the other entry points do not grow by the converter. `readXlsx` and `openKept` still refuse an `.xlsb`, and their message now names `readXlsb`. Checked on 7,181 workbooks Excel for Windows saved as xlsx and xlsb from the same open: 7,161 read the same; the rest differ where Excel stores something else in xlsb. An external workbook's name that points past row 65,536 or column IV has no address in the file and reads as `#REF!` with an `externalLink` issue, its formulas' stored values kept; sparklines Excel left out of the xlsb save are not reported; a `LET` name spelled in two cases takes the spelling the file stores once.
+
 Changed:
 
 - `readXlsx`, `openKept` and `inspectKept` no longer bound a part's ratio to its compressed size unless `limits.ratio` gives one; it was 200 by default. `writeXlsx` deflates a PivotTable's large records some 280 times (104 MB into 370 KB, where Excel's file held 724 KB), and a workbook it wrote was refused when read again. The parts read stay bounded by `entryBytes` (512 MiB) and `totalBytes` (1 GiB), which also bound a zip bomb; a host that wants a small file refused before it inflates passes a ratio.
+- Column widths, the choice between a number and `#`, AutoFit and row heights follow the workbook's Normal font when it is Arial, Arial Cyr or Times New Roman at 8, 10 or 11 points, and a cell's font when it is one of them at 8 to 14 points; they were Calibri 11's whatever the font. Widths are measured on Liberation Sans and Serif, metrically compatible with Arial and Times New Roman ([THIRD_PARTY.md](THIRD_PARTY.md)); AutoFit can differ by 1 or 2 points on Cyrillic runs. Other fonts keep Calibri's geometry. Checked against Excel for Mac and Windows on the sets `normal-fonts-held` and `cell-fonts-held`.
+- A PivotTable's date and range groups in a ru-RU workbook are labelled in Russian as Excel for Windows labels them; they were labelled in en-US words in every locale. Excel for Mac's longer month abbreviations and padded hours are known differences.
 
 Fixed:
 
 - `IRR` finds the rate where Excel finds it: secant steps from the guess, then restarts from 0.1, −1/11 and 2. On cash flows such as 14 outflows followed by 47 inflows Newton's method from 0.1 ran to a root below −1 and gave `#NUM!`, where Excel answers the rate; with several roots the guess picks the same root as in Excel. Checked against Excel for Mac and Windows on 17 cases (`irr-iteration`).
+- A number format with a condition past the second section, or a numeric fourth section, which Excel does not open a file with: `readXlsx` reads it as written and reports it under `numberFormat` for each cell that has it, and `writeXlsx` and `writeKept` refuse it naming that rule; they said text in a format goes in quotes. Checked against Excel for Windows on the set `number-format-conditions`.
+- `readXlsx` reads a table whose style is `TableStyleLight`, `TableStyleMedium` or `TableStyleDark` without a number with no style, as Excel opens it, and reports nothing; it read the table with Excel's default style and reported a custom style for each table. A custom style of the same name still applies.
+- `readXlsx` leaves out a defined name with an empty reference, as Excel's repair does; it was read as a formula the engine does not parse, with a `formula` issue.
 
 ## 0.89.3 (2026-11-22)
 

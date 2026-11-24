@@ -12,6 +12,7 @@ examples are the [README](../README.md) and the other files of `docs/`. This fil
 - [`xlcalc/entry`](#xlcalcentry)
 - [`xlcalc/xlsx`](#xlcalcxlsx)
 - [`xlcalc/xlsx/keep`](#xlcalcxlsxkeep)
+- [`xlcalc/xlsb`](#xlcalcxlsb)
 - [`xlcalc/csv`](#xlcalccsv)
 - [`xlcalc/worker`](#xlcalcworker)
 - [`xlcalc/function-text`](#xlcalcfunction-text)
@@ -484,7 +485,8 @@ Excel's limit on the length of a formula's text: 8,192 characters.
 const MAX_OUTLINE: 7
 ```
 
-The deepest outline of rows or columns Excel allows: seven levels of groups below the sheet's own level.
+The deepest outline of rows or columns Excel allows: seven levels of groups below the sheet's own level. Declared before
+the functions: esbuild inlines it into `xlcalc/a1` only from there, and leaves this module out of that bundle.
 
 ### <a id="xlcalc-max_row_height"></a>`MAX_ROW_HEIGHT`
 
@@ -1128,6 +1130,16 @@ Writes a book over the xlsx file it was read from ([`openKept`](#xlcalcxlsxkeep-
 file's as it was, the parts the model does not have among it. Refuses ([`KeptRefusal`](#xlcalcxlsxkeep-keptrefusal), its message in the language of
 `opts.locale`) a change that would leave references the model does not hold pointing at other cells.
 
+## xlcalc/xlsb
+
+### <a id="xlcalcxlsb-readxlsb"></a>`readXlsb`
+
+```ts
+function readXlsb(data: ArrayBuffer | Uint8Array<ArrayBufferLike>, opts?: ReadXlsxOptions): Promise<XlsxRead>
+```
+
+Reads an XLSB workbook's cells, saved values and issues using the SpreadsheetML reader.
+
 ## xlcalc/csv
 
 Types: see [Types](#types).
@@ -1597,10 +1609,10 @@ interface BookInput {
   externalBooks?: ExternalBook[]
   /**
    * The workbook's default font, its Normal style's (in xlsx the first font), in points: what a cell shows whose style
-   * gives no font name or size. Without it, Calibri 11. It is kept, read and written, and the engine measures as for
-   * Calibri 11 whatever it is: column widths in characters, fitted row heights, `####` in a column too narrow and
-   * `entryWidth`, which Excel measures in the default font, so for another font they can differ from Excel's. It is
-   * included in `inputHash` when given.
+   * gives no font name or size. Without it, Calibri 11. The workbook uses measured column geometry and row heights for
+   * Arial, Arial Cyr and Times New Roman at 8, 10 and 11 points. Unrotated cells of those families at 8 to 14 points
+   * use regular Liberation metrics for text width.
+   * The font is read and written and is included in `inputHash` when given.
    */
   font?: { name: string; size: number }
   /** The workbook's theme palette and custom table style definitions. */
@@ -5973,6 +5985,8 @@ interface SheetInput {
    * return this list in a form of their own (`LookRange`).
    */
   looks?: LookRange[]
+  /** The default width of columns without a width of their own, in xlsx units of the Normal font like `ColumnInput.width`. */
+  defaultColumnWidth?: number
   /** Columns by letter, a single column (`C`) or a span (`B:D`) like xlsx `<col min max>`; spans do not overlap. */
   columns?: Record<string, ColumnInput>
   /** Rows by number, a single row (`5`) or a span (`5:9`); spans do not overlap. */
@@ -7420,9 +7434,8 @@ What the workbook cannot hold from a file, or what writing changed. The codes:
 - `calculation`: calculation settings the workbook does not keep: manual mode, automatic except for data tables,
   precision as displayed; an iteration count or maximum change out of range, read as Excel's default.
 - `style`: what a style cannot hold (pattern and gradient fills, diagonal borders, rotation and the like).
-- `defaultFont`: a default font other than Calibri 11, kept in [`BookInput.font`](#bookinput) and measured as Calibri 11.
-- `defaultWidth`: a sheet's default column width other than Excel's standard of 8 digits, which the model assumes
-  (Excel for Mac starts its own workbooks at 10).
+- `defaultFont`: a Normal font with unmeasured geometry. It stays in [`BookInput.font`](#bookinput) and uses Calibri 11 default widths and heights.
+- `defaultWidth`: an invalid default column width, replaced with Excel's standard of eight characters.
 - `numberFormat`: a built-in East Asian date format the model does not have (50 to 58, read as its en-US code), or
   one this reader does not know (left out).
 - `hidden`: hidden sheets, read as visible ones.

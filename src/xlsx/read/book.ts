@@ -1,3 +1,4 @@
+import { bookGeometry, normalGeometry } from '../../column-width.js'
 /**
  * `readXlsx`: an xlsx file as a book. The workbook part is found through the package's relationships, its
  * sheets taken in the order the workbook lists them (not by part names), each linked to its part by id; shared
@@ -13,6 +14,7 @@ import { InputError, what } from '../../input-error.js'
 import { checkNumber, object, onlyKeys, onlyOptions } from '../../input/basic.js'
 import { optionalLocale } from '../../locale/load.js'
 import { LOCALES, PACKAGE_LOCALES } from '../../locale/registry.js'
+import type { Locale } from '../../locale/types.js'
 import { Issues, type XlsxMessage } from '../issues.js'
 import { LOCALE_PROPERTY } from '../property.js'
 import { palette } from '../styles/color.js'
@@ -33,6 +35,7 @@ import type { FileTables } from './slicers.js'
 import { pivotRuleScopes } from './pivot-table.js'
 import { renamedIn, repairNames } from './sheet-names.js'
 import { readActiveSheet } from '../view.js'
+import { customTableStyleNames } from './tables.js'
 import { readStrings } from './strings.js'
 import { formatAddress } from '../../model.js'
 import { parseRange } from '../../structure/area.js'
@@ -82,7 +85,10 @@ function readNames(xml: string, decls: SheetDecl[], read: Set<string>, issues: I
       issues.add('name', { key: 'nameOfSheetLeftOut' }, { name })
       continue
     }
-    const f = readFormula(readText(e.body ?? ''), issues, { name }, { ...opts, union: true })
+    const ref = readText(e.body ?? '')
+    // Excel's repair removes an empty definition. Leaving it here could shadow a valid workbook name.
+    if (!ref.trim()) continue
+    const f = readFormula(ref, issues, { name }, { ...opts, union: true })
     out.push({ name, ref: f.formula, ...(scope === undefined ? {} : { scope }), ...(flag(a.hidden) ? { hidden: true } : {}) })
   }
   return out
@@ -151,18 +157,32 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOp
   return (await readStyled(data, opts)).read
 }
 
-/** `readXlsx`, with the file's styles part and its cell formats as read (`xlsx/keep` adds to them). */
-export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOptions): Promise<{ read: XlsxRead; stylesXml: string | undefined; table: StyleTable }> {
+export function workbookInput(data: Uint8Array | ArrayBuffer, opts: ReadXlsxOptions | undefined) {
   const bytes = fileBytes(data)
   const o = opts === undefined ? {} : object(opts, 'opts', "options such as { locale: 'ru-RU' }")
   onlyOptions(o, 'opts', ['locale', 'limits'])
   const language = optionalLocale(o.locale, 'opts.locale')
   if (OLE.every((b, i) => bytes[i] === b)) throw unreadable('an .xls or password-protected file')
-  const archive = openArchive(bytes, o.limits === undefined ? undefined : checkLimits(o.limits))
-  const issues = new Issues()
+  return { bytes, language, limits: o.limits === undefined ? undefined : checkLimits(o.limits) }
+}
+
+/** `readXlsx`, with the file's styles part and its cell formats as read (`xlsx/keep` adds to them). */
+export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOptions): Promise<{ read: XlsxRead; stylesXml: string | undefined; table: StyleTable }> {
+  const { bytes, language, limits } = workbookInput(data, opts)
+  const archive = openArchive(bytes, limits)
   const root = await relsOf(archive, '')
   const wbPath = root.find((r) => r.kind === 'officeDocument' && !r.external)?.target ?? 'xl/workbook.xml'
-  if (wbPath.endsWith('.bin')) throw unreadable('an .xlsb')
+  if (wbPath.toLowerCase().endsWith('.bin')) {
+    throw new InputError('data', language?.tag === 'ru-RU'
+      ? 'Откройте файл .xlsb через readXlsb из xlcalc/xlsb или сохраните его в формате .xlsx'
+      : 'read an .xlsb file with readXlsb from xlcalc/xlsb, or save it as .xlsx')
+  }
+  return readStyledArchive(archive, root, wbPath, language)
+}
+
+/** Reads SpreadsheetML from its package. The XLSB adapter serves XML for the binary parts at their original paths. */
+export async function readStyledArchive(archive: Archive, root: Rel[], wbPath: string, language: Locale | undefined): Promise<{ read: XlsxRead; stylesXml: string | undefined; table: StyleTable }> {
+  const issues = new Issues()
   const wb = await archive.text(wbPath)
   if (wb === undefined) throw new Error(`xlsx: the file has no workbook part (${wbPath})`)
   const rels = await relsOf(archive, wbPath)
@@ -172,15 +192,17 @@ export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsx
   )
   const colors = palette(themeXml, stylesXml)
   const table = readStyles(stylesXml, colors)
+  const customTableStyles = customTableStyleNames(stylesXml)
   // a cell or a row that a crossing line's look does not reach is read with a style with nothing set
   let plainStyle: number | undefined
   const plain = () => (plainStyle ??= table.styles.push({}) - 1)
   const isPlain = (style: number) => style === plainStyle
   const cond = { dxfs: readDxfs(stylesXml, colors), palette: colors }
-  // the default font is the book's when it is not the model's; the engine measures as for Calibri 11 either way
+  // a non-default Normal font stays in the book, with an issue when its geometry is unmeasured
   const read = table.font && { name: table.font.name || 'Calibri', size: table.font.size || 11 }
   const font = read && (read.name !== 'Calibri' || read.size !== 11) ? read : undefined
-  if (font) issues.add('defaultFont', { key: 'defaultFont', ...table.font })
+  if (font && !normalGeometry(font)) issues.add('defaultFont', { key: 'defaultFont', ...table.font })
+  const [columnDigit] = bookGeometry(font)
   const iteration = calculation(wb, issues)
   workbookIssues(wb, rels, issues)
   const dateSystem = flag(attrsAt(wb, 'workbookPr').date1904) ? 1904 : 1900
@@ -235,7 +257,7 @@ export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsx
     const pivotRules = new Map<number, PivotRuleScope>()
     for (const p of pivotParts) if (p !== undefined) pivotRuleScopes(p, pivotRules)
     const read = readSheet(
-      { name: d.name, xml, rels: sheetRels, sheets: all, legacy, tables: tableParts.filter((x): x is string => x !== undefined), parts: { comments, vml, threads, persons }, cond, formulas, pivotRules, drawing: drawn },
+      { name: d.name, xml, rels: sheetRels, sheets: all, legacy, tables: tableParts.filter((x): x is string => x !== undefined), parts: { comments, vml, threads, persons }, customTableStyles, columnDigit, cond, formulas, pivotRules, drawing: drawn },
       { sheet: d.name, strings, xfs: table.xfs, palette: colors, baseFont: table.baseFont, meta, epoch: epochOf(dateSystem), issues, plain, isPlain },
     )
     for (const t of tableParts) {

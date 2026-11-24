@@ -30,7 +30,7 @@ export function turnedStyles(styles: readonly CellStyle[] | undefined): Set<numb
 export const DEFAULT_SIZE = 11
 
 /** The font size of a style, the default's without one. */
-export const fontSize = (style: CellStyle | undefined): number => style?.font?.size ?? DEFAULT_SIZE
+export const fontSize = (style: CellStyle | undefined, fallback = DEFAULT_SIZE): number => style?.font?.size ?? fallback
 
 /** The height of one line of Calibri of `size` points, as Excel for Mac fits a row to it (`test/excel/rows/autofit.json`); a size of a half point counts as the next whole one (`held.json`). */
 export const lineHeight = (size: number): number => Math.round(Math.round(size) * 1.27 + 0.96)

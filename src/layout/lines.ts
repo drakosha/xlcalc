@@ -29,6 +29,8 @@ export const lookOf = (own: Look | undefined, row: Look | undefined, col: Look |
 export interface SheetLines {
   row(r: number): RowInput | undefined
   column(c: number): ColumnInput | undefined
+  /** A column's own width or the sheet's default width. */
+  width(c: number): number | undefined
   /** The look a cell shows (`lookOf`): `own`, else the sheet's input at the cell or its look of the sheet's looks. */
   look(r: number, c: number, own?: CellInput): Look
   /** The format a cell shows by (`formatOf`). */
@@ -51,7 +53,7 @@ export function readOnce<T>(state: EngineState, part: object, make: () => T): T 
 const linesOf = <T>(state: EngineState, map: Record<string, T> | undefined, axis: 'r' | 'c'): Line<T>[] => (map ? readOnce(state, map, () => lines(map, axis)) : [])
 
 /** A sheet's lines; with the session's `state`, read once for it. */
-export function sheetLines(sh: Pick<SheetInput, 'cells' | 'looks' | 'rows' | 'columns'>, state?: EngineState): SheetLines {
+export function sheetLines(sh: Pick<SheetInput, 'cells' | 'looks' | 'rows' | 'columns' | 'defaultColumnWidth'>, state?: EngineState): SheetLines {
   const rows = state ? linesOf(state, sh.rows, 'r') : lines(sh.rows, 'r')
   const cols = state ? linesOf(state, sh.columns, 'c') : lines(sh.columns, 'c')
   const lineOf = <T>(cache: Map<number, T | undefined>, ls: Line<T>[], i: number): T | undefined => {
@@ -63,5 +65,5 @@ export function sheetLines(sh: Pick<SheetInput, 'cells' | 'looks' | 'rows' | 'co
   const row = (r: number) => lineOf(rowCache, rows, r)
   const column = (c: number) => lineOf(colCache, cols, c)
   const at = (r: number, c: number) => inputIn(sh, formatAddress(r, c), r, c)
-  return { row, column, look: (r, c, own = at(r, c)) => lookOf(own, row(r), column(c)), format: (r, c, own = at(r, c)) => formatOf(own, row(r), column(c)) }
+  return { row, column, width: (c) => column(c)?.width ?? sh.defaultColumnWidth, look: (r, c, own = at(r, c)) => lookOf(own, row(r), column(c)), format: (r, c, own = at(r, c)) => formatOf(own, row(r), column(c)) }
 }

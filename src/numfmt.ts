@@ -7,7 +7,8 @@
 import type { CellDisplay, CellValue, NumberFormat } from './contract.js'
 import { formatDate } from './numfmt/date.js'
 import { generalFit } from './numfmt/general.js'
-import { DIGIT, fitText, glyph, hashes, MAX_SHOWN, room, textWidth } from './numfmt/glyphs.js'
+import type { FontMeasure } from './numfmt/font-metrics.js'
+import { DIGIT, fitText, glyph, hashes, MAX_SHOWN, textWidth } from './numfmt/glyphs.js'
 import { formatNumber } from './numfmt/number.js'
 import { EN_CODES, parseFormat, type Codes, type Section } from './numfmt/parse.js'
 import { choose, kind, textSection } from './numfmt/select.js'
@@ -97,20 +98,21 @@ export function formatWith(value: number | string | boolean, fmt: string, d: Dia
  * does not fit, or the text would pass 255 characters. Without a width (infinite room) a fill has no column to fill and
  * drops out, as in `TEXT`.
  */
-function filled(text: string, space: number): string | null {
+function filled(text: string, space: number, font?: FontMeasure): string | null {
   const at = text.lastIndexOf(FILL)
-  if (at < 0) return textWidth(text) <= space && text.length <= MAX_SHOWN ? text : null
+  if (at < 0) return textWidth(text, font) <= space && text.length <= MAX_SHOWN ? text : null
   const ch = text[at + 1] ?? ''
   const before = unfilled(text.slice(0, at))
   const after = text.slice(at + 2)
-  const free = space - textWidth(before + after)
+  const free = space - textWidth(before + after, font)
   if (free < 0) return null
-  const out = before + (ch && free !== Infinity ? ch.repeat(Math.floor(free / glyph(ch))) : '') + after
+  const width = ch ? glyph(ch, font) : 0
+  const out = before + (width > 0 && free !== Infinity ? ch.repeat(Math.floor(free / width)) : '') + after
   return out.length <= MAX_SHOWN ? out : null
 }
 
 /** A word (a boolean, an error) shown whole when it fits, else `#` across the cell; text overflows instead. */
-const fitted = (text: string, space: number, overflow: boolean) => filled(text, space) ?? (overflow ? unfilled(text) : hashes(space))
+const fitted = (text: string, space: number, overflow: boolean, font?: FontMeasure) => filled(text, space, font) ?? (overflow ? unfilled(text) : hashes(space, false, font))
 
 /** A cell's format as sections: an xlsx file's code, or a built-in format by its number in the style's locale; null for none (General) and for a code that does not parse. */
 const sectionsOf = (format: NumberFormat | undefined, style: Style) => {
@@ -123,9 +125,9 @@ const sectionsOf = (format: NumberFormat | undefined, style: Style) => {
  * in `space` points of room, written in the style of the book's locale. Text is never cut (it overflows); a number
  * that does not fit shows `#`.
  */
-export function displayWith(value: CellValue, format: NumberFormat | undefined, style: Style, space: number): CellDisplay {
+export function displayWith(value: CellValue, format: NumberFormat | undefined, style: Style, space: number, font?: FontMeasure): CellDisplay {
   if (value === null) return { text: '' }
-  if (typeof value === 'object') return { text: fitted(style.error(value.error), space, false) }
+  if (typeof value === 'object') return { text: fitted(style.error(value.error), space, false, font) }
   const secs = sectionsOf(format, style)
   if (typeof value !== 'number') {
     const sec = secs && textSection(secs)
@@ -134,13 +136,13 @@ export function displayWith(value: CellValue, format: NumberFormat | undefined, 
     const word = typeof value === 'boolean' ? style.bool(value) : value
     const out = sec ? asText(sec, word, style) : word
     // text without a fill overflows as it is, whatever its width
-    const text = typeof value === 'string' && !out.includes(FILL) ? out : fitted(out, space, typeof value === 'string')
+    const text = typeof value === 'string' && !out.includes(FILL) ? out : fitted(out, space, typeof value === 'string', font)
     return sec?.color ? { text, color: sec.color } : { text }
   }
   const { text, general, sec } = byFormat(value, secs, style)
   // a value its section cannot show (a date out of range) fills the cell with `#` in the automatic colour
-  if (text === undefined && general === undefined) return { text: hashes(space) }
-  const shown = general !== undefined ? generalFit(general, space).replace('.', style.decimal) : (filled(text!, space) ?? hashes(space))
+  if (text === undefined && general === undefined) return { text: hashes(space, false, font) }
+  const shown = general !== undefined ? generalFit(general, space, font).replace('.', style.decimal) : (filled(text!, space, font) ?? hashes(space, false, font))
   return sec?.color ? { text: shown, color: sec.color } : { text: shown }
 }
 
@@ -184,12 +186,12 @@ export function fitLaid(value: CellValue, format: NumberFormat | undefined, styl
  * a leading minus by its width, two points past the padding, a scientific form with the padding alone. Null when the
  * cell shows nothing.
  */
-export function fitPoints(value: CellValue, format: NumberFormat | undefined, style: Style): number | null {
+export function fitPoints(value: CellValue, format: NumberFormat | undefined, style: Style, font?: FontMeasure): number | null {
   const x = fitLaid(value, format, style)
-  if (x?.kind !== 'general') return x && fitText(x.text)
+  if (x?.kind !== 'general') return x && fitText(x.text, font)
   const minus = x.text.startsWith('-')
-  const w = (minus ? glyph('-') : 0) + DIGIT * (x.text.length - (minus ? 1 : 0))
-  return x.text.includes('E') ? w + 5 : w + 7
+  const w = (minus ? glyph('-', font) : 0) + (font?.digit ?? DIGIT) * (x.text.length - (minus ? 1 : 0))
+  return w + (font?.padding ?? 5) + (x.text.includes('E') ? 0 : 2)
 }
 
 /**
@@ -197,12 +199,12 @@ export function fitPoints(value: CellValue, format: NumberFormat | undefined, st
  * `held.json`): the points AutoFit gives the cell when they are more, though the cell shows the number whole, but for a
  * number in General the column shows with fewer decimals; null when the column keeps its width.
  */
-export function typedPoints(value: CellValue, format: NumberFormat | undefined, style: Style, now: number): number | null {
+export function typedPoints(value: CellValue, format: NumberFormat | undefined, style: Style, now: number, font?: FontMeasure, columnMargin = 5): number | null {
   if (typeof value !== 'number') return null
-  const points = fitPoints(value, format, style)
+  const points = fitPoints(value, format, style, font)
   if (points === null || points <= now) return null
   const { general } = byFormat(value, sectionsOf(format, style), style)
   if (general === undefined) return points
-  const shown = generalFit(general, room(now))
-  return shown !== generalFit(general, Infinity) && !/[E#]/.test(shown) ? null : points
+  const shown = generalFit(general, now - columnMargin, font)
+  return shown !== generalFit(general, Infinity, font) && !/[E#]/.test(shown) ? null : points
 }

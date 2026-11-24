@@ -12,6 +12,7 @@ export const FIT_REASONS = {
   script: 'characters outside Latin, Cyrillic and the common signs (中文) count as a digit here; Excel lays them out in a font that has them',
   advances:
     "text with a character outside ASCII, which Excel for Mac measures by fractional widths: the engine takes them from the advance widths of Carlito, metrically compatible with Calibri, which give Excel's width on short text and are a point off on some runs of one Cyrillic letter 600 points wide (19 of 70), on 'Итого по разделу 1' and on ru-RU's long date",
+  liberation: 'AutoFit from Liberation Sans advances is one or two points wider for these Cyrillic runs than Excel for Mac',
   turnedWrap:
     'wrapped text turned by an angle other than 90 degrees, or its letters one above the other: Excel wraps it in the room the row gives it, the engine fits it by its line breaks alone',
 } as const
@@ -20,6 +21,12 @@ export type FitReason = keyof typeof FIT_REASONS
 
 /** The typed cases whose dates Excel for Mac shows by its own short date, in en-US. */
 const MAC_DATES = ['date-1', 'formula-1', 'hand-2', 'fitted-2', 'turn-1', 'turn-2'].flatMap((id) => ['value', 'local', 'keys'].map((via) => `${via}-${id}`))
+
+export const LIBERATION_EXCESS: Readonly<Record<string, number>> = {
+  'arial-10-cyrillic': 1, 'arial-13-cyrillic': 1, 'arial-14-cyrillic': 1,
+  'arial-cyr-10-cyrillic': 1, 'arial-cyr-11-cyrillic': 1, 'arial-cyr-12-cyrillic': 2,
+  'arial-cyr-13-cyrillic': 2, 'arial-cyr-14-cyrillic': 2,
+}
 
 /** Against Excel for Mac. */
 export const FIT_KNOWN: ReadonlyMap<string, FitReason> = new Map([
@@ -31,6 +38,7 @@ export const FIT_KNOWN: ReadonlyMap<string, FitReason> = new Map([
     'ru-RU:typed': ['value-date-2', 'local-date-2', 'keys-date-2', 'keys-turn-1'],
     'ru-RU:held': ['number-22', 'rows-1'],
   }),
+  ...cases('liberation', { 'ru-RU:cell-fonts-held': Object.keys(LIBERATION_EXCESS) }),
   ...cases('font', { 'en-US:autofit': ['font-1', 'font-2'], 'ru-RU:autofit': ['font-1', 'font-2'] }),
   ...cases('script', { 'en-US:autofit': ['glyphs-4'], 'ru-RU:autofit': ['glyphs-4'] }),
   ...cases('turnedWrap', { 'en-US:rotation': ['wrap-3', 'wrap-4'] }),

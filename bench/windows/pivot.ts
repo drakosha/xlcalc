@@ -94,18 +94,19 @@ export interface Planned {
  * end of each phase the pivot tables read, the ranges watched, the slicers read and a copy saved (the book saved at the
  * end). `book` gives the file of a set's saved book (`basic/sum`) for an `external` operation.
  */
-export function pivotSteps(c: PivotCase, book: (name: string) => Uint8Array): Planned {
+export function pivotSteps(c: PivotCase, book: (name: string) => Uint8Array, valuesOnly = false): Planned {
   const steps: Step[] = [{ do: 'full' }]
   const roles: Role[] = [{ op: -2 }]
   const sheets = new Map<string, string>([['PT1', 'P']])
   const slicers: string[] = []
   const add = (role: Role, ...s: Step[]) => s.forEach((x) => (steps.push(x), roles.push(role)))
+  const readOptions = valuesOnly ? { valuesOnly } : {}
   let copies = 0
   const phase = (last: boolean) => {
     // formulas typed over the pivot tables settle in a full calculation
     add({ op: -2 }, { do: 'full' })
-    if (c.file) add({ readAll: true }, { do: 'pivot', op: 'readAll' })
-    else for (const [pt, sheet] of sheets) add({ read: pt }, { do: 'pivot', op: 'read', sheet, pt })
+    if (c.file) add({ readAll: true }, { do: 'pivot', op: 'readAll', ...readOptions })
+    else for (const [pt, sheet] of sheets) add({ read: pt }, { do: 'pivot', op: 'read', sheet, pt, ...readOptions })
     if (c.kinds) add({ kinds: true }, { do: 'pivot', op: 'cellsAll' })
     for (const w of c.watch ?? []) {
       const [sheet, range] = w.split('!')
@@ -295,7 +296,8 @@ export async function stepPivot(set: string, tag: Tag, e: WinEnv): Promise<void>
   const cases = (await setModule<PivotSet>('pivot', set)).buildPivotCases()
   const saved = savedBook(tag)
   const { files, sent: parts } = await caseFiles(cases, async (c) => (c.file ? new Uint8Array(readFileSync(resolve(ROOT, c.file))) : c.from ? saved(c.from) : (await writeXlsx({ book: { ...sourceBook(DATA[c.data ?? 'sales'](), c.source ?? 'range'), ...(c.dateSystem ? { dateSystem: c.dateSystem } : {}) } }, { values: 'omit' })).data))
-  const plans = new Map(cases.map((c) => [c.id, pivotSteps(c, saved)]))
+  const valuesOnly = process.env.FPIVOT_VALUES_ONLY === '1'
+  const plans = new Map(cases.map((c) => [c.id, pivotSteps(c, saved, valuesOnly)]))
   // a case runs again when its file or its steps change (the steps carry the books of external operations)
   const sent = Object.fromEntries(cases.map((c) => [c.id, `${parts[c.id]} ${createHash('sha256').update(JSON.stringify(plans.get(c.id)!.steps)).digest('hex').slice(0, 16)}`]))
   const file = winFile(`pivot/${localeDir(tag)}${set}.json`)
