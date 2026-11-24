@@ -76,6 +76,8 @@ A table's `style` holds a built-in or custom `name` and its Table Style Options.
 
 Call `registerTableStyles()` from `xlcalc/table-styles` before reading XLSX or requesting viewports. A host can import the module on demand. Registration reaches existing and new worker threads. Use code splitting when bundling a browser worker so the preset data stays in a separate chunk. It also enables XLSX reads and writes of the book's theme palette and custom table style definitions.
 
+A custom style's region (`BookInput.tableStyles.custom`, an element by its `type`, such as `headerRow` or `firstRowStripe`) holds a style whose border runs round the region, `inside` lines drawn between its cells (`horizontal`, `vertical`), and a `numberFormat`. A fill may be patterned, as a cell's may. The region's number format shows its cells whose own is General; a format of the cell, its row or its column wins, and a later region's wins over an earlier one's, a total row's over a first column's. Excel for Windows showed each of these as the viewport gives it ([docs/development.md](development.md)).
+
 ```js
 const { registerTableStyles } = await import('xlcalc/table-styles')
 registerTableStyles()

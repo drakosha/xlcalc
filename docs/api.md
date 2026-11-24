@@ -2182,14 +2182,10 @@ interface CellResult extends Partial<CellDisplay> {
 
 ### `CellStyle`
 
-A cell style in the workbook's style table ([`BookInput.styles`](#bookinput)), like an xlsx cell format without its number format
-(which is the cell's `numberFormat`). Styles play no part in calculation or in the values hash.
-
 ```ts
 interface CellStyle {
   font?: FontStyle
-  /** A solid fill. */
-  fill?: { color: Color }
+  fill?: FillStyle
   border?: { top?: BorderLine; right?: BorderLine; bottom?: BorderLine; left?: BorderLine }
   alignment?: AlignmentStyle
   protection?: CellProtection
@@ -2698,7 +2694,7 @@ The formatting a rule applies to the cells that meet its condition, like an xlsx
 interface ConditionalStyle {
   /** `bold: false` removes bold from a cell that has it, and so on. */
   font?: Pick<FontStyle, 'bold' | 'italic' | 'underline' | 'strike' | 'color'>
-  fill?: { color: Color }
+  fill?: FillStyle
   border?: CellStyle['border']
   /** The number format used to display the cell's value. */
   numberFormat?: NumberFormat
@@ -3474,6 +3470,31 @@ A stored value of an external workbook's cell.
 
 ```ts
 type ExternalValue = number | string | boolean | { error: ErrorCode }
+```
+
+### `FillPattern`
+
+Excel's fill patterns other than solid, as xlsx names them (Format Cells, Fill, Pattern Style): `gray125` and
+`gray0625` are the two lightest dots, `dark…` and `light…` the thick and thin lines.
+
+```ts
+type FillPattern =
+  | 'darkGray' | 'mediumGray' | 'lightGray' | 'gray125' | 'gray0625'
+  | 'darkHorizontal' | 'darkVertical' | 'darkDown' | 'darkUp' | 'darkGrid' | 'darkTrellis'
+  | 'lightHorizontal' | 'lightVertical' | 'lightDown' | 'lightUp' | 'lightGrid' | 'lightTrellis'
+```
+
+### `FillStyle`
+
+A cell's fill: solid in `color`, or with a `pattern` its lines in `patternColor` (Excel's automatic colour, black,
+without it) over `color`. A pattern whose file names no background is read over white, as Excel shows it.
+
+```ts
+interface FillStyle {
+  color: Color
+  pattern?: FillPattern
+  patternColor?: Color
+}
 ```
 
 ### `FillTextOptions`
@@ -6783,13 +6804,17 @@ interface TableStyleDefinition {
 
 ### `TableStyleElement`
 
-One region of a custom table style, with the size of a stripe when the region is one.
+One region of a custom table style, with the size of a stripe when the region is one. `style`'s border runs round
+the region; `inside` draws between its cells. A `numberFormat` shows the region's cells whose own format is General,
+as Excel for Windows shows them (`test/excel/win/xlsx/table-style-inside-held.json`).
 
 ```ts
 interface TableStyleElement {
   type: string
   size?: number
   style: CellStyle
+  inside?: { horizontal?: BorderLine; vertical?: BorderLine }
+  numberFormat?: NumberFormat
 }
 ```
 
