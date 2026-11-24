@@ -44,8 +44,10 @@ export function fontXml(f: FontStyle, base: BaseFont = DEFAULT_FONT): string {
 
 const line = (side: string, l: BorderLine | undefined) => (l ? `<${side} style="${l.style}">${l.color ? `<color rgb="${rgb(l.color)}"/>` : ''}</${side}>` : `<${side}/>`)
 
-export function borderXml(b: NonNullable<CellStyle['border']>): string {
-  return `<border>${line('left', b.left)}${line('right', b.right)}${line('top', b.top)}${line('bottom', b.bottom)}<diagonal/></border>`
+/** A border's sides, and with `inside` the lines a table style's region draws between its cells. */
+export function borderXml(b: NonNullable<CellStyle['border']>, inside?: { horizontal?: BorderLine; vertical?: BorderLine }): string {
+  const between = inside ? `${line('vertical', inside.vertical)}${line('horizontal', inside.horizontal)}` : ''
+  return `<border>${line('left', b.left)}${line('right', b.right)}${line('top', b.top)}${line('bottom', b.bottom)}<diagonal/>${between}</border>`
 }
 
 /** A written font's name: an empty one falls back to the workbook's, a long one is clipped to Excel's limit. */
@@ -57,16 +59,21 @@ export function writtenFont(f: FontStyle, issues?: Issues): FontStyle {
   return rest
 }
 
-/** A cell's solid fill. */
-export const fillXml = (f: NonNullable<CellStyle['fill']>) => `<fill><patternFill patternType="solid"><fgColor rgb="${rgb(f.color)}"/><bgColor indexed="64"/></patternFill></fill>`
+/** A pattern's lines over its colour, as a cell's fill and a dxf's hold them alike; without a pattern colour, Excel's automatic one. */
+const patternXml = (f: NonNullable<CellStyle['fill']>) =>
+  `<patternFill patternType="${f.pattern}">${f.patternColor ? `<fgColor rgb="${rgb(f.patternColor)}"/>` : ''}<bgColor rgb="${rgb(f.color)}"/></patternFill>`
+
+/** A cell's fill: solid in its foreground, or a pattern. */
+export const fillXml = (f: NonNullable<CellStyle['fill']>) =>
+  `<fill>${f.pattern ? patternXml(f) : `<patternFill patternType="solid"><fgColor rgb="${rgb(f.color)}"/><bgColor indexed="64"/></patternFill>`}</fill>`
 
 /** A cell format's alignment, empty without one. */
-function alignmentXml(a: CellStyle['alignment']): string {
+export function alignmentXml(a: CellStyle['alignment']): string {
   return a ? `<alignment${a.horizontal ? ` horizontal="${a.horizontal}"` : ''}${a.vertical ? ` vertical="${a.vertical}"` : ''}${a.wrap ? ' wrapText="1"' : ''}${a.indent ? ` indent="${a.indent}"` : ''}${a.rotation ? ` textRotation="${a.rotation === 'vertical' ? 255 : a.rotation > 0 ? a.rotation : 90 - a.rotation}"` : ''}/>` : ''
 }
 
 /** A cell format's protection, empty without one. */
-function cellProtectionXml(p: CellStyle['protection']): string {
+export function cellProtectionXml(p: CellStyle['protection']): string {
   return p && (p.locked === false || p.hidden) ? `<protection${p.locked === false ? ' locked="0"' : ''}${p.hidden ? ' hidden="1"' : ''}/>` : ''
 }
 
@@ -95,7 +102,7 @@ export function dxfXml(s: ConditionalStyle, numFmt: (code: NumberFormat) => numb
   // no id for a custom format over the limit (`StyleWriter.numFmt`): its code in the file would count too
   const numFmtXml = id === undefined || (id === 0 && code !== 'General') ? '' : `<numFmt numFmtId="${id}" formatCode="${escapeAttr(code!)}"/>`
   // a dxf's solid fill is its background colour
-  const fill = s.fill ? `<fill><patternFill><bgColor rgb="${rgb(s.fill.color)}"/></patternFill></fill>` : ''
+  const fill = !s.fill ? '' : `<fill>${s.fill.pattern ? patternXml(s.fill) : `<patternFill><bgColor rgb="${rgb(s.fill.color)}"/></patternFill>`}</fill>`
   const border = s.border ? borderXml(s.border) : ''
   return `<dxf>${font}${numFmtXml}${fill}${border}</dxf>`
 }
@@ -221,7 +228,12 @@ export class StyleWriter implements CellFormats {
 
   /** The differential format of a conditional format's style: its index in `<dxfs>`. */
   dxf(s: ConditionalStyle, filter = false): number {
-    return this.dxfs.of(dxfXml(s, (c) => this.numFmt(c), filter))
+    return this.addDxf(dxfXml(s, (c) => this.numFmt(c), filter))
+  }
+
+  /** A differential format's XML, sharing the indices used by the sheet and PivotTable writers. */
+  addDxf(xml: string): number {
+    return this.dxfs.of(xml)
   }
 
   /** The body of a dxf, as an Excel 2010 rule holds it (`x14:dxf`). */
@@ -229,7 +241,7 @@ export class StyleWriter implements CellFormats {
     return this.dxfs.items[i].slice(5, -6)
   }
 
-  xml(): string {
+  xml(tableStyles = ''): string {
     const numFmts = [...this.formats].map(([code, id]) => `<numFmt numFmtId="${id}" formatCode="${escapeAttr(code)}"/>`)
     return (
       `${HEAD}<styleSheet xmlns="${MAIN}">` +
@@ -241,6 +253,7 @@ export class StyleWriter implements CellFormats {
       counted('cellXfs', this.xfs.items) +
       '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>' +
       (this.dxfs.items.length ? counted('dxfs', this.dxfs.items) : '') +
+      tableStyles +
       '</styleSheet>'
     )
   }

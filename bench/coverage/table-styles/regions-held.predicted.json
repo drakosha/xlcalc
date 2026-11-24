@@ -1,0 +1,518 @@
+{
+ "custom-bands": {
+  "B2": {
+   "fill": {
+    "color": "#126599"
+   },
+   "font": {
+    "color": "#122113",
+    "bold": true
+   }
+  },
+  "C2": {
+   "fill": {
+    "color": "#126599"
+   },
+   "font": {
+    "color": "#122113"
+   }
+  },
+  "D2": {
+   "fill": {
+    "color": "#126599"
+   },
+   "font": {
+    "color": "#FFFFFF",
+    "bold": true
+   }
+  },
+  "B3": {
+   "fill": {
+    "color": "#AAFF99"
+   },
+   "font": {
+    "color": "#122113",
+    "italic": true,
+    "bold": true
+   }
+  },
+  "C3": {
+   "fill": {
+    "color": "#AAFF99"
+   },
+   "font": {
+    "color": "#122113",
+    "italic": true
+   }
+  },
+  "D3": {
+   "fill": {
+    "color": "#AAFF99"
+   },
+   "font": {
+    "color": "#991122"
+   }
+  },
+  "B4": {
+   "fill": {
+    "color": "#AAFF99"
+   },
+   "font": {
+    "color": "#122113",
+    "italic": true,
+    "bold": true
+   }
+  },
+  "C4": {
+   "fill": {
+    "color": "#AAFF99"
+   },
+   "font": {
+    "color": "#122113",
+    "italic": true
+   }
+  },
+  "D4": {
+   "fill": {
+    "color": "#AAFF99"
+   },
+   "font": {
+    "color": "#991122"
+   }
+  },
+  "B5": {
+   "fill": {
+    "color": "#FFDD44"
+   },
+   "font": {
+    "color": "#122113",
+    "italic": true,
+    "bold": true
+   }
+  },
+  "C5": {
+   "fill": {
+    "color": "#FFDD44"
+   },
+   "font": {
+    "color": "#122113",
+    "italic": true
+   }
+  },
+  "D5": {
+   "fill": {
+    "color": "#FFDD44"
+   },
+   "font": {
+    "color": "#991122"
+   }
+  },
+  "B6": {
+   "fill": {
+    "color": "#AAFF99"
+   },
+   "font": {
+    "color": "#122113",
+    "italic": true,
+    "bold": true
+   }
+  },
+  "C6": {
+   "fill": {
+    "color": "#AAFF99"
+   },
+   "font": {
+    "color": "#122113",
+    "italic": true
+   }
+  },
+  "D6": {
+   "fill": {
+    "color": "#AAFF99"
+   },
+   "font": {
+    "color": "#991122"
+   }
+  },
+  "B7": {
+   "fill": {
+    "color": "#AAFF99"
+   },
+   "font": {
+    "color": "#122113",
+    "italic": true,
+    "bold": true
+   }
+  },
+  "C7": {
+   "fill": {
+    "color": "#AAFF99"
+   },
+   "font": {
+    "color": "#122113",
+    "italic": true
+   }
+  },
+  "D7": {
+   "fill": {
+    "color": "#AAFF99"
+   },
+   "font": {
+    "color": "#991122"
+   }
+  },
+  "B8": {
+   "fill": {
+    "color": "#FFDD44"
+   },
+   "font": {
+    "color": "#122113",
+    "italic": true,
+    "bold": true
+   }
+  },
+  "C8": {
+   "fill": {
+    "color": "#FFDD44"
+   },
+   "font": {
+    "color": "#122113",
+    "italic": true
+   }
+  },
+  "D8": {
+   "fill": {
+    "color": "#FFDD44"
+   },
+   "font": {
+    "color": "#991122"
+   }
+  }
+ },
+ "theme-table": {
+  "B10": {
+   "fill": {
+    "color": "#126599"
+   },
+   "font": {
+    "color": "#FFFFFF",
+    "bold": true
+   },
+   "border": {
+    "top": {
+     "style": "thin",
+     "color": "#48ADEA"
+    },
+    "bottom": {
+     "style": "thin",
+     "color": "#48ADEA"
+    },
+    "left": {
+     "style": "thin",
+     "color": "#48ADEA"
+    }
+   }
+  },
+  "C10": {
+   "fill": {
+    "color": "#126599"
+   },
+   "font": {
+    "color": "#FFFFFF",
+    "bold": true
+   },
+   "border": {
+    "top": {
+     "style": "thin",
+     "color": "#48ADEA"
+    },
+    "bottom": {
+     "style": "thin",
+     "color": "#48ADEA"
+    }
+   }
+  },
+  "D10": {
+   "fill": {
+    "color": "#126599"
+   },
+   "font": {
+    "color": "#FFFFFF",
+    "bold": true
+   },
+   "border": {
+    "top": {
+     "style": "thin",
+     "color": "#48ADEA"
+    },
+    "right": {
+     "style": "thin",
+     "color": "#48ADEA"
+    },
+    "bottom": {
+     "style": "thin",
+     "color": "#48ADEA"
+    }
+   }
+  },
+  "B11": {
+   "fill": {
+    "color": "#C2E3F8"
+   },
+   "font": {
+    "color": "#000000"
+   },
+   "border": {
+    "top": {
+     "style": "thin",
+     "color": "#48ADEA"
+    },
+    "bottom": {
+     "style": "thin",
+     "color": "#48ADEA"
+    },
+    "left": {
+     "style": "thin",
+     "color": "#48ADEA"
+    }
+   }
+  },
+  "C11": {
+   "fill": {
+    "color": "#C2E3F8"
+   },
+   "font": {
+    "color": "#000000"
+   },
+   "border": {
+    "top": {
+     "style": "thin",
+     "color": "#48ADEA"
+    },
+    "bottom": {
+     "style": "thin",
+     "color": "#48ADEA"
+    }
+   }
+  },
+  "D11": {
+   "fill": {
+    "color": "#C2E3F8"
+   },
+   "font": {
+    "color": "#000000"
+   },
+   "border": {
+    "top": {
+     "style": "thin",
+     "color": "#48ADEA"
+    },
+    "right": {
+     "style": "thin",
+     "color": "#48ADEA"
+    },
+    "bottom": {
+     "style": "thin",
+     "color": "#48ADEA"
+    }
+   }
+  },
+  "B12": {
+   "font": {
+    "color": "#000000"
+   },
+   "border": {
+    "top": {
+     "style": "thin",
+     "color": "#48ADEA"
+    },
+    "bottom": {
+     "style": "thin",
+     "color": "#48ADEA"
+    },
+    "left": {
+     "style": "thin",
+     "color": "#48ADEA"
+    }
+   }
+  },
+  "C12": {
+   "font": {
+    "color": "#000000"
+   },
+   "border": {
+    "top": {
+     "style": "thin",
+     "color": "#48ADEA"
+    },
+    "bottom": {
+     "style": "thin",
+     "color": "#48ADEA"
+    }
+   }
+  },
+  "D12": {
+   "font": {
+    "color": "#000000"
+   },
+   "border": {
+    "top": {
+     "style": "thin",
+     "color": "#48ADEA"
+    },
+    "right": {
+     "style": "thin",
+     "color": "#48ADEA"
+    },
+    "bottom": {
+     "style": "thin",
+     "color": "#48ADEA"
+    }
+   }
+  }
+ },
+ "pivot-subheads": {
+  "A3": {
+   "fill": {
+    "color": "#C0E6F5"
+   },
+   "font": {
+    "bold": true,
+    "color": "#000000"
+   },
+   "border": {
+    "bottom": {
+     "style": "thin",
+     "color": "#44B3E1"
+    }
+   }
+  },
+  "B3": {
+   "fill": {
+    "color": "#C0E6F5"
+   },
+   "font": {
+    "bold": true,
+    "color": "#000000"
+   },
+   "border": {
+    "bottom": {
+     "style": "thin",
+     "color": "#44B3E1"
+    }
+   }
+  },
+  "A4": {
+   "font": {
+    "bold": true,
+    "color": "#000000"
+   },
+   "border": {
+    "bottom": {
+     "style": "thin",
+     "color": "#44B3E1"
+    },
+    "top": {
+     "style": "thin",
+     "color": "#44B3E1"
+    }
+   },
+   "alignment": {
+    "horizontal": "left"
+   }
+  },
+  "B4": {
+   "border": {
+    "top": {
+     "style": "thin",
+     "color": "#44B3E1"
+    }
+   }
+  },
+  "A5": {
+   "border": {
+    "top": {
+     "style": "thin",
+     "color": "#44B3E1"
+    }
+   },
+   "alignment": {
+    "horizontal": "left",
+    "indent": 1
+   }
+  }
+ },
+ "pivot-report-filter": {
+  "A1": {
+   "fill": {
+    "color": "#C0E6F5"
+   },
+   "border": {
+    "bottom": {
+     "style": "thin",
+     "color": "#44B3E1"
+    }
+   }
+  },
+  "B1": {
+   "fill": {
+    "color": "#C0E6F5"
+   },
+   "border": {
+    "bottom": {
+     "style": "thin",
+     "color": "#44B3E1"
+    }
+   }
+  },
+  "A3": {
+   "fill": {
+    "color": "#C0E6F5"
+   },
+   "font": {
+    "bold": true,
+    "color": "#000000"
+   },
+   "border": {
+    "bottom": {
+     "style": "thin",
+     "color": "#44B3E1"
+    }
+   }
+  },
+  "B3": {
+   "fill": {
+    "color": "#C0E6F5"
+   },
+   "font": {
+    "bold": true,
+    "color": "#000000"
+   },
+   "border": {
+    "bottom": {
+     "style": "thin",
+     "color": "#44B3E1"
+    }
+   }
+  },
+  "A4": {
+   "border": {
+    "top": {
+     "style": "thin",
+     "color": "#44B3E1"
+    }
+   },
+   "alignment": {
+    "horizontal": "left"
+   }
+  },
+  "B4": {
+   "border": {
+    "top": {
+     "style": "thin",
+     "color": "#44B3E1"
+    }
+   }
+  }
+ }
+}

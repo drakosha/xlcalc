@@ -34,10 +34,10 @@ export const STYLE_OPTIONS: readonly [Exclude<keyof TableStyle, 'name'>, string]
 /** Excel's default style, a table's without `style`. */
 export const DEFAULT_TABLE_STYLE: TableStyle = { name: 'TableStyleMedium2', rowStripes: true }
 
-function style(v: unknown, path: string) {
+export function checkTableStyle(v: unknown, path: string, custom?: ReadonlySet<string>): asserts v is TableStyle {
   if (!isObject(v)) throw new InputError(path, 'expected a style such as { name: "TableStyleLight1", rowStripes: true }')
   onlyKeys(v, path, ['name', ...STYLE_OPTIONS.map(([k]) => k)])
-  if (v.name !== undefined && (typeof v.name !== 'string' || !TABLE_STYLE.test(v.name)))
+  if (v.name !== undefined && (typeof v.name !== 'string' || !TABLE_STYLE.test(v.name) && !custom?.has(tableKey(v.name))))
     throw new InputError(`${path}.name`, `expected one of Excel's table styles, TableStyleLight1 to 21, TableStyleMedium1 to 28 or TableStyleDark1 to 11, got ${JSON.stringify(v.name)}`)
   for (const [k] of STYLE_OPTIONS) if (v[k] !== undefined && typeof v[k] !== 'boolean') throw new InputError(`${path}.${k}`, 'expected a boolean')
 }
@@ -56,7 +56,7 @@ function column(v: unknown, path: string): TableColumn {
 }
 
 /** One table's own shape: its fields, its rectangle and columns, its header cells; returns the rectangle. */
-function table(v: unknown, path: string, cellAt: (addr: string) => CellInput | undefined, booleans: readonly string[]): Rect {
+function table(v: unknown, path: string, cellAt: (addr: string) => CellInput | undefined, booleans: readonly string[], custom?: ReadonlySet<string>): Rect {
   if (!isObject(v)) throw new InputError(path, 'expected a table such as { name: "Sales", range: "A1:C9", columns: [...] }')
   onlyKeys(v, path, ['name', 'range', 'headers', 'totals', 'columns', 'style', 'filter'])
   if (typeof v.name !== 'string') throw new InputError(`${path}.name`, 'expected a table name')
@@ -65,7 +65,7 @@ function table(v: unknown, path: string, cellAt: (addr: string) => CellInput | u
   const x = typeof v.range === 'string' && /^[A-Z]+\d+(:[A-Z]+\d+)?$/.test(v.range) ? parseRange(v.range) : null
   if (!x) throw new InputError(`${path}.range`, `expected a range such as "B2:E10" within the sheet, got ${JSON.stringify(v.range)}`)
   for (const k of ['headers', 'totals'] as const) if (v[k] !== undefined && typeof v[k] !== 'boolean') throw new InputError(`${path}.${k}`, 'expected a boolean')
-  if (v.style !== undefined) style(v.style, `${path}.style`)
+  if (v.style !== undefined) checkTableStyle(v.style, `${path}.style`, custom)
   const t = v as unknown as TableInput
   const headers = t.headers !== false
   if (x.r2 - x.r1 + 1 < (headers ? 1 : 0) + (t.totals ? 1 : 0) + 1) throw new InputError(`${path}.range`, `${t.range} has no row for data between its header and totals rows`)
@@ -132,7 +132,7 @@ export const autoFilterOverlap = (range: string, table: string) => `the AutoFilt
  * (`taken`, which it joins) and the sheet's tables before it, merged areas and array formulas, by an index of their
  * rectangles: a sheet of many tables costs about as many checks as it has tables. A table that fails changes nothing.
  */
-export function sheetTables(sheet: Pick<SheetInput, 'cells' | 'merges'>, booleans: readonly string[], names: Map<string, string>, taken: Map<string, string>) {
+export function sheetTables(sheet: Pick<SheetInput, 'cells' | 'merges'>, booleans: readonly string[], names: Map<string, string>, taken: Map<string, string>, custom?: ReadonlySet<string>) {
   const rects = new AreaIndex<Box>()
   let count = 0
   // indexed once for all the sheet's tables, where the first table gets to them
@@ -141,7 +141,7 @@ export function sheetTables(sheet: Pick<SheetInput, 'cells' | 'merges'>, boolean
   return {
     /** The table `t` at `tp`, its header cells read through `cellAt`; its rectangle. */
     add(t: unknown, tp: string, cellAt: (addr: string) => CellInput | undefined): Rect {
-      const x = table(t, tp, cellAt, booleans)
+      const x = table(t, tp, cellAt, booleans, custom)
       const { name, range } = t as TableInput
       const k = tableKey(name)
       if (taken.has(k)) throw new InputError(`${tp}.name`, `${JSON.stringify(name)} is also the name of the table ${taken.get(k)} (table names are unique in a workbook, regardless of case)`)
@@ -161,16 +161,22 @@ export function sheetTables(sheet: Pick<SheetInput, 'cells' | 'merges'>, boolean
   }
 }
 
+export function customStyleKeys(book: BookInput): ReadonlySet<string> | undefined {
+  const definitions = book.tableStyles?.custom
+  return definitions && new Set(Object.keys(definitions).map(tableKey))
+}
+
 /** The tables of a checked book's sheets, and their names against each other and against the defined names; no sheet's AutoFilter over one. */
 export function checkTables(book: BookInput, path = 'book'): void {
   const names = new Map((book.names ?? []).map((n) => [tableKey(n.name), n.name]))
   const taken = new Map<string, string>()
+  const custom = customStyleKeys(book)
   const booleans = localeBooleans(book.locale)
   book.sheets.forEach((sheet, s) => {
     if (sheet.tables === undefined) return
     const p = `${path}.sheets[${s}].tables`
     if (!Array.isArray(sheet.tables)) throw new InputError(p, 'expected an array of tables')
-    const tables = sheetTables(sheet, booleans, names, taken)
+    const tables = sheetTables(sheet, booleans, names, taken, custom)
     sheet.tables.forEach((t, i) => tables.add(t, `${p}[${i}]`, (addr) => sheet.cells[addr]))
     const f = sheet.autoFilter && tables.over(parseRange(sheet.autoFilter.range)!)
     if (f) throw new InputError(`${path}.sheets[${s}].autoFilter.range`, autoFilterOverlap(sheet.autoFilter!.range, f))

@@ -47,7 +47,7 @@ interface Held {
 const port = ((workerThreads() as { parentPort?: Port } | undefined)?.parentPort ?? globalThis) as Port
 let d: InlineDefaults = { sliceMs: 50 }
 const held = new Map<number, Held>()
-const waiting: Exclude<ToThread, { t: 'init' | 'locales' | 'regex' | 'pivot' | 'functions' | 'cancel' | 'answer' }>[] = []
+const waiting: Exclude<ToThread, { t: 'init' | 'locales' | 'regex' | 'pivot' | 'tableStyles' | 'functions' | 'cancel' | 'answer' }>[] = []
 let current: { task: number; abort(reason?: unknown): void } | null = null
 /** Where the pool writes the task it cancels (`init`), none where threads share no memory: the engine's checks read it inside a formula. */
 let cancelled: Int32Array | undefined
@@ -92,6 +92,11 @@ function loadRegex(kind: RegexLevel['kind']) {
       setRegexLevel(kind === 'xlcalc-pcre-syntax' ? m.pcreSyntax : m.pcreEngine)
     })
     .catch(() => {})
+}
+
+/** Loads the table styles the pool has registered before the next task. */
+function loadTableStyles() {
+  loading = loading.then(async () => (await import('../table-styles.js')).registerTableStyles()).catch(() => {})
 }
 
 /** Loads the PivotTable engine the pool has registered, its module imported by the thread, before the next task. */
@@ -344,6 +349,7 @@ function receive(m: ToThread) {
     if (m.locales) load(m.locales)
     if (m.regex) loadRegex(m.regex)
     if (m.pivot) loadPivot()
+    if (m.tableStyles) loadTableStyles()
     loadFunctions(m.functions)
     cancelled = m.cancelled
   } else if (m.t === 'locales') {
@@ -352,6 +358,8 @@ function receive(m: ToThread) {
     loadRegex(m.kind)
   } else if (m.t === 'pivot') {
     loadPivot()
+  } else if (m.t === 'tableStyles') {
+    loadTableStyles()
   } else if (m.t === 'functions') {
     loadFunctions(m.functions)
   } else if (m.t === 'cancel') {

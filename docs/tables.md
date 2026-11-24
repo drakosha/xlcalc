@@ -72,7 +72,20 @@ With a header row, its cells contain the column names as text: `B1` contains `"Q
 
 A calculated column's `formula` is the formula Excel gives a row inserted into the table. The cells of the column contain their own formulas, which calculate like any other. A column's `totals` records what its cell in the totals row is, as an xlsx file records it: one of Excel's functions (`sum`, `average`, `count`, `countNums`, `max`, `min`, `stdDev`, `var`), `custom` for a formula of its own, or a label. The cell contains the formula or the text, and that is what is calculated. Excel does not open a file where the two disagree, so the writer goes by the cell ([docs/xlsx.md](xlsx.md#what-excel-refuses-a-file-over)).
 
-A table's `style` keeps its look in Excel, which the engine does not draw: `name`, one of Excel's table styles (`TableStyleLight1` to `TableStyleLight21`, `TableStyleMedium1` to `TableStyleMedium28`, `TableStyleDark1` to `TableStyleDark11`), none without it; and the Table Style Options, each false by default: `firstColumn`, `lastColumn`, `rowStripes` (banded rows) and `columnStripes` (banded columns). A table without `style` has Excel's default, `TableStyleMedium2` with banded rows. The style stays with the table when it is renamed, moved, copied or resized, and is read from and written to xlsx ([docs/xlsx.md](xlsx.md#tables)).
+A table's `style` holds a built-in or custom `name` and its Table Style Options. Each option is false by default: `firstColumn`, `lastColumn`, `rowStripes` (banded rows) and `columnStripes` (banded columns). Row and column stripes count visible lines. A table without `style` has Excel's default, `TableStyleMedium2` with banded rows. The style stays with the table when it is renamed, moved, copied or resized, and is read from and written to xlsx ([docs/xlsx.md](xlsx.md#tables)).
+
+Call `registerTableStyles()` from `xlcalc/table-styles` before reading XLSX or requesting viewports. A host can import the module on demand. Registration reaches existing and new worker threads. Use code splitting when bundling a browser worker so the preset data stays in a separate chunk. It also enables XLSX reads and writes of the book's theme palette and custom table style definitions.
+
+A custom style's region (`BookInput.tableStyles.custom`, an element by its `type`, such as `headerRow` or `firstRowStripe`) holds a style whose border runs round the region, `inside` lines drawn between its cells (`horizontal`, `vertical`), and a `numberFormat`. A fill may be patterned, as a cell's may. The region's number format shows its cells whose own is General; a format of the cell, its row or its column wins, and a later region's wins over an earlier one's, a total row's over a first column's. Excel for Windows showed each of these as the viewport gives it ([docs/development.md](development.md)).
+
+```js
+const { registerTableStyles } = await import('xlcalc/table-styles')
+registerTableStyles()
+session.editStructure({ op: 'setTableStyle', table: 'Sales', style: { name: 'TableStyleMedium2', rowStripes: true } })
+const view = session.getViewport('Sheet1', 'A1:C9')
+```
+
+A cell's `resolvedStyle` indexes the window's `resolvedStyles`. It includes formatting from a table or PivotTable, then the cell's direct style and applicable conditional styles. `appearance` also carries data bars, icons and hidden-value flags. A window lists empty cells with a visible table fill or border. Editors can still read `effectiveStyle` in `styles` to find the editable style. Pass an empty style to `setTableStyle` for no style or omit it to restore Excel's default.
 
 On xlsx import, `TableStyleLight`, `TableStyleMedium` and `TableStyleDark` without a number or a matching custom definition select no style, as in Excel for Windows. The table keeps its style options, such as row stripes. Excel may retain an unresolved name in the file it saves.
 

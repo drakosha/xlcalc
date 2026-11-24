@@ -1,7 +1,7 @@
 /** A book as the engine takes it: cells with their notes and links, sheets with their columns, rows, looks, frozen panes, outline settings, tables and view, the book's names and the workbooks it links to; a book without its cells. */
 import type { DateSystem } from '../dates.js'
 import type { CellValue, ErrorCode, JsonValue, Scalar } from './values.js'
-import type { CellStyle, Color, ConditionalFormat, ConditionalStyle, DataValidation, IconSetName, FontStyle } from './looks.js'
+import type { BorderLine, CellStyle, Color, ConditionalFormat, ConditionalStyle, DataValidation, IconSetName, FontStyle } from './looks.js'
 import type { PivotCache, PivotTable, Slicer, SlicerCache, Timeline, TimelineCache } from './pivot.js'
 
 /** A font applied from a UTF-16 offset until the next run; omit font to use the cell's whole font. */
@@ -460,7 +460,7 @@ export interface TableInput {
   columns: TableColumn[]
   /**
    * How Excel draws the table (xlsx `tableStyleInfo`); without it, Excel's default, `TableStyleMedium2` with banded rows.
-   * The engine does not draw it: it stays with the table through operations and is written to the file.
+   * The style stays with the table through operations and in XLSX. Register `xlcalc/table-styles` to see it in viewports.
    */
   style?: TableStyle
   /**
@@ -472,11 +472,38 @@ export interface TableInput {
 }
 
 /**
+ * One region of a custom table style, with the size of a stripe when the region is one. `style`'s border runs round
+ * the region; `inside` draws between its cells. A `numberFormat` shows the region's cells whose own format is General,
+ * as Excel for Windows shows them (`test/excel/win/xlsx/table-style-inside-held.json`).
+ */
+export interface TableStyleElement {
+  type: string
+  size?: number
+  style: CellStyle
+  inside?: { horizontal?: BorderLine; vertical?: BorderLine }
+  numberFormat?: NumberFormat
+}
+
+/** A custom definition by name in `WorkbookTableStyles.custom`. */
+export interface TableStyleDefinition {
+  table?: boolean
+  pivot?: boolean
+  elements: TableStyleElement[]
+}
+
+/** The theme colours and custom differential styles used to display tables and PivotTables. */
+export interface WorkbookTableStyles {
+  /** The 12 theme colours in xlsx theme-index order. */
+  theme?: string[]
+  custom?: Record<string, TableStyleDefinition>
+}
+
+/**
  * A table's style (`TableInput.style`): one of Excel's table styles, and the parts of the table it emphasizes, each
  * false by default, as the checkboxes of Excel's Table Style Options.
  */
 export interface TableStyle {
-  /** One of Excel's table styles, `TableStyleLight1` to `TableStyleLight21`, `TableStyleMedium1` to `TableStyleMedium28`, `TableStyleDark1` to `TableStyleDark11`; none without it. */
+  /** A built-in table style or a name in `BookInput.tableStyles.custom`; none without it. */
   name?: string
   firstColumn?: boolean
   lastColumn?: boolean
@@ -628,6 +655,8 @@ export interface BookInput {
    * The font is read and written and is included in `inputHash` when given.
    */
   font?: { name: string; size: number }
+  /** The workbook's theme palette and custom table style definitions, used by `xlcalc/table-styles`. Display metadata outside `inputHash`. */
+  tableStyles?: WorkbookTableStyles
   /** The caches of the workbook's PivotTables (`SheetInput.pivotTables`), by `id`. Not part of calculation or `inputHash`. */
   pivotCaches?: PivotCache[]
   /** The caches of its slicers and timelines, by name. */

@@ -15,7 +15,7 @@ const INDEXED = [
 ]
 
 /** Theme colours as a cell's `theme` index names them: the first two pairs are swapped against the theme part's order. */
-const THEME_ORDER = ['lt1', 'dk1', 'lt2', 'dk2', 'accent1', 'accent2', 'accent3', 'accent4', 'accent5', 'accent6', 'hlink', 'folHlink']
+export const THEME_ORDER = ['lt1', 'dk1', 'lt2', 'dk2', 'accent1', 'accent2', 'accent3', 'accent4', 'accent5', 'accent6', 'hlink', 'folHlink']
 
 export interface Palette {
   theme: string[]

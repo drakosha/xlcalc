@@ -7,6 +7,7 @@
  */
 import type { BookInput, SheetInput, TableInput } from '../../contract.js'
 import { caseKey } from '../../collate.js'
+import { InputError } from '../../input-error.js'
 import { SHEET_STATES } from '../../input.js'
 import { checkBoolean, checkOneOf, object, onlyOptions } from '../../input/basic.js'
 import { sheetKey } from '../../syntax/print.js'
@@ -182,6 +183,8 @@ async function writeOver(original: Uint8Array | ArrayBuffer, snapshot: XlsxSnaps
   const { book: given, cells, locale, unasked } = writeArgs(snapshot, { ...(o.values !== undefined ? { values: o.values } : {}), ...(o.locale !== undefined ? { locale: o.locale } : {}) })
   const src = await openSource(bytes, limits)
   const { read, stylesXml, table } = await readStyled(bytes, limits ? { limits } : undefined)
+  if (given.tableStyles !== undefined && keyOf(given.tableStyles) !== keyOf(read.book.tableStyles))
+    throw new InputError('snapshot.book.tableStyles', 'use writeXlsx to change the workbook theme or custom table style definitions')
   const styles = new KeptStyles(stylesXml, table)
   const carriers = await carriersOf(src, read.book, styles)
   const identity = refusals(src, read.book, given, carriers)

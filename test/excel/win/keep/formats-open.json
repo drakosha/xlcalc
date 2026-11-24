@@ -5,10 +5,10 @@
   "locale": "en-US",
   "ui": "en-US (Excel 1033)",
   "format": "en-US (decimal \".\", thousands U+002C, list \",\")",
-  "system": "en-US (code page 1252)",
+  "system": "ru-RU (code page 1251)",
   "dpi": 96,
-  "day": "2026-11-03",
-  "seconds": 16.8
+  "day": "2026-11-24",
+  "seconds": 15.6
  },
  "sent": {
   "formats-insert-above": "6c395eb86dee132d6ec244e2b0720150361907919f152ebff5191962711a1bb3",
@@ -20,7 +20,7 @@
   "formats-insert-below-row": "631a62d9bedbf8021be3730770df322db42bf956cd21e1d0f0632547a3e65020",
   "formats-insert-after-column": "8695787c0f3a7e8ca0fc53d3b30e0aae1cd737a675abfbfc18ea7e65aaae45ad",
   "formats-insert-in-colour": "09f0ce410c2a39e78460b09f55d87be59568dc4dc937e22a13cc08c74e209017",
-  "formats-insert-in-blocks": "13a47a46e89225bbce25b6a61220b35a00745444b2472007d418aeccf33d9ece",
+  "formats-insert-in-blocks": "40fe33c937a02daa063e9966f5c5a6e4b1668ee8717c7688015e3376edd0741e",
   "formats-delete-across": "ef61cc54e85b27c045339ee89365d1c3847e2589de7aea2f91cf23c21e980810",
   "formats-insert-below-block": "21f12390f0bfc4b37eb082608f7c5f06e9da6049592e0cc0ee5c6f8dc1d8930c",
   "formats-delete-colour-column": "f4d96da14ab51d9d8700da9d1f776dd8c58089823037d494ed113e78d05e6880"
@@ -91,8 +91,8 @@
   },
   "formats-insert-in-blocks": {
    "opened": [
-    "6.xlsx",
-    "6 - Excel",
+    "0.xlsx",
+    "0 - Excel",
     []
    ]
   },

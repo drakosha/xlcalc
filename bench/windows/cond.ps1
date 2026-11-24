@@ -43,14 +43,24 @@ function CondMake($wb, $s) {
 }
 
 # the read cells: [sheet, [[address, Range.Text, the display format's fill (BGR), its colour index, font colour, bold, italic]]],
-# with codes the cell's NumberFormat last
-function CondLooks($wb, $reads, $codes) {
+# with codes the cell's NumberFormat last; with patterns, after the borders, the display format's pattern, pattern
+# colour (BGR) and number format
+function CondLooks($wb, $reads, $codes, $borders, $patterns) {
   List ($reads | ForEach-Object {
       $ws = $wb.Worksheets.Item([string]$_[0])
       $cells = foreach ($c in $ws.Range([string]$_[1]).Cells) {
         $d = $c.DisplayFormat
         $look = @((Str $c.Address($false, $false)), (Str ([string]$c.Text)), (Cell ([double]$d.Interior.Color)), (Cell ([double]$d.Interior.ColorIndex)), (Cell ([double]$d.Font.Color)), (Cell ([bool]$d.Font.Bold)), (Cell ([bool]$d.Font.Italic)))
         if ($codes) { $look += @(Str ([string]$c.NumberFormat)) }
+        if ($borders) {
+          # Edges in the order left, top, bottom and right.
+          $edges = foreach ($side in 7, 8, 9, 10) {
+            $edge = $d.Borders.Item($side)
+            List @((Cell ([double]$edge.LineStyle)), (Cell ([double]$edge.Weight)), (Cell ([double]$edge.Color)))
+          }
+          $look += @(List $edges)
+        }
+        if ($patterns) { $look += @((Cell ([double]$d.Interior.Pattern)), (Cell ([double]$d.Interior.PatternColor)), (Str ([string]$d.NumberFormat))) }
         List $look
       }
       List @((Str $ws.Name), (List $cells))
@@ -89,7 +99,7 @@ function Cond($wb, $s) {
   switch ($s.kind) {
     'make' { try { CondMake $wb $s; 'null' } catch { Err $_ } }
     'pick' { try { CondPick $wb $s; 'null' } catch { Err $_ } }
-    'looks' { CondLooks $wb $s.read $s.codes }
+    'looks' { CondLooks $wb $s.read $s.codes $s.borders $s.patterns }
     'rules' { CondRules $wb }
     default { throw "unknown cond step $($s.kind)" }
   }

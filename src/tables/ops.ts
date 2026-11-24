@@ -3,7 +3,7 @@
  * into plain cells, with the structured references to it rewritten as Excel rewrites them (the set `tables/ops`).
  */
 import type { BookInput, StructureOp, TableInput } from '../contract.js'
-import { checkTables } from './check.js'
+import { checkTables, checkTableStyle, customStyleKeys } from './check.js'
 import { InputError } from '../input-error.js'
 import { formatAddress } from '../model.js'
 import { sayPivot } from '../locale/pivot-messages.js'
@@ -18,7 +18,7 @@ import { convertedText, rewriteBookTables } from './rewrite.js'
 import { sheetIndex } from '../structure/rewrite.js'
 import { tableKey, tablesOf, withTableSlicers } from './model.js'
 
-type TableOp = Extract<StructureOp, { op: 'addTable' | 'renameTable' | 'deleteTable' | 'convertTable' }>
+type TableOp = Extract<StructureOp, { op: 'addTable' | 'renameTable' | 'setTableStyle' | 'deleteTable' | 'convertTable' }>
 
 /** The book with the table of key `key` replaced by `next` (or removed when null) on its sheet. */
 function withTable(book: BookInput, key: string, next: TableInput | null): BookInput {
@@ -49,6 +49,10 @@ export function tableOp(book: BookInput, op: TableOp): Applied {
   const t = tablesOf(book).byName.get(tableKey(op.table))
   if (!t) throw new InputError('op.table', `unknown table ${JSON.stringify(op.table)}`)
   const key = tableKey(t.name)
+  if (op.op === 'setTableStyle') {
+    if (op.style !== undefined) checkTableStyle(op.style, 'op.style', customStyleKeys(book))
+    return { ok: true, book: withTable(book, key, withField(t.input, 'style', op.style)), geometry: [] }
+  }
   if (op.op === 'renameTable') {
     if (typeof op.name !== 'string') throw new InputError('op.name', 'expected a table name')
     const why = nameRefusal(book, op.name, t.name)
@@ -100,7 +104,7 @@ function addTable(book: BookInput, sheet: string, table: TableInput): Applied {
       cells[addr] = { ...rest, ...(rest.value === c.name && richText ? { richText } : {}), value: c.name }
     })
   // a malformed table (its fields, range, columns) is an input error, as in a book
-  checkTables({ ...(book.names ? { names: book.names } : {}), sheets: [{ ...own, cells, tables: [table] }] }, 'op')
+  checkTables({ names: book.names, tableStyles: book.tableStyles, sheets: [{ ...own, cells, tables: [table] }] }, 'op')
   const sheets = [...book.sheets]
   sheets[s] = { ...own, cells, tables: [...(own.tables ?? []), table] }
   return { ok: true, book: { ...book, sheets }, geometry: [] }
