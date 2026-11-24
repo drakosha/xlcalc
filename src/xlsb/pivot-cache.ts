@@ -188,7 +188,7 @@ export function cacheDefinition(part: Part): Field[] {
           const values = itemsByField[fieldIndex]
           if (index < 0 || index >= values.length) return payload.fail(`calculated item index ${index} out of bounds`)
           const value = values[index]
-          if (value !== undefined) calculated.names[last] = `${name}[${value}]`
+          if (value !== undefined) calculated.names[last] = `${name}[${formulaName(value)}]`
         }
         break
       }
