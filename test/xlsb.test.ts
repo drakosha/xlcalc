@@ -107,6 +107,16 @@ describe('XLSB archive', () => {
     expect(actual).toStrictEqual(expected)
   })
 
+  it('reports the same cells when Excel expands shared formulas in XLSB', async () => {
+    const [binary, xml] = await excelPair('shared-issue-order')
+    const expected = await readXlsx(xml)
+    const actual = await readXlsb(binary)
+    // The XLSX reader reports the two masters first, then each shared group. XLSB stores eight separate formulas.
+    expect(expected.issues[0].cells).toEqual(['E1', 'F1', 'E2', 'E3', 'E4', 'F2', 'F3', 'F4'])
+    expected.issues[0].cells = ['E1', 'F1', 'E2', 'F2', 'E3', 'F3', 'E4', 'F4']
+    expect(actual).toStrictEqual(expected)
+  })
+
   it('resolves the workbook and worksheets from their original package paths', async () => {
     const data = await fixture(Uint8Array.of(0x81, 1, 0, 0x82, 1, 0))
     const read = await readXlsb(data)
