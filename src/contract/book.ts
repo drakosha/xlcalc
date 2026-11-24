@@ -497,7 +497,7 @@ export interface WorkbookTableStyles {
  * false by default, as the checkboxes of Excel's Table Style Options.
  */
 export interface TableStyle {
-  /** One of Excel's table styles, `TableStyleLight1` to `TableStyleLight21`, `TableStyleMedium1` to `TableStyleMedium28`, `TableStyleDark1` to `TableStyleDark11`; none without it. */
+  /** A built-in table style or a name in `BookInput.tableStyles.custom`; none without it. */
   name?: string
   firstColumn?: boolean
   lastColumn?: boolean
@@ -649,7 +649,7 @@ export interface BookInput {
    * The font is read and written and is included in `inputHash` when given.
    */
   font?: { name: string; size: number }
-  /** The workbook's theme palette and custom table style definitions. */
+  /** The workbook's theme palette and custom table style definitions, used by `xlcalc/table-styles`. Display metadata outside `inputHash`. */
   tableStyles?: WorkbookTableStyles
   /** The caches of the workbook's PivotTables (`SheetInput.pivotTables`), by `id`. Not part of calculation or `inputHash`. */
   pivotCaches?: PivotCache[]
