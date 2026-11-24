@@ -1,4 +1,5 @@
 import { quoteSheetIfNeeded } from '../a1.js'
+import { quoteSheet } from '../sheet-pattern.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { linkedTableText, type TableSpec } from '../syntax/table.js'
 import { XLFN, XLWS } from '../xlsx/formulas/prefixes.js'
@@ -193,13 +194,21 @@ export function formulaText({ tokens, extra }: Formula, context: Context, row = 
     const byte = tokens.u8()
     const type = byte < 0x20 ? byte : 0x20 | (byte & 31)
     if (type >= 3 && type <= 0x11) {
-      const [a, b] = args(2)
-      const op = BINARY[type - 3]
+      const [start, end] = operands(2)
+      let left = render(start)
+      let right = render(end)
       const gap = space
       space = ''
-      // Excel quotes an explicit sheet after a range operator to distinguish it from a 3D sheet span.
-      const right = type === 0x11 ? b.replace(/^((?:\[\d+\])?[\p{L}\p{N}_.]+)!/u, "'$1'!") : b
-      push(a + gap + op + right)
+      if (type === 0x11) {
+        if (typeof start !== 'string' && start.name.empty && right.trimStart().startsWith("'") && right.includes("'!")) {
+          // Excel quotes an unresolved name when the next sheet label already needs quotes.
+          const name = start.name.name
+          left = left.slice(0, -name.length) + quoteSheet(name)
+        }
+        // Excel quotes an explicit sheet after a range operator to distinguish it from a 3D sheet span.
+        right = right.replace(/^((?:\[\d+\])?[\p{L}\p{N}_.]+)!/u, "'$1'!")
+      }
+      push(left + gap + BINARY[type - 3] + right)
       continue
     }
     switch (type) {
