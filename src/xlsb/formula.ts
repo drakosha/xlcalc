@@ -1,4 +1,5 @@
 import { quoteSheetIfNeeded } from '../a1.js'
+import { wordKey } from '../collate.js'
 import { generalText } from '../numfmt/general.js'
 import { quoteSheet } from '../sheet-pattern.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
@@ -29,11 +30,10 @@ const nativeFunctions = new Set(Object.values(FTAB).map((entry) => entry?.[0]))
 
 function functionName(operand: Operand): string {
   if (typeof operand === 'string' || !operand.name.empty) return render(operand)
-  const name = operand.name.name.toUpperCase()
-  // Excel writes unresolved calls that shadow worksheet functions as _xludf.
+  // Excel also marks dotted and dotless I spellings of worksheet functions as _xludf.
+  const name = wordKey(operand.name.name).replace(/[ıİ]/g, 'I')
   if (!nativeFunctions.has(name) && !XLFN.has(name) && !XLWS.has(name)) return operand.text
-  const space = operand.text.slice(0, operand.text.length - operand.name.name.length)
-  return space + '_xludf.' + operand.name.name
+  return operand.text.replace(/^\s*/, '$&_xludf.')
 }
 
 export type FormulaText = { text: string } | { anchor: string } | undefined

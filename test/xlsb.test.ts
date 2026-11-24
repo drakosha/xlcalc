@@ -81,7 +81,8 @@ describe('XLSB archive', () => {
     'array-exact', 'array-convert',
     'validation-multi-range', 'validation-list-comma', 'validation-invalid-reference',
     'conditional-invalid-reference', 'pivot-show-as', 'pivot-item-number',
-    'union-arguments', 'unprefixed-function', 'worksheet-function-shadow', 'iteration-default', 'range-sheet-quote',
+    'union-arguments', 'unprefixed-function', 'worksheet-function-shadow', 'worksheet-function-name-case',
+    'iteration-default', 'range-sheet-quote',
     'range-start-name', 'range-sheet-span', 'formula-closing-space', 'formula-small-numbers',
     'functions-001', 'functions-066', 'functions-131', 'functions-196',
     'functions-261', 'functions-326', 'functions-391', 'functions-456', 'functions-references',
@@ -91,18 +92,21 @@ describe('XLSB archive', () => {
     await expect(readXlsb(binary)).resolves.toStrictEqual(await readXlsx(xml))
   })
 
-  it('uses the stored spelling when Excel gives two LET name spellings the same binary index', async () => {
-    const [binary, xml] = await excelPair('let-name-case')
+  it.each([
+    { fixture: 'let-name-case', sheet: 1, address: 'A41', xlsx: 'LET(X,1,X+1)', xlsb: 'LET(x,1,x+1)', value: 2 },
+    { fixture: 'let-name-case-spill', sheet: 0, address: 'B3', xlsx: 'LET(x,,x)', xlsb: 'LET(X,,X)', value: 0 },
+  ])('uses the stored spelling for LET names in $fixture', async ({ fixture, sheet, address, xlsx, xlsb, value }) => {
+    const [binary, xml] = await excelPair(fixture)
     const expected = await readXlsx(xml)
     const actual = await readXlsb(binary)
-    const cell = expected.book.sheets[1].cells.A41
+    const cell = expected.book.sheets[sheet].cells[address]
 
-    expect(cell.formula).toBe('LET(X,1,X+1)')
-    expect(compute(expected.book).sheets[1].cells.A41.value).toBe(2)
-    expect(compute(actual.book).sheets[1].cells.A41.value).toBe(2)
+    expect(cell.formula).toBe(xlsx)
+    expect(compute(expected.book).sheets[sheet].cells[address].value).toBe(value)
+    expect(compute(actual.book).sheets[sheet].cells[address].value).toBe(value)
 
-    // PtgName refers to the same _xlpm.x record for x and X.
-    cell.formula = 'LET(x,1,x+1)'
+    // PtgName uses the same name record for x and X.
+    cell.formula = xlsb
     expect(actual).toStrictEqual(expected)
   })
 
