@@ -11,6 +11,8 @@
  */
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
+import type { CellValue } from '../src/contract.js'
+import { buildPivotCases as platformCases } from '../bench/coverage/pivot/period-names-platforms-held.js'
 import { predictedNames } from '../bench/coverage/pivot/value-names-predict.js'
 import type { PivotAnswer, PivotCase, PivotSet } from '../bench/coverage/pivot/cases.js'
 
@@ -33,5 +35,36 @@ describe.each(SETS.flatMap((set) => LOCALES.map((locale) => [set, locale] as con
       if (JSON.stringify(got) !== JSON.stringify(want)) misses.push(`${c.id}: ours ${JSON.stringify(got.map((x) => x[0]))}, Excel ${JSON.stringify(want.map((x) => (typeof x === 'string' ? x : x[0])))}`)
     }
     expect(misses).toEqual([])
+  })
+})
+
+/** Excel for Mac's ru-RU labels of months, including within the labels of groups by day of year. */
+const KNOWN_MAC_MONTHS: Record<string, string> = { фев: 'февр', мар: 'март', июн: 'июнь', июл: 'июль', сен: 'сент', ноя: 'нояб' }
+const MONTH_COLUMNS: Record<string, number> = { months: 0, days: 0, 'years-quarters-months': 2 }
+const PLATFORM_SET = 'period-names-platforms-held'
+const PLATFORM_LOCALE = 'ru-RU'
+const macGroups = JSON.parse(readFileSync(new URL(`excel/pivot/${PLATFORM_LOCALE}/${PLATFORM_SET}.json`, import.meta.url), 'utf8')) as {
+  answers: Record<string, { values: CellValue[][] }>
+}
+
+const winGroups = JSON.parse(readFileSync(new URL(`excel/win/pivot/${PLATFORM_LOCALE}/${PLATFORM_SET}.json`, import.meta.url), 'utf8')) as {
+  answers: Record<string, PivotAnswer>
+}
+
+describe('Russian labels of range groups in Excel for Windows and Mac', () => {
+  it.each(platformCases())('$id matches Windows and the recorded Mac differences', async (c) => {
+    const [area] = await predictedNames(c, PLATFORM_LOCALE)
+    const [win] = winGroups.answers[c.id].phases
+    expect(win.errors ?? []).toEqual([])
+    expect(win.pivots.PT1).toMatchObject({ values: area })
+    const macArea = area.map((row) => row.map((value, column) => {
+      if (typeof value !== 'string') return value
+      if (column === MONTH_COLUMNS[c.id]) {
+        return value.replace(/^(\d{2}\.)?(фев|мар|июн|июл|сен|ноя)$/, (_, prefix = '', month: string) => prefix + KNOWN_MAC_MONTHS[month])
+      }
+      if (c.id === 'hours-minutes-seconds' && column === 0) return value.replace(/^\d( Итог)?$/, '0$&')
+      return value
+    }))
+    expect(macArea).toEqual(macGroups.answers[c.id].values)
   })
 })

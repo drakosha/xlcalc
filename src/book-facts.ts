@@ -4,7 +4,7 @@
  * was opened from (`EngineOptions.file`), the active sheet's window and its PivotTables.
  */
 import type { BookFacts, CellFacts } from './args.js'
-import { charsOfPoints, columnPoints } from './column-width.js'
+import { bookGeometry, charsOfPoints, columnPoints } from './column-width.js'
 import type { BookFile } from './contract.js'
 import { sheetIndexOf, type EngineState } from './engine.js'
 import { sheetLines, type SheetLines } from './layout/lines.js'
@@ -81,11 +81,12 @@ export function bookFacts(state: EngineState, file: BookFile | undefined): BookF
       const look = x.look(r, c)
       const style = look.style === undefined ? undefined : state.input.styles?.[look.style]
       const width = x.column(c)?.width
+      const [digit] = bookGeometry(state.input.font)
       return {
         format: look.numberFormat === undefined ? 'General' : enCode(look.numberFormat),
         horizontal: style?.alignment?.horizontal,
         locked: style?.protection?.locked !== false,
-        width: charsOfPoints(columnPoints(x.width(c))),
+        width: charsOfPoints(columnPoints(x.width(c), digit), digit),
         defaultWidth: width === undefined,
       }
     },

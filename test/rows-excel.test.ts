@@ -72,6 +72,8 @@ const CONFIRMED: Record<string, number> = {
   'en-US:patched-held': 4,
   'en-US:rotation-held-2': 43,
   'en-US:rotation-held-3': 14,
+  'ru-RU:normal-fonts-held': 0,
+  'ru-RU:cell-fonts-held': 24,
 }
 
 /** The cases whose height Excel for Windows gave as the Mac did, by `<tag>:<set>`. */
@@ -87,6 +89,8 @@ const WIN_SAME_HEIGHT: Record<string, number> = {
   'en-US:rotation-held': 4,
   'en-US:rotation-held-2': 1,
   'en-US:rotation-held-3': 2,
+  'ru-RU:normal-fonts-held': 1,
+  'ru-RU:cell-fonts-held': 6,
 }
 
 describe('rows sets', () => {

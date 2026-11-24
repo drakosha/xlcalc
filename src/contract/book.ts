@@ -622,10 +622,10 @@ export interface BookInput {
   externalBooks?: ExternalBook[]
   /**
    * The workbook's default font, its Normal style's (in xlsx the first font), in points: what a cell shows whose style
-   * gives no font name or size. Without it, Calibri 11. It is kept, read and written, and the engine measures as for
-   * Calibri 11 whatever it is: column widths in characters, fitted row heights, `####` in a column too narrow and
-   * `entryWidth`, which Excel measures in the default font, so for another font they can differ from Excel's. It is
-   * included in `inputHash` when given.
+   * gives no font name or size. Without it, Calibri 11. The workbook uses measured column geometry and row heights for
+   * Arial, Arial Cyr and Times New Roman at 8, 10 and 11 points. Unrotated cells of those families at 8 to 14 points
+   * use regular Liberation metrics for text width.
+   * The font is read and written and is included in `inputHash` when given.
    */
   font?: { name: string; size: number }
   /** The caches of the workbook's PivotTables (`SheetInput.pivotTables`), by `id`. Not part of calculation or `inputHash`. */

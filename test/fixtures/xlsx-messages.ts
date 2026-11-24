@@ -66,6 +66,7 @@ export const XLSX_SAMPLES: { [K in keyof XlsxMessageParams]: XlsxMessageParams[K
   styleLost: [{ part: 'superscript' }, { part: 'protection' }, { part: { border: 'slantDashDotDot' } }],
   eastAsianFormat: [{}],
   unknownFormat: [{}],
+  formatLayout: [{ code: '[>=1]0;[>=0.5]0.0;[Red]0', problem: 'conditionPlace' }, { code: '0;-0;0;0', problem: 'fourthSection' }],
   tablePartBad: [{}],
   tableLeftOut: [{ table: 'Over', reason: 'B1:C2 overlaps the table T' }],
   headerGiven: [{ name: 'Qty' }],

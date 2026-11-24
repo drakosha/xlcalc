@@ -66,6 +66,7 @@ import { stepSpill } from './spill.js'
 import { stepDisplay } from './display.js'
 import { stepXlsx } from './xlsx.js'
 import { stepKeep } from './keep.js'
+import { stepPivotGroupMac } from './pivot-group-mac.js'
 import { stepPivotMac } from './pivot-mac.js'
 import { stepWorkbook } from './workbook.js'
 import { stepTables } from './tables.js'
@@ -342,6 +343,7 @@ else if (step === 'ui') await withExcelLock(() => stepUi(process.argv[3], locale
 else if (step === 'rows') await withExcelLock(() => stepRows(process.argv[3], locale))
 else if (step === 'filter') await withExcelLock(() => stepFilter(process.argv[3]))
 else if (step === 'filter-acts') await withExcelLock(() => stepFilterActs(process.argv[3]))
+else if (step === 'pivot-group') await withExcelLock(() => stepPivotGroupMac(process.argv[3]))
 else if (step === 'pivot') await withExcelLock(() => stepPivotMac(process.argv[3]))
 else if (step === 'all') {
   await stepCases()
@@ -353,7 +355,7 @@ else if (step === 'all') {
   })
   writeReport(resultFile, REPORT)
 } else {
-  console.error('step: cases | fj | lo | excel en|ru|<tag> | report | all | probes [set [ru|<tag>]] | legacy set | struct set | spill set | display set [ru|<tag>] | workbook set | tables set [ru|<tag>] | parts set | fields set | stats set | entry set [ru|<tag>] | cond set | valid set [ru] | paste set [ru|<tag>] | hidden set | csv set | links set | fit set [ru|<tag>] | rows set [ru|<tag>] | lines set | protect set | ui set [ru|<tag>] | filter set | filter-acts set | pivot set | xlsx roundtrip|saved|forms|colors|formats|intersect | keep made|predict|open|struct-predict|struct|struct-open-predict|struct-open|formats-predict|formats|win-predict')
+  console.error('step: cases | fj | lo | excel en|ru|<tag> | report | all | probes [set [ru|<tag>]] | legacy set | struct set | spill set | display set [ru|<tag>] | workbook set | tables set [ru|<tag>] | parts set | fields set | stats set | entry set [ru|<tag>] | cond set | valid set [ru] | paste set [ru|<tag>] | hidden set | csv set | links set | fit set [ru|<tag>] | rows set [ru|<tag>] | lines set | protect set | ui set [ru|<tag>] | filter set | filter-acts set | pivot set | pivot-group set | xlsx roundtrip|saved|forms|colors|formats|intersect | keep made|predict|open|struct-predict|struct|struct-open-predict|struct-open|formats-predict|formats|win-predict')
   process.exit(2)
 }
 console.log(`done in ${((Date.now() - t0) / 1000).toFixed(1)} s`)

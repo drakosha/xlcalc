@@ -140,7 +140,9 @@ A cell's format is its own `numberFormat`, otherwise its row's, otherwise its co
 
 ## Width
 
-Excel lays out text in points of Calibri 11, the default font of xlsx files. A digit is 6 points wide. A column of xlsx width `w` is `trunc(6w + 21·6/256)` points; a column without a width is 53 points. Five points go to padding, and text fits when the widths of its characters add up to no more than the rest.
+With a Normal font of Calibri 11, a digit is 6 points wide. A column of xlsx width `w` is `trunc(6w + 21·6/256)` points; a column without a width is 53 points. Five points go to padding, and text fits when the widths of its characters add up to no more than the rest.
+
+In a workbook whose Normal font is Arial, Arial Cyr or Times New Roman at 8, 10 or 11 points, the digit width follows Excel for Mac. It is 4 points at 8 points (with 3 points of padding), 5 for Times New Roman 10, and 6 for the other checked sizes. The unset column width is eight digits plus padding. Other Normal fonts use the Calibri 11 geometry. The standalone width helpers use Calibri 11.
 
 Character widths were measured with fills (`0*x` repeats `x` across the column, and the count gives the width of `x`):
 
@@ -157,6 +159,8 @@ Character widths were measured with fills (`0*x` repeats `x` across the column, 
 | 10 | `W Ш Щ Ю` |
 
 Latin letters, digits and symbols are in `src/numfmt/glyphs.ts`, and so are the Cyrillic letters and `₽`. They apply to workbooks in every locale, whatever locales are loaded. A character that no table covers counts as a digit.
+
+An unrotated cell in Arial, Arial Cyr or Times New Roman at 8 through 14 points takes its character widths from the corresponding regular Liberation face. The cell uses its own font over the Normal font, including a style inherited from its row or column. These widths apply to displayed numbers and AutoFit. Bold and italic use the regular advances for these faces.
 
 A merged area is as wide as its columns combined.
 
@@ -345,6 +349,8 @@ console.log(fitRows(book, compute(book), 'S', '1:3')) // → { '1': 21, '2': 32,
 - Because cells share the baseline, a row can be taller than its tallest cell: two wrapped lines of Calibri 11 (32 points) next to a line of 24 points (31) make a row of 35.
 - A cell merged down does not count. One merged across counts as a line of its font, or, when it wraps, only below the baseline. A hidden column counts with its width.
 - The tallest row is 409.5 points.
+
+An unset row in a workbook whose Normal font is Arial, Arial Cyr or Times New Roman is 11, 13 or 14 points high at sizes 8, 10 and 11 respectively. These heights also apply to AutoFit of a single line in that Normal font. Unrotated cells in any of those families at 8 through 14 points use measured line heights and regular Liberation advances when wrapping.
 
 Text with a line break typed into a cell wraps it, whether on the keyboard (Control+Option+Return on the Mac) or through the object model, and its row fits it unless its height was set manually: `a`, a line break and `b` in a row of the default height give it 32 points. A row with a wrapping cell fits again as text is typed there, shorter or longer. When pasted, a field with a line break inside quotes wraps its cell, and the row keeps its height. A formula typed over several lines wraps nothing. `setCellText`, `setCellTexts` and `fillCellText` do this in the same step as the entry: the cell's style gets `alignment.wrap` (an equal style is found in the table, otherwise one is added) and the row gets its height with `bestFit`; a row whose height was set manually keeps its height, and so does a hidden one. `pasteText` wraps the cells and fits no row.
 

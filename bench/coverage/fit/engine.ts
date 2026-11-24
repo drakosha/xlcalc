@@ -5,7 +5,8 @@
  * show at that width. The engine's functions come as arguments, so a test passes the ones it tests (`src` or `dist`).
  */
 import type { BookInput, CellInput, CellValue, ColumnInput, ComputeResult, EntryOptions, EntryResult, EntryWidthOptions } from '../../../src/contract.js'
-import { caseRows, fitBook, type FitCase } from './cases.js'
+import { bookGeometry, columnPoints } from '../../../src/column-width.js'
+import { caseRows, fitBook, fitsColumn, type FitCase } from './cases.js'
 import { numberFormatOf } from '../stored.js'
 
 export interface FitEngine {
@@ -17,6 +18,8 @@ export interface FitEngine {
 
 /** The engine's answer: the column's width (null for the default), whether AutoFit or typing set it, and what each of the case's rows shows. */
 export interface FitPrediction {
+  /** Opening column geometry when the case reads the width without fitting. */
+  points?: number
   width: number | null
   fitted?: boolean
   texts: Record<number, string>
@@ -39,7 +42,7 @@ export function engineFit(e: FitEngine, c: FitCase, tag: string, now: string, wi
     if (Object.keys(col).length) columns[COL] = col
     else delete columns[COL]
   }
-  if (!c.typed || c.fitFirst) setWidth(e.fitColumns(book, e.compute(book), 'S', COL)[COL])
+  if (fitsColumn(c)) setWidth(e.fitColumns(book, e.compute(book), 'S', COL)[COL])
   for (const [row, text] of c.typed ?? []) {
     const addr = `${COL}${row}`
     const before = sheet.cells[addr]
@@ -56,5 +59,7 @@ export function engineFit(e: FitEngine, c: FitCase, tag: string, now: string, wi
     setWidth(e.entryWidth(value, { locale: tag, ...(numberFormat !== undefined ? { numberFormat } : {}), ...(col.width !== undefined ? { width: col.width } : {}), ...(col.bestFit ? { bestFit: true } : {}) }), col)
   }
   const cells = e.compute(book).sheets[0].cells
-  return { width: columns[COL]?.width ?? null, ...(fitted ? { fitted } : {}), texts: Object.fromEntries(caseRows(c).map((r) => [r, cells[`${COL}${r}`]?.text ?? ''])) }
+  const width = columns[COL]?.width
+  const [digit] = bookGeometry(book.font)
+  return { width: width ?? null, ...(c.readWidth ? { points: columnPoints(width, digit) } : {}), ...(fitted ? { fitted } : {}), texts: Object.fromEntries(caseRows(c).map((r) => [r, cells[`${COL}${r}`]?.text ?? ''])) }
 }

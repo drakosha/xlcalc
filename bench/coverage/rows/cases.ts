@@ -25,6 +25,8 @@ export type RowCell = Omit<StoredCell, 'style'> & { look?: CellStyle }
 
 export interface RowCase {
   id: string
+  /** The font of the book's Normal style. */
+  bookFont?: BookInput['font']
   /** The row's cells by the case's column, 0 to 2. */
   cells?: Record<number, RowCell>
   /** The case's columns by their place: a width, hidden, a style by its fields. */
@@ -122,7 +124,8 @@ export function rowsBook(cases: RowCase[]): BookInput {
     for (const col of c.merged ?? []) merges.push(`${formatAddress(r, c0 + col)}:${formatAddress(r, c0 + col + 1)}`)
     for (const col of c.mergedDown ?? []) merges.push(`${formatAddress(r, c0 + col)}:${formatAddress(r + 1, c0 + col)}`)
   })
-  return { sheets: [{ name: 'S', cells, columns, rows, ...(merges.length ? { merges } : {}) }], styles }
+  const font = cases[0]?.bookFont
+  return { ...(font ? { font } : {}), sheets: [{ name: 'S', cells, columns, rows, ...(merges.length ? { merges } : {}) }], styles }
 }
 
 /** Cases of one group: ids `<group>-<n>`. */

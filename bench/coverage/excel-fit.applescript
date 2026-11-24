@@ -32,7 +32,7 @@ on run argv
 				set cl to item 1 of c
 				set texts to item 3 of c
 				set ers to {}
-				if (count of texts) is 0 or (item 2 of c) is 1 then autofit (entire column of range (cl & "1") of ws)
+				if (item 2 of c) is 1 then autofit (entire column of range (cl & "1") of ws)
 				repeat with x in texts
 					set rg to range (cl & ((item 1 of x) as integer)) of ws
 					set t to item 2 of x

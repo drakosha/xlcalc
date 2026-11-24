@@ -10,9 +10,10 @@ import { sheetLines, type SheetLines } from './layout/lines.js'
 import type { Rules } from './locale/rules.js'
 import { mergedOf } from './layout/merges.js'
 import { MAX_COLS } from './model.js'
-import { columnPoints, room } from './numfmt.js'
+import { columnPoints } from './numfmt.js'
+import { styleMeasures, type FontMeasure } from './numfmt/font-metrics.js'
 import { turnedStyles } from './layout/turned.js'
-import { MAX_POINTS } from './column-width.js'
+import { bookGeometry, columnPadding, MAX_POINTS } from './column-width.js'
 
 /** What the cell at sheet `s`, row `r`, column `c` (zero-based) shows when it holds `v`; `own`, its input when the caller has it. */
 export type Looks = (s: number, r: number, c: number, v: CellValue, own?: CellInput) => CellDisplay
@@ -44,11 +45,11 @@ function sheetLooks(book: BookInput, state?: EngineState): (s: number) => SheetL
  * `turned`) the widest column's, as Excel shows a number turned whole in a column narrower than its text
  * (`test/excel/fit/rotation.json`).
  */
-function pointsAt(x: SheetLook, r: number, c: number, turned: Set<number> | null, own?: CellInput): number {
+function pointsAt(x: SheetLook, r: number, c: number, turned: Set<number> | null, digit: number, own?: CellInput): number {
   if (turned?.has(x.lines.look(r, c, own).style!)) return MAX_POINTS
   const last = x.merges.size ? (x.merges.get(r * MAX_COLS + c) ?? c) : c
   let points = 0
-  for (let k = c; k <= last; k++) points += columnPoints(x.lines.width(k))
+  for (let k = c; k <= last; k++) points += columnPoints(x.lines.width(k), digit)
   return points
 }
 
@@ -59,23 +60,30 @@ function pointsAt(x: SheetLook, r: number, c: number, turned: Set<number> | null
 export function bookLooks(book: BookInput, rules: Rules, state?: EngineState, wide = false): Looks {
   const sheetLook = sheetLooks(book, state)
   const turned = turnedStyles(book.styles)
+  const [digit] = bookGeometry(book.font)
+  const padding = columnPadding(digit)
+  const measure = !wide && styleMeasures(book.font, book.styles)
   // a cell without `own` shows by the sheet's input there, or its look of the sheet's looks (`sheetLines`)
   return (s, r, c, v, own) => {
     const x = sheetLook(s)
     const format = x.lines.format(r, c, own)
-    return rules.display(v, format, wide ? Infinity : room(pointsAt(x, r, c, turned, own)))
+    const font = measure ? measure(x.lines.look(r, c, own).style) : undefined
+    return rules.display(v, format, wide ? Infinity : pointsAt(x, r, c, turned, digit, own) - padding, font)
   }
 }
 
 /**
  * What the cells of the state's book show by beside their value: the format and the room in points. Two cells of one
- * value with equal parts show the same (`bookLooks`), so their texts need not be made to be compared.
+ * value with equal format, room and font measurements show the same (`bookLooks`), so their texts need not be made to be compared.
  */
-export function lookParts(state: EngineState): (s: number, r: number, c: number, own?: CellInput) => [NumberFormat | undefined, number] {
+export function lookParts(state: EngineState): (s: number, r: number, c: number, own?: CellInput) => [NumberFormat | undefined, number, FontMeasure | undefined] {
   const sheetLook = sheetLooks(state.input, state)
   const turned = turnedStyles(state.input.styles)
+  const [digit] = bookGeometry(state.input.font)
+  const measure = styleMeasures(state.input.font, state.input.styles)
   return (s, r, c, own) => {
     const x = sheetLook(s)
-    return [x.lines.format(r, c, own), pointsAt(x, r, c, turned, own)]
+    const font = measure?.(x.lines.look(r, c, own).style)
+    return [x.lines.format(r, c, own), pointsAt(x, r, c, turned, digit, own), font]
   }
 }

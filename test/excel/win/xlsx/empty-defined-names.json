@@ -1,0 +1,65 @@
+{
+ "meta": {
+  "version": "16.0.20430.20146",
+  "platform": "Windows",
+  "locale": "ru-RU",
+  "ui": "ru-RU (Excel 1049)",
+  "format": "ru-RU (decimal \",\", thousands U+0020, list \";\")",
+  "system": "ru-RU (code page 1251)",
+  "dpi": 96
+ },
+ "answers": {
+  "constant": {
+   "names": [
+    [
+     "VacantName",
+     "=31"
+    ]
+   ],
+   "value": [
+    [
+     31
+    ]
+   ],
+   "saved": [
+    {
+     "name": "VacantName",
+     "ref": "31"
+    }
+   ]
+  },
+  "broken-reference": {
+   "names": [
+    [
+     "VacantName",
+     "=#REF!#REF!"
+    ]
+   ],
+   "value": [
+    [
+     {
+      "e": -2146826265
+     }
+    ]
+   ],
+   "saved": [
+    {
+     "name": "VacantName",
+     "ref": "#REF!"
+    }
+   ]
+  },
+  "empty": {
+   "rejected": "-2146827284 Невозможно получить свойство Open класса Workbooks"
+  },
+  "self-closing": {
+   "rejected": "-2146827284 Невозможно получить свойство Open класса Workbooks"
+  },
+  "whitespace": {
+   "rejected": "-2146827284 Невозможно получить свойство Open класса Workbooks"
+  },
+  "local-shadow": {
+   "rejected": "-2146827284 Невозможно получить свойство Open класса Workbooks"
+  }
+ }
+}

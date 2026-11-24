@@ -1,0 +1,15 @@
+{
+ "meta": {
+  "version": "16.115",
+  "locale": "ru-RU",
+  "mode": "interactive repair"
+ },
+ "answers": {
+  "empty": {
+   "names": [],
+   "value": {
+    "error": "NAME"
+   }
+  }
+ }
+}

@@ -14,7 +14,8 @@ function measured(): [number | undefined, number][] {
   const out = new Map<string, [number | undefined, number]>()
   for (const dir of ['fit', 'fit/ru-RU']) {
     const at = new URL(`./excel/${dir}/`, import.meta.url)
-    for (const f of readdirSync(at).filter((x) => x.endsWith('.json'))) {
+    // normal-fonts-held: books whose Normal font is not Calibri 11, whose characters columnWidthToChars does not count in
+    for (const f of readdirSync(at).filter((x) => x.endsWith('.json') && !x.startsWith('normal-fonts'))) {
       const answers = (JSON.parse(readFileSync(new URL(f, at), 'utf8')) as { answers: Record<string, Answer> }).answers
       for (const a of Object.values(answers)) {
         if (a.columnWidth === undefined) continue
