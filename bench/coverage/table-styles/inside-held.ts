@@ -8,7 +8,11 @@ import { registerTableStyles } from '../../../src/table-styles.js'
 import { writeXlsx } from '../../../src/xlsx.js'
 import { editParts } from '../xlsx/sent.js'
 
-export const INSIDE_CASES = [{ id: 'inside', sheet: 'S', range: 'A1:I10' }] as const
+export const INSIDE_CASES = [
+  { id: 'inside', sheet: 'S', range: 'A1:I10' },
+  // a cell's own number format beside the styles', and a total row's beside a first column's
+  { id: 'precedence', sheet: 'S', range: 'B2:E8' },
+] as const
 
 const black = '<color rgb="FF000000"/>'
 /** Marker fill colour (its last byte) and the differential format put in its place. */
@@ -69,9 +73,16 @@ const BOOK: BookInput = {
   }],
 }
 
-export async function insideFile(): Promise<Uint8Array> {
+function bookOf(id: (typeof INSIDE_CASES)[number]['id']): BookInput {
+  if (id === 'inside') return BOOK
+  const [sheet] = BOOK.sheets
+  const cells = { ...sheet.cells, B5: { value: 3, numberFormat: '0.0' }, B8: { value: 7 }, D8: { value: 0.5, numberFormat: '0.0' } }
+  return { ...BOOK, sheets: [{ ...sheet, cells }] }
+}
+
+export async function insideFile(id: (typeof INSIDE_CASES)[number]['id']): Promise<Uint8Array> {
   registerTableStyles()
-  const { data } = await writeXlsx({ book: BOOK })
+  const { data } = await writeXlsx({ book: bookOf(id) })
   return editParts(data, (name, text) => {
     if (name !== 'xl/styles.xml') return undefined
     let edited = text

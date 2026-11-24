@@ -11,7 +11,7 @@ await withWindowsExcel('ru-RU', async (env) => {
   mkdirSync(OUT, { recursive: true })
   const books = await Promise.all(INSIDE_CASES.map(async ({ id, sheet, range }) => {
     const file = join(OUT, `table-style-${id}.xlsx`)
-    writeFileSync(file, await insideFile())
+    writeFileSync(file, await insideFile(id))
     const steps: Step[] = [{ do: 'full' }, { do: 'cond', kind: 'looks', read: [[sheet, range]], borders: true, patterns: true }, { do: 'saveAs' }]
     return { file, steps }
   }))
