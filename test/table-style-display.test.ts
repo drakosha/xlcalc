@@ -58,3 +58,35 @@ describe('Excel display styles in viewports', () => {
     }
   })
 })
+
+it('counts visible rows for table bands even when the window starts later in the table', async () => {
+  const { book, cached } = await readXlsx(await displayFile('banded-table'))
+  book.sheets[0].rows = { ...book.sheets[0].rows, 3: { hidden: true } }
+  const session = createSession(book, { cached })
+  try {
+    const view = session.getViewport('S', 'C2:C5', { rows: [2, 4, 5] })
+    const fill = (address: string) => view.resolvedStyles?.[view.cells[address].resolvedStyle!]?.fill?.color
+    expect(fill('C2')).toBe('#C0E6F5')
+    expect(fill('C4')).toBeUndefined()
+  } finally {
+    session.close()
+  }
+})
+
+it('keeps custom stripe sizes after hiding a row and a column', async () => {
+  const { book, cached } = await readXlsx(await regionFile('custom-bands'))
+  book.sheets[0].rows = { 3: { hidden: true } }
+  book.sheets[0].columns = { C: { hidden: true } }
+  const session = createSession(book, { cached })
+  try {
+    const view = session.getViewport('S', 'B3:D6')
+    const style = (address: string) => view.resolvedStyles?.[view.cells[address].resolvedStyle!]
+    expect(style('B3')?.fill).toBeUndefined()
+    expect(style('D4')?.fill?.color).toBe('#AAFF99')
+    expect(style('D5')?.fill?.color).toBe('#AAFF99')
+    expect(style('D6')?.fill?.color).toBe('#FFDD44')
+    expect(style('D4')?.font).toEqual({ color: '#122113', italic: true })
+  } finally {
+    session.close()
+  }
+})

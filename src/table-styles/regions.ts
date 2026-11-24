@@ -2,6 +2,7 @@ import type { PivotTable, TableInput } from '../contract.js'
 import { pivotFrame, placeParts, savedLines } from '../pivot/frame.js'
 import { hasCell, parseRange, type Rect } from '../structure/area.js'
 import { DEFAULT_TABLE_STYLE } from '../tables/check.js'
+import { allLines, type StripeLines } from './stripe-lines.js'
 
 export interface Region {
   type: string
@@ -18,19 +19,23 @@ const rows = (x: Rect, r1: number, r2 = r1): Rect => ({ ...x, r1, r2 })
 const cols = (x: Rect, c1: number, c2 = c1): Rect => ({ ...x, c1, c2 })
 const at = (r: number, c: number): Rect => ({ r1: r, r2: r, c1: c, c2: c })
 
-function stripe(out: Region[], x: Rect, index: number, axis: 'Row' | 'Column', sizeOf: SizeOf): void {
+function stripe(out: Region[], x: Rect, index: number, axis: 'Row' | 'Column', sizeOf: SizeOf, lines = allLines): void {
   const first = `first${axis}Stripe`
   const second = `second${axis}Stripe`
   const [low, high] = axis === 'Row' ? [x.r1, x.r2] : [x.c1, x.c2]
   const a = sizeOf(first)
   const b = sizeOf(second)
-  const offset = (index - low) % (a + b)
-  const start = index - offset + (offset < a ? 0 : a)
-  const end = Math.min(high, start + (offset < a ? a : b) - 1)
+  const ordinal = lines.before(index)
+  const offset = (ordinal - lines.before(low)) % (a + b)
+  const startAt = ordinal - offset + (offset < a ? 0 : a)
+  const endAt = Math.min(lines.before(high + 1) - 1, startAt + (offset < a ? a : b) - 1)
+  const start = lines.at(startAt)
+  const end = lines.at(endAt)
+  if (index < start || index > end) return
   out.push({ type: offset < a ? first : second, box: axis === 'Row' ? rows(x, start, end) : cols(x, start, end) })
 }
 
-export function tableArea(table: TableInput): StyledArea {
+export function tableArea(table: TableInput, visibleRows: StripeLines, visibleColumns: StripeLines): StyledArea {
   const x = parseRange(table.range)!
   const style = table.style ?? DEFAULT_TABLE_STYLE
   const data = rows(x, x.r1 + Number(table.headers !== false), x.r2 - Number(table.totals === true))
@@ -40,8 +45,8 @@ export function tableArea(table: TableInput): StyledArea {
       if (!hasCell(x, r, c)) return []
       const out: Region[] = [{ type: 'wholeTable', box: x }]
       if (hasCell(data, r, c)) {
-        if (style.rowStripes) stripe(out, data, r, 'Row', sizeOf)
-        if (style.columnStripes) stripe(out, data, c, 'Column', sizeOf)
+        if (style.rowStripes) stripe(out, data, r, 'Row', sizeOf, visibleRows)
+        if (style.columnStripes) stripe(out, data, c, 'Column', sizeOf, visibleColumns)
       }
       if (style.lastColumn && c === x.c2) out.push({ type: 'lastColumn', box: cols(x, c) })
       if (style.firstColumn && c === x.c1) out.push({ type: 'firstColumn', box: cols(x, c) })

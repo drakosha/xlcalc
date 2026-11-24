@@ -1,4 +1,5 @@
 import type { BookInput, BorderLine, CellStyle, WorkbookTableStyles } from '../contract.js'
+import { hiddenSpansOf } from '../layout/hidden.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { keyOf } from '../style-table.js'
 import { anyMeets, hasCell, type Rect } from '../structure/area.js'
@@ -12,6 +13,7 @@ import { LINES } from '../input/styles.js'
 import { attributes, element } from '../xlsx/xml/scan.js'
 import { PRESET_DIFFERENTIAL_FORMATS, PRESET_TABLE_STYLES } from './presets.js'
 import { pivotArea, tableArea, type StyledArea } from './regions.js'
+import { visibleLines } from './stripe-lines.js'
 
 interface Differential {
   style: CellStyle
@@ -154,7 +156,11 @@ export function tableStyleWindow(book: BookInput, sheetIndex: number, rects: Rec
     const area = locate()
     if (anyMeets(area.bounds, nearby)) areas.push({ area, definition })
   }
-  for (const table of sheet.tables ?? []) add((table.style ?? DEFAULT_TABLE_STYLE).name, () => tableArea(table))
+  if (sheet.tables?.length) {
+    const rows = visibleLines(hiddenSpansOf(sheet.rows, 'r'))
+    const columns = visibleLines(hiddenSpansOf(sheet.columns, 'c'))
+    for (const table of sheet.tables) add((table.style ?? DEFAULT_TABLE_STYLE).name, () => tableArea(table, rows, columns))
+  }
   for (const table of sheet.pivotTables ?? []) add(table.style?.name, () => pivotArea(table))
   if (!areas.length) return
 
