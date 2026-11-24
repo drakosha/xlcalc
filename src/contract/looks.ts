@@ -111,10 +111,28 @@ export interface CellProtection {
  * A cell style in the workbook's style table (`BookInput.styles`), like an xlsx cell format without its number format
  * (which is the cell's `numberFormat`). Styles play no part in calculation or in the values hash.
  */
+/**
+ * Excel's fill patterns other than solid, as xlsx names them (Format Cells, Fill, Pattern Style): `gray125` and
+ * `gray0625` are the two lightest dots, `dark…` and `light…` the thick and thin lines.
+ */
+export type FillPattern =
+  | 'darkGray' | 'mediumGray' | 'lightGray' | 'gray125' | 'gray0625'
+  | 'darkHorizontal' | 'darkVertical' | 'darkDown' | 'darkUp' | 'darkGrid' | 'darkTrellis'
+  | 'lightHorizontal' | 'lightVertical' | 'lightDown' | 'lightUp' | 'lightGrid' | 'lightTrellis'
+
+/**
+ * A cell's fill: solid in `color`, or with a `pattern` its lines in `patternColor` (Excel's automatic colour, black,
+ * without it) over `color`. A pattern whose file names no background is read over white, as Excel shows it.
+ */
+export interface FillStyle {
+  color: Color
+  pattern?: FillPattern
+  patternColor?: Color
+}
+
 export interface CellStyle {
   font?: FontStyle
-  /** A solid fill. */
-  fill?: { color: Color }
+  fill?: FillStyle
   border?: { top?: BorderLine; right?: BorderLine; bottom?: BorderLine; left?: BorderLine }
   alignment?: AlignmentStyle
   protection?: CellProtection
@@ -157,7 +175,7 @@ export interface ConditionalBase {
 export interface ConditionalStyle {
   /** `bold: false` removes bold from a cell that has it, and so on. */
   font?: Pick<FontStyle, 'bold' | 'italic' | 'underline' | 'strike' | 'color'>
-  fill?: { color: Color }
+  fill?: FillStyle
   border?: CellStyle['border']
   /** The number format used to display the cell's value. */
   numberFormat?: NumberFormat

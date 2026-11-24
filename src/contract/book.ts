@@ -1,7 +1,7 @@
 /** A book as the engine takes it: cells with their notes and links, sheets with their columns, rows, looks, frozen panes, outline settings, tables and view, the book's names and the workbooks it links to; a book without its cells. */
 import type { DateSystem } from '../dates.js'
 import type { CellValue, ErrorCode, JsonValue, Scalar } from './values.js'
-import type { CellStyle, Color, ConditionalFormat, ConditionalStyle, DataValidation, IconSetName, FontStyle } from './looks.js'
+import type { BorderLine, CellStyle, Color, ConditionalFormat, ConditionalStyle, DataValidation, IconSetName, FontStyle } from './looks.js'
 import type { PivotCache, PivotTable, Slicer, SlicerCache, Timeline, TimelineCache } from './pivot.js'
 
 /** A font applied from a UTF-16 offset until the next run; omit font to use the cell's whole font. */
@@ -471,11 +471,17 @@ export interface TableInput {
   filter?: FilterCriteria | false
 }
 
-/** One region of a custom table style, with the size of a stripe when the region is one. */
+/**
+ * One region of a custom table style, with the size of a stripe when the region is one. `style`'s border runs round
+ * the region; `inside` draws between its cells. A `numberFormat` shows the region's cells whose own format is General,
+ * as Excel for Windows shows them (`test/excel/win/xlsx/table-style-inside-held.json`).
+ */
 export interface TableStyleElement {
   type: string
   size?: number
   style: CellStyle
+  inside?: { horizontal?: BorderLine; vertical?: BorderLine }
+  numberFormat?: NumberFormat
 }
 
 /** A custom definition by name in `WorkbookTableStyles.custom`. */
