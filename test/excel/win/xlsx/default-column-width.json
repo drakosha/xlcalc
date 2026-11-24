@@ -181,6 +181,122 @@
     "defaultRowHeight": "15",
     "x14ac:dyDescent": "0.25"
    }
+  },
+  "arial-8-default": {
+   "widths": [
+    [
+     3.67,
+     20.25,
+     true
+    ],
+    [
+     11.17,
+     54,
+     false
+    ]
+   ],
+   "shown": [
+    [
+     "###",
+     0
+    ],
+    [
+     "12345,67",
+     0
+    ]
+   ],
+   "saved": {
+    "defaultColWidth": "4.5",
+    "defaultRowHeight": "11.25",
+    "x14ac:dyDescent": "0.2"
+   }
+  },
+  "arial-8-base": {
+   "widths": [
+    [
+     20.5,
+     96,
+     true
+    ],
+    [
+     11.17,
+     54,
+     false
+    ]
+   ],
+   "shown": [
+    [
+     "12345,67",
+     0
+    ],
+    [
+     "12345,67",
+     0
+    ]
+   ],
+   "saved": {
+    "defaultColWidth": "21.33203125",
+    "defaultRowHeight": "11.25",
+    "x14ac:dyDescent": "0.2"
+   }
+  },
+  "times-10-default": {
+   "widths": [
+    [
+     11.33,
+     54.75,
+     true
+    ],
+    [
+     11.17,
+     54,
+     false
+    ]
+   ],
+   "shown": [
+    [
+     "12345,67",
+     0
+    ],
+    [
+     "12345,67",
+     0
+    ]
+   ],
+   "saved": {
+    "defaultColWidth": "12.1640625",
+    "defaultRowHeight": "12.75",
+    "x14ac:dyDescent": "0.2"
+   }
+  },
+  "times-10-base": {
+   "widths": [
+    [
+     20.5,
+     96,
+     true
+    ],
+    [
+     11.17,
+     54,
+     false
+    ]
+   ],
+   "shown": [
+    [
+     "12345,67",
+     0
+    ],
+    [
+     "12345,67",
+     0
+    ]
+   ],
+   "saved": {
+    "defaultColWidth": "21.33203125",
+    "defaultRowHeight": "12.75",
+    "x14ac:dyDescent": "0.2"
+   }
   }
  }
 }

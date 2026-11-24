@@ -123,6 +123,86 @@
     "defaultRowHeight": "15",
     "x14ac:dyDescent": "0.2"
    }
+  },
+  "arial-8-default": {
+   "columns": [
+    [
+     18,
+     3.75,
+     "###"
+    ],
+    [
+     48,
+     11.25,
+     "12345,67"
+    ]
+   ],
+   "saved": {
+    "baseColWidth": "10",
+    "defaultColWidth": "4.5",
+    "defaultRowHeight": "11",
+    "x14ac:dyDescent": "0.15"
+   }
+  },
+  "arial-8-base": {
+   "columns": [
+    [
+     83,
+     20,
+     "12345,67"
+    ],
+    [
+     48,
+     11.25,
+     "12345,67"
+    ]
+   ],
+   "saved": {
+    "baseColWidth": "10",
+    "defaultColWidth": "20.75",
+    "defaultRowHeight": "11",
+    "x14ac:dyDescent": "0.15"
+   }
+  },
+  "times-10-default": {
+   "columns": [
+    [
+     61,
+     11.2,
+     "12345,67"
+    ],
+    [
+     60,
+     11,
+     "12345,67"
+    ]
+   ],
+   "saved": {
+    "baseColWidth": "10",
+    "defaultColWidth": "12.19921875",
+    "defaultRowHeight": "13",
+    "x14ac:dyDescent": "0.15"
+   }
+  },
+  "times-10-base": {
+   "columns": [
+    [
+     105,
+     20,
+     "12345,67"
+    ],
+    [
+     60,
+     11,
+     "12345,67"
+    ]
+   ],
+   "saved": {
+    "baseColWidth": "10",
+    "defaultColWidth": "21",
+    "defaultRowHeight": "13",
+    "x14ac:dyDescent": "0.15"
+   }
   }
  }
 }

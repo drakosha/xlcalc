@@ -340,7 +340,7 @@ xlsx has no place for the workbook's locale. The writer stores it in a custom do
 | `locale` | a locale the package does not have |
 | `part` | a sheet name Excel would not take, read under another ([Sheet names](#sheet-names)); a missing sheet part, a cell outside the sheet, a Strict file's date that is no date, XML of the cells or the shared strings left open (an element without its closing tag), a width or height that is no size, a row number that is no whole number, a style index or a shared string the file does not have, a value that is no number or no boolean |
 
-An explicit `sheetFormatPr.defaultColWidth` becomes `SheetInput.defaultColumnWidth` in the same units as an individual column width. A nonstandard `baseColWidth` alone gives the width of that many digits plus padding. The sheet's width applies where a column has none of its own. `writeXlsx` writes it as `defaultColWidth`. `writeKept` keeps the original attributes if the width has stayed the same and updates the full default width when it changes.
+An explicit `sheetFormatPr.defaultColWidth` becomes `SheetInput.defaultColumnWidth` in the same units as an individual column width, using the workbook's Normal font. A nonstandard `baseColWidth` alone gives the width of that many digits plus the Normal font's column padding. The sheet's width applies where a column has none of its own. `writeXlsx` writes it as `defaultColWidth`. `writeKept` keeps the original attributes if the width has stayed the same and updates the full default width when it changes.
 
 
 ### What is not reported

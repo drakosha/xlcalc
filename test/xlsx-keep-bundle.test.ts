@@ -38,6 +38,7 @@ describe('xlsx/keep outside Node', () => {
     // A lookup's key with @ inside an aggregation of a legacy formula: 462,885 bytes of dist, 462,847 before.
     // The Normal font's column and row geometry is written by both writers. The bundle is 464,121 bytes of dist.
     // The reader and writer share the section-layout validation: 465,300 bytes of dist with it, 464,121 before.
+    // Sheet default widths in the Normal font: 465,912 bytes of dist, 465,300 before.
     expect(bytes).toBeLessThan(455 * 1024)
   }, 60_000)
 

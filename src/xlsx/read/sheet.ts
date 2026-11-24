@@ -1,4 +1,3 @@
-import { widthOf } from '../../column-width.js'
 /**
  * A worksheet part as a sheet of the book: cells (see `cells.ts`), formulas in the engine's spelling (those of the
  * old kind as the dynamic formulas Excel 365 shows for them, `@` where Excel puts it), shared formulas spread to their
@@ -7,6 +6,7 @@ import { widthOf } from '../../column-width.js'
  * the filter mode, notes, hyperlinks and frozen panes (`parts.ts`), data validation (`validation.ts`), outline settings,
  * and what the sheet has that the model does not, reported.
  */
+import { columnPadding, widthOf } from '../../column-width.js'
 import type { AutoFilter, CellInput, CellValue, ColumnInput, OutlineSettings, PivotRuleScope, RowInput, SheetInput } from '../../contract.js'
 import { cellEdits, edited, LookTable, NONE, type Layer } from '../../looks/layer.js'
 import { listOf, lookAlone } from '../../looks/sheet.js'
@@ -47,6 +47,8 @@ export interface SheetSource {
   tables: string[]
   /** The names of the book's custom table style definitions. */
   customTableStyles: ReadonlySet<string>
+  /** The width of a digit in the workbook's Normal font. */
+  columnDigit: number
   /** The sheet's comments, its VML drawing and threaded comments, and the book's persons, when there are any. */
   parts: Pick<PartsSource, 'comments' | 'vml' | 'threads' | 'persons'>
   /** The book's differential formats and colours, which conditional formats use. */
@@ -291,7 +293,7 @@ function features(head: string, tail: string, src: SheetSource, issues: Issues) 
   if (sa.orientation === 'landscape' || sa.scale !== undefined || sa.fitToWidth !== undefined || sa.fitToHeight !== undefined) issues.add('print', { key: 'printSettings' }, where)
 }
 
-function defaultWidthOf(head: string, sheet: string, issues: Issues): number | undefined {
+function defaultWidthOf(head: string, sheet: string, issues: Issues, digit: number): number | undefined {
   const { defaultColWidth, baseColWidth } = attrsAt(head, 'sheetFormatPr')
   const source = defaultColWidth ?? baseColWidth
   if (source === undefined) return undefined
@@ -302,7 +304,7 @@ function defaultWidthOf(head: string, sheet: string, issues: Issues): number | u
   }
   if (defaultColWidth !== undefined) return Math.min(255, width)
   // baseColWidth is a count of digits without padding. The model stores the full width.
-  return width === 8 ? undefined : Math.min(255, widthOf(width * 6 + 5))
+  return width === 8 ? undefined : Math.min(255, widthOf(width * digit + columnPadding(digit), digit))
 }
 
 /** The addresses of the cells of a look of a layer in a rectangle. */
@@ -421,7 +423,7 @@ export function readSheet(src: SheetSource, ctx: CellsContext): SheetRead {
   for (const cell of sortAddresses(read.errors)) ctx.issues.add('errorConstant', { key: 'errorTyped' }, { sheet: name, cell })
   features(head, tail, src, ctx.issues)
   const sheet: SheetInput = { name, cells: read.cells }
-  const defaultWidth = defaultWidthOf(head, name, ctx.issues)
+  const defaultWidth = defaultWidthOf(head, name, ctx.issues, src.columnDigit)
   if (defaultWidth !== undefined) sheet.defaultColumnWidth = defaultWidth
   if (filterMode(head, tail, src, ctx.issues)) sheet.filtered = true
   const sp = element(tail, 'sheetProtection')
