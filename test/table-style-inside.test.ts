@@ -48,7 +48,14 @@ describe('custom table styles beyond a cell style, against Excel', () => {
     const session = createSession({ ...book, locale: 'ru-RU' }, { cached })
     try {
       const view = session.getViewport(sheet, range)
+      const lines = book.sheets[0]
+      // a cell of a hidden row or column is not shown, and Excel's display format reports other cells' edges there
+      const hidden = (address: string) => {
+        const [, column, row] = /^([A-Z]+)(\d+)$/.exec(address)!
+        return !!lines.rows?.[row]?.hidden || !!lines.columns?.[column]?.hidden
+      }
       for (const [address, text, fill, , , bold, , edges, pattern, patternColor] of answers[id][0][1]) {
+        if (hidden(address)) continue
         const cell = view.cells[address]
         const style = cell?.resolvedStyle === undefined ? undefined : view.resolvedStyles?.[cell.resolvedStyle]
         const where = `${sheet}!${address}`
