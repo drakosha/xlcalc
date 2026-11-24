@@ -108,10 +108,6 @@ export interface CellProtection {
 }
 
 /**
- * A cell style in the workbook's style table (`BookInput.styles`), like an xlsx cell format without its number format
- * (which is the cell's `numberFormat`). Styles play no part in calculation or in the values hash.
- */
-/**
  * Excel's fill patterns other than solid, as xlsx names them (Format Cells, Fill, Pattern Style): `gray125` and
  * `gray0625` are the two lightest dots, `dark…` and `light…` the thick and thin lines.
  */
@@ -130,6 +126,10 @@ export interface FillStyle {
   patternColor?: Color
 }
 
+/**
+ * A cell style in the workbook's style table (`BookInput.styles`), like an xlsx cell format without its number format
+ * (which is the cell's `numberFormat`). Styles play no part in calculation or in the values hash.
+ */
 export interface CellStyle {
   font?: FontStyle
   fill?: FillStyle
