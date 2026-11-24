@@ -12,7 +12,7 @@ interface Pair {
 interface Globals {
   CompressionStream?: new (format: 'deflate-raw') => Pair
   DecompressionStream?: new (format: 'deflate-raw') => Pair
-  TextEncoder?: new () => { encode(s: string): Uint8Array }
+  TextEncoder?: new () => Encoder
   TextDecoder?: new (label: 'utf-8', opts: { fatal: boolean }) => { decode(b: Uint8Array): string }
 }
 
@@ -69,10 +69,18 @@ export const inflate = (data: Uint8Array, max: number, each?: (chunk: Uint8Array
 
 export const deflate = (data: Uint8Array): Promise<Uint8Array> => through(new (need('CompressionStream'))('deflate-raw'), data) as Promise<Uint8Array>
 
-let encoder: { encode(s: string): Uint8Array } | undefined
+interface Encoder {
+  encode(s: string): Uint8Array
+  encodeInto(s: string, into: Uint8Array): { read: number; written: number }
+}
+
+let encoder: Encoder | undefined
 let decoder: { decode(b: Uint8Array): string } | undefined
 
 export const utf8 = (s: string): Uint8Array => (encoder ??= new (need('TextEncoder'))()).encode(s)
+
+/** Writes `s` as UTF-8 into `into` and says how much of `s` it read and how many bytes it wrote; it stops where `into` is full. */
+export const utf8Into = (s: string, into: Uint8Array): { read: number; written: number } => (encoder ??= new (need('TextEncoder'))()).encodeInto(s, into)
 
 /** UTF-8 text; malformed bytes are replaced, as XML readers of office files do. */
 export const text = (b: Uint8Array): string => (decoder ??= new (need('TextDecoder'))('utf-8', { fatal: false })).decode(b)
