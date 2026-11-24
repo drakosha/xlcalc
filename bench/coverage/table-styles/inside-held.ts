@@ -12,6 +12,8 @@ export const INSIDE_CASES = [
   { id: 'inside', sheet: 'S', range: 'A1:I10' },
   // a cell's own number format beside the styles', and a total row's beside a first column's
   { id: 'precedence', sheet: 'S', range: 'B2:E8' },
+  // a cell's own patterned fill and a conditional format's over the table style's
+  { id: 'cells', sheet: 'S', range: 'B3:D6' },
 ] as const
 
 const black = '<color rgb="FF000000"/>'
@@ -76,6 +78,17 @@ const BOOK: BookInput = {
 function bookOf(id: (typeof INSIDE_CASES)[number]['id']): BookInput {
   if (id === 'inside') return BOOK
   const [sheet] = BOOK.sheets
+  if (id === 'cells') {
+    return {
+      ...BOOK,
+      styles: [{ fill: { color: '#FFFF00', pattern: 'lightUp', patternColor: '#FF0000' } }, { fill: { color: '#FF00FF' } }],
+      sheets: [{
+        ...sheet,
+        cells: { ...sheet.cells, B4: { value: 2, style: 0 }, D6: { value: 9, style: 1 } },
+        conditionalFormats: [{ type: 'expression', ranges: ['C5'], formula: 'TRUE', style: { fill: { color: '#FFFFFF', pattern: 'darkTrellis', patternColor: '#00FF00' } } }],
+      }],
+    }
+  }
   const cells = { ...sheet.cells, B5: { value: 3, numberFormat: '0.0' }, B8: { value: 7 }, D8: { value: 0.5, numberFormat: '0.0' } }
   return { ...BOOK, sheets: [{ ...sheet, cells }] }
 }

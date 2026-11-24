@@ -248,5 +248,26 @@
     "D3": {
       "text": "0,25"
     }
+  },
+  "cells": {
+    "B4": {
+      "fill": 65535,
+      "pattern": 14,
+      "patternColor": 255
+    },
+    "C5": {
+      "fill": 16777215,
+      "pattern": 10,
+      "patternColor": 65280
+    },
+    "D6": {
+      "fill": 16711935,
+      "pattern": 1
+    },
+    "C4": {
+      "fill": 65280,
+      "pattern": 17,
+      "patternColor": 0
+    }
   }
 }
