@@ -31,7 +31,9 @@ The measurements behind each guide's "Checked against Excel" section: the harnes
 
 `npx tsx bench/windows/xlsb-pairs.ts OUT --files-from PATH` takes a manifest with one input workbook per line. Excel saves both formats from one opening. The harness releases the Excel lock between batches and resumes by skipping pairs already in `OUT`. After building, `node bench/windows/compare-xlsb-pairs.mjs OUT` compares the books, their saved values and their issues. It reports the first difference in each of those sections. If the only difference is the absence of `sparkline` issues, the comparison checks the binary worksheets for sparkline records before counting the pair as an expected save difference. Add `--recalculate` to compare the calculated results at cells where the engine reproduces the XLSX file's saved value.
 
-On Node 26.13 with a fresh process per read, the 34,000-row workbook took 450 ms as XLSX and 540 ms as XLSB, medians of three runs. The highest heap sizes observed at collection or at the end of reading were 105 and 135 MiB, respectively. Excel's paired files were 4,169,533 and 2,609,251 bytes.
+On Node 26.13 with a fresh process per read, the 34,000-row workbook took 454 ms as XLSX and 538 ms as XLSB, medians of three runs. The highest heap sizes observed before garbage collection or at the end of reading were 106 and 167 MiB, respectively. Excel's paired files were 4,169,533 and 2,609,251 bytes.
+
+A workbook from the test corpus with a 222,769-byte XLSX save and a 123,689-byte XLSB save took 66 and 82 ms, with observed heap peaks of 25 and 41 MiB.
 
 ### Array operations in formulas
 
