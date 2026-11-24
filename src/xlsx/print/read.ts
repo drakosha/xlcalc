@@ -127,6 +127,7 @@ function worksheetDefaults(xml: string, nodes: Placed[], sheet: string, invalid:
   return defaults
 }
 
+/** A workbook read with its print settings, their issues and each sheet's row defaults. */
 export interface XlsxPrintRead extends XlsxRead {
   print: SheetPrint[]
   printIssues: PrintReadIssue[]

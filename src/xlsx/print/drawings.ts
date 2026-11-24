@@ -3,6 +3,7 @@ import { parseRange } from '../../structure/area.js'
 import { projectPrintRect, type PrintRectProjection } from './project.js'
 import type { PrintDeviceGeometry, PrintPage, PrintRect, PrintSetup, PrintSheetGeometry } from './types.js'
 
+/** A drawing on a page: its full box in sheet points and its projected regions. */
 export interface PrintDrawingProjection {
   drawing: XlsxDrawing
   /** The unrotated bounds in sheet points. */
@@ -11,11 +12,13 @@ export interface PrintDrawingProjection {
   regions: PrintRectProjection[]
 }
 
+/** The sheet's note print mode and the device geometry for `projectPrintDrawings`. */
 export interface PrintDrawingOptions {
   setup?: Pick<PrintSetup, 'cellComments'>
   device?: PrintDeviceGeometry
 }
 
+/** A drawing anchor's rectangle in sheet points, for print or for display on screen; undefined when it has no extent. */
 export function printDrawingBounds(anchor: DrawingAnchor, geometry: PrintSheetGeometry): PrintRect | undefined {
   return drawingBounds(anchor, geometry, 1)
 }

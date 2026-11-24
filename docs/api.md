@@ -12,6 +12,9 @@ examples are the [README](../README.md) and the other files of `docs/`. This fil
 - [`xlcalc/entry`](#xlcalcentry)
 - [`xlcalc/xlsx`](#xlcalcxlsx)
 - [`xlcalc/xlsx/keep`](#xlcalcxlsxkeep)
+- [`xlcalc/xlsx/print`](#xlcalcxlsxprint)
+- [`xlcalc/xlsx/print/keep`](#xlcalcxlsxprintkeep)
+- [`xlcalc/xlsx/charts`](#xlcalcxlsxcharts)
 - [`xlcalc/xlsb`](#xlcalcxlsb)
 - [`xlcalc/csv`](#xlcalccsv)
 - [`xlcalc/worker`](#xlcalcworker)
@@ -1130,6 +1133,141 @@ function writeKept(original: ArrayBuffer | Uint8Array<ArrayBufferLike>, snapshot
 Writes a book over the xlsx file it was read from ([`openKept`](#xlcalcxlsxkeep-openkept)): what the book changed is written, the rest is the
 file's as it was, the parts the model does not have among it. Refuses ([`KeptRefusal`](#xlcalcxlsxkeep-keptrefusal), its message in the language of
 `opts.locale`) a change that would leave references the model does not hold pointing at other cells.
+
+## xlcalc/xlsx/print
+
+Types: see [Types](#types).
+
+### <a id="xlcalcxlsxprint-formatprintheaderfooter"></a>`formatPrintHeaderFooter`
+
+```ts
+function formatPrintHeaderFooter(text: string, context: PrintHeaderFooterContext): PrintHeaderFooterSections
+```
+
+Resolves a header or footer text into its left, center and right sections of formatted runs, with the page
+counters, sheet and file labels, date and time of the context. A picture marker keeps its place for the renderer.
+
+### <a id="xlcalcxlsxprint-layoutprintpages"></a>`layoutPrintPages`
+
+```ts
+function layoutPrintPages(settings: SheetPrint, geometry: PrintSheetGeometry, target: PrintTarget, notes?: PrintNotes): PrintLayout
+```
+
+Page regions map sheet points to paper points, independently of the host's cell and drawing renderer.
+
+### <a id="xlcalcxlsxprint-layoutprintworkbook"></a>`layoutPrintWorkbook`
+
+```ts
+function layoutPrintWorkbook(sheets: readonly PrintWorkbookSheet[], options?: PrintWorkbookOptions): PrintWorkbookLayout
+```
+
+Print the supplied visible worksheets in order, with Excel's workbook-level numbering and header variants.
+
+### <a id="xlcalcxlsxprint-printdrawingbounds"></a>`printDrawingBounds`
+
+```ts
+function printDrawingBounds(anchor: DrawingAnchor, geometry: PrintSheetGeometry): PrintRect | undefined
+```
+
+A drawing anchor's rectangle in sheet points, for print or for display on screen; undefined when it has no extent.
+
+### <a id="xlcalcxlsxprint-printpapersize"></a>`printPaperSize`
+
+```ts
+function printPaperSize(setup: PrintSetup | undefined, fallback?: PrintSize): PrintSize | undefined
+```
+
+The named paper a sheet asks for, or points from the host's printer selection for unspecified and custom sizes.
+
+### <a id="xlcalcxlsxprint-printsheetgeometry"></a>`printSheetGeometry`
+
+```ts
+function printSheetGeometry(sheet: Pick<SheetInput, "columns" | "rows" | "defaultColumnWidth">, options?: PrintGeometryOptions): PrintSheetGeometry
+```
+
+A sheet's row and column spans in points for [`layoutPrintPages`](#xlcalcxlsxprint-layoutprintpages), hidden lines at zero size, over the printable
+used range the host passes (`usedRange`) and the defaults [`readXlsxWithPrint`](#xlcalcxlsxprint-readxlsxwithprint) gives in `sheetDefaults`.
+
+### <a id="xlcalcxlsxprint-projectprintdrawings"></a>`projectPrintDrawings`
+
+```ts
+function projectPrintDrawings(drawings: readonly XlsxDrawing[], page: PrintPage, geometry: PrintSheetGeometry, options?: PrintDrawingOptions): PrintDrawingProjection[]
+```
+
+Lay out drawings of the page's sheet in their stored drawing order.
+
+### <a id="xlcalcxlsxprint-projectprintrect"></a>`projectPrintRect`
+
+```ts
+function projectPrintRect(rect: PrintRect, page: PrintPage, geometry: PrintSheetGeometry, device?: PrintDeviceGeometry): PrintRectProjection[]
+```
+
+Map the intersections of a rectangle with a page's sheet regions. The renderer applies the page-body clip.
+
+### <a id="xlcalcxlsxprint-readxlsxdrawings"></a>`readXlsxDrawings`
+
+```ts
+function readXlsxDrawings(data: ArrayBuffer | Uint8Array<ArrayBufferLike>, opts?: ReadXlsxOptions): Promise<XlsxDrawings>
+```
+
+Reads a file's drawings with their anchors: pictures over the grid (bytes on demand by `readImage`), note boxes and
+chart frames. A note box's text is its cell's `note`.
+
+### <a id="xlcalcxlsxprint-readxlsxwithprint"></a>`readXlsxWithPrint`
+
+```ts
+function readXlsxWithPrint(data: ArrayBuffer | Uint8Array<ArrayBufferLike>, opts?: ReadXlsxOptions): Promise<XlsxPrintRead>
+```
+
+Reads an xlsx file as [`readXlsx`](#xlcalcxlsx-readxlsx) does, with its print settings by sheet (`print`), their issues and each sheet's defaults for the print geometry.
+
+### <a id="xlcalcxlsxprint-writexlsxwithprint"></a>`writeXlsxWithPrint`
+
+```ts
+function writeXlsxWithPrint(snapshot: XlsxSnapshot, print: readonly SheetPrint[], opts?: WriteXlsxOptions): Promise<XlsxWritten>
+```
+
+Writes a new xlsx file as [`writeXlsx`](#xlcalcxlsx-writexlsx) does, with the print settings of the listed sheets.
+
+## xlcalc/xlsx/print/keep
+
+### <a id="xlcalcxlsxprintkeep-openkeptwithprint"></a>`openKeptWithPrint`
+
+```ts
+function openKeptWithPrint(data: ArrayBuffer | Uint8Array<ArrayBufferLike>, opts?: ReadXlsxOptions): Promise<XlsxPrintRead>
+```
+
+Opens an xlsx file as [`openKept`](#xlcalcxlsxkeep-openkept) does, with its print settings by sheet for [`writeKeptWithPrint`](#xlcalcxlsxprintkeep-writekeptwithprint).
+
+### <a id="xlcalcxlsxprintkeep-writekeptwithprint"></a>`writeKeptWithPrint`
+
+```ts
+function writeKeptWithPrint(original: ArrayBuffer | Uint8Array<ArrayBufferLike>, snapshot: XlsxSnapshot, print: readonly SheetPrint[], opts?: WriteKeptOptions): Promise<XlsxWritten>
+```
+
+Writes a book over the file it was read from as [`writeKept`](#xlcalcxlsxkeep-writekept) does, replacing the print settings of each listed sheet;
+a sheet listed by name only loses its settings. Drawings and the printer part stay as they were.
+
+## xlcalc/xlsx/charts
+
+Types: see [Types](#types).
+
+### <a id="xlcalcxlsxcharts-readxlsxcharts"></a>`readXlsxCharts`
+
+```ts
+function readXlsxCharts(data: ArrayBuffer | Uint8Array<ArrayBufferLike>, opts?: ReadXlsxOptions): Promise<XlsxCharts>
+```
+
+Reads a file's charts: groups, series, axes, cached points and basic fills and lines, matched to the frames of
+[`readXlsxDrawings`](#xlcalcxlsxprint-readxlsxdrawings) by `frame.id`.
+
+### <a id="xlcalcxlsxcharts-resolvechartdata"></a>`resolveChartData`
+
+```ts
+function resolveChartData(chart: XlsxChart, reader: ChartValueReader): XlsxChart
+```
+
+Return fresh chart data using current workbook values wherever a source can be resolved.
 
 ## xlcalc/xlsb
 
@@ -2416,6 +2554,124 @@ type ChangingMethod =
   | 'redo'
 ```
 
+### `ChartAxis`
+
+A chart axis: kind, id and crossing axis, title, bounds, number format and visibility.
+
+```ts
+interface ChartAxis {
+  kind: 'category' | 'date' | 'value' | 'series'
+  id: string
+  crossesAxis?: string
+  position?: string
+  title?: ChartSource
+  min?: number
+  max?: number
+  logBase?: number
+  majorUnit?: number
+  format?: string
+  reversed: boolean
+  hidden: boolean
+  majorGridlines: boolean
+}
+```
+
+### `ChartDrawing`
+
+A chart frame, its ChartML part read by [`readXlsxCharts`](#xlcalcxlsxcharts-readxlsxcharts).
+
+```ts
+interface ChartDrawing extends DrawingFrame {
+  kind: 'chart'
+  part: string
+}
+```
+
+### `ChartGroup`
+
+A group of series of one chart type over a pair of axes.
+
+```ts
+interface ChartGroup {
+  type: 'bar' | 'line' | 'area' | 'pie' | 'doughnut' | 'scatter'
+  axes: string[]
+  series: ChartSeries[]
+  direction?: string
+  grouping?: string
+  scatterStyle?: string
+  gapWidth?: number
+  holeSize?: number
+}
+```
+
+### `ChartPoint`
+
+A cached chart point: its index in the source (indexes can skip) and value.
+
+```ts
+interface ChartPoint {
+  index: number
+  value: CellValue
+}
+```
+
+### `ChartSeries`
+
+A chart series: name, categories and values (or x and y for scatter), style and marker.
+
+```ts
+interface ChartSeries {
+  name?: ChartSource
+  categories?: ChartSource
+  values?: ChartSource
+  x?: ChartSource
+  y?: ChartSource
+  style?: ChartStyle
+  marker?: { symbol?: string; size?: number }
+}
+```
+
+### `ChartSource`
+
+A chart's data source: its reference, point count, cached points and number format.
+
+```ts
+interface ChartSource {
+  /** The chart's stored formula, for resolving its points against the current workbook. */
+  reference?: string
+  count: number
+  points: ChartPoint[]
+  /** Levels of a cached hierarchical category axis, in file order. */
+  levels?: ChartPoint[][]
+  format?: string
+}
+```
+
+### `ChartStyle`
+
+A chart element's basic fill and line as saved: colors as `#RRGGBB` or `none`, width in points.
+
+```ts
+interface ChartStyle {
+  fill?: string
+  stroke?: string
+  strokeWidth?: number
+}
+```
+
+### `ChartValueReader`
+
+Current values for a chart's sources: a session, or a host reader that also resolves names.
+
+```ts
+interface ChartValueReader {
+  /** A session satisfies this interface directly. */
+  getValues(sheet: string, range: string): readonly (readonly CellValue[])[]
+  /** Optionally evaluate a formula or name with the host's workbook context. Undefined keeps the file's cached points. */
+  resolve?(reference: string, sheet: string): readonly CellValue[] | undefined
+}
+```
+
 ### `CheckCode`
 
 Formula check codes. `unsupported`: an external function called with arguments that are not literals.
@@ -3006,6 +3262,30 @@ interface DisplayOptions {
 }
 ```
 
+### `DrawingAnchor`
+
+Where a drawing sits: between two cells, at a cell with a size, or at an absolute position in points.
+
+```ts
+type DrawingAnchor =
+  | { kind: 'twoCell'; from: DrawingMarker; to: DrawingMarker; editAs: 'twoCell' | 'oneCell' | 'absolute' }
+  | { kind: 'oneCell'; from: DrawingMarker; size: PrintSize }
+  | { kind: 'absolute'; bounds: PrintRect }
+```
+
+### `DrawingMarker`
+
+One-based worksheet lines, with offsets in points from the upper-left corner of the cell.
+
+```ts
+interface DrawingMarker {
+  row: number
+  col: number
+  x: number
+  y: number
+}
+```
+
 ### `DrawingPlace`
 
 A place on a sheet by a drawing's anchor: the cells of its corners, with offsets in EMU (914,400 to an inch).
@@ -3016,6 +3296,18 @@ interface DrawingPlace {
   to: string
   fromOffset?: [x: number, y: number]
   toOffset?: [x: number, y: number]
+}
+```
+
+### `DrawingReadIssue`
+
+A drawing the reader skipped: a bad anchor, a missing or external part, an unsupported drawing or chart.
+
+```ts
+interface DrawingReadIssue {
+  sheet: string
+  part: string
+  reason: 'invalidAnchor' | 'missingPart' | 'externalImage' | 'unsupportedDrawing' | 'unsupportedChart'
 }
 ```
 
@@ -4341,6 +4633,20 @@ interface NamesContext {
 }
 ```
 
+### `NoteDrawing`
+
+A note's box from the VML drawing; its text is the cell's `note`.
+
+```ts
+interface NoteDrawing extends DrawingFrame {
+  kind: 'note'
+  /** Cell whose note text the workbook supplies. */
+  cell: string
+  fill?: string
+  stroke?: string
+}
+```
+
 ### `NumberFormat`
 
 A number format: a format code as stored in an xlsx file, or the number of one of Excel's built-in formats, 0 to
@@ -4503,6 +4809,25 @@ interface PatchFields {
   meta?: JsonValue | null
   note?: CellNote | null
   link?: CellLink | null
+}
+```
+
+### `PictureDrawing`
+
+An embedded picture over the grid, its part loaded by `readImage`.
+
+```ts
+interface PictureDrawing extends DrawingFrame {
+  kind: 'picture'
+  part: string
+  contentType?: string
+  alt?: string
+  /** Clockwise degrees around the center of the picture. */
+  rotation?: number
+  flipX?: boolean
+  flipY?: boolean
+  /** Fractions trimmed from each edge of the original image. */
+  crop?: { left: number; top: number; right: number; bottom: number }
 }
 ```
 
@@ -5265,6 +5590,476 @@ Options of `previewChanges`: those of `applyChanges`, and how many changed cells
 interface PreviewChangesOptions extends ChangesOptions {
   /** Maximum number of changed cells returned, 1000 by default, at most 10000. The calculation itself is still complete. */
   maxChanges?: number
+}
+```
+
+### `PrintAxisGeometry`
+
+One worksheet axis in points, including zero-width hidden lines.
+
+```ts
+interface PrintAxisGeometry {
+  count: number
+  /** Position from the sheet origin of the edge before line 1 through count + 1. */
+  edge(line: number): number
+}
+```
+
+### `PrintBreak`
+
+A manual or automatic page break, before a row or a column.
+
+```ts
+interface PrintBreak {
+  /** The one-based row or column immediately after this break. */
+  before: number
+  /** Inclusive bounds along the other axis. Omit for a break across the entire print area. */
+  first?: number
+  last?: number
+  manual?: boolean
+  pivot?: boolean
+}
+```
+
+### `PrintDeviceGeometry`
+
+A print device's row and column edges at each scale, when it rounds line sizes.
+
+```ts
+interface PrintDeviceGeometry {
+  /** Paper points before a sheet row, from row 1 through row count + 1, at the requested scale factor. */
+  rowEdge?: (line: number, scale: number) => number
+  /** Paper points before a sheet column, from column 1 through column count + 1, at the requested scale factor. */
+  columnEdge?: (line: number, scale: number) => number
+}
+```
+
+### `PrintDrawingOptions`
+
+The sheet's note print mode and the device geometry for [`projectPrintDrawings`](#xlcalcxlsxprint-projectprintdrawings).
+
+```ts
+interface PrintDrawingOptions {
+  setup?: Pick<PrintSetup, 'cellComments'>
+  device?: PrintDeviceGeometry
+}
+```
+
+### `PrintDrawingProjection`
+
+A drawing on a page: its full box in sheet points and its projected regions.
+
+```ts
+interface PrintDrawingProjection {
+  drawing: XlsxDrawing
+  /** The unrotated bounds in sheet points. */
+  bounds: PrintRect
+  /** Positions and clips on this page. A note is projected as a whole box. */
+  regions: PrintRectProjection[]
+}
+```
+
+### `PrintGeometryOptions`
+
+The Normal font, the printable used range and the file's row defaults for [`printSheetGeometry`](#xlcalcxlsxprint-printsheetgeometry).
+
+```ts
+interface PrintGeometryOptions extends Omit<PrintSheetDefaults, 'sheet'> {
+  font?: BookInput['font']
+  usedRange?: string
+}
+```
+
+### `PrintHeaderFooter`
+
+A worksheet's headers and footers: odd pages, and even and first pages when their flags are set.
+
+```ts
+interface PrintHeaderFooter {
+  differentOddEven?: boolean
+  differentFirst?: boolean
+  scaleWithDoc?: boolean
+  alignWithMargins?: boolean
+  /** Header or footer text in Excel's syntax, e.g. `&LReport&RPage &P of &N`. */
+  oddHeader?: string
+  oddFooter?: string
+  evenHeader?: string
+  evenFooter?: string
+  firstHeader?: string
+  firstFooter?: string
+}
+```
+
+### `PrintHeaderFooterContext`
+
+What header and footer codes print: page number and count, sheet and file labels, date and time.
+
+```ts
+interface PrintHeaderFooterContext {
+  pageNumber: number
+  pageCount: number
+  sheetName: string
+  fileName?: string
+  /** The path as it should appear before the file name, including any separator. */
+  filePath?: string
+  /** Date and time as the host wants them printed. */
+  date?: string
+  time?: string
+}
+```
+
+### `PrintHeaderFooterRun`
+
+A header or footer run: formatted text, or the place of a picture.
+
+```ts
+type PrintHeaderFooterRun = { text: string; style: PrintHeaderFooterStyle } | { picture: true }
+```
+
+### `PrintHeaderFooterSections`
+
+A header or footer's left, center and right sections.
+
+```ts
+type PrintHeaderFooterSections = Record<'left' | 'center' | 'right', PrintHeaderFooterRun[]>
+```
+
+### `PrintHeaderFooterStyle`
+
+The font of a header or footer run.
+
+```ts
+interface PrintHeaderFooterStyle extends Omit<FontStyle, 'color'> {
+  /** A font face name whose meaning depends on the font or application locale. */
+  face?: string
+  themeFont?: 'heading' | 'body'
+  color?: string | { theme: number; tint: number }
+  script?: 'superscript' | 'subscript'
+  outline?: boolean
+  shadow?: boolean
+}
+```
+
+### `PrintLayout`
+
+A sheet's pages in print order, and the issues of its layout.
+
+```ts
+interface PrintLayout {
+  pages: PrintPage[]
+  issues: PrintLayoutIssue[]
+}
+```
+
+### `PrintLayoutIssue`
+
+A print area that hit Excel's 10% fit limit or has a line larger than the page body.
+
+```ts
+interface PrintLayoutIssue {
+  /** One-based print area index. */
+  area: number
+  reason: 'fitLimit' | 'clippedLine'
+}
+```
+
+### `PrintMargins`
+
+Margins in inches, as saved in an XLSX worksheet.
+
+```ts
+interface PrintMargins {
+  left: number
+  right: number
+  top: number
+  bottom: number
+  header: number
+  footer: number
+}
+```
+
+### `PrintNoteLine`
+
+A line of an end-notes page: a cell's address or a line of its note, with the label column.
+
+```ts
+interface PrintNoteLine {
+  cell: string
+  kind: 'address' | 'body'
+  text: string
+  bounds: PrintRect
+  label?: { text: string; bounds: PrintRect }
+}
+```
+
+### `PrintNoteMetrics`
+
+Text measurements for end notes at the current print scale, in paper points.
+
+```ts
+interface PrintNoteMetrics {
+  lineHeight: number
+  measureText(text: string): number
+}
+```
+
+### `PrintNotes`
+
+The notes of a sheet printed at its end (`setup.cellComments: 'atEnd'`), their labels and measurements.
+
+```ts
+interface PrintNotes {
+  /** Cells keyed by address, such as the cells returned by readXlsxWithPrint. */
+  cells: Readonly<Record<string, { note?: CellNote }>>
+  /** The workbook's Normal font. The default measurements use Calibri 11 when omitted. */
+  font?: BookInput['font']
+  labels?: { address: string; body: string }
+  /** Override nominal measurements with the renderer's font and device metrics. */
+  metrics?: (scale: number) => PrintNoteMetrics
+}
+```
+
+### `PrintOptions`
+
+Print flags of a worksheet: centering on the page, row and column headings, gridlines.
+
+```ts
+interface PrintOptions {
+  horizontalCentered?: boolean
+  verticalCentered?: boolean
+  headings?: boolean
+  gridLines?: boolean
+  gridLinesSet?: boolean
+}
+```
+
+### `PrintPage`
+
+A printed page: its number, print area, scale, paper and body, the sheet regions on it, headers and footers.
+
+```ts
+interface PrintPage {
+  number: number
+  /** The one-based print area index, or zero on a sheet-wide page of notes. */
+  area: number
+  scale: number
+  paper: PrintSize
+  /** The printable body after page margins. Regions are clipped to this rectangle. */
+  body: PrintRect
+  regions: PrintRegion[]
+  /** Positioned text lines on an end-notes page. */
+  noteLines?: PrintNoteLine[]
+  header?: PrintPageBand
+  footer?: PrintPageBand
+}
+```
+
+### `PrintPageBand`
+
+A header or footer on a page: the variant selected for its position, its bounds and scale.
+
+```ts
+interface PrintPageBand {
+  /** The selected text in Excel's header/footer syntax. */
+  text: string
+  bounds: PrintRect
+  scale: number
+}
+```
+
+### `PrintReadIssue`
+
+A print part the reader did not model: malformed settings, a printer settings part or a header/footer drawing.
+
+```ts
+interface PrintReadIssue {
+  sheet: string
+  part: string
+  reason: 'invalid' | 'printerSettings' | 'headerFooterDrawing'
+}
+```
+
+### `PrintRect`
+
+A rectangle in points.
+
+```ts
+interface PrintRect extends PrintSize {
+  x: number
+  y: number
+}
+```
+
+### `PrintRectProjection`
+
+A part of a sheet rectangle on a page: in sheet points and in paper points.
+
+```ts
+interface PrintRectProjection {
+  source: PrintRect
+  target: PrintRect
+}
+```
+
+### `PrintRegion`
+
+A rectangular portion of the sheet mapped to the page. Rectangles are in points from their respective origins.
+
+```ts
+interface PrintRegion {
+  range: string
+  source: PrintRect
+  target: PrintRect
+}
+```
+
+### `PrintSetup`
+
+Physical page settings stored by the worksheet. Paper size is a SpreadsheetML paper-size code.
+
+```ts
+interface PrintSetup {
+  autoPageBreaks?: boolean
+  fitToPage?: boolean
+  paperSize?: number
+  paperHeight?: string
+  paperWidth?: string
+  scale?: number
+  fitToWidth?: number
+  fitToHeight?: number
+  pageOrder?: 'downThenOver' | 'overThenDown'
+  orientation?: 'default' | 'portrait' | 'landscape'
+  usePrinterDefaults?: boolean
+  blackAndWhite?: boolean
+  draft?: boolean
+  cellComments?: 'none' | 'asDisplayed' | 'atEnd'
+  errors?: 'displayed' | 'blank' | 'dash' | 'NA'
+  firstPageNumber?: number
+  useFirstPageNumber?: boolean
+  horizontalDpi?: number
+  verticalDpi?: number
+  copies?: number
+}
+```
+
+### `PrintSheetDefaults`
+
+A worksheet's row defaults from the file, for [`printSheetGeometry`](#xlcalcxlsxprint-printsheetgeometry).
+
+```ts
+interface PrintSheetDefaults {
+  sheet: string
+  /** Default height of a stored worksheet's rows, in points. */
+  defaultRowHeight?: number
+  /** When the file hides rows by default, the spans it writes as visible. */
+  visibleRows?: readonly PrintSpan[]
+}
+```
+
+### `PrintSheetGeometry`
+
+A worksheet's rows and columns in points, as [`layoutPrintPages`](#xlcalcxlsxprint-layoutprintpages) places them.
+
+```ts
+interface PrintSheetGeometry {
+  rows: PrintAxisGeometry
+  columns: PrintAxisGeometry
+  /** Extent of printable content, including objects when supplied by the host. */
+  usedRange?: string
+}
+```
+
+### `PrintSize`
+
+A width and height in points.
+
+```ts
+interface PrintSize {
+  width: number
+  height: number
+}
+```
+
+### `PrintSpan`
+
+A span of sheet lines, inclusive and one-based, including any hidden lines.
+
+```ts
+interface PrintSpan {
+  first: number
+  last: number
+}
+```
+
+### `PrintTarget`
+
+The effective, oriented paper size in points and the device’s printable geometry.
+
+```ts
+interface PrintTarget extends PrintSize {
+  /** Unprintable edges of that paper, in points. */
+  insets?: Partial<Pick<PrintMargins, 'left' | 'right' | 'top' | 'bottom'>>
+  /** When printing row and column headings, their unscaled width and height in points. */
+  headings?: PrintSize
+  /** The device's printable grid across its supported scale factors. Missing axes use scaled sheet points. */
+  deviceGeometry?: PrintDeviceGeometry
+  /** Extra trailing space the print device reserves when fitting complete lines into the body, in points. */
+  paginationReserve?: Partial<PrintSize>
+  /** The maximum number of pages to materialize (10,000 by default). */
+  maxPages?: number
+}
+```
+
+### `PrintWorkbookLayout`
+
+A workbook print job's pages, its total page count and the issues by sheet.
+
+```ts
+interface PrintWorkbookLayout {
+  pages: PrintWorkbookPage[]
+  /** Full job page count, including pages outside the selected interval. */
+  totalPages: number
+  issues: (PrintLayoutIssue & { sheet: string })[]
+}
+```
+
+### `PrintWorkbookOptions`
+
+A workbook print job's page limit and the physical pages to output.
+
+```ts
+interface PrintWorkbookOptions {
+  /** Maximum number of pages in the job before selecting output pages (10,000 by default). */
+  maxPages?: number
+  /** Inclusive interval of physical pages to output, from one. */
+  fromPage?: number
+  toPage?: number
+}
+```
+
+### `PrintWorkbookPage`
+
+A page of a workbook print job, with its sheet and physical position.
+
+```ts
+interface PrintWorkbookPage extends PrintPage {
+  sheet: string
+  /** Physical page in the job, from one. The page number field may be restarted by the sheet. */
+  position: number
+}
+```
+
+### `PrintWorkbookSheet`
+
+A worksheet of a workbook print job: its settings, geometry, target and notes.
+
+```ts
+interface PrintWorkbookSheet {
+  settings: SheetPrint
+  geometry: PrintSheetGeometry
+  target: PrintTarget
+  notes?: PrintNotes
+  hidden?: boolean | 'very'
 }
 ```
 
@@ -6149,6 +6944,26 @@ A sheet's groups ([`outlineGroups`](#xlcalc-outlinegroups)), on each axis by fir
 interface SheetOutline {
   rows: OutlineGroup[]
   columns: OutlineGroup[]
+}
+```
+
+### `SheetPrint`
+
+A worksheet's print settings: areas, repeated titles, page setup, margins, flags, headers and footers, breaks.
+
+```ts
+interface SheetPrint {
+  sheet: string
+  /** An ordered list of sheet-local A1 ranges, one print area per entry. */
+  areas?: readonly string[]
+  repeatRows?: PrintSpan
+  repeatColumns?: PrintSpan
+  setup?: PrintSetup
+  margins?: PrintMargins
+  options?: PrintOptions
+  headerFooter?: PrintHeaderFooter
+  rowBreaks?: readonly PrintBreak[]
+  columnBreaks?: readonly PrintBreak[]
 }
 ```
 
@@ -7455,6 +8270,55 @@ cell in an array's range, with `spillOf`, the address of its formula; as in [`Ce
 type XlsxCachedCell = Pick<CellResult, 'value' | 'spill' | 'spillOf'>
 ```
 
+### `XlsxChart`
+
+A chart read from ChartML, joined to its frame from [`readXlsxDrawings`](#xlcalcxlsxprint-readxlsxdrawings) by `frame.id`.
+
+```ts
+interface XlsxChart {
+  frame: ChartDrawing
+  title?: ChartSource
+  legend?: { position?: string; overlay: boolean }
+  groups: ChartGroup[]
+  axes: ChartAxis[]
+  plotVisibleOnly: boolean
+  emptyCells?: 'gap' | 'span' | 'zero'
+  style?: ChartStyle
+}
+```
+
+### `XlsxCharts`
+
+A file's charts and the chart parts the reader skipped.
+
+```ts
+interface XlsxCharts {
+  charts: XlsxChart[]
+  issues: DrawingReadIssue[]
+}
+```
+
+### `XlsxDrawing`
+
+A picture, note box or chart frame of a sheet.
+
+```ts
+type XlsxDrawing = PictureDrawing | NoteDrawing | ChartDrawing
+```
+
+### `XlsxDrawings`
+
+A file's drawings in drawing order, the skipped ones, and the loader of picture bytes.
+
+```ts
+interface XlsxDrawings {
+  drawings: XlsxDrawing[]
+  issues: DrawingReadIssue[]
+  /** Load a reported picture's part within the archive limits. The returned bytes are shared. */
+  readImage(part: string): Promise<Uint8Array | undefined>
+}
+```
+
 ### `XlsxIssue`
 
 One item lost or changed, and where: the sheet, and the cells (addresses or ranges) or the name it concerns.
@@ -7588,6 +8452,18 @@ interface XlsxLimits {
    * records 280 times; a zip bomb's parts inflate a thousand times.
    */
   ratio?: number
+}
+```
+
+### `XlsxPrintRead`
+
+A workbook read with its print settings, their issues and each sheet's row defaults.
+
+```ts
+interface XlsxPrintRead extends XlsxRead {
+  print: SheetPrint[]
+  printIssues: PrintReadIssue[]
+  sheetDefaults: PrintSheetDefaults[]
 }
 ```
 

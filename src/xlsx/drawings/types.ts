@@ -8,6 +8,7 @@ export interface DrawingMarker {
   y: number
 }
 
+/** Where a drawing sits: between two cells, at a cell with a size, or at an absolute position in points. */
 export type DrawingAnchor =
   | { kind: 'twoCell'; from: DrawingMarker; to: DrawingMarker; editAs: 'twoCell' | 'oneCell' | 'absolute' }
   | { kind: 'oneCell'; from: DrawingMarker; size: PrintSize }
@@ -24,6 +25,7 @@ interface DrawingFrame {
   printable: boolean
 }
 
+/** An embedded picture over the grid, its part loaded by `readImage`. */
 export interface PictureDrawing extends DrawingFrame {
   kind: 'picture'
   part: string
@@ -37,6 +39,7 @@ export interface PictureDrawing extends DrawingFrame {
   crop?: { left: number; top: number; right: number; bottom: number }
 }
 
+/** A note's box from the VML drawing; its text is the cell's `note`. */
 export interface NoteDrawing extends DrawingFrame {
   kind: 'note'
   /** Cell whose note text the workbook supplies. */
@@ -45,19 +48,23 @@ export interface NoteDrawing extends DrawingFrame {
   stroke?: string
 }
 
+/** A chart frame, its ChartML part read by `readXlsxCharts`. */
 export interface ChartDrawing extends DrawingFrame {
   kind: 'chart'
   part: string
 }
 
+/** A picture, note box or chart frame of a sheet. */
 export type XlsxDrawing = PictureDrawing | NoteDrawing | ChartDrawing
 
+/** A drawing the reader skipped: a bad anchor, a missing or external part, an unsupported drawing or chart. */
 export interface DrawingReadIssue {
   sheet: string
   part: string
   reason: 'invalidAnchor' | 'missingPart' | 'externalImage' | 'unsupportedDrawing' | 'unsupportedChart'
 }
 
+/** A file's drawings in drawing order, the skipped ones, and the loader of picture bytes. */
 export interface XlsxDrawings {
   drawings: XlsxDrawing[]
   issues: DrawingReadIssue[]

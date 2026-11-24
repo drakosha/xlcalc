@@ -1,11 +1,13 @@
 import type { CellValue } from '../../contract.js'
 import type { ChartDrawing, DrawingReadIssue } from '../drawings/types.js'
 
+/** A cached chart point: its index in the source (indexes can skip) and value. */
 export interface ChartPoint {
   index: number
   value: CellValue
 }
 
+/** A chart's data source: its reference, point count, cached points and number format. */
 export interface ChartSource {
   /** The chart's stored formula, for resolving its points against the current workbook. */
   reference?: string
@@ -16,12 +18,14 @@ export interface ChartSource {
   format?: string
 }
 
+/** A chart element's basic fill and line as saved: colors as `#RRGGBB` or `none`, width in points. */
 export interface ChartStyle {
   fill?: string
   stroke?: string
   strokeWidth?: number
 }
 
+/** A chart series: name, categories and values (or x and y for scatter), style and marker. */
 export interface ChartSeries {
   name?: ChartSource
   categories?: ChartSource
@@ -32,6 +36,7 @@ export interface ChartSeries {
   marker?: { symbol?: string; size?: number }
 }
 
+/** A group of series of one chart type over a pair of axes. */
 export interface ChartGroup {
   type: 'bar' | 'line' | 'area' | 'pie' | 'doughnut' | 'scatter'
   axes: string[]
@@ -43,6 +48,7 @@ export interface ChartGroup {
   holeSize?: number
 }
 
+/** A chart axis: kind, id and crossing axis, title, bounds, number format and visibility. */
 export interface ChartAxis {
   kind: 'category' | 'date' | 'value' | 'series'
   id: string
@@ -59,6 +65,7 @@ export interface ChartAxis {
   majorGridlines: boolean
 }
 
+/** A chart read from ChartML, joined to its frame from `readXlsxDrawings` by `frame.id`. */
 export interface XlsxChart {
   frame: ChartDrawing
   title?: ChartSource
@@ -70,11 +77,13 @@ export interface XlsxChart {
   style?: ChartStyle
 }
 
+/** A file's charts and the chart parts the reader skipped. */
 export interface XlsxCharts {
   charts: XlsxChart[]
   issues: DrawingReadIssue[]
 }
 
+/** Current values for a chart's sources: a session, or a host reader that also resolves names. */
 export interface ChartValueReader {
   /** A session satisfies this interface directly. */
   getValues(sheet: string, range: string): readonly (readonly CellValue[])[]

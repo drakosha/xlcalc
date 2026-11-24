@@ -13,6 +13,9 @@ import * as text from '../src/text.js'
 import * as xlsx from '../src/xlsx.js'
 import * as keep from '../src/xlsx-keep.js'
 import * as xlsb from '../src/xlsb.js'
+import * as xlsxPrint from '../src/xlsx-print.js'
+import * as xlsxPrintKeep from '../src/xlsx-print-keep.js'
+import * as xlsxCharts from '../src/xlsx-charts.js'
 import * as csv from '../src/csv.js'
 import * as locales from '../src/locales.js'
 import * as worker from '../src/worker/index.js'
@@ -140,6 +143,12 @@ describe('the functions of the package take no options they do not', () => {
     ['xlcalc/xlsx', xlsx, { readXlsx: 2, writeXlsx: 2, fromLegacy: 2 }],
     ['xlcalc/xlsx/keep', keep, { openKept: 2, writeKept: 3, inspectKept: 2 }],
     ['xlcalc/xlsb', xlsb, { readXlsb: 2 }],
+    ['xlcalc/xlsx/print', xlsxPrint, {
+      readXlsxWithPrint: 2, writeXlsxWithPrint: 3, readXlsxDrawings: 2, printSheetGeometry: 2, layoutPrintPages: 4, layoutPrintWorkbook: 2,
+      printPaperSize: 2, formatPrintHeaderFooter: 2, projectPrintRect: 4, printDrawingBounds: 2, projectPrintDrawings: 4,
+    }],
+    ['xlcalc/xlsx/print/keep', xlsxPrintKeep, { openKeptWithPrint: 2, writeKeptWithPrint: 4 }],
+    ['xlcalc/xlsx/charts', xlsxCharts, { readXlsxCharts: 2, resolveChartData: 2 }],
     ['xlcalc/csv', csv, { readCsv: 2, writeCsv: 2 }],
     ['xlcalc/locales', locales, { loadLocale: 1 }],
     ['xlcalc/worker', worker, { createCalcPool: 1 }],
@@ -151,6 +160,9 @@ describe('the functions of the package take no options they do not', () => {
     ['xlcalc/table-styles', tableStyles, { registerTableStyles: 0 }],
   ]
 
+  /** The functions of the print and chart entries that read or write a file, and refuse by a rejected promise. */
+  const FILE_CALLS = new Set(['readXlsxWithPrint', 'writeXlsxWithPrint', 'readXlsxDrawings', 'openKeptWithPrint', 'writeKeptWithPrint', 'readXlsxCharts'])
+
   for (const [entry, mod, table] of FUNCTIONS)
     it(`${entry}: each function by its parameters, refusing an options object past them`, async () => {
       const fns = Object.fromEntries(Object.entries(mod).filter(([k, f]) => typeof f === 'function' && !/(?:Error|Refusal)$/.test(k)))
@@ -159,7 +171,7 @@ describe('the functions of the package take no options they do not', () => {
         if (name === 'registerFunctions') continue
         const f = fns[name] as (...a: unknown[]) => unknown
         const refused = `takes ${max} argument${max === 1 ? '' : 's'}, got an object as argument ${max + 1} (table is an option of toLocal and toInvariant)`
-        if ((entry === 'xlcalc/xlsx' && name !== 'fromLegacy') || entry === 'xlcalc/xlsx/keep' || entry === 'xlcalc/xlsb' || entry === 'xlcalc/locales') await expect(f(...Array(max).fill(undefined), { table: 'T' }), name).rejects.toThrow(new InputError(name, refused))
+        if ((entry === 'xlcalc/xlsx' && name !== 'fromLegacy') || entry === 'xlcalc/xlsx/keep' || entry === 'xlcalc/xlsb' || entry === 'xlcalc/locales' || FILE_CALLS.has(name)) await expect(f(...Array(max).fill(undefined), { table: 'T' }), name).rejects.toThrow(new InputError(name, refused))
         else expect(() => f(...Array(max).fill(undefined), { table: 'T' }), name).toThrow(new InputError(name, refused))
       }
     })

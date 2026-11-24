@@ -48,6 +48,8 @@ export const projectPrintDrawings = /* @__PURE__ */ strict(projectDrawings, 'pro
 export const projectPrintRect = /* @__PURE__ */ strict(project)
 export const layoutPrintPages = /* @__PURE__ */ strict(layout)
 export const layoutPrintWorkbook = /* @__PURE__ */ strict(workbookLayout, 'layoutPrintWorkbook', 2)
+/** Reads an xlsx file as `readXlsx` does, with its print settings by sheet (`print`), their issues and each sheet's defaults for the print geometry. */
 const read = /* @__PURE__ */ strict(readXlsxWithPrint)
+/** Writes a new xlsx file as `writeXlsx` does, with the print settings of the listed sheets. */
 const write = /* @__PURE__ */ strict(writeXlsxWithPrint)
 export { read as readXlsxWithPrint, write as writeXlsxWithPrint }

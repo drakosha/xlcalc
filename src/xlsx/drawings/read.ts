@@ -97,6 +97,10 @@ function noteDrawings(part: DrawingPart, issues: DrawingReadIssue[]): NoteDrawin
   return out
 }
 
+/**
+ * Reads a file's drawings with their anchors: pictures over the grid (bytes on demand by `readImage`), note boxes and
+ * chart frames. A note box's text is its cell's `note`.
+ */
 export async function readXlsxDrawings(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOptions): Promise<XlsxDrawings> {
   const pkg = await openDrawingPackage(data, opts)
   const issues: DrawingReadIssue[] = []

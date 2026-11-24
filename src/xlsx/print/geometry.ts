@@ -6,6 +6,7 @@ import { firstEnding, isHidden, lines, type Line } from '../../layout/spans.js'
 import { MAX_COLS, MAX_ROWS } from '../../model.js'
 import type { PrintAxisGeometry, PrintSheetDefaults, PrintSheetGeometry, PrintSpan } from './types.js'
 
+/** The Normal font, the printable used range and the file's row defaults for `printSheetGeometry`. */
 export interface PrintGeometryOptions extends Omit<PrintSheetDefaults, 'sheet'> {
   font?: BookInput['font']
   usedRange?: string
@@ -61,6 +62,10 @@ function visibleRowLines(rows: Line<RowInput>[], visible: readonly PrintSpan[]):
   return out
 }
 
+/**
+ * A sheet's row and column spans in points for `layoutPrintPages`, hidden lines at zero size, over the printable
+ * used range the host passes (`usedRange`) and the defaults `readXlsxWithPrint` gives in `sheetDefaults`.
+ */
 export function printSheetGeometry(
   sheet: Pick<SheetInput, 'rows' | 'columns' | 'defaultColumnWidth'>,
   options: PrintGeometryOptions = {},

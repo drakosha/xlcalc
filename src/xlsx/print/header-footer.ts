@@ -1,6 +1,7 @@
 /** Excel's header/footer codes resolved to three independently formatted sections. */
 import type { FontStyle } from '../../contract.js'
 
+/** What header and footer codes print: page number and count, sheet and file labels, date and time. */
 export interface PrintHeaderFooterContext {
   pageNumber: number
   pageCount: number
@@ -13,6 +14,7 @@ export interface PrintHeaderFooterContext {
   time?: string
 }
 
+/** The font of a header or footer run. */
 export interface PrintHeaderFooterStyle extends Omit<FontStyle, 'color'> {
   /** A font face name whose meaning depends on the font or application locale. */
   face?: string
@@ -23,7 +25,9 @@ export interface PrintHeaderFooterStyle extends Omit<FontStyle, 'color'> {
   shadow?: boolean
 }
 
+/** A header or footer run: formatted text, or the place of a picture. */
 export type PrintHeaderFooterRun = { text: string; style: PrintHeaderFooterStyle } | { picture: true }
+/** A header or footer's left, center and right sections. */
 export type PrintHeaderFooterSections = Record<'left' | 'center' | 'right', PrintHeaderFooterRun[]>
 
 type Section = keyof PrintHeaderFooterSections
@@ -68,6 +72,10 @@ function color(text: string, start: number): { value: NonNullable<PrintHeaderFoo
   return { value: { theme: Number(theme[1]), tint: theme[2] === '-' ? -amount : amount }, end: start + theme[0].length }
 }
 
+/**
+ * Resolves a header or footer text into its left, center and right sections of formatted runs, with the page
+ * counters, sheet and file labels, date and time of the context. A picture marker keeps its place for the renderer.
+ */
 export function formatPrintHeaderFooter(text: string, context: PrintHeaderFooterContext): PrintHeaderFooterSections {
   const result: PrintHeaderFooterSections = { left: [], center: [], right: [] }
   const styles: Record<Section, PrintHeaderFooterStyle> = { left: {}, center: {}, right: {} }

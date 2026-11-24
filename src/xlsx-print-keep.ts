@@ -20,6 +20,11 @@ async function writeKeptWithPrint(
   return writeKept(original, snapshot, opts, (view) => replaceKeptPrint(view, print))
 }
 
+/** Opens an xlsx file as `openKept` does, with its print settings by sheet for `writeKeptWithPrint`. */
 const open = /* @__PURE__ */ strict(openKeptWithPrint)
+/**
+ * Writes a book over the file it was read from as `writeKept` does, replacing the print settings of each listed sheet;
+ * a sheet listed by name only loses its settings. Drawings and the printer part stay as they were.
+ */
 const write = /* @__PURE__ */ strict(writeKeptWithPrint)
 export { open as openKeptWithPrint, write as writeKeptWithPrint }

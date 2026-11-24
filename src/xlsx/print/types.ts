@@ -43,6 +43,7 @@ export interface PrintMargins {
   footer: number
 }
 
+/** Print flags of a worksheet: centering on the page, row and column headings, gridlines. */
 export interface PrintOptions {
   horizontalCentered?: boolean
   verticalCentered?: boolean
@@ -51,6 +52,7 @@ export interface PrintOptions {
   gridLinesSet?: boolean
 }
 
+/** A worksheet's headers and footers: odd pages, and even and first pages when their flags are set. */
 export interface PrintHeaderFooter {
   differentOddEven?: boolean
   differentFirst?: boolean
@@ -65,6 +67,7 @@ export interface PrintHeaderFooter {
   firstFooter?: string
 }
 
+/** A manual or automatic page break, before a row or a column. */
 export interface PrintBreak {
   /** The one-based row or column immediately after this break. */
   before: number
@@ -75,6 +78,7 @@ export interface PrintBreak {
   pivot?: boolean
 }
 
+/** A worksheet's print settings: areas, repeated titles, page setup, margins, flags, headers and footers, breaks. */
 export interface SheetPrint {
   sheet: string
   /** An ordered list of sheet-local A1 ranges, one print area per entry. */
@@ -89,17 +93,20 @@ export interface SheetPrint {
   columnBreaks?: readonly PrintBreak[]
 }
 
+/** A print part the reader did not model: malformed settings, a printer settings part or a header/footer drawing. */
 export interface PrintReadIssue {
   sheet: string
   part: string
   reason: 'invalid' | 'printerSettings' | 'headerFooterDrawing'
 }
 
+/** A width and height in points. */
 export interface PrintSize {
   width: number
   height: number
 }
 
+/** A rectangle in points. */
 export interface PrintRect extends PrintSize {
   x: number
   y: number
@@ -112,6 +119,7 @@ export interface PrintAxisGeometry {
   edge(line: number): number
 }
 
+/** A worksheet's row defaults from the file, for `printSheetGeometry`. */
 export interface PrintSheetDefaults {
   sheet: string
   /** Default height of a stored worksheet's rows, in points. */
@@ -120,6 +128,7 @@ export interface PrintSheetDefaults {
   visibleRows?: readonly PrintSpan[]
 }
 
+/** A worksheet's rows and columns in points, as `layoutPrintPages` places them. */
 export interface PrintSheetGeometry {
   rows: PrintAxisGeometry
   columns: PrintAxisGeometry
@@ -127,6 +136,7 @@ export interface PrintSheetGeometry {
   usedRange?: string
 }
 
+/** A print device's row and column edges at each scale, when it rounds line sizes. */
 export interface PrintDeviceGeometry {
   /** Paper points before a sheet row, from row 1 through row count + 1, at the requested scale factor. */
   rowEdge?: (line: number, scale: number) => number
@@ -155,6 +165,7 @@ export interface PrintRegion {
   target: PrintRect
 }
 
+/** A header or footer on a page: the variant selected for its position, its bounds and scale. */
 export interface PrintPageBand {
   /** The selected text in Excel's header/footer syntax. */
   text: string
@@ -168,6 +179,7 @@ export interface PrintNoteMetrics {
   measureText(text: string): number
 }
 
+/** The notes of a sheet printed at its end (`setup.cellComments: 'atEnd'`), their labels and measurements. */
 export interface PrintNotes {
   /** Cells keyed by address, such as the cells returned by readXlsxWithPrint. */
   cells: Readonly<Record<string, { note?: CellNote }>>
@@ -178,6 +190,7 @@ export interface PrintNotes {
   metrics?: (scale: number) => PrintNoteMetrics
 }
 
+/** A line of an end-notes page: a cell's address or a line of its note, with the label column. */
 export interface PrintNoteLine {
   cell: string
   kind: 'address' | 'body'
@@ -186,6 +199,7 @@ export interface PrintNoteLine {
   label?: { text: string; bounds: PrintRect }
 }
 
+/** A printed page: its number, print area, scale, paper and body, the sheet regions on it, headers and footers. */
 export interface PrintPage {
   number: number
   /** The one-based print area index, or zero on a sheet-wide page of notes. */
@@ -201,17 +215,20 @@ export interface PrintPage {
   footer?: PrintPageBand
 }
 
+/** A print area that hit Excel's 10% fit limit or has a line larger than the page body. */
 export interface PrintLayoutIssue {
   /** One-based print area index. */
   area: number
   reason: 'fitLimit' | 'clippedLine'
 }
 
+/** A sheet's pages in print order, and the issues of its layout. */
 export interface PrintLayout {
   pages: PrintPage[]
   issues: PrintLayoutIssue[]
 }
 
+/** A worksheet of a workbook print job: its settings, geometry, target and notes. */
 export interface PrintWorkbookSheet {
   settings: SheetPrint
   geometry: PrintSheetGeometry
@@ -220,6 +237,7 @@ export interface PrintWorkbookSheet {
   hidden?: boolean | 'very'
 }
 
+/** A workbook print job's page limit and the physical pages to output. */
 export interface PrintWorkbookOptions {
   /** Maximum number of pages in the job before selecting output pages (10,000 by default). */
   maxPages?: number
@@ -228,12 +246,14 @@ export interface PrintWorkbookOptions {
   toPage?: number
 }
 
+/** A page of a workbook print job, with its sheet and physical position. */
 export interface PrintWorkbookPage extends PrintPage {
   sheet: string
   /** Physical page in the job, from one. The page number field may be restarted by the sheet. */
   position: number
 }
 
+/** A workbook print job's pages, its total page count and the issues by sheet. */
 export interface PrintWorkbookLayout {
   pages: PrintWorkbookPage[]
   /** Full job page count, including pages outside the selected interval. */

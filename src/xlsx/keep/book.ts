@@ -158,14 +158,16 @@ async function setup(src: Source, edits: Edit[], styles: KeptStyles): Promise<Se
   }
 }
 
+/** What an edit of the written parts sees: the book, the source file and the parts as written so far. */
+export type KeptPartView = Pick<Kept, 'book' | 'src' | 'parts' | 'sheetParts' | 'id'>
+/** An edit of the parts after the book's own writing (print settings); true when it changed one. */
+export type EditKeptParts = (view: KeptPartView) => boolean
+
 /**
  * Writes a book over the xlsx file it was read from (`openKept`): what the book changed is written, the rest is the
  * file's as it was, the parts the model does not have among it. Refuses (`KeptRefusal`, its message in the language of
  * `opts.locale`) a change that would leave references the model does not hold pointing at other cells.
  */
-export type KeptPartView = Pick<Kept, 'book' | 'src' | 'parts' | 'sheetParts' | 'id'>
-export type EditKeptParts = (view: KeptPartView) => boolean
-
 export async function writeKept(
   original: Uint8Array | ArrayBuffer, snapshot: XlsxSnapshot, opts?: WriteKeptOptions, editParts?: EditKeptParts,
 ): Promise<XlsxWritten> {

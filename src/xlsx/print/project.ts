@@ -3,6 +3,7 @@ import { checkNumber } from '../../input/basic.js'
 import { parseRange } from '../../structure/area.js'
 import type { PrintDeviceGeometry, PrintPage, PrintRect, PrintSheetGeometry } from './types.js'
 
+/** A part of a sheet rectangle on a page: in sheet points and in paper points. */
 export interface PrintRectProjection {
   source: PrintRect
   target: PrintRect

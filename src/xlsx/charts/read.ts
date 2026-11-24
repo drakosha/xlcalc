@@ -178,6 +178,10 @@ function chart(xml: string, frame: ChartDrawing, theme: string[], issues: Drawin
   }
 }
 
+/**
+ * Reads a file's charts: groups, series, axes, cached points and basic fills and lines, matched to the frames of
+ * `readXlsxDrawings` by `frame.id`.
+ */
 export async function readXlsxCharts(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOptions): Promise<XlsxCharts> {
   const pkg = await openDrawingPackage(data, opts)
   const issues: DrawingReadIssue[] = []
