@@ -76,7 +76,8 @@ describe('XLSB archive', () => {
 
   const pairs = [
     'probe', 'formulas', 'pivot-calculated', 'slicers-and-timeline', 'icon-filter', 'array-exact', 'array-convert',
-    'validation-multi-range', 'validation-list-comma', 'conditional-invalid-reference', 'pivot-show-as',
+    'validation-multi-range', 'validation-list-comma', 'validation-invalid-reference',
+    'conditional-invalid-reference', 'pivot-show-as',
     'union-arguments', 'unprefixed-function', 'iteration-default', 'range-sheet-quote',
     'functions-001', 'functions-066', 'functions-131', 'functions-196',
     'functions-261', 'functions-326', 'functions-391', 'functions-456', 'functions-references',

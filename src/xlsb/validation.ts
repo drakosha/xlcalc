@@ -32,7 +32,7 @@ export function validation(part: Part, type: number, payload: Payload, extension
           parsed.extra.done()
           continue
         }
-        const decoded = formulaText(parsed, context, corner.row, corner.col, true)
+        const decoded = formulaText(parsed, context, corner.row, corner.col, true, part.sheet)
         if (!decoded || !('text' in decoded)) {
           pending()
           continue
@@ -58,7 +58,7 @@ export function validation(part: Part, type: number, payload: Payload, extension
       const corner = rangeOrigin(header.ranges)
       extensions.add(`<x14:dataValidation${attrs}>`)
       for (let i = 0; i < header.formulas.length; i++) {
-        const value = formulaText(header.formulas[i], context, corner.row, corner.col, true)
+        const value = formulaText(header.formulas[i], context, corner.row, corner.col, true, part.sheet)
         if (!value || !('text' in value)) pending()
         else extensions.add(`<x14:formula${i + 1}><xm:f>${escapeText(value.text)}</xm:f></x14:formula${i + 1}>`)
       }
