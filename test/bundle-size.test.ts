@@ -21,14 +21,18 @@ const lib = (file: string) => JSON.stringify(fileURLToPath(libUrl(file)))
 const locales = (used: string[]) => used.filter((f) => /\/locales\//.test(f)).map((f) => f.replace(/^.*\/locales\//, ''))
 
 describe('bundle size', () => {
-  it('print codecs and pagination belong to the opt-in xlsx/print entry', async () => {
+  it('print codecs and pagination belong to the opt-in xlsx/print entry, under 400 KB, and with keep under 464 KB', async () => {
     const isPrint = (file: string) => /\/xlsx(?:\/print\/|-print(?:-keep)?\.(?:ts|js)$)/.test(file)
-    const { used } = await minified('export * from ' + lib('xlsx-print.js'))
+    const { bytes, used } = await minified('export * from ' + lib('xlsx-print.js'))
+    // 399,545 bytes of dist at 0.90.0: the xlsx reader and writer with print settings, pagination, notes and drawings
+    expect(bytes).toBeLessThan(400 * 1024)
     expect(used.filter(isPrint)).toEqual(expect.arrayContaining([
       expect.stringMatching(/\/print\/layout\./), expect.stringMatching(/\/print\/read\./), expect.stringMatching(/\/print\/write\./),
     ]))
     expect(used.filter((file) => /\/xlsx\/keep\/book\./.test(file))).toEqual([])
     const kept = await minified('export * from ' + lib('xlsx-print-keep.js'))
+    // 465,657 bytes of dist at 0.90.0: xlcalc/xlsx/keep with the print settings' reader and writer
+    expect(kept.bytes).toBeLessThan(464 * 1024)
     expect(kept.used.filter(isPrint)).toEqual(expect.arrayContaining([expect.stringMatching(/\/print\/keep\./)]))
     for (const entry of ['index.js', 'core.js', 'xlsx.js', 'xlsx-keep.js', 'xlsb.js']) {
       const { used: inputs } = await minified('export * from ' + lib(entry))
@@ -36,9 +40,11 @@ describe('bundle size', () => {
     }
   }, 60_000)
 
-  it('ChartML and chart source resolution are opt-in, including when using XLSX print', async () => {
+  it('ChartML and chart source resolution are opt-in, including when using XLSX print, and under 52 KB', async () => {
     const isChart = (file: string) => /\/xlsx(?:\/charts\/|-charts\.(?:ts|js)$)/.test(file)
     const charts = await minified('export * from ' + lib('xlsx-charts.js'))
+    // 48,831 bytes of dist at 0.90.0: the ChartML reader with the archive and drawing anchors it reads through
+    expect(charts.bytes).toBeLessThan(52 * 1024)
     expect(charts.used.filter(isChart)).toEqual(expect.arrayContaining([
       expect.stringMatching(/\/charts\/read\./), expect.stringMatching(/\/charts\/values\./),
     ]))
