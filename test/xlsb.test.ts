@@ -77,7 +77,7 @@ describe('XLSB archive', () => {
   const pairs = [
     'probe', 'formulas', 'pivot-calculated', 'slicers-and-timeline', 'icon-filter', 'filter-and', 'filter-or',
     'filter-extended-and', 'filter-extended-or', 'filter-date-day', 'filter-date-month-year',
-    'array-exact', 'array-convert',
+    'filter-long-value', 'filter-long-and-short-values', 'array-exact', 'array-convert',
     'validation-multi-range', 'validation-list-comma', 'validation-invalid-reference',
     'conditional-invalid-reference', 'pivot-show-as', 'pivot-item-number',
     'union-arguments', 'unprefixed-function', 'worksheet-function-shadow', 'iteration-default', 'range-sheet-quote',

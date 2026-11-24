@@ -40,8 +40,8 @@ export class Filters {
         break
       case 166: case 5082: text = '</filters>'; break
       case 167: case 1177: {
+        // BrtFilter14 is an Alternate Content record and starts with the string length.
         const prefix = type === 1177 ? 'x14:' : ''
-        if (prefix) payload.skip(4)
         text = `<${prefix}filter val="${escapeAttr(payload.wide())}"/>`
         break
       }
