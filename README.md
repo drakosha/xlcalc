@@ -57,7 +57,7 @@ How each rule was checked: [Development](docs/development.md#how-the-rules-were-
 
 ESM with TypeScript types, no dependencies. From CommonJS use `await import('xlcalc')`, or `require()` on Node 20.19+ and 22.12+.
 
-A bundle includes only the entry points it imports. Sizes are for the browser, bundled with esbuild and minified (24.11.2026, 0.90.0 for the main entry points and xlsx; the worker's as of 0.71.0), gzipped in brackets; `test/bundle-size.test.ts` keeps `compute` under 416 KB.
+A bundle includes only the entry points it imports. Sizes are for the browser, bundled with esbuild and minified (25.11.2026, 0.91.0 for the main entry points, xlsx and xls; the worker's as of 0.71.0), gzipped in brackets; `test/bundle-size.test.ts` keeps `compute` under 416 KB.
 
 | import | for | size |
 |---|---|---:|
