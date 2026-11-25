@@ -13,7 +13,7 @@ Fixed:
 
 Changed:
 
-- Spilled arrays are found by an index of their areas rather than one by one, and opening a session reuses the list of addresses its check made; text order copies a text only when it holds `ß` or `ẞ`.
+- Spilled arrays are found by an index of their areas rather than one by one, and opening a session reuses the list of addresses its check made.
 
 ## 0.90.0 (2026-11-24)
 
