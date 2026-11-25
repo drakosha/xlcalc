@@ -2,9 +2,6 @@
 
 const SHARP_S = /[ßẞ]/g
 
-/** ß and ẞ as ss. Sorting compares each text many times; text without them, nearly all of it, is not copied. */
-const sharpAsDouble = (s: string): string => (s.includes('ß') || s.includes('ẞ') ? s.replace(SHARP_S, 'ss') : s)
-
 /** Case-insensitive equality key for criteria and distinct values, after their Unicode normalization. */
 export const foldedTextKey = (s: string): string => s.toLowerCase().replace(/[ßςﬁ]/g, (ch) => ch === 'ß' ? 'ss' : ch === 'ς' ? 'σ' : 'fi')
 
@@ -24,8 +21,8 @@ const SOFT_HYPHEN = '\u00ad'
  */
 function withSoftHyphens(compare: (a: string, b: string) => number): (a: string, b: string) => number {
   return (a, b) => {
-    a = sharpAsDouble(a)
-    b = sharpAsDouble(b)
+    a = a.replace(SHARP_S, 'ss')
+    b = b.replace(SHARP_S, 'ss')
     const c = compare(a, b)
     if (c !== 0 || (!a.includes(SOFT_HYPHEN) && !b.includes(SOFT_HYPHEN))) return c
     const [x, y] = [a.split(SOFT_HYPHEN), b.split(SOFT_HYPHEN)]
