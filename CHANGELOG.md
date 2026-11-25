@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased
+
+Fixed:
+
+- A scalar `IF` whose condition can be computed no longer reports a circular reference through the branch it does not take: B1 holding `IF(A1,10,2*C1)` and C1 holding `IF(A1,4,B1/2)` calculate when A1 is true, as in Excel, and an edit that changes the condition enters or leaves the cycle.
+- `HOUR`, `MINUTE`, `SECOND`, `DAY` and a format's whole seconds read a moment as Excel does: half a second added, the day taken, and the rest scaled to hours, minutes and seconds one after another. On serials under about 60 (times of day and short durations) an exact half second could round the other way: `SECOND(0.5+0.5/86400)` is 0, it was 1.
+- `BINOM.INV` and `CRITBINOM` where alpha equals the probability of no success, (1 − p)^n, decide as Excel does: `BINOM.INV(3,0.25,0.421875)` is 0, it was 1.
+- Text: `ß` and `ẞ` equal `ss` in comparisons, criteria, `SWITCH`, `XMATCH`, `XLOOKUP` and `UNIQUE` (`MATCH` and `VLOOKUP` keep them apart), and `ﬁ` equals `fi`; `LOWER("ẞ")` keeps `ẞ` and `LOWER("İ")` is one character; `PROPER` lowers a final `Σ` to `ς`; `LEFT` and `RIGHT` do not split a character outside the Basic Multilingual Plane; `FIND` with a start just past the end finds empty text there; `TEXT` longer than 255 characters is `#VALUE!`; `ARRAYTOTEXT` longer than 32,767 characters is `#CALC!`, it was `#VALUE!`.
+- `AGGREGATE` 14 to 19 with an array constant of positions returns an array, `MOD` is `#NUM!` from a quotient of 1,125,900,000,000 rather than 2^50/1000, and `SWITCH` compares numbers as `=` does (`SWITCH(0.1+0.2,0.3,…)` matches).
+- `readXlsb` reads a shared formula whose first cell is not at the top-left of its range; the file was refused.
+
+Changed:
+
+- Spilled arrays are found by an index of their areas rather than one by one, and opening a session reuses the list of addresses its check made; text order copies a text only when it holds `ß` or `ẞ`.
+
 ## 0.90.0 (2026-11-24)
 
 Added:
