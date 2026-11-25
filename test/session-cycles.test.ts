@@ -164,6 +164,26 @@ describe.each(['closures', 'eval'] as Execution[])('circular references in a ses
       }
     })
 
+    it('gives a replaced IF with the same references both branches again, though one was selected', async () => {
+      const s = await open(book({
+        A1: { value: 1 },
+        B1: { formula: 'IF(A1,10,2*C1)' },
+        C1: { formula: 'IF(A1,4,B1/2+G1)' },
+        F1: { value: 1 },
+        G1: { formula: 'F1' },
+      }), { clock, execution })
+      try {
+        expect(await at(s, 'B1:C1')).toEqual({ B1: 10, C1: 4 })
+        await set(s, 'C1', { formula: 'IF(NOT(A1),4,B1/2+G1)' })
+        expect(await at(s, 'B1:C1')).toEqual({ B1: 10, C1: 6 })
+        // only the replaced formula reads G1: the edge its selected branch had dropped is back
+        await set(s, 'F1', { value: 2 })
+        expect(await at(s, 'B1:C1')).toEqual({ B1: 10, C1: 7 })
+      } finally {
+        await s.close()
+      }
+    })
+
     it('with iterative calculation the cycle is computed and held values are dropped', async () => {
       const s = await open({ ...book({ ...LOOP, A1: { formula: 'B1/2+1', held: 5 } }), iteration: {} }, { clock, execution, cached: STORED })
       try {

@@ -273,9 +273,12 @@ function compiled(state: EngineState, id: number, s: number, row: number, col: n
   return { id, s, r: row, c: col, text: p.text, ...g, ...(area ? { area } : {}), ...(p.unknown ? { unknown: p.unknown } : {}) }
 }
 
-/** Graph-relevant metadata of a scalar replacement; names, arrays and spans retain the rebuild path. */
+/**
+ * Graph-relevant metadata of a scalar replacement; names, arrays and spans retain the rebuild path. A scalar IF whose
+ * branch was chosen has only that branch's edges in the graph, while its replacement starts with both.
+ */
 function sameDependencies(a: Formula, b: Formula): boolean {
-  return !a.area && !b.area && !a.spans && !b.spans && !a.dynamic && !b.dynamic && !a.near && !b.near && !a.ifBranches && !b.ifBranches
+  return !a.area && !b.area && !a.spans && !b.spans && !a.dynamic && !b.dynamic && !a.near && !b.near && a.ifBranch === undefined
     && a.volatile === b.volatile && a.nested === b.nested && a.external === b.external
     && a.refs.length === b.refs.length && a.refs.every((g, i) => equalAreas(g, b.refs[i]))
 }

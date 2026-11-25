@@ -27,6 +27,17 @@ describe.each(['closures', 'eval'] as const)('incremental work, %s', (execution)
     expect(state.topo).toBe(topo)
   })
 
+  it('keeps the graph when a scalar IF keeps its dependencies', () => {
+    const cells: Record<string, CellInput> = { A1: { value: 1 }, B1: { value: 2 }, C1: { value: 3 }, D1: { formula: 'IF(A1>0,B1,C1)' }, E1: { formula: 'D1*2' } }
+    const state = createState({ sheets: [{ name: 'S', cells }] }, { now: 0, seed: 1, execution })
+    const { succ, listeners, topo } = state
+    run(applyEdits(state, [{ sheet: 'S', cell: 'D1', input: { formula: 'IF(A1>1,B1,C1)' } }]))
+    expect(state.rt.cell(0, 0, 4)).toBe(6)
+    expect(state.succ).toBe(succ)
+    expect(state.listeners).toBe(listeners)
+    expect(state.topo).toBe(topo)
+  })
+
   it('does not reread lookup keys when only the result column changes', () => {
     const cells: Record<string, CellInput> = {}
     for (let r = 1; r <= 512; r++) {
