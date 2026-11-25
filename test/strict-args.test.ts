@@ -12,6 +12,9 @@ import * as a1 from '../src/a1.js'
 import * as text from '../src/text.js'
 import * as xlsx from '../src/xlsx.js'
 import * as keep from '../src/xlsx-keep.js'
+import * as xls from '../src/xls.js'
+import * as xlsConnections from '../src/xls-connections.js'
+import * as xlsPrint from '../src/xls-print.js'
 import * as xlsb from '../src/xlsb.js'
 import * as xlsxPrint from '../src/xlsx-print.js'
 import * as xlsxPrintKeep from '../src/xlsx-print-keep.js'
@@ -142,6 +145,9 @@ describe('the functions of the package take no options they do not', () => {
     ['xlcalc/entry', typedEntry, { parseEntry: 2, entryText: 2, needsApostrophe: 2, numberFormatSamples: 2, isDateFormat: 1 }],
     ['xlcalc/xlsx', xlsx, { readXlsx: 2, writeXlsx: 2, fromLegacy: 2 }],
     ['xlcalc/xlsx/keep', keep, { openKept: 2, writeKept: 3, inspectKept: 2 }],
+    ['xlcalc/xls', xls, { readXls: 2 }],
+    ['xlcalc/xls/connections', xlsConnections, { readXlsWithConnections: 2 }],
+    ['xlcalc/xls/print', xlsPrint, { readXlsWithPrint: 2 }],
     ['xlcalc/xlsb', xlsb, { readXlsb: 2 }],
     ['xlcalc/xlsx/print', xlsxPrint, {
       readXlsxWithPrint: 2, writeXlsxWithPrint: 3, readXlsxDrawings: 2, printSheetGeometry: 2, layoutPrintPages: 4, layoutPrintWorkbook: 2,
@@ -161,7 +167,7 @@ describe('the functions of the package take no options they do not', () => {
   ]
 
   /** The functions of the print and chart entries that read or write a file, and refuse by a rejected promise. */
-  const FILE_CALLS = new Set(['readXlsxWithPrint', 'writeXlsxWithPrint', 'readXlsxDrawings', 'openKeptWithPrint', 'writeKeptWithPrint', 'readXlsxCharts'])
+  const FILE_CALLS = new Set(['readXlsWithConnections', 'readXlsWithPrint', 'readXlsxWithPrint', 'writeXlsxWithPrint', 'readXlsxDrawings', 'openKeptWithPrint', 'writeKeptWithPrint', 'readXlsxCharts'])
 
   for (const [entry, mod, table] of FUNCTIONS)
     it(`${entry}: each function by its parameters, refusing an options object past them`, async () => {
@@ -171,7 +177,7 @@ describe('the functions of the package take no options they do not', () => {
         if (name === 'registerFunctions') continue
         const f = fns[name] as (...a: unknown[]) => unknown
         const refused = `takes ${max} argument${max === 1 ? '' : 's'}, got an object as argument ${max + 1} (table is an option of toLocal and toInvariant)`
-        if ((entry === 'xlcalc/xlsx' && name !== 'fromLegacy') || entry === 'xlcalc/xlsx/keep' || entry === 'xlcalc/xlsb' || entry === 'xlcalc/locales' || FILE_CALLS.has(name)) await expect(f(...Array(max).fill(undefined), { table: 'T' }), name).rejects.toThrow(new InputError(name, refused))
+        if ((entry === 'xlcalc/xlsx' && name !== 'fromLegacy') || entry === 'xlcalc/xlsx/keep' || entry === 'xlcalc/xls' || entry === 'xlcalc/xlsb' || entry === 'xlcalc/locales' || FILE_CALLS.has(name)) await expect(f(...Array(max).fill(undefined), { table: 'T' }), name).rejects.toThrow(new InputError(name, refused))
         else expect(() => f(...Array(max).fill(undefined), { table: 'T' }), name).toThrow(new InputError(name, refused))
       }
     })

@@ -34,12 +34,15 @@ const files = execSync("find test/excel -name '*.xlsx'", { cwd: root, encoding: 
  */
 const KNOWN: Record<string, string> = {
   'advanced.xlsx': '.autoFilter',
+  'advanced-in-place.xlsx': '.book.sheets.0.autoFilter',
   'made-frozen.xlsx': '.view',
   'hand-3.xlsx': '.rows',
   'let-1.xlsx': '.formula',
   'let-held-1.xlsx': '.formula',
   // Excel's own text of SHEETS(R:'Two Words'!A1), `'R':'Two Words'!A1`, which the engine does not parse
   'indirect-1.xlsx': '.formula',
+  // Excel's saved form of the 3D reference is preserved by keep. Rebuilding this formula loses the reference.
+  'range-start-name.xlsx': '.book.sheets.3.cells.A162.formula',
   // `_xlop.y` on a use of a LAMBDA's parameter, which Excel opens and answers #NAME?, and which the writer does not write
   'xlop-in-body.xlsx': '.formula',
 }

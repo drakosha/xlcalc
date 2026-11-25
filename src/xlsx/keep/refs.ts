@@ -22,6 +22,8 @@ export function areasOf(text: string): Area[] | null {
     if (e instanceof FormulaError) return null
     throw e
   }
+  // Binary defined names can serialize a union with grouping parentheses around it.
+  while (ast.k === 'paren') ast = ast.a
   const out: Area[] = []
   for (const x of ast.k === 'union' ? ast.items : [ast]) {
     if (x.k === 'ref' && x.sheet !== null) out.push({ sheet: x.sheet, rect: { r1: x.ref.r1, r2: x.ref.r2, c1: x.ref.c1, c2: x.ref.c2 } })

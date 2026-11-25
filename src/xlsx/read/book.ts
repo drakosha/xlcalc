@@ -135,10 +135,11 @@ export function fileBytes(data: unknown): Uint8Array {
   throw new InputError('data', `expected the file's bytes as a Uint8Array, ArrayBuffer or Buffer, got ${what(data)}: pass, for example, ${hint}`)
 }
 
-const unreadable = (file: string) => new InputError('data', `${file} cannot be read: save as .xlsx`)
 
 /** The signature of an OLE compound file: an .xls, or a password-protected xlsx. */
 const OLE = [0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1]
+
+export const hasCompoundSignature = (bytes: Uint8Array): boolean => OLE.every((byte, i) => bytes[i] === byte)
 
 const BYTES = ['entryBytes', 'totalBytes'] as const
 
@@ -159,12 +160,12 @@ export async function readXlsx(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOp
   return (await readStyled(data, opts)).read
 }
 
-export function workbookInput(data: Uint8Array | ArrayBuffer, opts: ReadXlsxOptions | undefined) {
+export function workbookInput(data: Uint8Array | ArrayBuffer, opts: ReadXlsxOptions | undefined, compound = false) {
   const bytes = fileBytes(data)
   const o = opts === undefined ? {} : object(opts, 'opts', "options such as { locale: 'ru-RU' }")
   onlyOptions(o, 'opts', ['locale', 'limits'])
   const language = optionalLocale(o.locale, 'opts.locale')
-  if (OLE.every((b, i) => bytes[i] === b)) throw unreadable('an .xls or password-protected file')
+  if (!compound && hasCompoundSignature(bytes)) throw new InputError('data', 'an .xls or password-protected file cannot be read: use readXls from xlcalc/xls for .xls, or save as .xlsx')
   return { bytes, language, limits: o.limits === undefined ? undefined : checkLimits(o.limits) }
 }
 

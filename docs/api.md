@@ -15,6 +15,9 @@ examples are the [README](../README.md) and the other files of `docs/`. This fil
 - [`xlcalc/xlsx/print`](#xlcalcxlsxprint)
 - [`xlcalc/xlsx/print/keep`](#xlcalcxlsxprintkeep)
 - [`xlcalc/xlsx/charts`](#xlcalcxlsxcharts)
+- [`xlcalc/xls`](#xlcalcxls)
+- [`xlcalc/xls/connections`](#xlcalcxlsconnections)
+- [`xlcalc/xls/print`](#xlcalcxlsprint)
 - [`xlcalc/xlsb`](#xlcalcxlsb)
 - [`xlcalc/csv`](#xlcalccsv)
 - [`xlcalc/worker`](#xlcalcworker)
@@ -1268,6 +1271,38 @@ function resolveChartData(chart: XlsxChart, reader: ChartValueReader): XlsxChart
 ```
 
 Return fresh chart data using current workbook values wherever a source can be resolved.
+
+## xlcalc/xls
+
+### <a id="xlcalcxls-readxls"></a>`readXls`
+
+```ts
+function readXls(data: ArrayBuffer | Uint8Array<ArrayBufferLike>, opts?: ReadXlsxOptions): Promise<XlsxRead>
+```
+
+Reads an XLS workbook, the values stored for its formulas, and issues in the requested language.
+
+## xlcalc/xls/connections
+
+Types: see [Types](#types).
+
+### <a id="xlcalcxlsconnections-readxlswithconnections"></a>`readXlsWithConnections`
+
+```ts
+function readXlsWithConnections(data: ArrayBuffer | Uint8Array<ArrayBufferLike>, opts?: ReadXlsxOptions): Promise<XlsConnectionsRead>
+```
+
+Reads an XLS workbook and its saved connection definitions for inspection.
+
+## xlcalc/xls/print
+
+### <a id="xlcalcxlsprint-readxlswithprint"></a>`readXlsWithPrint`
+
+```ts
+function readXlsWithPrint(data: ArrayBuffer | Uint8Array<ArrayBufferLike>, opts?: ReadXlsxOptions): Promise<XlsxPrintRead>
+```
+
+Reads an XLS workbook with its print settings by sheet, print issues and row defaults for print geometry.
 
 ## xlcalc/xlsb
 
@@ -8243,6 +8278,150 @@ interface WriteXlsxOptions {
    * cell gets its value from the result (which is then required).
    */
   mode?: 'formulas' | 'values'
+}
+```
+
+### `XlsConnection`
+
+An XLS connection. Its id is the one-based position of its DConn record.
+
+```ts
+interface XlsConnection {
+  id: number
+  name: string
+  /** BIFF DataSourceType, including 1 for ODBC, 4 for Web, 5 for OLE DB, and 6 for text. */
+  type: number
+  description?: string
+  sourceFile?: string
+  connectionFile?: string
+  pivotCache?: number
+  queryTable?: string
+  deleted?: boolean
+  savePassword?: boolean
+  saveData?: boolean
+  keepAlive?: boolean
+  background?: boolean
+  refreshOnLoad?: boolean
+  refreshInterval?: number
+  useConnectionFile?: boolean
+  olap?: boolean
+  parameters?: XlsConnectionParameter[]
+  database?: XlsDatabaseConnection
+  text?: XlsTextConnection
+  web?: { url: string; post?: string; editUrl?: string; tables?: string }
+}
+```
+
+### `XlsConnectionIssue`
+
+A connection whose record could not be fully read.
+
+```ts
+interface XlsConnectionIssue {
+  id: number
+  reason: 'invalid'
+}
+```
+
+### `XlsConnectionParameter`
+
+A stored parameter value or prompt and its ODBC SQL type.
+
+```ts
+type XlsConnectionParameter = {
+  name: string
+  sqlType: number
+  defaultName: boolean
+} & ({ prompt: string } | { value: string | number | boolean })
+```
+
+### `XlsConnectionsRead`
+
+The workbook and the definitions of the external connections stored in its BIFF records.
+
+```ts
+interface XlsConnectionsRead extends XlsxRead {
+  connections: XlsConnection[]
+  connectionIssues: XlsConnectionIssue[]
+  olapPivots: XlsOlapPivot[]
+}
+```
+
+### `XlsDatabaseConnection`
+
+A connection and database command as stored in the file.
+
+```ts
+interface XlsDatabaseConnection {
+  connectionString?: string
+  command?: string
+  originalCommand?: string
+  /** The OLE DB command type. A cube name is type 1. */
+  commandType?: number
+  localCubeConnectionString?: string
+  drillthroughRows?: number
+}
+```
+
+### `XlsOlapHierarchy`
+
+A hierarchy, measure, named set or KPI stored in an OLAP PivotTable view.
+
+```ts
+interface XlsOlapHierarchy {
+  uniqueName: string
+  caption: string
+  kind: 'hierarchy' | 'measure' | 'set' | 'kpi'
+  dimension?: string
+  defaultMember?: string
+  allMember?: string
+  axis?: 'row' | 'column' | 'page' | 'values'
+  hidden?: boolean
+  attribute?: boolean
+  keyAttribute?: boolean
+}
+```
+
+### `XlsOlapPivot`
+
+The saved OLAP hierarchy catalogue and the view's links between fields and hierarchies.
+
+```ts
+interface XlsOlapPivot {
+  sheet: string
+  name: string
+  range: string
+  /** The cache's BIFF stream id. */
+  cache: number
+  /** Entries in file order, with a null slot for an unreadable hierarchy. */
+  hierarchies: (XlsOlapHierarchy | null)[]
+  /** Entries in pivot field order. The hierarchy and level are zero-based. */
+  fields: { hierarchy?: number; level?: number }[]
+}
+```
+
+### `XlsTextConnection`
+
+The source and import settings of a saved text query.
+
+```ts
+interface XlsTextConnection {
+  sourceFile: string
+  delimited: boolean
+  prompt: boolean
+  startRow: number
+  tab: boolean
+  space: boolean
+  comma: boolean
+  semicolon: boolean
+  consecutive: boolean
+  delimiter?: string
+  /** 0 for a double quote, 1 for an apostrophe, 2 for no qualifier. */
+  qualifier: number
+  decimalSeparator: string
+  thousandsSeparator: string
+  /** The field types and zero-based character offsets as stored in the text query. */
+  fields: { type: number; start: number }[]
 }
 ```
 

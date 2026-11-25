@@ -4,6 +4,7 @@
  * them. A cache whose PivotTables changed without a refresh (`stale`) is refreshed by Excel on opening.
  */
 import type { PivotCache, PivotCacheField, PivotFieldGroup, PivotValue } from '../../contract.js'
+import { splitScopedName } from '../../sheet-pattern.js'
 import { ERROR_TEXT } from '../../syntax/ast.js'
 import { escapeAttr } from '../xml/text.js'
 import { counted, countedIf, give, HEAD, MAIN, REL, X14 } from './xml.js'
@@ -79,14 +80,28 @@ function fieldGroupXml(g: PivotFieldGroup): string {
   return `<fieldGroup${give(g, 'par=parent:n base:n')}>${x}</fieldGroup>`
 }
 
-/** The source as `cacheSource`; `link` is the relationship id of another workbook's path, or of the workbook itself for a source whose sheet is gone. */
-function sourceXml(c: PivotCache, link: string | undefined): string {
+interface SourceLinks {
+  worksheet?: string
+  ranges?: (string | undefined)[]
+}
+
+const linkAttr = (id: string | undefined): string => id === undefined ? '' : ` r:id="${id}"`
+
+/** The source as `cacheSource`, with relationship IDs for the workbooks read by its ranges or name. */
+function sourceXml(c: PivotCache, links: SourceLinks): string {
   const s = c.source
-  const r = link === undefined ? '' : ` r:id="${link}"`
+  const r = linkAttr(links.worksheet)
   if (s.type === 'range') return `<cacheSource type="worksheet"><worksheetSource ref="${s.range}" sheet="${escapeAttr(s.sheet)}"${r}/></cacheSource>`
-  if (s.type === 'table' || s.type === 'name') return `<cacheSource type="worksheet"><worksheetSource name="${escapeAttr(s.type === 'table' ? s.table : s.name)}"${r}/></cacheSource>`
+  if (s.type === 'table' || s.type === 'name') {
+    const { name, sheet } = s.type === 'name' ? splitScopedName(s.name) : { name: s.table }
+    const scope = sheet === undefined ? '' : ` sheet="${escapeAttr(sheet)}"`
+    return `<cacheSource type="worksheet"><worksheetSource name="${escapeAttr(name)}"${scope}${r}/></cacheSource>`
+  }
   if (s.type === 'consolidation') {
-    const sets = s.ranges.map((x) => `<rangeSet ref="${x.range}"${x.sheet === undefined ? '' : ` sheet="${escapeAttr(x.sheet)}"`}/>`)
+    const sets = s.ranges.map(({ range, sheet }, i) => {
+      const owner = sheet === undefined ? '' : ` sheet="${escapeAttr(sheet)}"`
+      return `<rangeSet ref="${range}"${owner}${linkAttr(links.ranges?.[i])}/>`
+    })
     return `<cacheSource type="consolidation"><consolidation>${counted('rangeSets', sets)}</consolidation></cacheSource>`
   }
   if (s.type === 'scenario') return '<cacheSource type="scenario"/>'
@@ -97,10 +112,10 @@ function sourceXml(c: PivotCache, link: string | undefined): string {
 const columns = (c: PivotCache) => c.fields.map((_, i) => (c.fields[i].items ? [] : (c.records ?? []).map((r) => r[i] ?? null)))
 
 /**
- * The cache's definition part. `records` is the relationship id of its rows' part, `link` that of a source in another
- * workbook; `x14` the cache's id among the workbook's slicer sources (`pivotCacheId`), when a slicer filters it.
+ * The cache's definition part. `records` and `links` identify its rows' part and source workbooks.
+ * `x14` gives the cache's id among the workbook's slicer sources (`pivotCacheId`) when a slicer filters it.
  */
-export function pivotCacheXml(c: PivotCache, numFmt: (f: PivotCacheField) => number, records: string | undefined, link: string | undefined, x14?: number): string {
+export function pivotCacheXml(c: PivotCache, numFmt: (f: PivotCacheField) => number, records: string | undefined, links: SourceLinks, x14?: number): string {
   const cols = columns(c)
   const fields = c.fields.map((f, i) => {
     const added = f.formula !== undefined || (f.group?.base !== undefined && f.group.base !== i)
@@ -116,7 +131,7 @@ export function pivotCacheXml(c: PivotCache, numFmt: (f: PivotCacheField) => num
     (saved ? ` recordCount="${c.records!.length}"` : '') +
     give(c, 'missingItemsLimit=retainItems:n')
   const ext = `<extLst><ext uri="{725AE2AE-9491-48be-B2B4-4EB974FC3084}" xmlns:x14="${X14}"><x14:pivotCacheDefinition${x14 === undefined ? '' : ` pivotCacheId="${x14}"`}/></ext></extLst>`
-  return `${HEAD}<pivotCacheDefinition xmlns="${MAIN}" xmlns:r="${REL}"${attrs}>${sourceXml(c, link)}${counted('cacheFields', fields)}${calculated}${ext}</pivotCacheDefinition>`
+  return `${HEAD}<pivotCacheDefinition xmlns="${MAIN}" xmlns:r="${REL}"${attrs}>${sourceXml(c, links)}${counted('cacheFields', fields)}${calculated}${ext}</pivotCacheDefinition>`
 }
 
 /** The rows' part: each row's value per field of the source, an item's index for a field that lists its items. */

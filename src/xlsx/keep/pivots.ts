@@ -175,8 +175,15 @@ export class KeptPivots {
       this.drop(old.target)
       rels.remove(old.id)
     }
-    const link = 'book' in c.source && c.source.book !== undefined ? (f?.rels.find((r) => r.kind === 'externalLinkPath')?.id ?? rels.add(relType('externalLinkPath'), c.source.book, true)) : undefined
-    parts.set(part, pivotCacheXml(c, (x) => this.h.styles.numFmt(x.numberFormat), records, link, this.sourceId(c.id)))
+    const relateSource = (target: string | undefined): string | undefined => {
+      if (target === undefined) return undefined
+      const existing = f?.rels.find((r) => r.kind === 'externalLinkPath' && r.external && r.target === target)
+      return existing?.id ?? rels.add(relType('externalLinkPath'), target, true)
+    }
+    const source = c.source
+    const worksheet = relateSource('book' in source ? source.book : undefined)
+    const ranges = source.type === 'consolidation' ? source.ranges.map(({ book }) => relateSource(book)) : undefined
+    parts.set(part, pivotCacheXml(c, (field) => this.h.styles.numFmt(field.numberFormat), records, { worksheet, ranges }, this.sourceId(c.id)))
     if (rels.size) parts.set(relsPath(part), rels.xml())
     else parts.remove(relsPath(part))
   }

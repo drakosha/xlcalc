@@ -7,6 +7,7 @@ import { caseKey } from './collate.js'
 import type { BookInput, PivotSource } from './contract.js'
 import { createState } from './engine.js'
 import { clockOptions } from './result.js'
+import { splitScopedName } from './sheet-pattern.js'
 import { parseRange, type Rect } from './structure/area.js'
 import { stateValues } from './structure/values.js'
 import { rowsOf, tablesOf } from './tables/model.js'
@@ -50,10 +51,15 @@ function calculated(book: BookInput, name: string): SourcePlace | null {
 }
 
 function namePlace(book: BookInput, name: string): SourcePlace | null {
-  const local = /^(.+)!([^!]+)$/.exec(name)
-  const found = (book.names ?? []).find((n) => caseKey(n.name) === caseKey(local ? local[2] : name) && (local ? n.scope !== undefined && caseKey(n.scope) === caseKey(local[1].replace(/^'|'$/g, '')) : n.scope === undefined))
+  const scoped = splitScopedName(name)
+  const key = caseKey(scoped.name)
+  const scopeKey = scoped.sheet === undefined ? undefined : caseKey(scoped.sheet)
+  const found = (book.names ?? []).find((n) => {
+    const scope = n.scope === undefined ? undefined : caseKey(n.scope)
+    return caseKey(n.name) === key && scope === scopeKey
+  })
   // a file names a table's source as it names a defined name's
-  if (!found) return local ? null : tablePlace(book, name)
+  if (!found) return scoped.sheet === undefined ? tablePlace(book, name) : null
   const ref = found.ref.replace(/^=/, '').trim()
   const m = REF.exec(ref)
   if (m) {

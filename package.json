@@ -94,6 +94,18 @@
       "types": "./dist/xlsx-keep.d.ts",
       "default": "./dist/xlsx-keep.js"
     },
+    "./xls": {
+      "types": "./dist/xls.d.ts",
+      "default": "./dist/xls.js"
+    },
+    "./xls/connections": {
+      "types": "./dist/xls-connections.d.ts",
+      "default": "./dist/xls-connections.js"
+    },
+    "./xls/print": {
+      "types": "./dist/xls-print.d.ts",
+      "default": "./dist/xls-print.js"
+    },
     "./xlsb": {
       "types": "./dist/xlsb.d.ts",
       "default": "./dist/xlsb.js"

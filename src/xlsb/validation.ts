@@ -72,6 +72,14 @@ export function validation(part: Part, type: number, payload: Payload, extension
 }
 
 function validationAttrs(flags: number, payload: Payload): string {
+  const strings = ['errorTitle', 'error', 'promptTitle', 'prompt'].map((key) => {
+    const value = payload.nullableWide()
+    return value === undefined ? '' : ` ${key}="${escapeAttr(value)}"`
+  }).join('')
+  return validationSettings(flags) + strings
+}
+
+export function validationSettings(flags: number): string {
   const type = TYPES[flags & 15]
   const style = STYLES[(flags >>> 4) & 7]
   const blank = (flags >>> 8) & 1
@@ -80,10 +88,6 @@ function validationAttrs(flags: number, payload: Payload): string {
   const showInput = (flags >>> 18) & 1
   const showError = (flags >>> 19) & 1
   const operator = OPERATORS[(flags >>> 20) & 15]
-  const strings = ['errorTitle', 'error', 'promptTitle', 'prompt'].map((key) => {
-    const value = payload.nullableWide()
-    return value === undefined ? '' : ` ${key}="${escapeAttr(value)}"`
-  }).join('')
   return ` type="${type ?? 'unknown'}" allowBlank="${blank}" showDropDown="${dropdown}" showInputMessage="${showInput}" showErrorMessage="${showError}"`
-    + (style ? ` errorStyle="${style}"` : '') + (operator ? ` operator="${operator}"` : '') + (ime ? ` imeMode="${ime}"` : '') + strings
+    + (style ? ` errorStyle="${style}"` : '') + (operator ? ` operator="${operator}"` : '') + (ime ? ` imeMode="${ime}"` : '')
 }

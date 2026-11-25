@@ -57,9 +57,15 @@ export function pivotPackage(book: BookInput, styles: CellFormats, issues: Issue
     const src = c.source
     const gone = src.type === 'range' && src.book === undefined && !book.sheets.some((s) => sheetKey(s.name) === sheetKey(src.sheet))
     if (gone) issues.add('pivotTable', { key: 'pivotSourceLinked', sheet: src.sheet })
-    const book_ = gone ? DELETED_SOURCE : 'book' in src ? src.book : undefined
-    if (book_ !== undefined) own.push([`${REL}/externalLinkPath`, book_, true])
-    out.files.push({ name, text: pivotCacheXml(c, (f) => styles.numFmt(f.numberFormat), saved ? 'rId1' : undefined, book_ === undefined ? undefined : `rId${own.length}`, slicerIds.has(c.id) ? c.id : undefined) })
+    const relateSource = (target: string | undefined): string | undefined => {
+      if (target === undefined) return undefined
+      own.push([`${REL}/externalLinkPath`, target, true])
+      return `rId${own.length}`
+    }
+    const worksheet = relateSource(gone ? DELETED_SOURCE : 'book' in src ? src.book : undefined)
+    const ranges = src.type === 'consolidation' ? src.ranges.map(({ book }) => relateSource(book)) : undefined
+    const definition = pivotCacheXml(c, (f) => styles.numFmt(f.numberFormat), saved ? 'rId1' : undefined, { worksheet, ranges }, slicerIds.has(c.id) ? c.id : undefined)
+    out.files.push({ name, text: definition })
     out.contentTypes.push([`/${name}`, `${TYPE}.pivotCacheDefinition+xml`])
     if (saved) {
       out.files.push({ name: `xl/pivotCache/pivotCacheRecords${n}.xml`, text: pivotRecordsXml(c) })

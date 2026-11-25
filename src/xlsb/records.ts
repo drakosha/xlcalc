@@ -1,7 +1,7 @@
 /** BIFF12 record headers and bounded readers for record payloads ([MS-XLSB] 2.1.4). */
 
-function invalid(part: string, offset: number, reason: string): never {
-  throw new Error(`xlsb: ${part} at offset ${offset}: ${reason}`)
+function invalid(part: string, offset: number, reason: string, format = 'xlsb'): never {
+  throw new Error(`${format}: ${part} at offset ${offset}: ${reason}`)
 }
 
 interface RecordInfo {
@@ -47,6 +47,7 @@ export class Payload {
     private pos: number,
     private readonly end: number,
     private readonly type: number,
+    private readonly format = 'xlsb',
   ) {}
 
   get remaining(): number {
@@ -54,7 +55,7 @@ export class Payload {
   }
 
   fail(reason: string): never {
-    return invalid(this.part, this.pos, `record ${this.type}: ${reason}`)
+    return invalid(this.part, this.pos, `record ${this.type}: ${reason}`, this.format)
   }
 
   private next(size: number): number {
@@ -70,7 +71,16 @@ export class Payload {
 
   section(size: number): Payload {
     const start = this.next(size)
-    return new Payload(this.view, this.part, start, start + size, this.type)
+    return new Payload(this.view, this.part, start, start + size, this.type, this.format)
+  }
+
+  bytes(size = this.remaining): Uint8Array {
+    const start = this.next(size)
+    return new Uint8Array(this.view.buffer, this.view.byteOffset + start, size)
+  }
+
+  copy(): Payload {
+    return new Payload(this.view, this.part, this.pos, this.end, this.type, this.format)
   }
 
   u8(): number {
@@ -99,11 +109,21 @@ export class Payload {
 
   /** UTF-16LE code units. TextDecoder would replace unpaired surrogates before the XML writer could escape them. */
   wide(length = this.u32()): string {
-    const start = this.next(length * 2)
+    return this.units(length, true)
+  }
+
+  narrow(length: number): string {
+    return this.units(length, false)
+  }
+
+  private units(length: number, wide: boolean): string {
+    const start = this.next(length * (wide ? 2 : 1))
     const chunks: string[] = []
     for (let i = 0; i < length; i += 4096) {
       const units: number[] = []
-      for (let j = i; j < Math.min(i + 4096, length); j++) units.push(this.view.getUint16(start + j * 2, true))
+      for (let j = i; j < Math.min(i + 4096, length); j++) {
+        units.push(wide ? this.view.getUint16(start + j * 2, true) : this.view.getUint8(start + j))
+      }
       chunks.push(String.fromCharCode(...units))
     }
     return chunks.join('')

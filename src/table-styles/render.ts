@@ -6,7 +6,7 @@ import { anyMeets, hasCell, type Rect } from '../structure/area.js'
 import { tableKey } from '../tables/model.js'
 import { DEFAULT_TABLE_STYLE } from '../tables/check.js'
 import type { TableStyleWindow } from '../table-style-hook.js'
-import type { Palette } from '../xlsx/styles/color.js'
+import { OFFICE_THEME, type Palette } from '../xlsx/styles/color.js'
 import { dxfCellStyle, readDxf } from '../xlsx/styles/dxf.js'
 import { checkTableStyleData } from '../input/table-style-data.js'
 import { element } from '../xlsx/xml/scan.js'
@@ -44,8 +44,6 @@ const NEIGHBORS = [
   ['left', 'right', 0, -1],
 ] as const
 
-// The palette Excel for Windows uses for a workbook without a theme part.
-const OFFICE = ['FFFFFF', '000000', 'E8E8E8', '0E2841', '156082', 'E97132', '196B24', '0F9ED5', 'A02B93', '4EA72E', '467886', '96607D']
 const presetNames = new Map(Object.keys(PRESET_TABLE_STYLES).map((name) => [tableKey(name), name]))
 const presetCache = new WeakMap<string[], { formats: Map<number, Differential>; styles: Map<string, Definition> }>()
 
@@ -63,7 +61,7 @@ function preset(name: string, theme: string[]): Definition | undefined {
   if (!cache) presetCache.set(theme, (cache = { formats: new Map(), styles: new Map() }))
   let definition = cache.styles.get(spelling)
   if (!definition) {
-    const palette = { theme: theme === OFFICE ? OFFICE : theme.map((c) => c.slice(1)), indexed: [] }
+    const palette = { theme: theme === OFFICE_THEME ? OFFICE_THEME : theme.map((c) => c.slice(1)), indexed: [] }
     definition = new Map(PRESET_TABLE_STYLES[spelling].map(([type, size, index]) => {
       let format = cache.formats.get(index)
       if (!format) cache.formats.set(index, (format = presetFormat(PRESET_DIFFERENTIAL_FORMATS[index], palette)))
@@ -136,7 +134,7 @@ const customFormat = ({ size, style, inside, numberFormat }: TableStyleElement):
 
 function definitions(data: WorkbookTableStyles | undefined) {
   const custom = new Map(Object.entries(data?.custom ?? {}).map(([name, def]) => [tableKey(name), new Map(def.elements.map((e) => [e.type, customFormat(e)]))]))
-  const theme = data?.theme ?? OFFICE
+  const theme = data?.theme ?? OFFICE_THEME
   return (name: string) => {
     const key = tableKey(name)
     return custom.get(key) ?? preset(key, theme)

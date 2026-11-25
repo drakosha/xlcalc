@@ -29,6 +29,7 @@ export class Xml {
     private readonly part: string,
     private readonly limits: XlsxLimits,
     private readonly budget: Budget,
+    private readonly format = 'xlsb',
   ) {}
 
   add(piece: string): void {
@@ -38,11 +39,11 @@ export class Xml {
     const { written } = utf8Into(s, this.bytes.subarray(this.size))
     this.grow(written)
     const totalBytes = this.limits.totalBytes ?? TOTAL_BYTES
-    if ((this.budget.spent += written) > totalBytes) throw new Error(`xlsb: ${this.part} produces XML past the ${totalBytes} byte total (limits.totalBytes)`)
+    if ((this.budget.spent += written) > totalBytes) throw new Error(`${this.format}: ${this.part} produces XML past the ${totalBytes} byte total (limits.totalBytes)`)
   }
 
   fragment(): Xml {
-    return new Xml(this.part, this.limits, this.budget)
+    return new Xml(this.part, this.limits, this.budget, this.format)
   }
 
   /** Another piece's XML, already counted against the total when it was added there. */
@@ -68,7 +69,7 @@ export class Xml {
 
   private grow(bytes: number): void {
     const entryBytes = this.limits.entryBytes ?? ENTRY_BYTES
-    if ((this.size += bytes) > entryBytes) throw new Error(`xlsb: ${this.part} produces more than ${entryBytes} bytes of XML (limits.entryBytes)`)
+    if ((this.size += bytes) > entryBytes) throw new Error(`${this.format}: ${this.part} produces more than ${entryBytes} bytes of XML (limits.entryBytes)`)
   }
 
   text(): string {

@@ -72,6 +72,9 @@ A bundle includes only the entry points it imports. Sizes are for the browser, b
 | `xlcalc/xlsx/charts` | read chart data and resolve series against a session ([Chart data](docs/xlsx-print.md#chart-data)) | 47 KB (18) |
 | `xlcalc/xlsx/print/keep` | write print settings over the original file with its drawings and other parts ([Worksheet printing](docs/xlsx-print.md)) | 454 KB (169) |
 | `xlcalc/xlsx/keep` | `openKept`, `writeKept`, `inspectKept`: a workbook written over the file it was read from, keeping its charts, pictures and everything else the workbook does not hold ([Writing over the original file](docs/xlsx-keep.md)) | 443 KB (164) |
+| `xlcalc/xls` | `readXls` reads legacy Excel workbooks, saved values and issues ([Reading xls](docs/xlsx.md#reading-xls)) | 377 KB (140) |
+| `xlcalc/xls/connections` | `readXlsWithConnections` also reads saved connection and OLAP definitions ([Reading XLS connections](docs/xlsx.md#reading-xls-connections)) | 383 KB (143) |
+| `xlcalc/xls/print` | `readXlsWithPrint` also reads the print settings and row defaults ([Printing from XLS](docs/xlsx.md#printing-from-xls)) | 387 KB (144) |
 | `xlcalc/xlsb` | `readXlsb`: a binary Excel workbook, its saved values and issues ([Reading xlsb](docs/xlsx.md#reading-xlsb)) | 325 KB (119) |
 | `xlcalc/csv` | `readCsv`, `writeCsv`: a CSV file as Excel opens it, a sheet as Excel saves it ([Reading and writing CSV](docs/csv.md)) | 199 KB (74) |
 | `xlcalc/worker` | `createCalcPool`: worker threads | 35 KB (13), its worker 960 KB (330), 630 KB (238) loaded first where a bundler splits off the locales, regex levels, groups of functions, the PivotTable engine and the table styles it loads |
@@ -86,7 +89,7 @@ A bundle includes only the entry points it imports. Sizes are for the browser, b
 | `xlcalc/regex` | `pcreSyntax` and `pcreEngine`, Excel's syntax and match limit for match mode 3 ([Regular expressions](docs/regex.md)) | 35 KB (13) |
 | `xlcalc/contract` | types, and the formula limits `MAX_FORMULA_LENGTH` and `MAX_FORMULA_DEPTH` | |
 
-`xlcalc/xlsx`, `xlcalc/xlsx/print`, `xlcalc/xlsx/print/keep`, `xlcalc/xlsx/charts`, `xlcalc/xlsx/keep`, `xlcalc/xlsb`, `xlcalc/csv`, `xlcalc/a1`, `xlcalc/text`, `xlcalc/entry`, `xlcalc/function-text`, `xlcalc/locales` (`loadLocale`, a package locale by its tag) and `xlcalc/contract` do not load the engine.
+`xlcalc/xlsx`, `xlcalc/xlsx/print`, `xlcalc/xlsx/print/keep`, `xlcalc/xlsx/charts`, `xlcalc/xlsx/keep`, `xlcalc/xls`, `xlcalc/xls/connections`, `xlcalc/xls/print`, `xlcalc/xlsb`, `xlcalc/csv`, `xlcalc/a1`, `xlcalc/text`, `xlcalc/entry`, `xlcalc/function-text`, `xlcalc/locales` (`loadLocale`, a package locale by its tag) and `xlcalc/contract` do not load the engine.
 
 ## Recipes
 

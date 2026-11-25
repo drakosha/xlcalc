@@ -4,7 +4,7 @@ import { InputError } from '../../input-error.js'
 import { MAX_COLS, MAX_ROWS } from '../../model.js'
 import { parseRange, rectText } from '../../structure/area.js'
 import { noteCells, notePages } from './notes.js'
-import { MAX_PAGE_FIELD } from './types.js'
+import { DEFAULT_MARGINS, MAX_PAGE_FIELD } from './types.js'
 import type {
   PrintAxisGeometry, PrintBreak, PrintDeviceGeometry, PrintLayout, PrintLayoutIssue, PrintMargins, PrintNotes, PrintPage, PrintPageBand, PrintRect,
   PrintRegion, PrintSheetGeometry, PrintSpan, PrintTarget, PrintWorkbookLayout, PrintWorkbookOptions, PrintWorkbookPage,
@@ -12,7 +12,6 @@ import type {
 } from './types.js'
 
 const POINTS_PER_INCH = 72
-const DEFAULT_MARGINS: PrintMargins = { left: 0.7, right: 0.7, top: 0.75, bottom: 0.75, header: 0.3, footer: 0.3 }
 const EPSILON = 1e-8
 const MAX_PAGES = 10_000
 

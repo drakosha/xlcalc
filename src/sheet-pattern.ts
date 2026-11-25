@@ -6,3 +6,14 @@ export const PLAIN_NAME = new RegExp(`^${PLAIN_SHEET}$`, 'u')
 
 /** A sheet name in quotes, each apostrophe inside doubled. */
 export const quoteSheet = (s: string) => `'${s.replaceAll("'", "''")}'`
+
+/** A defined name can be scoped as Sheet!Name or 'Sheet name'!Name. */
+export function splitScopedName(text: string): { name: string; sheet?: string } {
+  const separator = text.lastIndexOf('!')
+  if (separator <= 0 || separator === text.length - 1) return { name: text }
+  const qualifier = text.slice(0, separator)
+  const sheet = qualifier.startsWith("'") && qualifier.endsWith("'")
+    ? qualifier.slice(1, -1).replaceAll("''", "'")
+    : qualifier
+  return { name: text.slice(separator + 1), sheet }
+}
