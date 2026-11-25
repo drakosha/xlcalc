@@ -185,6 +185,30 @@ describe('XLSB archive', () => {
     await expect(readXlsb(await fixture(sheetData(cell)))).rejects.toThrow(/sheet1\.bin at offset \d+: record 7: shared string index 0 out of bounds/)
   })
 
+  it('reads a shared formula anchored away from the top-left corner of its range', async () => {
+    const anchor = [5, 0, 0, 0, 1, 0, 0, 0, 0, 4, 0, 0, 0, 2, 0, 0, 0] // PtgExp and PtgExtraCol, C1
+    const tokens = [0x4c, 0, 0, 0, 0, 0xff, 0xff, 0x44, 0, 0, 0, 0, 0, 0, 3] // one cell left + $A$1
+    const data = await fixture(sheetData([
+      2, 12, 0, 0, 0, 0, 0, 0, 0, 0, 42, 0, 0, 0, // BrtCellRk, A1 = 10
+      2, 12, 1, 0, 0, 0, 0, 0, 0, 0, 82, 0, 0, 0, // BrtCellRk, B1 = 20
+      9, 35, 2, ...Array<number>(17).fill(0), ...anchor, // BrtFmlaNum, C1
+      0xab, 3, 39, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, // BrtShrFmla, B1:C2
+      tokens.length, 0, 0, 0, ...tokens, 0, 0, 0, 0,
+      0, 17, 1, ...Array<number>(16).fill(0), // BrtRowHdr, row 2
+      2, 12, 0, 0, 0, 0, 0, 0, 0, 0, 122, 0, 0, 0, // BrtCellRk, A2 = 30
+      9, 35, 1, ...Array<number>(17).fill(0), ...anchor, // BrtFmlaNum, B2
+    ]))
+    const { book, issues } = await readXlsb(data)
+    expect(issues).toEqual([])
+    expect(book.sheets[0].cells).toEqual({
+      A1: { value: 10 }, B1: { value: 20 }, C1: { formula: 'B1+$A$1' },
+      A2: { value: 30 }, B2: { formula: 'A2+$A$1' },
+    })
+    const { cells } = compute(book).sheets[0]
+    expect(cells.C1.value).toBe(30)
+    expect(cells.B2.value).toBe(40)
+  })
+
   it('refuses a shared formula that points back to its own anchor', async () => {
     const anchor = [5, 0, 0, 0, 1, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0] // PtgExp, A1
     const data = await fixture(sheetData([

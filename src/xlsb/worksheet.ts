@@ -1,7 +1,7 @@
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { escapeAttr, escapeText } from '../xlsx/xml/text.js'
 import { Conditional } from './conditional.js'
-import { address, colorAttrs, errorText, range, rkNumber } from './fields.js'
+import { address, colorAttrs, errorText, range, rangeAt, rkNumber } from './fields.js'
 import { Filters } from './filter.js'
 import { formula, formulaText, type FormulaText } from './formula.js'
 import { NS, type Part } from './parts.js'
@@ -139,17 +139,27 @@ export function worksheet(part: Part): void {
         break
       case 426: case 427: {
         if (!lastCell) return payload.fail('array or shared formula without an anchor cell')
-        const ref = range(payload)
+        const { address: anchor, column } = lastCell
+        const top = payload.u32()
+        const bottom = payload.u32()
+        const left = payload.u32()
+        const right = payload.u32()
+        const ref = rangeAt(payload, top, bottom, left, right)
         const array = type === 426
         const flags = array ? payload.u8() : 0
-        const decoded = formulaText(formula(payload), context, row, lastCell.column, !array)
+        const decoded = formulaText(formula(payload), context, row, column, !array)
         payload.done()
         if (decoded && 'anchor' in decoded) payload.fail('array or shared formula references another anchor')
         if (!decoded) pending()
         const text = decoded && 'text' in decoded ? decoded.text : ''
-        if (ref.split(':', 1)[0] !== lastCell.address) payload.fail(`anchor ${lastCell.address} does not start the formula range ${ref}`)
-        anchors.set(lastCell.address, { array, ref, id: anchors.size, text, flags })
-        lastCell.formula = { anchor: lastCell.address }
+        // BrtShrFmla follows the first cell that uses it, anywhere in its range.
+        if (array) {
+          if (row !== top || column !== left) payload.fail(`anchor ${anchor} does not start the formula range ${ref}`)
+        } else if (row < top || row > bottom || column < left || column > right) {
+          payload.fail(`anchor ${anchor} is outside the formula range ${ref}`)
+        }
+        anchors.set(anchor, { array, ref, id: anchors.size, text, flags })
+        lastCell.formula = { anchor }
         break
       }
       case 428:
