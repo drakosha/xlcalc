@@ -52,6 +52,8 @@ export interface PrintOptions {
   gridLinesSet?: boolean
 }
 
+export const DEFAULT_MARGINS: PrintMargins = { left: 0.7, right: 0.7, top: 0.75, bottom: 0.75, header: 0.3, footer: 0.3 }
+
 /** A worksheet's headers and footers: odd pages, and even and first pages when their flags are set. */
 export interface PrintHeaderFooter {
   differentOddEven?: boolean

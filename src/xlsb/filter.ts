@@ -143,7 +143,7 @@ export class Filters {
   }
 }
 
-function iconAttrs(payload: Payload, noIconSet = 'NoIcons'): string {
+export function iconAttrs(payload: Payload, noIconSet = 'NoIcons'): string {
   const set = payload.u32()
   const icon = payload.u32()
   if (set === 0xffffffff) return ` iconSet="${noIconSet}"`
@@ -172,7 +172,7 @@ function custom(payload: Payload, prefix: string): string {
   return `<${prefix}customFilter${operator === 'equal' ? '' : ` operator="${operator}"`} val="${escapeAttr(value)}"/>`
 }
 
-function dateGroup(payload: Payload): string {
+export function dateGroup(payload: Payload): string {
   const values = [payload.u16(), payload.u16(), payload.u32(), payload.u16(), payload.u16(), payload.u16()]
   payload.skip(6)
   const level = payload.u32()

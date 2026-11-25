@@ -1,0 +1,27 @@
+/** Excel for Mac stores these Russian worksheet functions as BIFF Add-in names.
+ * The English equivalents are from the measured formula names in src/locales/ru-RU.ts. */
+export const RUSSIAN_ADDIN_NAMES: Readonly<Partial<Record<string, string>>> = {
+  'НАКОПДОХОД': 'ACCRINT', 'НАКОПДОХОДПОГАШ': 'ACCRINTM', 'АМОРУМ': 'AMORDEGRC', 'АМОРУВ': 'AMORLINC',
+  'БЕССЕЛЬ.I': 'BESSELI', 'БЕССЕЛЬ.J': 'BESSELJ', 'БЕССЕЛЬ.K': 'BESSELK', 'БЕССЕЛЬ.Y': 'BESSELY',
+  'ДВ.В.ДЕС': 'BIN2DEC', 'ДВ.В.ШЕСТН': 'BIN2HEX', 'ДВ.В.ВОСЬМ': 'BIN2OCT', 'КОМПЛЕКСН': 'COMPLEX',
+  'ПРЕОБР': 'CONVERT', 'ДНЕЙКУПОНДО': 'COUPDAYBS', 'ДНЕЙКУПОН': 'COUPDAYS', 'ДНЕЙКУПОНПОСЛЕ': 'COUPDAYSNC',
+  'ДАТАКУПОНПОСЛЕ': 'COUPNCD', 'ЧИСЛКУПОН': 'COUPNUM', 'ДАТАКУПОНДО': 'COUPPCD', 'ОБЩПЛАТ': 'CUMIPMT',
+  'ОБЩДОХОД': 'CUMPRINC', 'ДЕС.В.ДВ': 'DEC2BIN', 'ДЕС.В.ШЕСТН': 'DEC2HEX', 'ДЕС.В.ВОСЬМ': 'DEC2OCT',
+  'ДЕЛЬТА': 'DELTA', 'СКИДКА': 'DISC', 'РУБЛЬ.ДЕС': 'DOLLARDE', 'РУБЛЬ.ДРОБЬ': 'DOLLARFR',
+  'ДЛИТ': 'DURATION', 'ДАТАМЕС': 'EDATE', 'ЭФФЕКТ': 'EFFECT', 'КОНМЕСЯЦА': 'EOMONTH', 'ФОШ': 'ERF',
+  'ДФОШ': 'ERFC', 'ДВФАКТР': 'FACTDOUBLE', 'БЗРАСПИС': 'FVSCHEDULE', 'НОД': 'GCD', 'ПОРОГ': 'GESTEP',
+  'ШЕСТН.В.ДВ': 'HEX2BIN', 'ШЕСТН.В.ДЕС': 'HEX2DEC', 'ШЕСТН.В.ВОСЬМ': 'HEX2OCT', 'МНИМ.ABS': 'IMABS',
+  'МНИМ.ЧАСТЬ': 'IMAGINARY', 'МНИМ.АРГУМЕНТ': 'IMARGUMENT', 'МНИМ.СОПРЯЖ': 'IMCONJUGATE',
+  'МНИМ.COS': 'IMCOS', 'МНИМ.ДЕЛ': 'IMDIV', 'МНИМ.EXP': 'IMEXP', 'МНИМ.LN': 'IMLN', 'МНИМ.LOG10': 'IMLOG10',
+  'МНИМ.LOG2': 'IMLOG2', 'МНИМ.СТЕПЕНЬ': 'IMPOWER', 'МНИМ.ПРОИЗВЕД': 'IMPRODUCT', 'МНИМ.ВЕЩ': 'IMREAL',
+  'МНИМ.SIN': 'IMSIN', 'МНИМ.КОРЕНЬ': 'IMSQRT', 'МНИМ.РАЗН': 'IMSUB', 'МНИМ.СУММ': 'IMSUM',
+  'ИНОРМА': 'INTRATE', 'ЕЧЁТН': 'ISEVEN', 'ЕНЕЧЁТ': 'ISODD', 'НОК': 'LCM', 'МДЛИТ': 'MDURATION',
+  'ОКРУГЛТ': 'MROUND', 'МУЛЬТИНОМ': 'MULTINOMIAL', 'ЧИСТРАБДНИ': 'NETWORKDAYS', 'НОМИНАЛ': 'NOMINAL',
+  'ВОСЬМ.В.ДВ': 'OCT2BIN', 'ВОСЬМ.В.ДЕС': 'OCT2DEC', 'ВОСЬМ.В.ШЕСТН': 'OCT2HEX',
+  'ЦЕНАПЕРВНЕРЕГ': 'ODDFPRICE', 'ДОХОДПЕРВНЕРЕГ': 'ODDFYIELD', 'ЦЕНАПОСЛНЕРЕГ': 'ODDLPRICE',
+  'ДОХОДПОСЛНЕРЕГ': 'ODDLYIELD', 'ЦЕНА': 'PRICE', 'ЦЕНАСКИДКА': 'PRICEDISC', 'ЦЕНАПОГАШ': 'PRICEMAT',
+  'ЧАСТНОЕ': 'QUOTIENT', 'СЛУЧМЕЖДУ': 'RANDBETWEEN', 'ПОЛУЧЕНО': 'RECEIVED', 'РЯД.СУММ': 'SERIESSUM',
+  'КОРЕНЬПИ': 'SQRTPI', 'РАВНОКЧЕК': 'TBILLEQ', 'ЦЕНАКЧЕК': 'TBILLPRICE', 'ДОХОДКЧЕК': 'TBILLYIELD',
+  'НОМНЕДЕЛИ': 'WEEKNUM', 'РАБДЕНЬ': 'WORKDAY', 'ЧИСТВНДОХ': 'XIRR', 'ЧИСТНЗ': 'XNPV',
+  'ДОЛЯГОДА': 'YEARFRAC', 'ДОХОД': 'YIELD', 'ДОХОДСКИДКА': 'YIELDDISC', 'ДОХОДПОГАШ': 'YIELDMAT',
+}

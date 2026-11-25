@@ -86,7 +86,7 @@ Pass the locale the user reading the messages has chosen. A file does not record
 - `cached` holds the values the file stores for formulas and for the cells their arrays spilled into, by sheet in the workbook's order, in the shape of a result: `cached.sheets[0].cells.B1.value` like `compute(book).sheets[0].cells.B1.value`. A formula whose array spilled has `spill`, its range, and each other cell of the range has `spillOf`, the formula's address, as in a result. These are what Excel calculated when it saved the file, so you can compare them with the engine's result cell by cell, or write the file again with them (`writeXlsx({ book, result: cached })`). A workbook with a circular reference opens with them as Excel opens the file, with `compute(book, { cached })` or `createSession(book, { cached })`: the formulas the cycle stops keep the stored values ([cycles.md](cycles.md)).
 - `issues` lists what the workbook cannot represent of a file's cells, formulas, names and looks, with the sheet and the cells or the name it concerns; [What is not reported](#what-is-not-reported) names the rest. Each issue has a code for programs and a message for users, in English or in the language of `opts.locale` ([The language of the messages](#the-language-of-the-messages)).
 
-For an `.xlsb` file, use [`readXlsb`](#reading-xlsb). An `.xls` file and a password-protected workbook cause an `InputError` that names them. Any other file that is not a zip archive, a damaged archive (an entry cut short, two entries of one name, bytes that do not match their CRC-32), a part that is not valid XML because a character reference in it is past U+10FFFF, an encrypted file, a ZIP64 archive and a file without a workbook part cause errors. Data that is not bytes, such as the file's path, causes an `InputError` that says to pass the bytes.
+Use [`readXls`](#reading-xls) for `.xls` and [`readXlsb`](#reading-xlsb) for `.xlsb`. A password-protected workbook causes an `InputError`. Any other file that is not a zip archive, a damaged archive (an entry cut short, two entries of one name, bytes that do not match their CRC-32), a part that is not valid XML because a character reference in it is past U+10FFFF, an encrypted file, a ZIP64 archive and a file without a workbook part cause errors. Data that is not bytes, such as the file's path, causes an `InputError` that says to pass the bytes.
 
 `opts.limits` bounds how large the file's parts may be once inflated: `entryBytes` for one part, 512 MiB by default; `totalBytes` for all parts read together, 1 GiB by default; and `ratio`, how many times its compressed size a part larger than 16 MiB may inflate to, not bounded unless given. A file beyond these limits causes an error, as a damaged file does. A host that reads files uploaded by users passes lower limits, and a ratio if it wants a small file refused before it inflates:
 
@@ -361,6 +361,42 @@ An issue's `message` is in English by default. `readXlsx(data, { locale })` and 
 The host passes the language the user reading the messages has chosen. A file does not record it: Excel stores no language in xlsx, and the locale the writer stores in `xlcalc.locale` is the workbook's, the rules it calculates by, and a user working in another language may open the same workbook. So neither function takes the language from the workbook.
 
 The messages are part of the locale's module, alongside its other messages ([docs/locale.md](locale.md#messages)), and the English ones are part of the subpath, so the subpath includes no locale other than en-US, and a locale without its own text for an issue falls back to the English one: a host that displays Russian loads `xlcalc/locales/ru-RU`, as it does for workbooks in ru-RU. One part of one message stays in English: why a table is left out, which comes from the table check's own text (`Таблица «Over» не прочитана, модель не может её хранить (B1:C2 overlaps the table T)`).
+
+## Reading xls
+
+`readXls(data, opts)` from `xlcalc/xls` reads Excel 97–2003 workbooks (BIFF8), Excel 5 and 95 workbooks (BIFF5), and standalone worksheets in BIFF2, BIFF3 and BIFF4. It takes bytes and returns `book`, `cached` and `issues`, in the same shape as `readXlsx`.
+
+```js
+import { readXls } from 'xlcalc/xls'
+
+const { book, cached, issues } = await readXls(await file.arrayBuffer())
+```
+
+BIFF8 includes cells, formulas and their saved results, names, styles, sheet views, hyperlinks, notes, validation, conditional formatting, protection settings, filters and sorts, external workbook caches and tables. PivotTables can use a range or a defined name in this workbook or another workbook, a set of consolidated ranges, a database connection, or a scenario report. The reader keeps their saved cache records and items, grouping, calculated fields and items, layout, filters, area formats and the scope of their conditional formats. The workbook locale is kept when Excel stored the `xlcalc.locale` property. Register `xlcalc/table-styles` to load custom table styles.
+
+Earlier worksheets use the saved code page for byte strings, including DOS code pages 437, 850, 852 and 866. The reader loads their cells, styles, formulas, names and notes, including BIFF5 rich text and the BIFF5 link tables that hold external references, names and cached cell values. A standalone worksheet has no stored sheet name, so the reader calls it `Sheet1`.
+
+An in-place advanced filter is read with its saved filter mode and hidden rows. Its criteria, connection and query definitions, linked-table metadata, and print settings are outside the model. The reader reports data connections in `issues` and uses the records the workbook saved. OLAP PivotTables have additional structures outside this coverage. Encrypted workbooks and BIFF3/4 workspace files are refused. A formula the reader cannot translate is reported and its saved result is used.
+
+`opts.locale` gives the language of the issues. `opts.limits` bounds each binary stream and generated XML part and their total. The inflation ratio applies to compressed parts embedded in the workbook, such as a custom theme. To save the resulting workbook as XLSX, use `writeXlsx({ book, result: cached })`.
+
+### Printing from XLS
+
+`readXlsWithPrint` from `xlcalc/xls/print` also returns the worksheet print settings, their issues and the saved default row heights. On BIFF8 it reads print areas and repeating titles, page setup and margins, print flags, header and footer variants, and manual page breaks. Device-specific printer records and pictures in headers or footers appear in `printIssues`.
+
+```js
+import { readXlsWithPrint } from 'xlcalc/xls/print'
+import { writeXlsxWithPrint } from 'xlcalc/xlsx/print'
+
+const { book, cached, print } = await readXlsWithPrint(await file.arrayBuffer())
+const { data } = await writeXlsxWithPrint({ book, result: cached }, print, { values: 'preserve' })
+```
+
+The same settings and `sheetDefaults` can be passed to the worksheet geometry and pagination functions in [Worksheet printing](xlsx-print.md).
+
+### Reading XLS connections
+
+`readXlsWithConnections` from `xlcalc/xls/connections` adds `connections`, `connectionIssues` and `olapPivots` to the read result. It reads the workbook's BIFF8 connection catalogue and associates database definitions with the PivotCache or query table they name. Database definitions include saved command text and connection strings. Text definitions include the source file, delimiters and column formats. The OLAP reports include the saved hierarchy, measure, named-set and KPI entries, their dimension names and the view's links between fields and hierarchy levels. The workbook result supplies saved cell values and pivot layout. The reader inspects the stored data without opening data connections.
 
 ## Reading xlsb
 

@@ -26,7 +26,7 @@ const child = fileURLToPath(new URL('./fixtures/dist-child.mjs', import.meta.url
 describe('built package', () => {
   it('exports subpaths: JS and .d.ts in dist', () => {
     const entries = Object.entries(pkg.exports).filter(([k]) => k !== './package.json')
-    expect(entries.map(([k]) => k)).toEqual(['.', './core', './functions', './contract', './a1', './text', './entry', './function-text', './function-text/ru-RU', './unstable/internal', './unstable/synth', './xlsx', './xlsx/charts', './xlsx/print', './xlsx/print/keep', './xlsx/keep', './xlsb', './csv', './worker', './worker/thread', './locales', './locales/ru-RU', './regex', './pivot', './table-styles'])
+    expect(entries.map(([k]) => k)).toEqual(['.', './core', './functions', './contract', './a1', './text', './entry', './function-text', './function-text/ru-RU', './unstable/internal', './unstable/synth', './xlsx', './xlsx/charts', './xlsx/print', './xlsx/print/keep', './xlsx/keep', './xls', './xls/connections', './xls/print', './xlsb', './csv', './worker', './worker/thread', './locales', './locales/ru-RU', './regex', './pivot', './table-styles'])
     for (const [, target] of entries) {
       if (typeof target === 'string') throw new Error('expected { types, default }')
       for (const file of [target.types, target.default]) {

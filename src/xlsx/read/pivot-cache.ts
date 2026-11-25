@@ -3,6 +3,7 @@
  * their items, facts, groups and formulas, calculated items) and the records it saved (`pivotCacheRecords`). The values
  * of items and records are read by one scan of their tags, as a cache can hold many.
  */
+import { quoteSheetIfNeeded } from '../../a1.js'
 import type { NumberFormat, PivotCache, PivotCacheField, PivotFieldFacts, PivotFieldGroup, PivotGroupBy, PivotSource, PivotValue } from '../../contract.js'
 import { attr, attributes, attrsAt, element, flag, has, within } from '../xml/scan.js'
 import { decodeEscapes, decodeXml } from '../xml/text.js'
@@ -150,7 +151,11 @@ function sourceOf(xml: string, book: (id: string | undefined) => string | undefi
     return { type: 'consolidation', ranges }
   }
   const w = attrsAt(xml, 'worksheetSource')
-  if (w.name !== undefined) return { type: 'name', name: attrText(w.name), ...linked(w) }
+  if (w.name !== undefined) {
+    const name = attrText(w.name)
+    const qualified = w.sheet === undefined || name.includes('!') ? name : quoteSheetIfNeeded(attrText(w.sheet)) + '!' + name
+    return { type: 'name', name: qualified, ...linked(w) }
+  }
   return { type: 'range', sheet: attrText(w.sheet), range: attrText(w.ref), ...linked(w) }
 }
 

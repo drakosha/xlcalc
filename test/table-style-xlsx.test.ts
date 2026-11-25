@@ -1,3 +1,4 @@
+import { readFile } from 'node:fs/promises'
 import { describe, expect, it } from 'vitest'
 import type { BookInput } from '../src/contract.js'
 import { tableStyleFile, TABLE_STYLE_CASES } from '../bench/coverage/xlsx/table-style-names.js'
@@ -20,6 +21,16 @@ describe('XLSX table style definitions and theme', () => {
     expect(book.tableStyles?.custom?.TableStyleLight).toEqual({
       pivot: false, table: true, elements: [{ type: 'headerRow', style: { fill: { color: '#FF0000' } } }],
     })
+  })
+
+  it('reads a custom table style and its differential formats from XLS', async () => {
+    const { readXls } = await import(libUrl('xls.js')) as typeof import('../src/xls.js')
+    const file = (extension: string) => readFile(new URL(`./excel/xls-read/custom-style.${extension}`, import.meta.url))
+    const binary = await readXls(await file('xls'))
+    const xml = await readXlsx(await file('xlsx'))
+    expect(binary.book.tableStyles?.custom).toStrictEqual(xml.book.tableStyles?.custom)
+    expect(binary.book.sheets[0].tables?.[0].style).toEqual(xml.book.sheets[0].tables?.[0].style)
+    expect(binary.issues).toEqual(xml.issues)
   })
 
   it('writes custom formats and palette, keeps them in a session and preserves them when editing existing XLSX', async () => {

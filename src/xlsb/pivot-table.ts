@@ -11,7 +11,7 @@ const SHOW_AS = ['normal', 'difference', 'percent', 'percentDiff', 'runTotal', '
   'percentOfTotal', 'index', 'percentOfParentRow', 'percentOfParentCol', 'percentOfParent', 'percentOfRunningTotal',
   'rankAscending', 'rankDescending']
 const COMPARISONS = ['Equal', 'NotEqual', 'GreaterThan', 'GreaterThanOrEqual', 'LessThan', 'LessThanOrEqual', 'Between', 'NotBetween']
-const FILTER_TYPES = ['', 'count', 'percent', 'sum', 'captionEqual', 'captionNotEqual', 'captionBeginsWith',
+export const FILTER_TYPES = ['', 'count', 'percent', 'sum', 'captionEqual', 'captionNotEqual', 'captionBeginsWith',
   'captionNotBeginsWith', 'captionEndsWith', 'captionNotEndsWith', 'captionContains', 'captionNotContains',
   ...COMPARISONS.slice(2).map((kind) => `caption${kind}`), ...COMPARISONS.map((kind) => `value${kind}`),
   'dateEqual', 'dateOlderThan', 'dateNewerThan', 'dateBetween', 'tomorrow', 'today', 'yesterday', 'nextWeek', 'thisWeek',

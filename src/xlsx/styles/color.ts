@@ -17,6 +17,9 @@ const INDEXED = [
 /** Theme colours as a cell's `theme` index names them: the first two pairs are swapped against the theme part's order. */
 export const THEME_ORDER = ['lt1', 'dk1', 'lt2', 'dk2', 'accent1', 'accent2', 'accent3', 'accent4', 'accent5', 'accent6', 'hlink', 'folHlink']
 
+/** The current Office palette, used by Excel when a workbook has no saved theme. */
+export const OFFICE_THEME = ['FFFFFF', '000000', 'E8E8E8', '0E2841', '156082', 'E97132', '196B24', '0F9ED5', 'A02B93', '4EA72E', '467886', '96607D']
+
 export interface Palette {
   theme: string[]
   indexed: string[]

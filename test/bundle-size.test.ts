@@ -21,6 +21,28 @@ const lib = (file: string) => JSON.stringify(fileURLToPath(libUrl(file)))
 const locales = (used: string[]) => used.filter((f) => /\/locales\//.test(f)).map((f) => f.replace(/^.*\/locales\//, ''))
 
 describe('bundle size', () => {
+  it('keeps the XLS converter in its own entry point', async () => {
+    const xls = await minified(`export * from ${lib('xls.js')}`)
+    // The reader with its saved OLAP cache projection is about 386,300 minified bytes.
+    expect(xls.bytes).toBeLessThan(378 * 1024)
+    const print = await minified(`export * from ${lib('xls-print.js')}`)
+    const isPrint = (file: string) => /\/(?:xls\/print-markup\.|xlsx\/print\/)/.test(file)
+    expect(print.bytes).toBeLessThan(390 * 1024)
+    expect(print.used.filter(isPrint)).toEqual(expect.arrayContaining([
+      expect.stringMatching(/\/xls\/print-markup\./), expect.stringMatching(/\/xlsx\/print\/read\./),
+    ]))
+    expect(xls.used.filter(isPrint)).toEqual([])
+    const connections = await minified(`export * from ${lib('xls-connections.js')}`)
+    const isConnectionDetails = (file: string) => /\/xls\/connection-details\./.test(file)
+    expect(connections.bytes).toBeLessThan(390 * 1024)
+    expect(connections.used.some(isConnectionDetails)).toBe(true)
+    expect(xls.used.some(isConnectionDetails) || print.used.some(isConnectionDetails)).toBe(false)
+    for (const entry of ['index.js', 'xlsx.js', 'xlsx-keep.js', 'xlsx-print.js', 'xlsx-print-keep.js', 'xlsb.js']) {
+      const { used } = await minified(`export * from ${lib(entry)}`)
+      expect(used.filter((file) => /\/xls(?:\/|\.(?:js|ts)$)/.test(file))).toEqual([])
+    }
+  }, 60_000)
+
   it('print codecs and pagination belong to the opt-in xlsx/print entry, under 400 KB, and with keep under 464 KB', async () => {
     const isPrint = (file: string) => /\/xlsx(?:\/print\/|-print(?:-keep)?\.(?:ts|js)$)/.test(file)
     const { bytes, used } = await minified('export * from ' + lib('xlsx-print.js'))
