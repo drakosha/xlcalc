@@ -107,8 +107,6 @@ export const REASONS = {
     'When the result of `RATE` is exactly 0, it returns 0 or a value within 1e-10 of it; Excel returns its own rounding noise of up to about 2e-9, or, from some guesses, `#NUM!`.',
   gammaInvConvergence:
     '`GAMMA.INV`, `CHISQ.INV`, `CHISQ.INV.RT` (and `GAMMAINV`, `CHIINV`) return the quantile where Excel\'s iteration fails with `#NUM!`: shapes from about 5·10^9 (10^10 degrees of freedom), and probabilities near 1 with shapes under 0.03; Excel\'s own `GAMMA.DIST` at the engine\'s result gives back the probability.',
-  binomInvTie:
-    '`BINOM.INV` where alpha exactly equals the probability of no success, (1 − p)^n: Excel decides by its own rounding of that power, the engine by exp(n·ln(1 − p)); they differ on `BINOM.INV(3,0.25,0.421875)`, which is 0 in Excel and 1 here.',
   textDigits:
     'A number that Excel calculates with a different algorithm can differ from the engine\'s in the 15th significant digit, within the tests\' relative tolerance of 1e-9; converted to text (`&`, `TEXTJOIN`), the last digit then differs (`TEXTJOIN(";",FALSE,BESSELK(10,3))` is `2.72527006358477E-05` in Excel and `2.72527006358476E-05` here).',
   linestConstantColumn:
@@ -215,7 +213,6 @@ export const KNOWN: Readonly<Record<string, { reason: keyof typeof REASONS; engi
   'stat:GAMMAINV#5': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 1.50908414769475 } },
   'stat:GAMMAINV#16': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 9990052413.58303 } },
   'stat:GAMMAINV#17': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000052439.8096 } },
-  'stat:BINOM.INV#30': { reason: 'binomInvTie', engine: { t: 'n', v: 1 } },
   'fuzz:1#234': { reason: 'textDigits', engine: { t: 's', v: '2.72527006358476E-05' } },
   'fuzz:1#403': { reason: 'textDigits', engine: { t: 's', v: '4.18382560777941E-23' } },
   'fuzz:1#947': { reason: 'textDigits', engine: { t: 's', v: '0.00803735952120296' } },

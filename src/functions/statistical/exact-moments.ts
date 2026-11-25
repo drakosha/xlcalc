@@ -5,7 +5,7 @@ const bits = new DataView(new ArrayBuffer(8))
 const FRACTION = (1n << 52n) - 1n
 
 /** A finite double as an integer times a power of two, including subnormal inputs. */
-function dyadic(x: number): [bigint, number] {
+export function dyadic(x: number): [bigint, number] {
   bits.setFloat64(0, x)
   const raw = bits.getBigUint64(0)
   const exponent = Number((raw >> 52n) & 2047n)

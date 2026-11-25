@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { compute } from '../src/index.js'
 
-// The cases came from a comparison with ooxml-core's Excel for Windows fixtures. Rechecked in
-// Excel for Mac 16.115.2. The text slicing cases use workbook Compatibility Version 1.
+// Excel cases from the ooxml-core comparison and its follow-up probes on Mac and Windows.
+// The text slicing cases use workbook Compatibility Version 1.
 const cases = [
   ['FIND("","")', 1],
   ['FIND("","abc",4)', 4],
@@ -24,7 +24,18 @@ const cases = [
   ['MOD(1125899999999,1)', 0],
   ['MOD(2251799999998,2)', 0],
   ['MOD(1125900000000,1)', { error: 'NUM' }],
+  ['SECOND(0.5+0.5/86400)', 0],
   ['SECOND(0.5+(0.5+1E-7)/86400)', 1],
+  ['SECOND(0.5+9.5/86400)', 9],
+  ['SECOND(10.5/86400)', 11],
+  ['BINOM.INV(3,0.25,0.421875)', 0],
+  ['BINOM.INV(3,0.25,0.421875000000001)', 1],
+  ['BINOM.INV(2,0.25,0.5625)', 1],
+  ['BINOM.INV(10,0.5,0.5^10)', 1],
+  ['BINOM.INV(1,0.67,A5)', 1],
+  ['BINOM.INV(1,0.67,B5)', 0],
+  ['BINOM.INV(512,A6,B6)', 1],
+  ['CRITBINOM(3,0.25,0.421875)', 0],
   ['SWITCH(A1,0.3,"eq","ne")', 'eq'],
   ['SUM(AGGREGATE(14,6,{10,20,30},{1,2}))', 50],
   ['SUM(AGGREGATE(14,6,{10,20,30},{1,2})+10)', 70],
@@ -47,14 +58,10 @@ describe.each(['closures', 'eval'] as const)('Excel formula regressions (%s)', (
       A2: { value: 'ß' }, B2: { value: 'SS' }, C2: { value: 'ẞ' },
       A3: { value: 'ΣΑΣ' }, B3: { value: 'σας' }, C3: { value: 'σασ' },
       A4: { value: 'ﬁ' }, B4: { value: 'fi' },
+      A5: { value: 0.3299999999999999 }, B5: { value: 0.32999999999999985 },
+      A6: { value: 0.7073477915737445 }, B6: { value: 5.917313071032519e-274 },
     } }] }, { execution })
     expect(result.sheets[0].cells.C1.value).toEqual(expected)
-  })
-
-  // Nearest-even fixes this case but changes other half-second answers recorded from Excel.
-  it.fails('SECOND at a half-second boundary after midday', () => {
-    const result = compute({ sheets: [{ name: 'S', cells: { A1: { formula: 'SECOND(0.5+0.5/86400)' } } }] }, { execution })
-    expect(result.sheets[0].cells.A1.value).toBe(0)
   })
 
   it('spills the results of AGGREGATE over the positions in an array constant', () => {

@@ -101,7 +101,6 @@ export const WIN_KNOWN_CASES: Readonly<Record<string, { reason: Reason; engine: 
   'en-US:stat:GAMMAINV#17': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 10000052439.8096 } },
   'en-US:stat:WEIBULL#28': { reason: 'winWeibull', engine: { t: 'e', v: 'DIV0' } },
   'en-US:stat:WEIBULL.DIST#28': { reason: 'winWeibull', engine: { t: 'e', v: 'DIV0' } },
-  'en-US:stat:BINOM.INV#30': { reason: 'binomInvTie', engine: { t: 'n', v: 1 } },
   'en-US:stat:GAMMA.INV#26': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 0.265052550251588 } },
   'en-US:stat:GAMMA.INV#27': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 0.934242187465308 } },
   'en-US:stat:GAMMA.INV#31': { reason: 'gammaInvConvergence', engine: { t: 'n', v: 5000116309.28388 } },

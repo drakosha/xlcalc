@@ -9,6 +9,7 @@ import { E, type V } from '../../values.js'
 import { badDf, fCdf, fPdf, tCdf, tPdf } from './distributions.js'
 import { MAX_COUNT } from '../common.js'
 import { betaPrefix, dgamma, gammaPQ, ibeta, normInv, solve } from './special.js'
+import { binomialZeroExceeds } from './binomial-zero.js'
 
 /** x with P(a, x) = p, q = 1 − p given precisely; 0 where the quantile underflows. */
 export function gammaInv(p: number, q: number, a: number): number {
@@ -97,14 +98,11 @@ function betaInvExcel(p: number, a: number, b: number, lo = 0, hi = 1): V {
   return lo + betaInv(p, 1 - p, a, b) * (hi - lo)
 }
 
-/**
- * The smallest k whose cumulative binomial probability reaches alpha. Excel compares the first term,
- * q^n as exp(n ln q), strictly: BINOM.INV(10,0.5,0.5^10) is 1, BINOM.INV(3,0.5,0.125) is 0 (exp gives a bit more).
- */
+/** The smallest k whose cumulative binomial probability reaches alpha, with Excel's strict comparison at zero. */
 function binomInv(n: number, p: number, alpha: number): V {
   if (n < 0 || n >= MAX_COUNT || !unit(p) || !unit(alpha)) return E.NUM
   const q = 1 - p
-  if (Math.exp(n * Math.log(q)) > alpha) return 0
+  if (binomialZeroExceeds(n, p, alpha)) return 0
   const cdf = (k: number) => (k >= n ? 1 : ibeta(q, p, n - k, k + 1)[0])
   let k = Math.min(Math.max(Math.floor(n * p + Math.sqrt(n * p * q) * normInv(alpha)), 1), n)
   for (let i = 0; i < 1e6; i++) {

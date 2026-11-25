@@ -78,17 +78,17 @@ export const lastDayExcel = (y: number, m: number) => (y === 1900 && m === 2 ? 2
 const SECOND = 1 / 86_400
 
 /**
- * A serial number as a day and a second of it, as Excel reads a moment in DAY, HOUR and their kin and in a format's whole
- * seconds (the set `seconds-held`): half a second is added and the sum split into days and seconds, all in floating
- * point, so 0.4 s before midnight is the next day, an exact half at a large serial stays below (00:05:37.5 of 2025-01-31
- * is 00:05:37) and one at a small serial goes up (SECOND(10.5/86400) is 11, the set `findate`, which the division by a
- * second's length gives where a product by 86400 does not).
+ * Excel adds half a second to the serial before taking the day, then scales the remainder through
+ * hours, minutes and seconds. Each step rounds independently: a single conversion to seconds can
+ * change the answer at a half-second boundary.
  */
 export function momentOf(t: number): { day: number; second: number } {
-  const u = t + SECOND / 2
-  const day = Math.floor(u)
-  const second = Math.floor((u - day) / SECOND)
-  // a fraction a hair under 1 divides to a whole day
+  const floor = Math.floor
+  const rounded = t + SECOND / 2
+  const day = floor(rounded)
+  const hours = (rounded - day) * 24
+  const minutes = (hours % 1) * 60
+  const second = floor(hours) * 3600 + floor(minutes) * 60 + floor((minutes % 1) * 60)
   return second < 86_400 ? { day, second } : { day: day + 1, second: 0 }
 }
 
