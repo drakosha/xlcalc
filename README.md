@@ -61,21 +61,21 @@ A bundle includes only the entry points it imports. Sizes are for the browser, b
 
 | import | for | size |
 |---|---|---:|
-| `compute` from `xlcalc` | calculating a workbook | 412 KB (158) |
-| `createSession` from `xlcalc` | a session: edits, structure operations, undo, AutoFit, conditional formats, data validation | 723 KB (273) |
+| `compute` from `xlcalc` | calculating a workbook | 415 KB (159) |
+| `createSession` from `xlcalc` | a session: edits, structure operations, undo, AutoFit, conditional formats, data validation | 727 KB (275) |
 | `liveBook` from `xlcalc` | a session's cells as objects: `cells.A1.value = 100`, listeners ([Live objects](docs/live-objects.md)) | |
-| all of `xlcalc` | also `createInlineCalc`, `registerLocale`, `registerRegex`, `functionSignature` and `FUNCTION_CATEGORIES` for tooltips | 813 KB (303) |
-| `xlcalc/core` | the same API without five groups of rarely used functions, which `registerFunctions` loads from `xlcalc/functions` ([Groups of functions](docs/function-groups.md)) | `compute` 341 KB (129), all 738 KB (273) |
-| `xlcalc/functions` | the groups: `engineering`, `finance`, `lambda`, `statistics`, `xml`, `allFunctions` | 101 KB (40) |
-| `xlcalc/xlsx` | `readXlsx`, `writeXlsx`, `fromLegacy` | 349 KB (130) |
-| `xlcalc/xlsx/print` | read and write print settings and lay out worksheet pages and drawings ([Worksheet printing](docs/xlsx-print.md)) | 390 KB (146) |
+| all of `xlcalc` | also `createInlineCalc`, `registerLocale`, `registerRegex`, `functionSignature` and `FUNCTION_CATEGORIES` for tooltips | 817 KB (305) |
+| `xlcalc/core` | the same API without five groups of rarely used functions, which `registerFunctions` loads from `xlcalc/functions` ([Groups of functions](docs/function-groups.md)) | `compute` 344 KB (130), all 741 KB (274) |
+| `xlcalc/functions` | the groups: `engineering`, `finance`, `lambda`, `statistics`, `xml`, `allFunctions` | 102 KB (41) |
+| `xlcalc/xlsx` | `readXlsx`, `writeXlsx`, `fromLegacy` | 351 KB (131) |
+| `xlcalc/xlsx/print` | read and write print settings and lay out worksheet pages and drawings ([Worksheet printing](docs/xlsx-print.md)) | 391 KB (147) |
 | `xlcalc/xlsx/charts` | read chart data and resolve series against a session ([Chart data](docs/xlsx-print.md#chart-data)) | 47 KB (18) |
-| `xlcalc/xlsx/print/keep` | write print settings over the original file with its drawings and other parts ([Worksheet printing](docs/xlsx-print.md)) | 454 KB (169) |
-| `xlcalc/xlsx/keep` | `openKept`, `writeKept`, `inspectKept`: a workbook written over the file it was read from, keeping its charts, pictures and everything else the workbook does not hold ([Writing over the original file](docs/xlsx-keep.md)) | 443 KB (164) |
-| `xlcalc/xls` | `readXls` reads legacy Excel workbooks, saved values and issues ([Reading xls](docs/xlsx.md#reading-xls)) | 377 KB (140) |
-| `xlcalc/xls/connections` | `readXlsWithConnections` also reads saved connection and OLAP definitions ([Reading XLS connections](docs/xlsx.md#reading-xls-connections)) | 383 KB (143) |
-| `xlcalc/xls/print` | `readXlsWithPrint` also reads the print settings and row defaults ([Printing from XLS](docs/xlsx.md#printing-from-xls)) | 387 KB (144) |
-| `xlcalc/xlsb` | `readXlsb`: a binary Excel workbook, its saved values and issues ([Reading xlsb](docs/xlsx.md#reading-xlsb)) | 325 KB (119) |
+| `xlcalc/xlsx/print/keep` | write print settings over the original file with its drawings and other parts ([Worksheet printing](docs/xlsx-print.md)) | 456 KB (169) |
+| `xlcalc/xlsx/keep` | `openKept`, `writeKept`, `inspectKept`: a workbook written over the file it was read from, keeping its charts, pictures and everything else the workbook does not hold ([Writing over the original file](docs/xlsx-keep.md)) | 445 KB (165) |
+| `xlcalc/xls` | `readXls` reads legacy Excel workbooks, saved values and issues ([Reading xls](docs/xlsx.md#reading-xls)) | 377 KB (139) |
+| `xlcalc/xls/connections` | `readXlsWithConnections` also reads saved connection and OLAP definitions ([Reading XLS connections](docs/xlsx.md#reading-xls-connections)) | 382 KB (142) |
+| `xlcalc/xls/print` | `readXlsWithPrint` also reads the print settings and row defaults ([Printing from XLS](docs/xlsx.md#printing-from-xls)) | 386 KB (143) |
+| `xlcalc/xlsb` | `readXlsb`: a binary Excel workbook, its saved values and issues ([Reading xlsb](docs/xlsx.md#reading-xlsb)) | 327 KB (120) |
 | `xlcalc/csv` | `readCsv`, `writeCsv`: a CSV file as Excel opens it, a sheet as Excel saves it ([Reading and writing CSV](docs/csv.md)) | 199 KB (74) |
 | `xlcalc/worker` | `createCalcPool`: worker threads | 35 KB (13), its worker 960 KB (330), 630 KB (238) loaded first where a bundler splits off the locales, regex levels, groups of functions, the PivotTable engine and the table styles it loads |
 | `xlcalc/a1` | A1 addresses, a sheet's outline commands | 16 KB (6) |
