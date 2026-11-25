@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+Added:
+
+- `readXls` from `xlcalc/xls` reads Excel 97–2003 workbooks (BIFF8), Excel 5 and 95 workbooks (BIFF5) and BIFF2 to BIFF4 worksheets into the same `book`, `cached` and `issues` as `readXlsx`: cells and formulas, styles, names, tables, conditional formatting, filters, notes, external links and PivotTables with their caches.
+- `readXlsWithPrint` from `xlcalc/xls/print` also reads the print settings and row defaults, as `readXlsxWithPrint` returns them.
+- `readXlsWithConnections` from `xlcalc/xls/connections` also reads the saved ODBC, OLE DB and text query definitions, and for OLAP the hierarchies, measures, dimension names, KPIs and the links of PivotTable fields to levels. Refreshing a cube and writing the connection definitions to xlsx are not done.
+
 Fixed:
 
 - A scalar `IF` whose condition can be computed no longer reports a circular reference through the branch it does not take: B1 holding `IF(A1,10,2*C1)` and C1 holding `IF(A1,4,B1/2)` calculate when A1 is true, as in Excel, and an edit that changes the condition enters or leaves the cycle.
