@@ -294,7 +294,19 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
   // sheet's looks (a structure operation over looks gives them back so); the layout and the styles are shared
   // no closure here takes \`opts\`: the state's closures share this scope, and \`opts.prior\` holds the state built before
   const { own, keys } = opts
-  const input: BookInput = { ...book, sheets: book.sheets.map((x) => looksTaken(x)).map((s) => ({ ...s, cells: own?.(s.cells) ? s.cells : { ...s.cells } })) }
+  const addresses: (string[] | undefined)[] = []
+  const sheets = book.sheets.map((source, index) => {
+    const sheet = looksTaken(source)
+    const listed = keys?.get(sheet.cells)
+    addresses[index] = listed
+    if (own?.(sheet.cells)) return { ...sheet }
+    if (!listed) return { ...sheet, cells: { ...sheet.cells } }
+    // Validation already listed these addresses. Reuse that list for the copy and for loading the cells below.
+    const cells: Record<string, CellInput> = {}
+    for (const address of listed) cells[address] = sheet.cells[address]
+    return { ...sheet, cells }
+  })
+  const input: BookInput = { ...book, sheets }
   const externalFunctions = externalNames(opts.externals?.functions)
   const tables = tablesOf(input)
   const groups = groupWatch()
@@ -371,7 +383,7 @@ export function* buildState(book: BookInput, opts: EngineOptions): Steps<EngineS
   for (let s = 0; s < input.sheets.length; s++) {
     const sheet = input.sheets[s]
     // the cells in the order of their entries, listed already where the caller has them
-    for (const addr of keys?.get(sheet.cells) ?? Object.keys(sheet.cells)) {
+    for (const addr of addresses[s] ?? Object.keys(sheet.cells)) {
       const cellIn = sheet.cells[addr]
       const place = addressOrder(addr), col = place % MAX_COLS, row = (place - col) / MAX_COLS
       if (holds(cellIn)) state.spills.occupied.set(s, row, col, true, true)

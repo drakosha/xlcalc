@@ -6,6 +6,7 @@
 import type { Arg, Cx, FnDef, Grid } from '../../args.js'
 import { isArea, lifts } from '../../arrays/lift.js'
 import { Arr, asArray, EMPTY, fromGrid, selectArray } from '../../arrays/value.js'
+import { foldedTextKey } from '../../collate.js'
 import { allot } from '../../exec/budget.js'
 import type { Rules } from '../../locale/rules.js'
 import { Areas, E, isErr, Rng, type CErr, type V } from '../../values.js'
@@ -208,7 +209,7 @@ function byPosition(cx: Cx, array: Arg, rest: (Arg | undefined)[]): Arr {
  * e and an accent, the ligature ﬁ and fi), as Excel merges them; a soft hyphen still tells two texts apart there (the
  * set `low-values-held`).
  */
-const textKey = (v: string) => (/[^\x00-\x7f]/.test(v) ? v.normalize('NFKC') : v).toLowerCase()
+const textKey = (v: string) => foldedTextKey(/[^\x00-\x7f]/.test(v) ? v.normalize('NFKC') : v)
 
 /** A value's identity for UNIQUE and for the groups of GROUPBY and PIVOTBY: by type, text by `textKey`. */
 export const valueKey = (v: V): V => (isErr(v) ? `e${v.code}` : typeof v === 'string' ? `t${textKey(v)}` : v)

@@ -158,6 +158,7 @@ export function shapes(ast: Ast, scope: number, nameRef: NameRef, inArea = false
     }
     const lifted: Shape[] = []
     const passed: Shape[] = []
+    if (name === 'AGGREGATE' && args.length === 4 && !args[3].ref) lifted.push(args[3].s)
     args.forEach((a, i) => {
       const mode = spec.mode(i)
       // an array (not a reference) where a reference goes may be an array of references from OFFSET or INDIRECT, through
@@ -211,9 +212,15 @@ export function sizeOf(n: Ast, shape: Map<Ast, Shape>, tableRef: TableRef): Size
       return isRefOp(n.op) ? undefined : all([n.a, n.b])
     case 'fn': {
       const a = n.args
+      const spec = FUNCTIONS[n.name]
       const num = (k: number) => (!a[k] ? 1 : a[k].k === 'num' ? a[k].v : 0)
       const x = a[0] && sizeOf(a[0], shape, tableRef)
-      const z: Size | undefined = /^(SEQUENCE|RANDARRAY)$/.test(n.name) ? [num(0), num(1)] : n.name === 'MUNIT' ? [num(0), num(0)] : n.name === 'TRANSPOSE' ? x && [x[1], x[0]] : /^(SORT|SORTBY|UNIQUE|FILTER|TAKE|DROP)$/.test(n.name) ? x : FUNCTIONS[n.name]?.array ? undefined : all(a.filter((_, i) => FUNCTIONS[n.name]?.lazy || FUNCTIONS[n.name]?.mode(i) !== 'whole'))
+      const z: Size | undefined = /^(SEQUENCE|RANDARRAY)$/.test(n.name) ? [num(0), num(1)]
+        : n.name === 'MUNIT' ? [num(0), num(0)]
+        : n.name === 'TRANSPOSE' ? x && [x[1], x[0]]
+        : /^(SORT|SORTBY|UNIQUE|FILTER|TAKE|DROP)$/.test(n.name) ? x
+        : spec?.array ? undefined
+        : all(a.filter((_, i) => spec?.lazy || spec?.mode(i) !== 'whole' || (n.name === 'AGGREGATE' && i === 3)))
       return z && z[0] >= 1 && z[1] >= 1 ? z : undefined
     }
   }

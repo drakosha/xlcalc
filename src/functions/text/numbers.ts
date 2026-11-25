@@ -22,7 +22,7 @@ function fixedDigits(x: number, decimals: number, rules: Rules, group: boolean):
 }
 
 /** Text past `room` characters is #VALUE!, as TEXT's past 255 (`FIXED(1E+200,0)`, the set `values-held`). */
-const shown = (text: string, room = MAX_SHOWN): V => (text.length > room ? E.VALUE : text)
+const shown = (text: string | null, room = MAX_SHOWN): V => (text === null || text.length > room ? E.VALUE : text)
 
 export const functions: Record<string, FnDef> = {
   DOLLAR: {
@@ -48,5 +48,5 @@ export const functions: Record<string, FnDef> = {
       return shown((x < 0 && !zero ? '-' : '') + text)
     },
   },
-  TEXT: { args: 'v s', cx: true, fn: (cx: Cx, v: Exclude<V, CErr>, format: string) => cx.rules.formatText(v ?? 0, format) ?? E.VALUE },
+  TEXT: { args: 'v s', cx: true, fn: (cx: Cx, v: Exclude<V, CErr>, format: string) => shown(cx.rules.formatText(v ?? 0, format)) },
 }

@@ -16,7 +16,6 @@ import { heldAt, unhold } from './held.js'
 import { blocker, describeAt, endSpill, fixed, release, rivals, spill } from './spill/place.js'
 import { beats } from './spill/rank.js'
 import type { Area } from './spill/state.js'
-import { meets } from './structure/area.js'
 import { sheetKey } from './syntax.js'
 import { E, isErr, Lambda, Rng, type V } from './values.js'
 
@@ -274,8 +273,8 @@ function* recomputed(state: EngineState, dirty: Set<number>, t: Tracker, prune =
   yield* evaluateAll(state, t)
 }
 
-/** A formula in a cycle keeps the range it spilled into (its claim): a cycle runs through a spill range. */
-const spillCycle = (state: EngineState) => [...state.spills.claims.keys()].some((id) => state.topo[id] < 0)
+/** Every live formula is in `order` on an acyclic graph; there are no spill claims to check then. */
+const spillCycle = (state: EngineState) => state.order.length !== state.at.size && [...state.spills.claims.keys()].some((id) => state.topo[id] < 0)
 
 /**
  * The formulas of `dirty` and what depends on them: in topological order, then those in a cycle in the order the walk
@@ -422,8 +421,10 @@ export function concerned(state: EngineState, x: Area, out: Set<number>, step = 
     readersOf(state, x, readers)
     readers.forEach(add)
   }
-  for (const [id, a] of sp.wait) if (a.s === x.s && meets(a, x) && (step === Infinity || !(blockedByInput(state, id, a) || blockedBySpill(state, id, a)))) add(id)
-  for (const [id, a] of sp.on) if (a.s === x.s && meets(a, x)) add(id)
+  for (const area of sp.wait.overlapping(x)) {
+    if (step === Infinity || !(blockedByInput(state, area.id, area) || blockedBySpill(state, area.id, area))) add(area.id)
+  }
+  for (const area of sp.on.overlapping(x)) add(area.id)
 }
 
 /** An array waiting for `a` that a value or formula of the input still blocks: it cannot spill before an edit frees that cell. */

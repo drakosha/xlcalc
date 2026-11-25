@@ -104,7 +104,7 @@ export const functions: Record<string, FnDef> = {
         const c = rest[i]()
         const v = c instanceof Areas && c.cube ? E.REF : (cx.scalar(c) ?? 0)
         if (isErr(v)) return v
-        if (sameType(x, v) && cx.rules.compare(x, v) === 0) return rest[i + 1]()
+        if (sameType(x, v) && cx.rules.compareOp(x, v) === 0) return rest[i + 1]()
       }
       return rest.length % 2 ? rest[rest.length - 1]() : E.NA
     },

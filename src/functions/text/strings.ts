@@ -13,8 +13,8 @@ import { capped, delimiters, joined, MAX_TEXT } from './common.js'
 const MAX_INT = 2_147_483_647
 
 /** Case mapping that keeps a character whose mapping is longer (Excel: UPPER("ß") is "ß"). */
-function caseOf(ch: string, upper: boolean): string {
-  const c = upper ? ch.toUpperCase() : ch.toLowerCase()
+function upperChar(ch: string): string {
+  const c = ch.toUpperCase()
   return c.length === ch.length ? c : ch
 }
 
@@ -22,26 +22,28 @@ function upper(s: string): string {
   const u = s.toUpperCase()
   if (u.length === s.length) return u
   let out = ''
-  for (const ch of s) out += caseOf(ch, true)
+  for (const ch of s) out += upperChar(ch)
   return out
 }
 
-/**
- * Excel capitalizes every letter that follows a non-letter, in any alphabet ("2-way" → "2-Way"). A run of letters is
- * lowered whole when that keeps its length (no lowering is shorter, so each letter kept its own) and it has no Σ,
- * whose whole-text lowering at a word's end is ς; else letter by letter.
- */
+function lower(s: string): string {
+  // Mapping İ first prevents the only length expansion, so ẞ can be restored at its original offset.
+  return s.replaceAll('İ', 'i').toLowerCase().replace(/ß/g, (ch, at: number) => s[at] === 'ẞ' ? 'ẞ' : ch)
+}
+
+/** Excel capitalizes every letter that follows a non-letter ("2-way" → "2-Way"). */
 function proper(s: string): string {
   return s.replace(/\p{L}+/gu, (run) => {
     const n = run.codePointAt(0)! > 0xffff ? 2 : 1
-    const head = caseOf(run.slice(0, n), true)
-    const rest = run.slice(n)
-    const low = rest.toLowerCase()
-    if (low.length === rest.length && !rest.includes('Σ')) return head + low
-    let out = head
-    for (const ch of rest) out += caseOf(ch, false)
-    return out
+    return upperChar(run.slice(0, n)) + lower(run).slice(n)
   })
+}
+
+/** Whether this slicing boundary falls inside a surrogate pair. */
+function splitPair(s: string, i: number): boolean {
+  const lead = s.charCodeAt(i - 1)
+  const trail = s.charCodeAt(i)
+  return lead >= 0xd800 && lead <= 0xdbff && trail >= 0xdc00 && trail <= 0xdfff
 }
 
 // A pattern filled down a column is compiled once; the matchers keep no state between finds.
@@ -110,14 +112,14 @@ const strings: Record<string, FnDef> = {
   FIND: {
     args: 's s w?',
     fn: (find: string, within: string, start = 1) => {
-      if (start < 1 || start > within.length) return E.VALUE
+      if (start < 1 || start > within.length + 1) return E.VALUE
       const at = within.indexOf(find, start - 1)
       return at < 0 ? E.VALUE : at + 1
     },
   },
-  LEFT: { args: 's w?', fn: (s: string, n = 1) => (n < 0 ? E.VALUE : s.substring(0, n)) },
+  LEFT: { args: 's w?', fn: (s: string, n = 1) => n < 0 ? E.VALUE : s.slice(0, n + Number(splitPair(s, n))) },
   LEN: { args: 's', fn: (s: string) => s.length },
-  LOWER: { args: 's', fn: (s: string) => s.toLowerCase() },
+  LOWER: { args: 's', fn: lower },
   MID: {
     args: 's i i',
     fn: (s: string, start: number, n: number) => (start < 1 || start > MAX_INT || n < 0 || n > MAX_INT ? E.VALUE : s.substring(start - 1, start - 1 + n)),
@@ -128,7 +130,11 @@ const strings: Record<string, FnDef> = {
     fn: (s: string, start: number, n: number, rep: string) => (start < 1 || start > MAX_TEXT || n < 0 || n > MAX_TEXT ? E.VALUE : capped(s.slice(0, start - 1) + rep + s.slice(start - 1 + n))),
   },
   REPT: { args: 's i', fn: (s: string, n: number) => (n < 0 || s.length * n > MAX_TEXT ? E.VALUE : s.repeat(n)) },
-  RIGHT: { args: 's w?', fn: (s: string, n = 1) => (n < 0 ? E.VALUE : s.substring(Math.max(0, s.length - n))) },
+  RIGHT: { args: 's w?', fn: (s: string, n = 1) => {
+    if (n < 0) return E.VALUE
+    const start = Math.max(0, s.length - n)
+    return s.slice(start - Number(splitPair(s, start)))
+  } },
   SEARCH: { args: 's s w?', fn: search },
   SUBSTITUTE: { args: 's s s w?', fn: substitute },
   // a range of several cells gives its top-left cell (an array is lifted)

@@ -21,8 +21,8 @@ export function power(x: number, y: number): number | CErr {
   return Math.abs(1 / y) < MAX_ROOT && n % 2 !== 0 && Number.isInteger(n) ? -Math.exp(y * Math.log(-x)) : E.NUM
 }
 
-/** Excel: MOD is #NUM! once the quotient reaches 2^50 / 1000 (MOD(1.1258E12,1) is 0, MOD(1.1259E12,1) #NUM!). */
-const MAX_MOD_QUOTIENT = 2 ** 50 / 1000
+/** MOD(1125899999999,1) is 0 and MOD(1125900000000,1) is #NUM! in Excel. */
+const MAX_MOD_QUOTIENT = 1_125_900_000_000
 
 /** The remainder with the divisor's sign, exact (fmod); a remainder that rounds to the divisor is 0 (MOD(-1E-300,1)). */
 function mod(n: number, d: number): number | CErr {

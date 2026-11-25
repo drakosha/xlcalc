@@ -1,11 +1,16 @@
 /** The order of text and the case of names. No imports: `values.ts` and `criteria.ts` both need it, and a cycle through them broke loading a subpath first. */
 
+const SHARP_S = /[ßẞ]/g
+
+/** Case-insensitive equality key for criteria and distinct values, after their Unicode normalization. */
+export const foldedTextKey = (s: string): string => s.toLowerCase().replace(/[ßςﬁ]/g, (ch) => ch === 'ß' ? 'ss' : ch === 'ς' ? 'σ' : 'fi')
+
 /**
  * String order for `<`/`>` by an `Intl.Collator` locale tag: case-insensitive, accent-sensitive. Without `Intl`
  * (QuickJS, for example) the order falls back to code units of the lower-cased strings.
  */
 export const textOrder = (tag: string): ((a: string, b: string) => number) =>
-  typeof Intl !== 'undefined' ? withSoftHyphens(new Intl.Collator(tag, { sensitivity: 'accent' }).compare) : (a, b) => ((a = a.toLowerCase()) < (b = b.toLowerCase()) ? -1 : a > b ? 1 : 0)
+  withSoftHyphens(typeof Intl !== 'undefined' ? new Intl.Collator(tag, { sensitivity: 'accent' }).compare : (a, b) => ((a = a.toLowerCase()) < (b = b.toLowerCase()) ? -1 : a > b ? 1 : 0))
 
 const SOFT_HYPHEN = '\u00ad'
 
@@ -16,6 +21,8 @@ const SOFT_HYPHEN = '\u00ad'
  */
 function withSoftHyphens(compare: (a: string, b: string) => number): (a: string, b: string) => number {
   return (a, b) => {
+    a = a.replace(SHARP_S, 'ss')
+    b = b.replace(SHARP_S, 'ss')
     const c = compare(a, b)
     if (c !== 0 || (!a.includes(SOFT_HYPHEN) && !b.includes(SOFT_HYPHEN))) return c
     const [x, y] = [a.split(SOFT_HYPHEN), b.split(SOFT_HYPHEN)]

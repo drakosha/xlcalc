@@ -5,7 +5,7 @@
 import { gridAt, type Cx, type FnDef, type Grid } from '../../args.js'
 import type { Rules } from '../../locale/rules.js'
 import { E, isErr, Lambda, type V } from '../../values.js'
-import { capped, MAX_TEXT } from './common.js'
+import { MAX_TEXT } from './common.js'
 
 const asText = (v: V, strict: boolean, rules: Rules): string => {
   if (isErr(v)) return rules.errorText(v.code)
@@ -24,16 +24,17 @@ function arraytotext(cx: Cx, g: Grid, format = 0): V {
   if (format !== 0 && format !== 1) return E.VALUE
   const strict = format === 1
   const { listSeparator, arrayColumnSeparator, arrayRowSeparator } = cx.rules.locale
-  if (g.rows * g.cols > MAX_TEXT) return E.VALUE
+  if (g.rows * g.cols > MAX_TEXT) return E.CALC
   let out = strict ? '{' : ''
   for (let r = 0; r < g.rows; r++) {
     for (let c = 0; c < g.cols; c++) {
       if (r || c) out += strict ? (c ? arrayColumnSeparator : arrayRowSeparator) : `${listSeparator} `
       out += asText(gridAt(g, r * g.cols + c), strict, cx.rules)
     }
-    if (out.length > MAX_TEXT) return E.VALUE
+    if (out.length > MAX_TEXT) return E.CALC
   }
-  return capped(strict ? out + '}' : out)
+  if (strict) out += '}'
+  return out.length > MAX_TEXT ? E.CALC : out
 }
 
 export const functions: Record<string, FnDef> = {

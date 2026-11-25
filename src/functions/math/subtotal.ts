@@ -5,6 +5,7 @@
  * never; hidden columns count. AGGREGATE 14–19 take an array too, which has no rows to skip. A union is taken area by
  * area, a reference across sheets is #VALUE! (the set `areas-each`). This engine's own.
  */
+import { liftN } from '../../arrays/lift.js'
 import { holdsReferences } from '../../arrays/references.js'
 import { Arr } from '../../arrays/value.js'
 import { Areas, E, isErr, Rng, whole, type CErr, type V } from '../../values.js'
@@ -36,7 +37,9 @@ interface Skip {
  * (errors too), the rest take the numbers and stop at the first error, unless errors are skipped. AGGREGATE 14–19
  * (`k`) also take an array.
  */
-function over(cx: Cx, code: number, refs: readonly (V | Rng | Arr | Areas)[], skip: Skip, k?: number): V {
+function over(cx: Cx, code: number, refs: readonly (V | Rng | Arr | Areas)[], skip: Skip, k?: number): V
+function over(cx: Cx, code: number, refs: readonly (V | Rng | Arr | Areas)[], skip: Skip, k: Arr): V | Arr
+function over(cx: Cx, code: number, refs: readonly (V | Rng | Arr | Areas)[], skip: Skip, k?: number | Arr): V | Arr {
   const xs: number[] = []
   let filled = 0
   let first: CErr | undefined
@@ -57,7 +60,12 @@ function over(cx: Cx, code: number, refs: readonly (V | Rng | Arr | Areas)[], sk
   }
   if (code === 2) return xs.length
   if (code === 3) return filled
-  return first ?? apply(NAMES[code - 1], xs, k)
+  const name = NAMES[code - 1]
+  if (k instanceof Arr) return liftN([k], ([position]) => {
+    const rank = cx.rules.toNum(position)
+    return isErr(rank) ? E.VALUE : first ?? apply(name, xs, rank)
+  })
+  return first ?? apply(name, xs, k)
 }
 
 function subtotal(cx: Cx, code: number, refs: (V | Rng | Areas)[]): V {
@@ -66,7 +74,7 @@ function subtotal(cx: Cx, code: number, refs: (V | Rng | Areas)[]): V {
   return c < 1 || c > 11 || (t > 11 && t < 101) ? E.VALUE : over(cx, c, refs, { nested: true, hidden: t > 100 ? 'all' : 'filtered', errors: false })
 }
 
-function aggregate(cx: Cx, code: number, option: number, refs: (V | Rng | Arr | Areas)[]): V {
+function aggregate(cx: Cx, code: number, option: number, refs: (V | Rng | Arr | Areas)[]): V | Arr {
   const c = whole(code)
   const o = Math.trunc(option)
   if (c < 1 || c > 19 || o < 0 || o > 7) return E.VALUE
@@ -75,11 +83,11 @@ function aggregate(cx: Cx, code: number, option: number, refs: (V | Rng | Arr | 
   if (refs.some(holdsReferences)) return E.VALUE
   const skip: Skip = { nested: o < 4, hidden: o % 2 === 1 ? 'all' : 'none', errors: o % 4 >= 2 }
   if (c <= 13) return over(cx, c, refs, skip)
-  // LARGE … QUARTILE.EXC: one array and k, a number (an error there is #VALUE!, as in Excel); a range as k
-  // gives its top-left cell (Excel 365: AGGREGATE(14,6,M1:M10,A1:A3) is LARGE with k from A1)
+  // LARGE … QUARTILE.EXC: an array of positions lifts, while a reference supplies just its top-left cell.
   if (refs.length !== 2) return E.VALUE
-  const r = refs[1]
-  const kv = cx.scalar(r instanceof Rng ? new Rng(r.s, r.r1, r.c1, r.r1, r.c1) : r)
+  const position = refs[1]
+  if (position instanceof Arr) return over(cx, c, [refs[0]], skip, position)
+  const kv = cx.scalar(position instanceof Rng ? new Rng(position.s, position.r1, position.c1, position.r1, position.c1) : position)
   const k = isErr(kv) ? kv : cx.rules.toNum(kv)
   return isErr(k) ? E.VALUE : over(cx, c, [refs[0]], skip, k)
 }

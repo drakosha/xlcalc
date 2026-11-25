@@ -7,7 +7,7 @@
  * text and the order of text follow the book's locale (`CritRules`, en-US by default).
  */
 import type { ErrorCode } from './contract.js'
-import { collator } from './collate.js'
+import { collator, foldedTextKey } from './collate.js'
 import { critTextToNumber, textToNumber } from './dates.js'
 import { spend, STRIDE } from './exec/budget.js'
 import { ERROR_TYPE } from './error-type.js'
@@ -110,7 +110,7 @@ function critOf(v: number | string | boolean | null, rules: CritRules): Crit {
 const ord = (x: number, y: number) => (x < y ? -1 : x > y ? 1 : 0)
 
 /** Text as a criterion's equality takes it: in lower case, é as one code point or as e and an accent alike, as Excel's COUNTIF counts them (the set `low-values-held`). */
-const lowered = (s: string) => (MARK.test(s) ? s.normalize('NFC') : s).toLowerCase()
+const lowered = (s: string) => foldedTextKey(MARK.test(s) ? s.normalize('NFC') : s)
 /** A combining mark: text without one is composed already (but for a few singletons). */
 const MARK = /\p{M}/u
 

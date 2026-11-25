@@ -23,31 +23,31 @@ export const comparable = (v: V, k: Key) => v !== null && !isErr(v) && sameType(
 const spelling = (s: string) => (!MARK.test(s) || s.normalize('NFC') === s ? 'C' : s.normalize('NFD') === s ? 'D' : 'M')
 
 const EXACT = new WeakMap<Compare, Compare>()
-/** The last order asked for and its exact one: a lookup's book asks again and again. */
-let last: [Compare, Compare] | undefined
+const WILDCARD_EXACT = new WeakMap<Compare, Compare>()
 
 /**
  * The order an exact lookup matches by: `compare`, with é written as one code point and as e and an accent told apart,
  * as Excel's MATCH tells them (the set `low-values-held`), where `=` takes them as equal.
  */
-function exactOrder(compare: Compare): Compare {
-  if (last?.[0] === compare) return last[1]
-  let out = EXACT.get(compare)
+function exactOrder(compare: Compare, wild: boolean): Compare {
+  const cache = wild ? WILDCARD_EXACT : EXACT
+  let out = cache.get(compare)
   if (!out)
-    EXACT.set(compare, (out = (a, b) => {
+    cache.set(compare, (out = (a, b) => {
       const c = compare(a, b)
       if (c !== 0 || typeof a !== 'string' || typeof b !== 'string' || a === b) return c
+      // MATCH and VLOOKUP do not treat one ligature or sharp s as two matching characters.
+      if (wild && a.length !== b.length) return a.length - b.length
       const [x, y] = [spelling(a), spelling(b)]
       return x < y ? -1 : x > y ? 1 : 0
     }))
-  last = [compare, out]
   return out
 }
 const MARK = /\p{M}/u
 
 /** Exact match; with `wild`, `*`, `?` and `~` work in text, `~` escaping any character. */
 export function exactMatch(line: Line, k: Key, wild: boolean, given: Compare, last = false): number {
-  const compare = exactOrder(given)
+  const compare = exactOrder(given, wild)
   const re = wild && typeof k === 'string' ? wildMatcher(k, true) : null
   if (!re && (line.values || line.store)) {
     const hit = indexedExact(line, k, compare, last)

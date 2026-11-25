@@ -125,7 +125,7 @@ function spilled(r: { ref: RangeRef; len: number }, next: string | undefined, at
   return r.len + 1
 }
 
-const OPS = ['<>', '<=', '>=', '+', '-', '*', '/', '^', '&', '=', '<', '>', '%', '@', ':']
+const OPERATOR = /^(?:<>|[<>]=?|[+*/^&=%@:-])/
 
 /** Whether a column's letters and a row's digits are a cell of the sheet. */
 const inSheet = (col: string, row: string) => colToIndex(col) < MAX_COLS && Number(row) >= 1 && Number(row) <= MAX_ROWS
@@ -336,7 +336,7 @@ export function tokenize(src: string): Tok[] {
       i += im[0].length
       continue
     }
-    const op = OPS.find((o) => rest.startsWith(o))
+    const op = OPERATOR.exec(rest)?.[0]
     if (op) {
       push({ t: 'op', v: op, at: i })
       i += op.length

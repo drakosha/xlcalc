@@ -12,7 +12,7 @@ import { allotSpill, spend } from '../exec/budget.js'
 import { invalidate, put, same, shown, track, type Tracker } from '../evaluate.js'
 import { parseMerge } from '../layout/merges.js'
 import { formatAddress, MAX_COLS, MAX_ROWS, placeOf } from '../model.js'
-import { hasCell, meets, type Rect } from '../structure/area.js'
+import { meets, type Rect } from '../structure/area.js'
 import { quoteSheet } from '../syntax.js'
 import { tableAt } from '../tables/model.js'
 import { E, Rng, type CErr, type V } from '../values.js'
@@ -90,9 +90,12 @@ export function spill(state: EngineState, f: Formula, a: Arr, t?: Tracker): V {
  */
 export function rivals(state: EngineState, id: number, area: Area): (Area & { id: number })[] {
   const sp = state.spills
-  const out: (Area & { id: number })[] = [...sp.on.values()]
-  for (const [k, x] of sp.claims) if (!sp.on.has(k) && !sp.wait.has(k)) out.push({ ...x, id: k })
-  return out.filter((x) => x.id !== id && x.s === area.s && meets(x, area))
+  const out: (Area & { id: number })[] = sp.on.overlapping(area).filter((other) => other.id !== id)
+  // Every active spill has a claim. Extra claims can survive a release during a cycle.
+  if (sp.claims.size > sp.on.size) for (const [other, claim] of sp.claims) {
+    if (other !== id && claim.s === area.s && meets(claim, area) && !sp.on.has(other) && !sp.wait.has(other)) out.push({ ...claim, id: other })
+  }
+  return out
 }
 
 /** Of the arrays `over`, the first that formula `id`'s array gives way to: an old-kind array formula's area is never spilled over. */
@@ -237,6 +240,5 @@ export function spillRef(state: EngineState, s: number, r: number, c: number): R
 
 /** The spill a cell belongs to, but as its formula's own cell. */
 export function ownerOf(state: EngineState, s: number, r: number, c: number): Spill | undefined {
-  for (const x of state.spills.on.values()) if (x.s === s && hasCell(x, r, c) && (r !== x.r1 || c !== x.c1)) return x
-  return undefined
+  return state.spills.on.overlapping({ s, r1: r, c1: c, r2: r, c2: c }).find((spill) => r !== spill.r1 || c !== spill.c1)
 }

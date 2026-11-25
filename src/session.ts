@@ -181,7 +181,8 @@ function written<T>(edits: T[], locale: string | undefined): T[] {
 /** Opens a session in steps: the book checked, then computed. */
 export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: SessionHooks = {}): Steps<SessionSteps> {
   const o = checkSessionOptions(opts)
-  book = checkBook(book)
+  const addresses = new Map<object, string[]>()
+  book = checkBook(book, 'book', false, addresses)
   const live = o.live === true
   const fresh = hooks.clock ?? currentClock
   let clock: Clock = 'clock' in o && o.clock ? { ...o.clock } : fresh()
@@ -198,8 +199,8 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   }
   const unlent = (cells: object) => !lent.has(cells)
   /** A state of book `b`: its cells copied (the host's book), or those `own` gives taken as they are; `more`, the options of its held values. */
-  const build = (b: BookInput, own?: (cells: object) => boolean, more?: Pick<EngineOptions, 'cached' | 'prior' | 'rewritten'>) => buildState(b, { ...clockOptions(clock), externals, execution, unknownFunctions, file: o.file, own, ...(outside ? { outside } : {}), ...more })
-  let state: EngineState | null = yield* build(book, undefined, { cached: o.cached })
+  const build = (b: BookInput, own?: (cells: object) => boolean, more?: Pick<EngineOptions, 'cached' | 'keys' | 'prior' | 'rewritten'>) => buildState(b, { ...clockOptions(clock), externals, execution, unknownFunctions, file: o.file, own, ...(outside ? { outside } : {}), ...more })
+  let state: EngineState | null = yield* build(book, undefined, { cached: o.cached, keys: addresses })
   let revision = hooks.revision ?? 0
   // a call stopped while changing the state in place: the state is built again from its book before the next one
   let stale = false

@@ -1,4 +1,5 @@
 /** What the engine keeps about spilled arrays (`docs/spill.md`): where they spilled, what waits, why not. */
+import { AreaIndex } from '../area-index.js'
 import type { Rect } from '../structure/area.js'
 import type { Fill } from './fill.js'
 import { Occupied } from './occupied.js'
@@ -19,13 +20,51 @@ export interface Spill extends Area {
   fills: Fill[]
 }
 
+interface Footprint extends Area {
+  id: number
+  order: number
+}
+
+/** Spill areas in insertion order. The index is allocated on the first spill. */
+class SpillAreas<T extends Area> extends Map<number, T & Footprint> {
+  private index?: AreaIndex<T & Footprint>
+  private next = 0
+
+  override set(id: number, area: T): this {
+    const old = this.get(id)
+    if (old) this.index?.delete(old)
+    const entry = { ...area, id, order: old?.order ?? this.next++ }
+    ;(this.index ??= new AreaIndex()).add(entry)
+    return super.set(id, entry)
+  }
+
+  override delete(id: number): boolean {
+    const entry = this.get(id)
+    if (entry) this.index?.delete(entry)
+    return super.delete(id)
+  }
+
+  override clear(): void {
+    this.index = undefined
+    super.clear()
+  }
+
+  overlapping(area: Area): readonly (T & Footprint)[] {
+    if (!this.index) return []
+    const hits = new Set<T & Footprint>()
+    this.index.forEach(area, (entry) => hits.add(entry))
+    // A blocked spill reports the first rival in map order, which may differ from column order.
+    return [...hits].sort((a, b) => a.order - b.order)
+  }
+}
+
 export interface Spills {
   /** Formulas whose array spilled, by id. */
-  on: Map<number, Spill>
+  on: SpillAreas<Spill>
   /** The areas whose readers the graph puts after their formula: a spill's, kept while its formula is in a cycle. */
   claims: Map<number, Area>
   /** Formulas whose array could not spill, with the area it needs: they are computed again when it changes. */
-  wait: Map<number, Area>
+  wait: SpillAreas<Area>
   /** Why a formula's array could not spill. */
   why: Map<number, string>
   /** The spilled array that a waiting one gave way to, by the waiting one (`beats` may turn once the graph changes). */
@@ -50,6 +89,6 @@ export interface Spills {
   claimsChanged: boolean
 }
 
-export const newSpills = (): Spills => ({ on: new Map(), claims: new Map(), wait: new Map(), why: new Map(), by: new Map(), occupied: new Occupied(), merges: new Map(), step: 0, since: 0, done: new Float64Array(0), touched: [], claimsChanged: false })
+export const newSpills = (): Spills => ({ on: new SpillAreas(), claims: new Map(), wait: new SpillAreas(), why: new Map(), by: new Map(), occupied: new Occupied(), merges: new Map(), step: 0, since: 0, done: new Float64Array(0), touched: [], claimsChanged: false })
 
 export const equalAreas = (a: Area | undefined, b: Area | undefined) => a === b || (!!a && !!b && a.s === b.s && a.r1 === b.r1 && a.c1 === b.c1 && a.r2 === b.r2 && a.c2 === b.c2)

@@ -3,6 +3,7 @@ import { createState } from '../src/engine.js'
 import { readersOf } from '../src/graph.js'
 import { MAX_COLS, MAX_ROWS, formatAddress } from '../src/model.js'
 import { RangeCache } from '../src/range-cache.js'
+import { newSpills } from '../src/spill/state.js'
 import { mulberry32 } from '../src/synth.js'
 import { Rng } from '../src/values.js'
 
@@ -37,4 +38,22 @@ it('graph readers and cache invalidation agree with a full scan across narrow, w
     cache.invalidate(q)
     expect([...cache.keys()]).toEqual([...remaining.keys()])
   }
+})
+
+it('finds indexed spills in insertion order after resizing, releasing and clearing footprints', () => {
+  const waits = newSpills().wait
+  for (let id = 0; id < 12; id++) waits.set(id, { s: 0, r1: id * 2, r2: id * 2, c1: 0, c2: 1 })
+  waits.set(12, { s: 1, r1: 0, r2: 20, c1: 0, c2: 1 })
+  const query = { s: 0, r1: 0, r2: 4, c1: 0, c2: 1 }
+  const hits = (area = query) => waits.overlapping(area).map((hit) => hit.id)
+  expect(hits()).toEqual([0, 1, 2])
+  const resized = { ...query, r1: 4 }
+  waits.set(0, resized)
+  expect(hits({ ...query, r2: 2 })).toEqual([1])
+  expect(hits()).toEqual([0, 1, 2])
+  waits.delete(0)
+  waits.set(0, resized)
+  expect(hits()).toEqual([1, 2, 0])
+  waits.clear()
+  expect(hits()).toEqual([])
 })
