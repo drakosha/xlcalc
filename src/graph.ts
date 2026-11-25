@@ -3,19 +3,20 @@
  * Besides the references, a spilled array (its claim, `spill/state.ts`) comes before the formulas reading its range.
  */
 import type { EngineState, Formula } from './engine.js'
-import { spend } from './exec/budget.js'
+import { ArraySizeError, located, spend } from './exec/budget.js'
 import { bySheet, pastEnd } from './exec/walk.js'
 import type { Area } from './spill/state.js'
 import { Rng } from './values.js'
-import { placeOf } from './model.js'
+import { formatAddress, placeOf } from './model.js'
 import { AreaIndex } from './area-index.js'
 import { RangeDependencies } from './graph/ranges.js'
 import { indegrees, releaseReady } from './graph/order.js'
-import { linkAll } from './graph/dynamic.js'
+import { linkAll, staticRefsOf } from './graph/dynamic.js'
 
 // a range operator reaching a spilled array reads as far as the array claims, around its other ends; LOOKUP past it
 export function referencesOf(state: EngineState, f: Formula): readonly Rng[] {
-  if (!f.spans) return f.refs
+  const refs = staticRefsOf(f)
+  if (!f.spans) return refs
   const more: Rng[] = []
   for (const span of f.spans) {
     const reached = [...span.boxes]
@@ -28,7 +29,40 @@ export function referencesOf(state: EngineState, f: Formula): readonly Rng[] {
     }
     if (!span.past && reached.length > span.boxes.length) more.push(...bySheet(reached).values())
   }
-  return more.length ? [...f.refs, ...more] : f.refs
+  return more.length ? [...refs, ...more] : refs
+}
+
+/** Refine blocked scalar IFs whose conditions read only values already available in the current order. */
+export function selectIfBranches(state: EngineState, blocked: readonly number[]): boolean {
+  const candidates = blocked.filter((id) => {
+    const f = state.formulas[id]!
+    return f.selectIfBranch && f.ifBranch === undefined
+  })
+  if (!candidates.length) return false
+  const unavailable = new AreaIndex<Area>()
+  for (const f of state.formulas) if (f && state.topo[f.id] < 0) {
+    spend(1)
+    unavailable.add({ s: f.s, r1: f.r, r2: f.r, c1: f.c, c2: f.c })
+  }
+  for (const [id, area] of state.spills.claims) if (state.topo[id] < 0) unavailable.add(area)
+  let selected = false
+  for (const id of candidates) {
+    const f = state.formulas[id]!
+    let ready = true
+    for (let i = 0; ready && i < f.ifBranches!.thenAt; i++) {
+      unavailable.forEach(f.refs[i], () => { ready = false })
+    }
+    if (!ready) continue
+    try {
+      f.ifBranch = f.selectIfBranch!()
+    } catch (error) {
+      if (!(error instanceof ArraySizeError)) throw located(error, () => ({ sheet: state.sheetNames[f.s], cell: formatAddress(f.r, f.c) }))
+      f.ifBranch = 'error'
+    }
+    selected = true
+  }
+  if (selected) state.selectedIfs = true
+  return selected
 }
 
 /** The reference graph of the formulas: successors, the topological order, listeners of ranges, volatile formulas. */

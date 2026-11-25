@@ -171,6 +171,8 @@ export function pastEnd(g: Rng, n: number, part = false): Rng[] {
 /** What a formula reads and how it behaves, the same in both modes. */
 export interface FormulaInfo {
   refs: Rng[]
+  /** A scalar IF at the root, with its condition's references followed by the two branches' references. */
+  ifBranches?: { condition: Ast; thenAt: number; elseAt: number }
   /** Range operators that reach a spilled array: read as far as the array spills. */
   spans?: Span[]
   /** Calls a volatile function directly. */
@@ -251,6 +253,8 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
   const size = shape.get(ast) ? sizeOf(ast, shape, table) : undefined
   if (size) info.size = size
   const many = (n: Ast) => !!shape.get(n)
+  let root = ast
+  while (root.k === 'paren') root = root.a
   const multiple = area !== undefined && (area.r2 > area.r1 || area.c2 > area.c1)
   const positional = area !== undefined && needsCse(ast, shape, resolve, s, multiple)
   let frame: { pick(value: T): T; keep(value: T, scoped?: boolean): T } | undefined
@@ -606,7 +610,13 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
           // a host answers, every reference, for the member a cell of another cube function holds (`outside.ts`)
           const kept = ctx.hosted === true && n.name.startsWith('CUBE')
           const selected = !!frame && !full && cseCall(n.name)
+          const scalarIf = n === root && n.name === 'IF' && !area && !ctx.origin && !many(n) && !many(n.args[0])
+          let thenAt = 0, elseAt: number | undefined
           const args = n.args.map((a, i) => {
+            if (scalarIf) {
+              if (i === 1) thenAt = info.refs.length
+              if (i === 2) elseAt = info.refs.length
+            }
             if (a.k === 'missing') return omitted(spec.omitted(i))
             if (i === 2 && past) return past
             const code = go(a, kept || spec.range(i) || a.k === 'ref3d', (full && (lambdaScope > 0 || !aggregates(spec, i))) || (!!frame && (cseArray(n.name, spec, i, multiple) || wholeUnder(n.name, spec, i, a))))
@@ -616,6 +626,9 @@ export function walk<T>(ctx: CodegenContext, ast: Ast, s: number, r: number, c: 
             }
             return code
           })
+          if (scalarIf && thenAt < info.refs.length && !info.spans && !info.dynamic && !info.external && !info.stored && !info.volatile) {
+            info.ifBranches = { condition: n.args[0], thenAt, elseAt: elseAt ?? info.refs.length }
+          }
           let code: T
           if (spec.lazy) {
             // lifted when a lifting argument is an array

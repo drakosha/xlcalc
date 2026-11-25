@@ -26,8 +26,17 @@ export interface Dynamic {
 /** The most cells of reads whose formulas are found cell by cell; larger ones build the graph again. */
 const CELLS = 4096
 
+/** The references recorded at compile time, restricted to the condition and chosen branch of a refined scalar IF. */
+export function staticRefsOf(f: Formula): readonly Rng[] {
+  if (f.ifBranch === undefined) return f.refs
+  const { thenAt, elseAt } = f.ifBranches!
+  if (f.ifBranch === true) return f.refs.slice(0, elseAt)
+  const condition = f.refs.slice(0, thenAt)
+  return f.ifBranch === false ? [...condition, ...f.refs.slice(elseAt)] : condition
+}
+
 /** What a formula reads: its references, then those it found in its last computation. */
-export const refsOf = (f: Formula): readonly Rng[] => (f.reads?.length ? [...f.refs, ...f.reads] : f.refs)
+export const refsOf = (f: Formula): readonly Rng[] => (f.reads?.length ? [...staticRefsOf(f), ...f.reads] : staticRefsOf(f))
 
 export const newDynamic = (): Dynamic => ({ entries: new Map(), succ: new Map(), moved: [], seen: new Set() })
 

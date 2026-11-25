@@ -119,6 +119,51 @@ describe.each(['closures', 'eval'] as Execution[])('circular references in a ses
       }
     })
 
+    it('follows the selected scalar IF branches when their references can form a cycle', async () => {
+      const s = await open(book({
+        A1: { formula: 'Z2>0' },
+        B1: { value: 10 },
+        C1: { formula: 'IF(A1,B1,2*D1)' },
+        D1: { formula: 'IF(A1,IFERROR(C1/2,0),4)' },
+        E1: { formula: 'C1+1' },
+        F1: { value: 1 },
+        Z1: { formula: 'SEQUENCE(2,1,F1-1)' },
+      }), { clock, execution })
+      try {
+        expect(await at(s, 'C1:E1')).toEqual({ C1: 10, D1: 5, E1: 11 })
+        await set(s, 'B1', { value: 20 })
+        expect(await at(s, 'C1:E1')).toEqual({ C1: 20, D1: 10, E1: 21 })
+        await set(s, 'F1', { value: 0 })
+        expect(await at(s, 'C1:E1')).toEqual({ C1: 8, D1: 4, E1: 9 })
+        await set(s, 'F1', { value: 1 })
+        expect(await at(s, 'C1:E1')).toEqual({ C1: 20, D1: 10, E1: 21 })
+        expect(await s.getCellIssue('S', 'E1')).toBeNull()
+      } finally {
+        await s.close()
+      }
+    })
+
+    it('keeps values once the selected IF branches form a cycle and computes again after it breaks', async () => {
+      const s = await open(book({
+        A1: { value: 1 },
+        B1: { formula: 'IF(A1,10,2*C1)' },
+        C1: { formula: 'IF(A1,4,B1/2)' },
+        D1: { formula: 'B1+1' },
+      }), { clock, execution })
+      try {
+        const values = { B1: 10, C1: 4, D1: 11 }
+        expect(await at(s, 'B1:D1')).toEqual(values)
+        await set(s, 'A1', { value: 0 })
+        expect(await at(s, 'B1:D1')).toEqual(values)
+        expect((await s.getCellIssue('S', 'D1'))?.error).toBe('CYCLE')
+        await set(s, 'A1', { value: 1 })
+        expect(await at(s, 'B1:D1')).toEqual(values)
+        expect(await s.getCellIssue('S', 'D1')).toBeNull()
+      } finally {
+        await s.close()
+      }
+    })
+
     it('with iterative calculation the cycle is computed and held values are dropped', async () => {
       const s = await open({ ...book({ ...LOOP, A1: { formula: 'B1/2+1', held: 5 } }), iteration: {} }, { clock, execution, cached: STORED })
       try {

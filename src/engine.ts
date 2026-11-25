@@ -8,7 +8,7 @@
  * No platform imports, so the engine runs outside Node as well.
  */
 import type { BookFile, BookInput, CachedValues, CellInput, CellReplace, CellValue, CheckCode, ErrorCode, Execution, Externals, NameIssue, SheetInput, UnknownFunctions } from './contract.js'
-import { makeCompiler, PRELUDE, type CodegenContext, type Compiler, type FormulaCode } from './compile.js'
+import { makeCompiler, PRELUDE, type CodegenContext, type Compiler, type FormulaCode, type IfBranch } from './compile.js'
 import { answered, changed, concerned, evaluateAll, put, recompute, tracker, write, type Tracker } from './evaluate.js'
 import { count, due, run, step, type Steps } from './exec/budget.js'
 import { externalNames } from './arity.js'
@@ -58,6 +58,8 @@ export interface Formula extends FormulaCode {
   unknown?: Invalid
   /** A dynamic formula's references found in its last computation (`graph/dynamic.ts`); none on any other formula. */
   reads?: Rng[]
+  /** A branch chosen after the formula's full set of references blocked its calculation. */
+  ifBranch?: IfBranch
 }
 
 export interface Invalid {
@@ -182,6 +184,8 @@ export interface EngineState {
   links: LinkState
   /** The references dynamic formulas found as they computed, in the graph (`graph/dynamic.ts`): only once the book has such a formula. */
   dyn?: Dynamic
+  /** The state has had at least one IF with branch-specific dependencies. */
+  selectedIfs?: true
   groups: GroupWatch
 }
 
@@ -271,7 +275,8 @@ function compiled(state: EngineState, id: number, s: number, row: number, col: n
 
 /** Graph-relevant metadata of a scalar replacement; names, arrays and spans retain the rebuild path. */
 function sameDependencies(a: Formula, b: Formula): boolean {
-  return !a.area && !b.area && !a.spans && !b.spans && !a.dynamic && !b.dynamic && !a.near && !b.near && a.volatile === b.volatile && a.nested === b.nested && a.external === b.external
+  return !a.area && !b.area && !a.spans && !b.spans && !a.dynamic && !b.dynamic && !a.near && !b.near && !a.ifBranches && !b.ifBranches
+    && a.volatile === b.volatile && a.nested === b.nested && a.external === b.external
     && a.refs.length === b.refs.length && a.refs.every((g, i) => equalAreas(g, b.refs[i]))
 }
 

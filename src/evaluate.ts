@@ -8,7 +8,7 @@ import { Arr } from './arrays/value.js'
 import type { EngineState, Formula } from './engine.js'
 import { ArraySizeError, awaitAnswers, due, located, paced, step, type Steps } from './exec/budget.js'
 import { formatAddress, placeOf, placeParts } from './model.js'
-import { markVolatile, readersOf, rebuildGraph, successors } from './graph.js'
+import { markVolatile, readersOf, rebuildGraph, selectIfBranches, successors } from './graph.js'
 import { readsMade } from './graph/dynamic.js'
 import type { RuntimeContext, SheetData } from './runtime.js'
 import { Column } from './column.js'
@@ -303,6 +303,22 @@ function ordered(state: EngineState, dirty: Set<number>): [number[], number[]] {
 /** A guard on rounds: arrays settle in a few (a spill only gives way to one of lower rank, `spill/rank.ts`). */
 const ROUNDS = 100_000
 
+/** Restore the full edges before computing a possibly changed condition. The old branch order can be reversed. */
+function resetIfBranches(state: EngineState, lists: [number[], number[]]): [number[], number[]] {
+  if (!state.selectedIfs) return lists
+  let changed = false
+  for (const ids of lists) for (const id of ids) {
+    const f = state.formulas[id]!
+    if (f.ifBranch !== undefined) {
+      f.ifBranch = undefined
+      changed = true
+    }
+  }
+  if (!changed) return lists
+  rebuildGraph(state)
+  return ordered(state, new Set([...lists[0], ...lists[1]]))
+}
+
 /**
  * Rounds of evaluation until no spill changes cells already read or frees cells an array waits for. `edited`: a change
  * starts them (an edit, not a book built): a formula keeping the value its file stores is computed when a round reaches it.
@@ -310,6 +326,11 @@ const ROUNDS = 100_000
 function* settle(state: EngineState, lists: [number[], number[]], t?: Tracker, active?: Set<number>, edited = false): Steps<void> {
   const sp = state.spills
   state.dyn?.seen.clear()
+  const restored = resetIfBranches(state, lists)
+  if (restored !== lists) {
+    lists = restored
+    active = undefined
+  }
   let last: string | undefined
   for (let round = 0; ; round++) {
     if (round === ROUNDS) throw new Error('spilled arrays did not settle')
@@ -319,14 +340,22 @@ function* settle(state: EngineState, lists: [number[], number[]], t?: Tracker, a
     yield* evaluate(state, lists[0], t, false, 0, active, edited)
     // iterative calculation computes every cycle again when any is to be computed: the cycles share their iterations
     const iterated = state.input.iteration && lists[1].length ? sp.step : Infinity
+    const canSelectBranches = !state.input.iteration && lists[1].some((id) => {
+      const f = state.formulas[id]!
+      return f.selectIfBranch && f.ifBranch === undefined
+    })
+    // A spill or dynamic reference can change which conditions are ready in the current order.
+    const waitForGraph = canSelectBranches && (sp.claimsChanged || !!state.dyn?.moved.length)
+    const branches = canSelectBranches && !waitForGraph && selectIfBranches(state, lists[1])
     if (iterated < Infinity) yield* iterate(state, t)
-    else yield* evaluate(state, lists[1], t)
-    const next = new Set<number>()
+    else if (!branches && !waitForGraph) yield* evaluate(state, lists[1], t)
+    // A newly selected branch can unblock formulas. Give them their new order before holding any value.
+    const next = new Set<number>(branches || waitForGraph ? lists[1] : [])
     // what the iteration spilled concerns no formula it computed: computed again, each starts from 0 and comes out the same
     for (const x of sp.touched) concerned(state, x, next, x.step, x.step > iterated)
     const moved = state.dyn?.moved.splice(0) ?? []
     for (const id of moved) if (state.formulas[id]) next.add(id)
-    if (sp.claimsChanged || moved.length) {
+    if (sp.claimsChanged || moved.length || branches) {
       const was = state.topo
       rebuildGraph(state)
       // formulas that went into a cycle or out of one
@@ -350,6 +379,7 @@ function* settle(state: EngineState, lists: [number[], number[]], t?: Tracker, a
       return
     }
     lists = ordered(state, next)
+    if (!branches) lists = resetIfBranches(state, lists)
     active = undefined
   }
 }

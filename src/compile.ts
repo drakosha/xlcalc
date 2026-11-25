@@ -11,15 +11,19 @@ import { compileSources, jsBackend } from './exec/js.js'
 import { walk, type CodegenContext, type FormulaInfo } from './exec/walk.js'
 import type { Runtime } from './runtime.js'
 import type { Ast } from './syntax.js'
+import { isErr } from './values.js'
 
 export { PRELUDE } from './exec/js.js'
 export type { CodegenContext } from './exec/walk.js'
+
+export type IfBranch = boolean | 'error'
 
 /** A compiled formula: what it reads, its flags and its function. */
 export interface FormulaCode extends FormulaInfo {
   /** Temporary generated JS text (`eval`), released after `link`. Diagnostics regenerate it on demand. */
   source?: string
   fn: () => Arg
+  selectIfBranch?: () => IfBranch
 }
 
 export interface Compiler {
@@ -47,8 +51,18 @@ interface Template { source: string; factory?: Factory; fallback?: () => Factory
  * take a third of its heap off (91 to 62 MiB) and open it faster (`bench/hyperformula/README.md`).
  */
 export function makeCompiler(rt: Runtime, execution: Execution): Compiler {
+  const closures = closureBackend(rt)
+  const branchSelector = (info: FormulaInfo, ctx: CodegenContext, s: number, r: number, c: number) => {
+    const branch = info.ifBranches
+    if (!branch) return undefined
+    let test: (() => Arg) | undefined
+    return (): IfBranch => {
+      test ??= walk(ctx, branch.condition, s, r, c, closures).code
+      const selected = rt.cx.rules.toBool(rt.scalar(test()))
+      return isErr(selected) ? 'error' : selected
+    }
+  }
   if (execution === 'closures') {
-    const b = closureBackend(rt)
     let bodies = 0
     return {
       get bodies() {
@@ -56,8 +70,9 @@ export function makeCompiler(rt: Runtime, execution: Execution): Compiler {
       },
       formula(ctx, ast, s, r, c) {
         bodies++
-        const { code, ...info } = walk(ctx, ast, s, r, c, b)
-        return { ...info, fn: code }
+        const { code, ...info } = walk(ctx, ast, s, r, c, closures)
+        const selectIfBranch = branchSelector(info, ctx, s, r, c)
+        return { ...info, fn: code, ...(selectIfBranch ? { selectIfBranch } : {}) }
       },
       link() {},
     }
@@ -76,6 +91,7 @@ export function makeCompiler(rt: Runtime, execution: Execution): Compiler {
     formula(ctx, ast, s, r, c) {
       const parameters: Arg[] = [], b = jsBackend(parameters)
       const { code, ...info } = walk(ctx, ast, s, r, c, b)
+      const selectIfBranch = branchSelector(info, ctx, s, r, c)
       const source = b.source(code)
       let template = templates.get(source)
       if (!template) {
@@ -90,8 +106,8 @@ export function makeCompiler(rt: Runtime, execution: Execution): Compiler {
           templates.set(source, template); bytes += source.length * 2
         }
       }
-      if (template.factory) return { ...info, fn: template.factory(parameters) }
-      const f: FormulaCode = { ...info, fn: () => unlinked() }
+      const f: FormulaCode = { ...info, fn: template.factory ? template.factory(parameters) : () => unlinked(), ...(selectIfBranch ? { selectIfBranch } : {}) }
+      if (template.factory) return f
       pending.set(f.fn, { template, parameters })
       return f
     },
