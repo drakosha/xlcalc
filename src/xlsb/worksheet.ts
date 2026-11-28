@@ -1,3 +1,4 @@
+import { printRecords } from './print-markup.js'
 import { MAX_COLS, MAX_ROWS } from '../model.js'
 import { escapeAttr, escapeText } from '../xlsx/xml/text.js'
 import { Conditional } from './conditional.js'
@@ -35,8 +36,9 @@ interface ArrayFormula {
 
 export type ReadPrintRecord = (type: number, payload: Payload) => boolean
 
-export function worksheet(part: Part, readPrint?: ReadPrintRecord): void {
+export function worksheet(part: Part): void {
   const { bytes, path, xml, context, pending } = part
+  const readPrint = printRecords(xml)
   xml.add(`<worksheet ${NS}>`)
   const filters = new Filters(xml)
   const extensions = xml.fragment()
@@ -88,7 +90,7 @@ export function worksheet(part: Part, readPrint?: ReadPrintRecord): void {
       case 152:
         xml.add(selection(payload, hasPane))
         break
-      case 147: xml.add(sheetProperties(payload, readPrint !== undefined)); break
+      case 147: xml.add(sheetProperties(payload)); break
       case 148: xml.add(`<dimension ref="${range(payload)}"/>`); payload.done(); break
       case 485: {
         const format = sheetFormat(payload)
@@ -192,15 +194,6 @@ export function worksheet(part: Part, readPrint?: ReadPrintRecord): void {
         xml.add(`<${tag}${id ? ` r:id="${escapeAttr(id)}"` : ''}/>`)
         break
       }
-      case 392: case 394:
-        if (!readPrint?.(type, payload)) xml.add(type === 392 ? '<rowBreaks/>' : '<colBreaks/>')
-        break
-      case 479:
-        if (!readPrint?.(type, payload)) xml.add('<headerFooter/>')
-        break
-      case 478:
-        if (!readPrint?.(type, payload)) xml.add(pageSetup(payload))
-        break
       case 562: xml.add('<picture/>'); break
       case 638: xml.add('<oleObjects/>'); break
       case 643: xml.add('<controls/>'); break
@@ -215,7 +208,7 @@ export function worksheet(part: Part, readPrint?: ReadPrintRecord): void {
         xml.add('<sparklineGroups/>')
         break
       default:
-        if (!readPrint?.(type, payload) && !filters.take(type, payload) && !conditional.take(type, payload)) {
+        if (!readPrint(type, payload) && !filters.take(type, payload) && !conditional.take(type, payload)) {
           validation(part, type, payload, extensions, validationList)
           if (type === 64) validationList = false
         }
@@ -241,7 +234,7 @@ export function worksheet(part: Part, readPrint?: ReadPrintRecord): void {
   xml.add('</worksheet>')
 }
 
-function sheetProperties(payload: Payload, withPrint: boolean): string {
+function sheetProperties(payload: Payload): string {
   const flags = payload.u16()
   const extendedFlags = payload.u8()
   const color = colorAttrs(payload)
@@ -257,7 +250,7 @@ function sheetProperties(payload: Payload, withPrint: boolean): string {
   const code = codeName ? ` codeName="${escapeAttr(codeName)}"` : ''
   const autoBreaks = flags & 1 ? '' : ' autoPageBreaks="0"'
   const fit = flags & 0x100 ? ' fitToPage="1"' : ''
-  const page = withPrint && (autoBreaks || fit) ? `<pageSetUpPr${autoBreaks}${fit}/>` : ''
+  const page = (autoBreaks || fit) ? `<pageSetUpPr${autoBreaks}${fit}/>` : ''
   return `<sheetPr${filter}${code}>${tab}${outline}${page}</sheetPr>`
 }
 
@@ -425,20 +418,4 @@ function hyperlink(payload: Payload): string {
   payload.done()
   const attrs = tokens.map(([key, value]) => value ? ` ${key}="${escapeAttr(value)}"` : '').join('')
   return `<hyperlink ref="${ref}"${id ? ` r:id="${escapeAttr(id)}"` : ''}${attrs}/>`
-}
-
-/** The setup options that readXlsx reports, whose binary defaults Excel leaves out of XML. */
-function pageSetup(payload: Payload): string {
-  payload.skip(4)
-  const scale = payload.u32()
-  payload.skip(16)
-  const width = payload.u32()
-  const height = payload.u32()
-  const flags = payload.u16()
-  payload.nullableWide()
-  payload.done()
-  const orientation = (flags & 0x42) === 2 ? ' orientation="landscape"' : ''
-  const sizing = (scale === 100 ? '' : ` scale="${scale}"`)
-    + (width === 1 ? '' : ` fitToWidth="${width}"`) + (height === 1 ? '' : ` fitToHeight="${height}"`)
-  return orientation || sizing ? `<pageSetup${orientation}${sizing}/>` : ''
 }

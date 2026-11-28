@@ -2,7 +2,10 @@ import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { createSession } from '../src/index.js'
 import { readXlsxCharts, resolveChartData } from '../src/xlsx-charts.js'
-import { layoutPrintPages, printSheetGeometry, projectPrintDrawings, readXlsxDrawings, readXlsxWithPrint, writeXlsxWithPrint } from '../src/xlsx-print.js'
+import { layoutPrintPages, printSheetGeometry, projectPrintDrawings, readXlsxDrawings } from '../src/xlsx-print.js'
+
+import { readXlsx, writeXlsx } from '../src/xlsx.js'
+import { printingSnapshot } from './print-fixtures.js'
 
 const kept = (name: string) => readFileSync(new URL('./excel/keep/open/' + name + '.xlsx', import.meta.url))
 
@@ -25,9 +28,9 @@ describe('XLSX drawings', () => {
     ['chart-values', ['E1:G5', 'H1:M5', 'N1:P5'], [1, 1, 0]],
   ] as const)('assigns %s objects to the pages where Windows Excel printed them', async (name, areas, expected) => {
     const data = kept(name)
-    const [{ book, sheetDefaults }, { drawings }] = await Promise.all([readXlsxWithPrint(data), readXlsxDrawings(data)])
+    const [{ book }, { drawings }] = await Promise.all([readXlsx(data), readXlsxDrawings(data)])
     const dataSheet = book.sheets.find((sheet) => sheet.name === 'Data')!
-    const geometry = printSheetGeometry(dataSheet, { ...sheetDefaults.find((entry) => entry.sheet === dataSheet.name), font: book.font })
+    const geometry = printSheetGeometry(dataSheet, { font: book.font })
     const target = { width: 841.92, height: 595.32 }
     const { pages } = layoutPrintPages({ sheet: dataSheet.name, areas }, geometry, target)
     const objects = drawings.filter((drawing) => drawing.sheet === dataSheet.name)
@@ -43,10 +46,10 @@ describe('XLSX drawings', () => {
       sheet: 'S', areas: ['A1:A4', 'B1:B4', 'C1:C4'],
       setup: { cellComments: 'asDisplayed' as const },
     }
-    const { data } = await writeXlsxWithPrint({ book: { sheets: [{ name: 'S', cells: {
+    const { data } = await writeXlsx(printingSnapshot({ book: { sheets: [{ name: 'S', cells: {
       A2: { note: { text: 'On the neighboring page', shown: true } },
       B2: { note: { text: 'Hidden' } },
-    } }] } }, [settings])
+    } }] } }, [settings]))
     const { drawings, issues } = await readXlsxDrawings(data)
     expect(issues).toEqual([])
     expect(drawings.map((drawing) => drawing.kind === 'note' && [drawing.cell, drawing.hidden])).toEqual([['A2', false], ['B2', true]])
@@ -63,7 +66,7 @@ describe('XLSX drawings', () => {
   it('reads saved types, axis ids, labels and caches, and updates the series through a session', async () => {
     const data = kept('chart-values')
     const [{ charts, issues }, { book }, { drawings }] = await Promise.all([
-      readXlsxCharts(data), readXlsxWithPrint(data), readXlsxDrawings(data),
+      readXlsxCharts(data), readXlsx(data), readXlsxDrawings(data),
     ])
     expect(issues).toEqual([])
     expect(charts).toHaveLength(1)

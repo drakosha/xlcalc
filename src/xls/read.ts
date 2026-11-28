@@ -1,4 +1,4 @@
-import { hasCompoundSignature, readStyledArchive, workbookInput, type ReadWorksheetPart } from '../xlsx/read/book.js'
+import { hasCompoundSignature, readStyledArchive, workbookInput } from '../xlsx/read/book.js'
 import { LOCALE_PROPERTY } from '../xlsx/property.js'
 import type { Rel } from '../xlsx/read/package.js'
 import { OFFICE_THEME, THEME_ORDER } from '../xlsx/styles/color.js'
@@ -12,7 +12,8 @@ import { readFilters, type SheetFilters } from './filter.js'
 import { cacheParts } from './pivot-cache.js'
 import { olapCacheIndexes, pivotViews, viewPart, type ViewCache } from './pivot-table.js'
 import { notes } from './notes.js'
-import type { ReadPrintMarkup } from './printing.js'
+import { printMarkup } from './print-markup.js'
+import type { PrintReadIssue } from '../xlsx/print/types.js'
 import { CompoundLayoutError, openCompound, type Compound } from './compound.js'
 import { localeProperty } from './properties.js'
 import { isBof } from './records.js'
@@ -46,13 +47,8 @@ function workbookBytes(bytes: Uint8Array, limits: XlsxLimits): Compound {
   return openCompound(bytes, limits)
 }
 
-interface XlsParts {
-  readPrint?: ReadPrintMarkup
-  visitWorksheet?: ReadWorksheetPart
-}
-
 export async function readXls(
-  data: Uint8Array | ArrayBuffer, opts: ReadXlsxOptions | undefined, parts?: XlsParts,
+  data: Uint8Array | ArrayBuffer, opts: ReadXlsxOptions | undefined,
 ): Promise<{ read: XlsxRead; workbook: ReturnType<typeof globals> }> {
   const input = workbookInput(data, opts, true)
   const limits = input.limits ?? {}
@@ -89,6 +85,7 @@ export async function readXls(
   }
   relate('theme', 'theme', THEME)
   if (book.stringsXml !== undefined) relate('strings', 'sharedStrings', STRINGS)
+  const printIssues: PrintReadIssue[] = []
   const extraParts = new Map<string, string>()
   const root: Rel[] = []
   if (locale !== undefined) {
@@ -269,7 +266,11 @@ export async function readXls(
         } else losses.add('pivotTable', 'a pivot table with an unsupported cache or layout was left out', 'Сводная таблица с неподдерживаемым кэшем или разметкой пропущена', sheet.name)
       }
       const output = xml(path)
-      const print = parts?.readPrint?.(sheetRecords(book, sheet), book.encoding, sheet.name)
+      const print = printMarkup(sheetRecords(book, sheet), book.encoding, (part, reason) => {
+        if (!printIssues.some((issue) => issue.sheet === sheet.name && issue.part === part && issue.reason === reason)) {
+          printIssues.push({ sheet: sheet.name, part, reason })
+        }
+      })
       const missing = worksheet(book, sheet, output, hasNotes, relateSheet, filters, conditional, print)
       if (missing.size) fallback.set(sheet, missing)
       relations.add('</Relationships>')
@@ -277,7 +278,8 @@ export async function readXls(
       return output.text()
     },
   }
-  const { read } = await readStyledArchive(archive, root, WORKBOOK, input.language, parts?.visitWorksheet)
+  const { read } = await readStyledArchive(archive, root, WORKBOOK, input.language)
+  if (printIssues.length) read.printIssues = [...(read.printIssues ?? []), ...printIssues]
   const refreshFromView = new Set<number>()
   for (const [index, view] of pivotCaches.entries()) {
     if (view?.legacyViewEnablesRefresh && book.caches[index].enableRefresh === undefined) refreshFromView.add(view.id)

@@ -28,7 +28,7 @@ async function bundle(minify = false) {
 }
 
 describe('xlsx/keep outside Node', () => {
-  it('takes no Node built-ins and no part of the engine that computes, in under 460 KB minified', async () => {
+  it('takes no Node built-ins and no part of the engine that computes, in under 474 KB minified', async () => {
     const { code, used, bytes } = await bundle(true)
     expect(code).not.toMatch(/\brequire\s*\(|\bprocess\.|\bBuffer\s*[.(]|\b(typeof|instanceof)\s+Buffer\b|["']node:/)
     const engine = used.filter((f) => /\/(functions|exec|session|spill|arrays)\/|\/(engine|evaluate|compile|runtime|functions|session|result|graph)\.(ts|js)$/.test(f) && !/\/exec\/budget\.(ts|js)$/.test(f))
@@ -41,7 +41,8 @@ describe('xlsx/keep outside Node', () => {
     // Sheet default widths in the Normal font: 466,390 bytes of dist, 465,802 before the merge.
     // Optional workbook table styles add the file hooks: 467,458 bytes of dist, 466,394 before.
     // Patterned fills, and table style regions' inside borders and number formats: 468,587 bytes, 467,458 before.
-    expect(bytes).toBeLessThan(460 * 1024)
+    // Ordinary read and write now include the worksheet print codec and edits over the original package.
+    expect(bytes).toBeLessThan(474 * 1024)
   }, 60_000)
 
   it('runs in an empty context given the web codecs: a file opened, a value changed, written over it', async () => {

@@ -1,6 +1,6 @@
 /**
  * What a host's bundle takes of the package, bundled by esbuild for the browser and minified: `compute` alone stays
- * under 416 KB, as no locale module but en-US comes with it, nor the functions' declared arguments; the root,
+ * under 417 KB, as no locale module but en-US comes with it, nor the functions' declared arguments; the root,
  * `xlcalc/xlsx` and `xlcalc/csv` take no other locale either (`loadLocale`, which imports the others, is `xlcalc/locales`'s alone), and the ru-RU module takes nothing of the computation. A budget, so that the computation does not grow past it unnoticed; the README's table of
  * what to import gives the sizes. The light entry `xlcalc/core` takes none of the groups of functions, its `compute`
  * under 345 KB.
@@ -23,42 +23,32 @@ const locales = (used: string[]) => used.filter((f) => /\/locales\//.test(f)).ma
 describe('bundle size', () => {
   it('keeps the XLS converter in its own entry point', async () => {
     const xls = await minified(`export * from ${lib('xls.js')}`)
-    // The reader with its saved OLAP cache projection is about 386,300 minified bytes.
-    expect(xls.bytes).toBeLessThan(378 * 1024)
-    const print = await minified(`export * from ${lib('xls-print.js')}`)
-    const isPrint = (file: string) => /\/(?:xls\/print-markup\.|xlsx\/print\/)/.test(file)
-    expect(print.bytes).toBeLessThan(390 * 1024)
-    expect(print.used.filter(isPrint)).toEqual(expect.arrayContaining([
+    expect(xls.bytes).toBeLessThan(390 * 1024)
+    expect(xls.used).toEqual(expect.arrayContaining([
       expect.stringMatching(/\/xls\/print-markup\./), expect.stringMatching(/\/xlsx\/print\/read\./),
     ]))
-    expect(xls.used.filter(isPrint)).toEqual([])
     const connections = await minified(`export * from ${lib('xls-connections.js')}`)
     const isConnectionDetails = (file: string) => /\/xls\/connection-details\./.test(file)
-    expect(connections.bytes).toBeLessThan(390 * 1024)
+    expect(connections.bytes).toBeLessThan(394 * 1024)
     expect(connections.used.some(isConnectionDetails)).toBe(true)
-    expect(xls.used.some(isConnectionDetails) || print.used.some(isConnectionDetails)).toBe(false)
-    for (const entry of ['index.js', 'xlsx.js', 'xlsx-keep.js', 'xlsx-print.js', 'xlsx-print-keep.js', 'xlsb.js']) {
+    expect(xls.used.some(isConnectionDetails)).toBe(false)
+    for (const entry of ['index.js', 'xlsx.js', 'xlsx-keep.js', 'xlsx-print.js', 'xlsb.js']) {
       const { used } = await minified(`export * from ${lib(entry)}`)
       expect(used.filter((file) => /\/xls(?:\/|\.(?:js|ts)$)/.test(file))).toEqual([])
     }
   }, 60_000)
 
-  it('print codecs and pagination belong to the opt-in xlsx/print entry, under 400 KB, and with keep under 464 KB', async () => {
-    const isPrint = (file: string) => /\/xlsx(?:\/print\/|-print(?:-keep)?\.(?:ts|js)$)/.test(file)
-    const { bytes, used } = await minified('export * from ' + lib('xlsx-print.js'))
-    // 399,545 bytes of dist at 0.90.0: the xlsx reader and writer with print settings, pagination, notes and drawings
-    expect(bytes).toBeLessThan(400 * 1024)
-    expect(used.filter(isPrint)).toEqual(expect.arrayContaining([
-      expect.stringMatching(/\/print\/layout\./), expect.stringMatching(/\/print\/read\./), expect.stringMatching(/\/print\/write\./),
-    ]))
-    expect(used.filter((file) => /\/xlsx\/keep\/book\./.test(file))).toEqual([])
-    const kept = await minified('export * from ' + lib('xlsx-print-keep.js'))
-    // 465,657 bytes of dist at 0.90.0: xlcalc/xlsx/keep with the print settings' reader and writer
-    expect(kept.bytes).toBeLessThan(464 * 1024)
-    expect(kept.used.filter(isPrint)).toEqual(expect.arrayContaining([expect.stringMatching(/\/print\/keep\./)]))
-    for (const entry of ['index.js', 'core.js', 'xlsx.js', 'xlsx-keep.js', 'xlsb.js']) {
-      const { used: inputs } = await minified('export * from ' + lib(entry))
-      expect(inputs.filter(isPrint), entry).toEqual([])
+  it('regular file entries read saved print settings while pagination stays opt-in', async () => {
+    const read = /\/xlsx\/print\/read\./
+    const layout = /\/xlsx\/print\/layout\./
+    const printing = await minified('export * from ' + lib('xlsx-print.js'))
+    expect(printing.bytes).toBeLessThan(60 * 1024)
+    expect(printing.used).toEqual(expect.arrayContaining([expect.stringMatching(layout)]))
+    expect(printing.used.filter((file) => read.test(file))).toEqual([])
+    for (const entry of ['xlsx.js', 'xlsx-keep.js', 'xls.js', 'xlsb.js']) {
+      const { used } = await minified('export * from ' + lib(entry))
+      expect(used, entry).toEqual(expect.arrayContaining([expect.stringMatching(read)]))
+      expect(used.filter((file) => layout.test(file)), entry).toEqual([])
     }
   }, 60_000)
 
@@ -71,7 +61,7 @@ describe('bundle size', () => {
       expect.stringMatching(/\/charts\/read\./), expect.stringMatching(/\/charts\/values\./),
     ]))
     expect(charts.used.filter((file) => /\/(?:engine|session|evaluate|compile)\.(?:ts|js)$/.test(file))).toEqual([])
-    for (const entry of ['index.js', 'core.js', 'xlsx.js', 'xlsx-keep.js', 'xlsx-print.js', 'xlsx-print-keep.js', 'xlsb.js']) {
+    for (const entry of ['index.js', 'core.js', 'xlsx.js', 'xlsx-keep.js', 'xlsx-print.js', 'xlsb.js']) {
       const { used } = await minified('export * from ' + lib(entry))
       expect(used.filter(isChart), entry).toEqual([])
     }
@@ -82,18 +72,14 @@ describe('bundle size', () => {
     // 331,153 bytes of dist with sheet default widths in the shared reader; the room over it lets the xlsx reader grow by
     // a release or two before the converter is made smaller.
     expect(xlsb.bytes).toBeLessThan(336 * 1024)
-    expect(xlsb.used.filter((file) => /\/xlsb\/print-markup\./.test(file))).toEqual([])
-    const print = await minified(`export * from ${lib('xlsb-print.js')}`)
-    expect(print.used).toEqual(expect.arrayContaining([
-      expect.stringMatching(/\/xlsb\/print-markup\./), expect.stringMatching(/\/xlsx\/print\/read\./),
-    ]))
+    expect(xlsb.used).toEqual(expect.arrayContaining([expect.stringMatching(/\/xlsb\/print-markup\./)]))
     for (const entry of ['index.js', 'xlsx.js', 'xlsx-keep.js']) {
       const { used } = await minified(`export * from ${lib(entry)}`)
       expect(used.filter((file) => /\/xlsb(?:\/|\.(?:js|ts)$)/.test(file))).toEqual([])
     }
   }, 60_000)
 
-  it('compute alone: under 416 KB minified, with en-US alone of the locales, the functions\' arguments by their specs', async () => {
+  it('compute alone: under 417 KB minified, with en-US alone of the locales, the functions\' arguments by their specs', async () => {
     const { bytes, used } = await minified(`export { compute } from ${lib('index.js')}`)
     expect(locales(used)).toEqual([expect.stringMatching(/^en-US\.(ts|js)$/)])
     // the table of declared arguments is for the calls that check formulas without the engine (`declared-arity.ts`)
@@ -104,7 +90,8 @@ describe('bundle size', () => {
     // IRR by Excel's secant search with restarts: 416,103 bytes, 415,543 before.
     // Normal geometry and regular Liberation advances: 420,990 bytes.
     // Patterned fills checked on input and table styles' number formats in a cell's text: 422,087 bytes, 421,419 before.
-    expect(bytes).toBeLessThan(416 * 1024)
+    // Recognizing worksheet print settings adds two input field names: 425,999 bytes of dist, 425,977 before.
+    expect(bytes).toBeLessThan(417 * 1024)
   }, 60_000)
 
   it('the root, xlcalc/xlsx and xlcalc/csv take en-US alone of the locales, xlcalc/csv and xlcalc/locales none of the computation, xlcalc/locales the modules it loads; the ru-RU module none of the computation, nor the registry its import loads it into', async () => {

@@ -1,6 +1,6 @@
 # Writing over the original file
 
-`writeXlsx` writes a file anew from the workbook, so whatever the workbook cannot hold is gone from it: charts, pictures and shapes, sparklines, the page setup and print area, a protection's password, the theme, formatted runs of text, macros. The `xlcalc/xlsx/keep` subpath writes the workbook over the file it was read from instead. What the workbook changed is written; everything else stays as the file has it, byte for byte. A user who opens a report with a chart, changes one number and saves it gets the report back with its chart.
+`writeXlsx` writes a file anew from the workbook, so whatever the workbook cannot hold is gone from it: charts, pictures and shapes, sparklines, device-specific print parts, a protection's password, the theme, formatted runs of text, macros. The `xlcalc/xlsx/keep` subpath writes the workbook over the file it was read from instead. What the workbook changed is written; everything else stays as the file has it, byte for byte. A user who opens a report with a chart, changes one number and saves it gets the report back with its chart.
 
 ```js
 import { compute, createSession } from 'xlcalc'
@@ -104,7 +104,7 @@ What follows the cells this way:
 - the anchors of drawings (charts, pictures, shapes, slicers) by how each follows the cells. One that moves and sizes with them (`editAs="twoCell"`, the default) follows by both corners; a corner whose row or column was deleted lands where the deleted lines were, its offset 0; with all its rows or all its columns deleted the drawing is deleted, with the chart or picture only it shows, as Excel deletes it. One that moves without sizing (`oneCell`, and a one-cell anchor) follows by its top left corner and keeps its size, as Excel keeps it: where rows or columns under it are inserted or deleted, or its top left corner's line is deleted, its bottom right corner is counted again over the rows' heights and the columns' widths after the change, so a chart over columns 20, 4 and 30 wide that loses the narrow one ends a column further left than before. Columns inserted take the width of the column to their left, as in Excel. One that is fixed (`absolute`) stays;
 - the place of a pivot table, and the source of its cache: cells, or a table or a name, which takes a table's new name; a source whose cells were all deleted stays as the file has it, as Excel keeps it;
 - sparklines, their data and their cells; a sparkline whose cell was deleted stays with `#REF!` for its cell, as Excel keeps it;
-- the names the workbook does not take: the print area and titles (`_xlnm.Print_Area`, `_xlnm.Print_Titles`), a filter's database (`_xlnm._FilterDatabase`) and the other built-in names;
+- the names the workbook does not take: a filter's database (`_xlnm._FilterDatabase`) and the other built-in names;
 - page breaks, a break going with the row or column it comes before; protected ranges;
 - a pivot chart's pivot table, by its sheet's new name;
 - the conditional formats the workbook does not read, their ranges and formulas ([Conditional formats the workbook does not read](#conditional-formats-the-workbook-does-not-read));

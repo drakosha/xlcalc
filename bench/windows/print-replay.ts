@@ -1,8 +1,9 @@
+import { readXlsx } from '../../src/xlsx.js'
 /** Replays the print matrix on the measured Windows Excel 16.0.20430 Microsoft Print to PDF profile. */
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { advance } from '../../src/numfmt/glyphs.js'
-import { formatPrintHeaderFooter, layoutPrintPages, layoutPrintWorkbook, printPaperSize, printSheetGeometry, readXlsxWithPrint, type PrintPage, type PrintNotes } from '../../src/xlsx-print.js'
+import { formatPrintHeaderFooter, layoutPrintPages, layoutPrintWorkbook, printPaperSize, printSheetGeometry, type PrintPage, type PrintNotes } from '../../src/xlsx-print.js'
 
 interface Word {
   x: number
@@ -86,11 +87,9 @@ for (const directory of [controlDirectory, ...also]) {
       unknown++
       continue
     }
-    const { book, print, sheetDefaults } = await readXlsxWithPrint(readFileSync(join(directory, c.name + '.xlsx')))
-    const settings = print[0]
+    const { book } = await readXlsx(readFileSync(join(directory, c.name + '.xlsx')))
+    const settings = { sheet: book.sheets[0].name, ...book.sheets[0].print }
     const usedRange = c.columnWidth ? 'A1:D125' : 'A1:A125'
-    const defaultBySheet = new Map(sheetDefaults.map((defaults) => [defaults.sheet, defaults]))
-    const printBySheet = new Map(print.map((sheet) => [sheet.sheet, sheet]))
     // The driver printed Letter through an A4 PDF. Excel laid the breaks out on the requested stock before that adaptation.
     const requested = c.paper === 1 ? printPaperSize(settings.setup) : undefined
     const { width, height } = requested ?? pages[0]
@@ -108,8 +107,8 @@ for (const directory of [controlDirectory, ...also]) {
     }
     const target = { width, height, deviceGeometry: device, paginationReserve: { height: trailingClearance } }
     const inputs = book.sheets.map((sheet) => ({
-      settings: printBySheet.get(sheet.name) ?? { sheet: sheet.name },
-      geometry: printSheetGeometry(sheet, { ...defaultBySheet.get(sheet.name), font: book.font, usedRange }),
+      settings: { sheet: sheet.name, ...sheet.print },
+      geometry: printSheetGeometry(sheet, { font: book.font, usedRange }),
       target,
       hidden: sheet.hidden,
     }))

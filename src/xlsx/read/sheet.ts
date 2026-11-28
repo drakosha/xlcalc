@@ -75,9 +75,6 @@ const FEATURES: [local: string, code: XlsxIssueCode, message: XlsxMessage][] = [
   ['oleObjects', 'drawing', { key: 'drawings' }],
   ['controls', 'drawing', { key: 'drawings' }],
   ['sparklineGroups', 'sparkline', { key: 'sparklines' }],
-  ['headerFooter', 'print', { key: 'printSettings' }],
-  ['rowBreaks', 'print', { key: 'printSettings' }],
-  ['colBreaks', 'print', { key: 'printSettings' }],
 ]
 
 /** Shared formulas in each of their cells: the master's formula copied and pasted over them (a cell made goes to `added`). */
@@ -289,9 +286,7 @@ function features(head: string, tail: string, src: SheetSource, issues: Issues) 
   const where = { sheet: src.name }
   // a drawing of slicers and timelines alone is theirs (`readSheetPivots`)
   for (const [local, code, message] of FEATURES) if (has(outside, local) && !(local === 'drawing' && framesOnly(src.drawing))) issues.add(code, message, where)
-  const setup = element(tail, 'pageSetup')
-  const sa = setup ? attributes(setup.attrs) : {}
-  if (sa.orientation === 'landscape' || sa.scale !== undefined || sa.fitToWidth !== undefined || sa.fitToHeight !== undefined) issues.add('print', { key: 'printSettings' }, where)
+
 }
 
 function defaultWidthOf(head: string, sheet: string, issues: Issues, digit: number): number | undefined {

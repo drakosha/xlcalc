@@ -1,3 +1,4 @@
+import { checkBookPrinting } from '../input/print.js'
 /**
  * A window over a saved version of a book (`viewportOf`): the book and its result as a host keeps them, read as a
  * session's window reads its state (`viewport.ts`), without a session and without computing. The values, the text, the
@@ -94,6 +95,7 @@ function found(saved: unknown): Found {
   const hit = typeof o.result === 'object' && o.result !== null ? byResult?.get(o.result) : undefined
   if (hit) return hit
   const book = checkBook(o.book, 'saved.book')
+  checkBookPrinting(book, 'saved.book')
   const result = checkResult(o.result, book, 'saved.result')
   const looks = displayed(result) ? bookLooks(book, displayRules(book.locale, epochOf(book.dateSystem))) : null
   const f: Found = { book, result, tables: tablesOf(book), index: new Map(book.sheets.map((x, i) => [sheetKey(x.name), i])), looks, sheets: new Map() }

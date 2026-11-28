@@ -1,14 +1,15 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { layoutPrintPages, printPaperSize, printSheetGeometry, readXlsxWithPrint, writeXlsxWithPrint, type SheetPrint } from '../src/xlsx-print.js'
-import { writeXlsx } from '../src/xlsx.js'
+import { layoutPrintPages, printPaperSize, printSheetGeometry, type SheetPrint } from '../src/xlsx-print.js'
+import { readXlsx, writeXlsx } from '../src/xlsx.js'
+import { printingSnapshot, worksheetPrintOf } from './print-fixtures.js'
 import { partsOf, withParts } from './keep-files.js'
 
 describe('xlsx/print', () => {
   it('reads Excel’s print area, margins and manual page break', async () => {
     const bytes = readFileSync(new URL('./excel/keep/open/print-parts.xlsx', import.meta.url))
-    const read = await readXlsxWithPrint(bytes)
-    expect(read.print.find((settings) => settings.sheet === 'Data')).toMatchObject({
+    const read = await readXlsx(bytes)
+    expect(read.book.sheets.find((sheet) => sheet.name === 'Data')?.print).toMatchObject({
       areas: ['A1:C21'],
       margins: { left: 0.7, top: 0.75 },
       setup: { orientation: 'portrait' },
@@ -25,10 +26,10 @@ describe('xlsx/print', () => {
     }, { edit: {
       'xl/worksheets/sheet1.xml': (xml) => xml.replace('<sheetFormatPr defaultRowHeight="15"', '<sheetFormatPr defaultRowHeight="23" customHeight="1" zeroHeight="1"'),
     } })
-    const read = await readXlsxWithPrint(bytes)
-    const defaults = read.sheetDefaults[0]
-    expect(defaults).toEqual({ sheet: 'Report', defaultRowHeight: 23, visibleRows: [{ first: 2, last: 2 }, { first: 4, last: 4 }] })
-    const geometry = printSheetGeometry(read.book.sheets[0], { ...defaults, usedRange: 'A1:A6' })
+    const read = await readXlsx(bytes)
+    const defaults = read.book.sheets[0].rowDefaults
+    expect(defaults).toEqual({ defaultRowHeight: 23, visibleRows: [{ first: 2, last: 2 }, { first: 4, last: 4 }] })
+    const geometry = printSheetGeometry(read.book.sheets[0], { usedRange: 'A1:A6' })
     expect([1, 2, 3, 4, 5, 6].map(geometry.rows.edge)).toEqual([0, 0, 23, 23, 43, 43])
   })
 
@@ -54,15 +55,13 @@ describe('xlsx/print', () => {
       rowBreaks: [{ before: 8, first: 1, last: 2, manual: true }],
       columnBreaks: [{ before: 4, manual: true }],
     }]
-    const written = await writeXlsxWithPrint(snapshot, print)
+    const written = await writeXlsx(printingSnapshot(snapshot, print))
     const parts = await partsOf(written.data)
     const sheet = parts.get('xl/worksheets/sheet2.xml')!
     expect(sheet).toMatch(/<tabColor[^>]*\/><outlinePr[^>]*\/><pageSetUpPr[^>]*\/><\/sheetPr>/)
     expect(sheet).toMatch(/<printOptions[^>]*\/><pageMargins[^>]*\/><pageSetup[^>]*\/><headerFooter[\s\S]*<\/headerFooter><rowBreaks[\s\S]*<\/rowBreaks><colBreaks[\s\S]*<\/colBreaks><legacyDrawing/)
     expect(parts.get('xl/workbook.xml')).toContain('name="_xlnm.Print_Titles" localSheetId="1"')
-    expect((await readXlsxWithPrint(written.data)).print).toEqual(print)
-    expect((await writeXlsxWithPrint(snapshot, [])).data).toEqual((await writeXlsx(snapshot)).data)
-    await expect(writeXlsxWithPrint(snapshot, [{ ...print[0], sheet: 'Missing' }])).rejects.toThrow(/Missing/)
+    expect(worksheetPrintOf((await readXlsx(written.data)).book)).toEqual(print)
   })
 
   it('uses Excel paper stock codes and keeps the physical output target a caller choice', () => {
@@ -80,10 +79,10 @@ describe('xlsx/print', () => {
   it('round-trips a negative page number as Excel’s unsigned field and accepts automatic scale', async () => {
     const snapshot = { book: { sheets: [{ name: 'Report', cells: { A1: { value: 1 } } }] } }
     const print: SheetPrint = { sheet: 'Report', setup: { firstPageNumber: -2, useFirstPageNumber: true, scale: 0 } }
-    const written = await writeXlsxWithPrint(snapshot, [print])
+    const written = await writeXlsx(printingSnapshot(snapshot, [print]))
     const parts = await partsOf(written.data)
     expect(parts.get('xl/worksheets/sheet1.xml')).toContain('firstPageNumber="4294967294"')
-    expect((await readXlsxWithPrint(written.data)).print).toEqual([print])
+    expect(worksheetPrintOf((await readXlsx(written.data)).book)).toEqual([print])
     const geometry = printSheetGeometry({}, { usedRange: 'A1' })
     const { pages } = layoutPrintPages(print, geometry, { width: 612, height: 792 })
     expect(pages[0]).toMatchObject({ number: -2, scale: 1 })

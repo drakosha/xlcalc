@@ -1,3 +1,4 @@
+import { printAfter } from './print.js'
 /**
  * Inserting and deleting rows and columns, with references adjusted as Excel adjusts them (checked in
  * `test/excel/struct/rows.json` and `edge.json`): a range grows when rows are inserted inside it and
@@ -107,6 +108,7 @@ export function shift(input: BookInput, sheet: string, axis: Axis, at: number, n
     for (const k of ['columns', 'rows', 'merges', 'autoFilter', 'sort', 'frozen', 'validations'] as const) if (layout[k] === undefined) delete layout[k]
     // lines and merged areas all pushed off or deleted leave no field, as a paste leaves none
     for (const k of ['columns', 'rows', 'merges'] as const) if (layout[k] && !Object.keys(layout[k]).length) delete layout[k]
+    printAfter(layout, t, axis)
     return layout
   })
   const out: BookInput = { ...book, sheets: shiftConditional(sheets, target.name, axis, at, n, t, names) }

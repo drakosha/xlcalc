@@ -520,7 +520,7 @@ export function spliceSheet(x: SpliceInput): Spliced {
     const e = own('sheetFormatPr')
     const before = attrsAt(p0.formatPr, 'sheetFormatPr')
     const after = attrsAt(p1.formatPr, 'sheetFormatPr')
-    const keys = ['outlineLevelRow', 'outlineLevelCol', 'defaultColWidth'].filter((key) => before[key] !== after[key])
+    const keys = ['outlineLevelRow', 'outlineLevelCol', 'defaultColWidth', 'defaultRowHeight', 'zeroHeight'].filter((key) => before[key] !== after[key])
     if (before.defaultColWidth !== undefined && after.defaultColWidth === undefined) keys.push('baseColWidth')
     put('sheetFormatPr', e ? attrsFrom(e.text, p1.formatPr, keys) : p1.formatPr)
   }

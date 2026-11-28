@@ -305,6 +305,9 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
   })
   // the rows of the looks' blocks too, their cells written as the rows are, not held cell by cell
   if (layer) for (let b = 0; b < layer.blocks; b++) for (let r = layer.r1[b]; r <= layer.r2[b]; r++) rowsUsed.add(r)
+  const visibleRows = sheet.rowDefaults?.visibleRows
+  for (const { first, last } of visibleRows ?? []) for (let r = first - 1; r < last; r++) rowsUsed.add(r)
+  let visible = 0
   const data: RowWritten[] = []
   for (const row of [...rowsUsed].sort((a, b) => a - b)) {
     let cells = ''
@@ -312,7 +315,12 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
     if (cols.some((c, i) => i > 0 && c < cols[i - 1])) cols.sort((a, b) => a - b)
     if (layer) cells = rowXml(row, layer, layerXf!, cols, xmlAt[row])
     else for (const c of cols) cells += xmlAt[row][c]
-    data.push({ row, attrs: rowAttrs.get(row) ?? '', cells })
+    let attrs = rowAttrs.get(row) ?? ''
+    if (visibleRows) {
+      while (visibleRows[visible]?.last < row + 1) visible++
+      if ((visibleRows[visible]?.first ?? Infinity) > row + 1 && !attrs.includes(' hidden=')) attrs += ' hidden="1"'
+    }
+    data.push({ row, attrs, cells })
   }
   const looked = layer?.bounds()
   const any = extent.n > 0 || !!looked
@@ -320,7 +328,8 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
   const minCol = Math.min(extent.c1, looked?.c1 ?? MAX_COLS)
   const maxCol = Math.max(extent.c2, looked?.c2 ?? 0)
   const dim = any ? `${indexToCol(minCol)}${rowLo + 1}:${indexToCol(maxCol)}${rowHi + 1}` : 'A1'
-  const [digit, defaultHeight] = bookGeometry(ctx.font)
+  const [digit, normalHeight] = bookGeometry(ctx.font)
+  const defaultHeight = sheet.rowDefaults?.defaultRowHeight ?? normalHeight
   const defaultWidth = sheet.defaultColumnWidth
   // A styled column needs an explicit width because Excel opens a column without one as hidden.
   const inheritedWidth = defaultWidth ?? widthOf(columnPoints(undefined, digit), digit)
@@ -369,7 +378,7 @@ export function sheetPieces(sheet: SheetInput, index: number, ctx: SheetContext)
     sheetPr: (filter && sheet.filtered) || prBody ? `<sheetPr${filter && sheet.filtered ? ' filterMode="1"' : ''}${prBody ? `>${prBody}</sheetPr>` : '/>'}` : '',
     dimension: dim,
     views: sheetViewXml(view, pane, ctx.active),
-    formatPr: `<sheetFormatPr defaultRowHeight="${defaultHeight}"${defaultWidth === undefined ? '' : ` defaultColWidth="${defaultWidth}"`}${deepest(rowLines, 'outlineLevelRow')}${deepest(colLines, 'outlineLevelCol')}/>`,
+    formatPr: `<sheetFormatPr defaultRowHeight="${defaultHeight}"${visibleRows ? ' zeroHeight="1"' : ''}${defaultWidth === undefined ? '' : ` defaultColWidth="${defaultWidth}"`}${deepest(rowLines, 'outlineLevelRow')}${deepest(colLines, 'outlineLevelCol')}/>`,
     cols: cols.length ? `<cols>${cols.join('')}</cols>` : '',
     rows: data,
     protection: protectionXml(sheet.protection),

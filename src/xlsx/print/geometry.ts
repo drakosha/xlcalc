@@ -1,13 +1,13 @@
 /** Point coordinates of stored sheet geometry, with one adjustment per explicit size span. */
 import { bookGeometry, columnPoints, MAX_ROW_HEIGHT } from '../../column-width.js'
 import { checkNumber, integer } from '../../input/basic.js'
-import type { BookInput, RowInput, SheetInput } from '../../contract.js'
+import type { BookInput, RowInput, SheetInput, SheetRowDefaults } from '../../contract.js'
 import { firstEnding, isHidden, lines, type Line } from '../../layout/spans.js'
 import { MAX_COLS, MAX_ROWS } from '../../model.js'
-import type { PrintAxisGeometry, PrintSheetDefaults, PrintSheetGeometry, PrintSpan } from './types.js'
+import type { PrintAxisGeometry, PrintSheetGeometry, PrintSpan } from './types.js'
 
 /** The Normal font, the printable used range and the file's row defaults for `printSheetGeometry`. */
-export interface PrintGeometryOptions extends Omit<PrintSheetDefaults, 'sheet'> {
+export interface PrintGeometryOptions extends SheetRowDefaults {
   font?: BookInput['font']
   usedRange?: string
 }
@@ -64,19 +64,20 @@ function visibleRowLines(rows: Line<RowInput>[], visible: readonly PrintSpan[]):
 
 /**
  * A sheet's row and column spans in points for `layoutPrintPages`, hidden lines at zero size, over the printable
- * used range the host passes (`usedRange`) and the defaults `readXlsxWithPrint` gives in `sheetDefaults`.
+ * used range the host passes (`usedRange`) with the saved default row geometry from the worksheet.
  */
 export function printSheetGeometry(
-  sheet: Pick<SheetInput, 'rows' | 'columns' | 'defaultColumnWidth'>,
+  sheet: Pick<SheetInput, 'rows' | 'columns' | 'defaultColumnWidth' | 'rowDefaults'>,
   options: PrintGeometryOptions = {},
 ): PrintSheetGeometry {
   const [digit, defaultHeight] = bookGeometry(options.font)
-  const rowHeight = options.defaultRowHeight ?? defaultHeight
+  const rowHeight = options.defaultRowHeight ?? sheet.rowDefaults?.defaultRowHeight ?? defaultHeight
   checkNumber(rowHeight, 'options.defaultRowHeight', 0, MAX_ROW_HEIGHT)
   const colWidth = columnPoints(sheet.defaultColumnWidth, digit)
   const rows = lines(sheet.rows, 'r')
-  const visibleRows = options.visibleRows === undefined ? rows : visibleRowLines(rows, options.visibleRows)
-  const implicitRowHeight = options.visibleRows === undefined ? rowHeight : 0
+  const savedVisible = options.visibleRows ?? sheet.rowDefaults?.visibleRows
+  const visibleRows = savedVisible === undefined ? rows : visibleRowLines(rows, savedVisible)
+  const implicitRowHeight = savedVisible === undefined ? rowHeight : 0
   return {
     rows: axis(visibleRows, MAX_ROWS, implicitRowHeight, (entry) => entry.height ?? rowHeight),
     columns: axis(lines(sheet.columns, 'c'), MAX_COLS, colWidth, (entry) => entry.width === undefined ? colWidth : columnPoints(entry.width, digit)),

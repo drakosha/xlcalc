@@ -20,6 +20,7 @@ import { Xml, type Budget } from './xml.js'
 type Convert = (part: Part) => void
 
 const converters: Readonly<Partial<Record<string, Convert>>> = {
+  'application/vnd.ms-excel.worksheet': worksheet,
   'application/vnd.ms-excel.sharedstrings': sharedStrings,
   'application/vnd.ms-excel.styles': styles,
   'application/vnd.ms-excel.sheetmetadata': metadata,
@@ -35,7 +36,6 @@ const converters: Readonly<Partial<Record<string, Convert>>> = {
 export async function convertingArchive(
   source: Archive, workbookPath: string, limits: XlsxLimits, budget: Budget,
   unfinished: Set<string>, invalidExternalDefinition: (part: string, name: string) => void,
-  convertWorksheet: Convert = worksheet,
 ): Promise<Archive> {
   const types = new Map<string, string>()
   const external = new Map<string, ExternalSource>()
@@ -115,9 +115,7 @@ export async function convertingArchive(
         else pending()
         return xml.text()
       }
-      const convert = key === workbookPath.toLowerCase() ? workbook
-        : kind === 'application/vnd.ms-excel.worksheet' ? convertWorksheet
-        : Object.hasOwn(converters, kind) ? converters[kind] : undefined
+      const convert = key === workbookPath.toLowerCase() ? workbook : Object.hasOwn(converters, kind) ? converters[kind] : undefined
       if (!convert) {
         for (const _record of records(bytes, path)) {
           // Check framing for a requested binary part even before its fields are translated.

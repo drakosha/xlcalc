@@ -86,10 +86,6 @@
       "types": "./dist/xlsx-print.d.ts",
       "default": "./dist/xlsx-print.js"
     },
-    "./xlsx/print/keep": {
-      "types": "./dist/xlsx-print-keep.d.ts",
-      "default": "./dist/xlsx-print-keep.js"
-    },
     "./xlsx/keep": {
       "types": "./dist/xlsx-keep.d.ts",
       "default": "./dist/xlsx-keep.js"
@@ -102,17 +98,9 @@
       "types": "./dist/xls-connections.d.ts",
       "default": "./dist/xls-connections.js"
     },
-    "./xls/print": {
-      "types": "./dist/xls-print.d.ts",
-      "default": "./dist/xls-print.js"
-    },
     "./xlsb": {
       "types": "./dist/xlsb.d.ts",
       "default": "./dist/xlsb.js"
-    },
-    "./xlsb/print": {
-      "types": "./dist/xlsb-print.d.ts",
-      "default": "./dist/xlsb-print.js"
     },
     "./csv": {
       "types": "./dist/csv.d.ts",

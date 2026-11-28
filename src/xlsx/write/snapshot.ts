@@ -1,3 +1,4 @@
+import { checkBookPrinting } from '../../input/print.js'
 /**
  * What `writeXlsx` is given: a snapshot `{ book, result? }`, the options, and which values of formulas the file stores
  * (`values`). The result is `compute`'s, a session's
@@ -81,6 +82,7 @@ export function writeArgs(snapshot: XlsxSnapshot, opts: unknown): WriteArgs {
   // a sheet without looks is written as given, its entries in their order; one with looks as the engine takes it
   const listed = new Map<object, string[]>()
   const book = checkBook(given.book, 'snapshot.book', true, listed)
+  checkBookPrinting(book, 'snapshot.book')
   if (book.tableStyles !== undefined) {
     if (!tableStyleFiles) throw new InputError('snapshot.book.tableStyles', 'call registerTableStyles from xlcalc/table-styles before writing this workbook')
     tableStyleFiles.check(book.tableStyles, 'snapshot.book.tableStyles')

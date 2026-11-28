@@ -13,13 +13,10 @@ examples are the [README](../README.md) and the other files of `docs/`. This fil
 - [`xlcalc/xlsx`](#xlcalcxlsx)
 - [`xlcalc/xlsx/keep`](#xlcalcxlsxkeep)
 - [`xlcalc/xlsx/print`](#xlcalcxlsxprint)
-- [`xlcalc/xlsx/print/keep`](#xlcalcxlsxprintkeep)
 - [`xlcalc/xlsx/charts`](#xlcalcxlsxcharts)
 - [`xlcalc/xls`](#xlcalcxls)
 - [`xlcalc/xls/connections`](#xlcalcxlsconnections)
-- [`xlcalc/xls/print`](#xlcalcxlsprint)
 - [`xlcalc/xlsb`](#xlcalcxlsb)
-- [`xlcalc/xlsb/print`](#xlcalcxlsbprint)
 - [`xlcalc/csv`](#xlcalccsv)
 - [`xlcalc/worker`](#xlcalcworker)
 - [`xlcalc/function-text`](#xlcalcfunction-text)
@@ -1097,8 +1094,7 @@ with messages in `opts.locale` (en-US by default).
 function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions): Promise<XlsxWritten>
 ```
 
-Writes a workbook as an xlsx file: its formulas with the values from `snapshot.result` that `opts.values` requests,
-or only its values (`opts.mode: 'values'`).
+Writes a workbook and its saved worksheet settings as XLSX.
 
 ## xlcalc/xlsx/keep
 
@@ -1186,11 +1182,11 @@ The named paper a sheet asks for, or points from the host's printer selection fo
 ### <a id="xlcalcxlsxprint-printsheetgeometry"></a>`printSheetGeometry`
 
 ```ts
-function printSheetGeometry(sheet: Pick<SheetInput, "columns" | "rows" | "defaultColumnWidth">, options?: PrintGeometryOptions): PrintSheetGeometry
+function printSheetGeometry(sheet: Pick<SheetInput, "columns" | "rows" | "defaultColumnWidth" | "rowDefaults">, options?: PrintGeometryOptions): PrintSheetGeometry
 ```
 
 A sheet's row and column spans in points for [`layoutPrintPages`](#xlcalcxlsxprint-layoutprintpages), hidden lines at zero size, over the printable
-used range the host passes (`usedRange`) and the defaults [`readXlsxWithPrint`](#xlcalcxlsxprint-readxlsxwithprint) gives in `sheetDefaults`.
+used range the host passes (`usedRange`) with the saved default row geometry from the worksheet.
 
 ### <a id="xlcalcxlsxprint-projectprintdrawings"></a>`projectPrintDrawings`
 
@@ -1216,41 +1212,6 @@ function readXlsxDrawings(data: ArrayBuffer | Uint8Array<ArrayBufferLike>, opts?
 
 Reads a file's drawings with their anchors: pictures over the grid (bytes on demand by `readImage`), note boxes and
 chart frames. A note box's text is its cell's `note`.
-
-### <a id="xlcalcxlsxprint-readxlsxwithprint"></a>`readXlsxWithPrint`
-
-```ts
-function readXlsxWithPrint(data: ArrayBuffer | Uint8Array<ArrayBufferLike>, opts?: ReadXlsxOptions): Promise<XlsxPrintRead>
-```
-
-Reads an xlsx file as [`readXlsx`](#xlcalcxlsx-readxlsx) does, with its print settings by sheet (`print`), their issues and each sheet's defaults for the print geometry.
-
-### <a id="xlcalcxlsxprint-writexlsxwithprint"></a>`writeXlsxWithPrint`
-
-```ts
-function writeXlsxWithPrint(snapshot: XlsxSnapshot, print: readonly SheetPrint[], opts?: WriteXlsxOptions): Promise<XlsxWritten>
-```
-
-Writes a new xlsx file as [`writeXlsx`](#xlcalcxlsx-writexlsx) does, with the print settings of the listed sheets.
-
-## xlcalc/xlsx/print/keep
-
-### <a id="xlcalcxlsxprintkeep-openkeptwithprint"></a>`openKeptWithPrint`
-
-```ts
-function openKeptWithPrint(data: ArrayBuffer | Uint8Array<ArrayBufferLike>, opts?: ReadXlsxOptions): Promise<XlsxPrintRead>
-```
-
-Opens an xlsx file as [`openKept`](#xlcalcxlsxkeep-openkept) does, with its print settings by sheet for [`writeKeptWithPrint`](#xlcalcxlsxprintkeep-writekeptwithprint).
-
-### <a id="xlcalcxlsxprintkeep-writekeptwithprint"></a>`writeKeptWithPrint`
-
-```ts
-function writeKeptWithPrint(original: ArrayBuffer | Uint8Array<ArrayBufferLike>, snapshot: XlsxSnapshot, print: readonly SheetPrint[], opts?: WriteKeptOptions): Promise<XlsxWritten>
-```
-
-Writes a book over the file it was read from as [`writeKept`](#xlcalcxlsxkeep-writekept) does, replacing the print settings of each listed sheet;
-a sheet listed by name only loses its settings. Drawings and the printer part stay as they were.
 
 ## xlcalc/xlsx/charts
 
@@ -1295,16 +1256,6 @@ function readXlsWithConnections(data: ArrayBuffer | Uint8Array<ArrayBufferLike>,
 
 Reads an XLS workbook and its saved connection definitions for inspection.
 
-## xlcalc/xls/print
-
-### <a id="xlcalcxlsprint-readxlswithprint"></a>`readXlsWithPrint`
-
-```ts
-function readXlsWithPrint(data: ArrayBuffer | Uint8Array<ArrayBufferLike>, opts?: ReadXlsxOptions): Promise<XlsxPrintRead>
-```
-
-Reads an XLS workbook with its print settings by sheet, print issues and row defaults for print geometry.
-
 ## xlcalc/xlsb
 
 ### <a id="xlcalcxlsb-readxlsb"></a>`readXlsb`
@@ -1314,16 +1265,6 @@ function readXlsb(data: ArrayBuffer | Uint8Array<ArrayBufferLike>, opts?: ReadXl
 ```
 
 Reads an XLSB workbook's cells, saved values and issues using the SpreadsheetML reader.
-
-## xlcalc/xlsb/print
-
-### <a id="xlcalcxlsbprint-readxlsbwithprint"></a>`readXlsbWithPrint`
-
-```ts
-function readXlsbWithPrint(data: ArrayBuffer | Uint8Array<ArrayBufferLike>, opts?: ReadXlsxOptions): Promise<XlsxPrintRead>
-```
-
-Reads an XLSB workbook with its print settings by sheet, print issues and row defaults for print geometry.
 
 ## xlcalc/csv
 
@@ -4361,6 +4302,8 @@ type LayoutEdit =
   | { sheet: string; frozen: FrozenPanes | null }
   /** The color of the sheet's tab (`SheetInput.tabColor`); null removes it. */
   | { sheet: string; tabColor: Color | null }
+  /** Replaces the worksheet print settings. Null clears them. */
+  | { sheet: string; print: WorksheetPrintSettings | null }
   /** All the conditional formats of the sheet (`SheetInput.conditionalFormats`), in priority order. */
   | { sheet: string; conditionalFormats: ConditionalFormat[] }
   /** All the data validation rules of the sheet (`SheetInput.validations`). */
@@ -5710,7 +5653,7 @@ interface PrintDrawingProjection {
 The Normal font, the printable used range and the file's row defaults for [`printSheetGeometry`](#xlcalcxlsxprint-printsheetgeometry).
 
 ```ts
-interface PrintGeometryOptions extends Omit<PrintSheetDefaults, 'sheet'> {
+interface PrintGeometryOptions extends SheetRowDefaults {
   font?: BookInput['font']
   usedRange?: string
 }
@@ -5855,7 +5798,7 @@ The notes of a sheet printed at its end (`setup.cellComments: 'atEnd'`), their l
 
 ```ts
 interface PrintNotes {
-  /** Cells keyed by address, such as the cells returned by readXlsxWithPrint. */
+  /** Cells keyed by address, such as the cells returned by readXlsx. */
   cells: Readonly<Record<string, { note?: CellNote }>>
   /** The workbook's Normal font. The default measurements use Calibri 11 when omitted. */
   font?: BookInput['font']
@@ -5985,20 +5928,6 @@ interface PrintSetup {
   horizontalDpi?: number
   verticalDpi?: number
   copies?: number
-}
-```
-
-### `PrintSheetDefaults`
-
-A worksheet's row defaults from the file, for [`printSheetGeometry`](#xlcalcxlsxprint-printsheetgeometry).
-
-```ts
-interface PrintSheetDefaults {
-  sheet: string
-  /** Default height of a stored worksheet's rows, in points. */
-  defaultRowHeight?: number
-  /** When the file hides rows by default, the spans it writes as visible. */
-  visibleRows?: readonly PrintSpan[]
 }
 ```
 
@@ -6889,6 +6818,10 @@ interface SheetInput {
   looks?: LookRange[]
   /** The default width of columns without a width of their own, in xlsx units of the Normal font like `ColumnInput.width`. */
   defaultColumnWidth?: number
+  /** Saved worksheet row geometry used when laying out printed pages. */
+  rowDefaults?: SheetRowDefaults
+  /** The saved print settings of this worksheet. Outside calculation and inputHash. */
+  print?: WorksheetPrintSettings
   /** Columns by letter, a single column (`C`) or a span (`B:D`) like xlsx `<col min max>`; spans do not overlap. */
   columns?: Record<string, ColumnInput>
   /** Rows by number, a single row (`5`) or a span (`5:9`); spans do not overlap. */
@@ -6995,21 +6928,11 @@ interface SheetOutline {
 
 ### `SheetPrint`
 
-A worksheet's print settings: areas, repeated titles, page setup, margins, flags, headers and footers, breaks.
+Saved settings with the sheet name used to label the pages of a print job.
 
 ```ts
-interface SheetPrint {
+interface SheetPrint extends WorksheetPrintSettings {
   sheet: string
-  /** An ordered list of sheet-local A1 ranges, one print area per entry. */
-  areas?: readonly string[]
-  repeatRows?: PrintSpan
-  repeatColumns?: PrintSpan
-  setup?: PrintSetup
-  margins?: PrintMargins
-  options?: PrintOptions
-  headerFooter?: PrintHeaderFooter
-  rowBreaks?: readonly PrintBreak[]
-  columnBreaks?: readonly PrintBreak[]
 }
 ```
 
@@ -7041,6 +6964,19 @@ interface SheetProtection {
   objects?: boolean
   /** Edit scenarios. */
   scenarios?: boolean
+}
+```
+
+### `SheetRowDefaults`
+
+The saved default row geometry of a worksheet.
+
+```ts
+interface SheetRowDefaults {
+  /** Default height of a stored worksheet's rows, in points. */
+  defaultRowHeight?: number
+  /** When the file hides rows by default, the spans it writes as visible. */
+  visibleRows?: readonly PrintSpan[]
 }
 ```
 
@@ -8219,6 +8155,25 @@ interface WorkerLike {
 }
 ```
 
+### `WorksheetPrintSettings`
+
+A worksheet's print settings: areas, repeated titles, page setup, margins, flags, headers and footers, breaks.
+
+```ts
+interface WorksheetPrintSettings {
+  /** An ordered list of sheet-local A1 ranges, one print area per entry. */
+  areas?: readonly string[]
+  repeatRows?: PrintSpan
+  repeatColumns?: PrintSpan
+  setup?: PrintSetup
+  margins?: PrintMargins
+  options?: PrintOptions
+  headerFooter?: PrintHeaderFooter
+  rowBreaks?: readonly PrintBreak[]
+  columnBreaks?: readonly PrintBreak[]
+}
+```
+
 ### `WriteCsvOptions`
 
 Options of [`writeCsv`](#xlcalccsv-writecsv).
@@ -8645,18 +8600,6 @@ interface XlsxLimits {
 }
 ```
 
-### `XlsxPrintRead`
-
-A workbook read with its print settings, their issues and each sheet's row defaults.
-
-```ts
-interface XlsxPrintRead extends XlsxRead {
-  print: SheetPrint[]
-  printIssues: PrintReadIssue[]
-  sheetDefaults: PrintSheetDefaults[]
-}
-```
-
 ### `XlsxRead`
 
 A file read into a workbook.
@@ -8668,6 +8611,8 @@ interface XlsxRead {
   /** The values the file stores for formulas and the cells their arrays spilled into, for comparison with the engine's result. */
   cached: XlsxCached
   issues: XlsxIssue[]
+  /** Saved print features that could not be imported, when present. */
+  printIssues?: PrintReadIssue[]
 }
 ```
 

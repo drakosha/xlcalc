@@ -3,12 +3,11 @@ import { readFile } from 'node:fs/promises'
 import { describe, expect, it } from 'vitest'
 import { libUrl } from './fixtures/target.js'
 import { readXlsx, writeXlsx } from '../src/xlsx.js'
-import { readXlsxWithPrint, writeXlsxWithPrint } from '../src/xlsx-print.js'
+import { workbookData, worksheetPrintOf } from './print-fixtures.js'
 
-const { readXlsWithPrint } = await import(libUrl('xls-print.js')) as typeof import('../src/xls-print.js')
 const { readXls } = await import(libUrl('xls.js')) as typeof import('../src/xls.js')
 const fixture = (name: string, extension = 'xls') => readFile(new URL(`./excel/xls-read/${name}.${extension}`, import.meta.url))
-const pair = async (name: string) => Promise.all([fixture(name).then(readXls), fixture(name, 'xlsx').then(readXlsx)])
+const pair = async (name: string) => Promise.all([fixture(name).then(readXls).then(workbookData), fixture(name, 'xlsx').then(readXlsx).then(workbookData)])
 
 function discardRecreatedTotalsLabel(read: Awaited<ReturnType<typeof readXlsx>>): void {
   // Excel creates a localized default label when it opens an XLS with a hidden totals row.
@@ -17,13 +16,13 @@ function discardRecreatedTotalsLabel(read: Awaited<ReturnType<typeof readXlsx>>)
   delete first.totals
 }
 
-describe('readXlsWithPrint', () => {
+describe('readXls', () => {
   it('keeps Excel’s page setup, margins, header and footer variants and manual breaks on conversion to XLSX', async () => {
-    const binary = await fixture('print').then(readXlsWithPrint)
-    const xlsx = await fixture('print', 'xlsx').then(readXlsxWithPrint)
+    const binary = await fixture('print').then(readXls)
+    const xlsx = await fixture('print', 'xlsx').then(readXlsx)
     expect(binary.printIssues).toStrictEqual(['Landscape', 'Scale', 'Fit'].map((sheet) => ({ sheet, part: 'pageSetup', reason: 'printerSettings' })))
-    const find = (name: string) => xlsx.print.find((sheet) => sheet.sheet === name)!
-    expect(binary.print).toEqual(expect.arrayContaining([
+    const find = (name: string) => worksheetPrintOf(xlsx.book).find((sheet) => sheet.sheet === name)!
+    expect(worksheetPrintOf(binary.book)).toEqual(expect.arrayContaining([
       expect.objectContaining({ sheet: 'Default', margins: find('Default').margins }),
       expect.objectContaining({ sheet: 'HeaderFooter', headerFooter: find('HeaderFooter').headerFooter }),
       expect.objectContaining({ sheet: 'Landscape', setup: expect.objectContaining(find('Landscape').setup!) }),
@@ -31,39 +30,36 @@ describe('readXlsWithPrint', () => {
       expect.objectContaining({ sheet: 'Fit', setup: expect.objectContaining(find('Fit').setup!) }),
       expect.objectContaining({ sheet: 'Breaks', rowBreaks: find('Breaks').rowBreaks }),
     ]))
-    const base = await fixture('print').then(readXls)
-    expect({ book: binary.book, cached: binary.cached, issues: binary.issues }).toStrictEqual(base)
-    expect(binary.sheetDefaults).toContainEqual({ sheet: 'Default', defaultRowHeight: 15 })
-    const written = await writeXlsxWithPrint({ book: binary.book, result: binary.cached }, binary.print, { values: 'preserve' })
-    expect((await readXlsxWithPrint(written.data)).print).toStrictEqual(binary.print)
+    const written = await writeXlsx({ book: binary.book, result: binary.cached }, { values: 'preserve' })
+    expect(worksheetPrintOf((await readXlsx(written.data)).book)).toStrictEqual(worksheetPrintOf(binary.book))
   })
 
   it('reads LibreOffice’s parenthesized print areas and titles, margins, print flags and manual column break', async () => {
-    const binary = await fixture('lo-print-titles').then(readXlsWithPrint)
-    const xml = await fixture('lo-print-titles', 'xlsx').then(readXlsxWithPrint)
-    const [expected] = xml.print
+    const binary = await fixture('lo-print-titles').then(readXls)
+    const xml = await fixture('lo-print-titles', 'xlsx').then(readXlsx)
+    const [expected] = worksheetPrintOf(xml.book)
     expect(expected.areas).toEqual(['B2:D4', 'F7:H9'])
-    expect(binary.printIssues).toStrictEqual([])
-    expect(binary.print).toEqual([expect.objectContaining({
+    expect(binary.printIssues).toBeUndefined()
+    expect(worksheetPrintOf(binary.book)).toEqual([expect.objectContaining({
       sheet: "O'Brien Print", areas: expected.areas, repeatRows: expected.repeatRows, repeatColumns: expected.repeatColumns,
       options: expected.options, columnBreaks: [{ before: 3, manual: true }],
       headerFooter: { oddHeader: '&CReport &P' },
       setup: expect.objectContaining({ firstPageNumber: 7, useFirstPageNumber: true, pageOrder: 'overThenDown' }),
     })])
-    expect(binary.print[0].margins?.left).toBeCloseTo(0.35)
-    expect(binary.print[0].margins?.bottom).toBeCloseTo(0.85)
-    const written = await writeXlsxWithPrint({ book: binary.book, result: binary.cached }, binary.print, { values: 'preserve' })
-    expect((await readXlsxWithPrint(written.data)).print).toStrictEqual(binary.print)
+    expect(worksheetPrintOf(binary.book)[0].margins?.left).toBeCloseTo(0.35)
+    expect(worksheetPrintOf(binary.book)[0].margins?.bottom).toBeCloseTo(0.85)
+    const written = await writeXlsx({ book: binary.book, result: binary.cached }, { values: 'preserve' })
+    expect(worksheetPrintOf((await readXlsx(written.data)).book)).toStrictEqual(worksheetPrintOf(binary.book))
   })
 
   it('reads the same stored print area Excel writes when saving the PivotTable fixture as XLSX', async () => {
-    const binary = await fixture('held-print-area-source').then(readXlsWithPrint)
-    const xml = await fixture('held-print-area-source', 'xlsx').then(readXlsxWithPrint)
-    const areas = (result: typeof xml) => result.print.filter((sheet) => sheet.areas).map(({ sheet, areas }) => ({ sheet, areas }))
+    const binary = await fixture('held-print-area-source').then(readXls)
+    const xml = await fixture('held-print-area-source', 'xlsx').then(readXlsx)
+    const areas = (result: typeof xml) => worksheetPrintOf(result.book).filter((sheet) => sheet.areas).map(({ sheet, areas }) => ({ sheet, areas }))
     expect(areas(xml)).toHaveLength(1)
     expect(areas(binary)).toStrictEqual(areas(xml))
-    const written = await writeXlsxWithPrint({ book: binary.book, result: binary.cached }, binary.print, { values: 'preserve' })
-    const saved = await readXlsxWithPrint(written.data)
+    const written = await writeXlsx({ book: binary.book, result: binary.cached }, { values: 'preserve' })
+    const saved = await readXlsx(written.data)
     expect(areas(saved)).toStrictEqual(areas(binary))
     expect(saved.book.pivotCaches?.map(({ source }) => source)).toStrictEqual(binary.book.pivotCaches?.map(({ source }) => source))
   })

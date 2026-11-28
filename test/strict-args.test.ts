@@ -14,11 +14,8 @@ import * as xlsx from '../src/xlsx.js'
 import * as keep from '../src/xlsx-keep.js'
 import * as xls from '../src/xls.js'
 import * as xlsConnections from '../src/xls-connections.js'
-import * as xlsPrint from '../src/xls-print.js'
 import * as xlsb from '../src/xlsb.js'
-import * as xlsbPrint from '../src/xlsb-print.js'
 import * as xlsxPrint from '../src/xlsx-print.js'
-import * as xlsxPrintKeep from '../src/xlsx-print-keep.js'
 import * as xlsxCharts from '../src/xlsx-charts.js'
 import * as csv from '../src/csv.js'
 import * as locales from '../src/locales.js'
@@ -148,14 +145,11 @@ describe('the functions of the package take no options they do not', () => {
     ['xlcalc/xlsx/keep', keep, { openKept: 2, writeKept: 3, inspectKept: 2 }],
     ['xlcalc/xls', xls, { readXls: 2 }],
     ['xlcalc/xls/connections', xlsConnections, { readXlsWithConnections: 2 }],
-    ['xlcalc/xls/print', xlsPrint, { readXlsWithPrint: 2 }],
     ['xlcalc/xlsb', xlsb, { readXlsb: 2 }],
-    ['xlcalc/xlsb/print', xlsbPrint, { readXlsbWithPrint: 2 }],
     ['xlcalc/xlsx/print', xlsxPrint, {
-      readXlsxWithPrint: 2, writeXlsxWithPrint: 3, readXlsxDrawings: 2, printSheetGeometry: 2, layoutPrintPages: 4, layoutPrintWorkbook: 2,
+      readXlsxDrawings: 2, printSheetGeometry: 2, layoutPrintPages: 4, layoutPrintWorkbook: 2,
       printPaperSize: 2, formatPrintHeaderFooter: 2, projectPrintRect: 4, printDrawingBounds: 2, projectPrintDrawings: 4,
     }],
-    ['xlcalc/xlsx/print/keep', xlsxPrintKeep, { openKeptWithPrint: 2, writeKeptWithPrint: 4 }],
     ['xlcalc/xlsx/charts', xlsxCharts, { readXlsxCharts: 2, resolveChartData: 2 }],
     ['xlcalc/csv', csv, { readCsv: 2, writeCsv: 2 }],
     ['xlcalc/locales', locales, { loadLocale: 1 }],
@@ -169,7 +163,7 @@ describe('the functions of the package take no options they do not', () => {
   ]
 
   /** The functions of the print and chart entries that read or write a file, and refuse by a rejected promise. */
-  const FILE_CALLS = new Set(['readXlsWithConnections', 'readXlsWithPrint', 'readXlsbWithPrint', 'readXlsxWithPrint', 'writeXlsxWithPrint', 'readXlsxDrawings', 'openKeptWithPrint', 'writeKeptWithPrint', 'readXlsxCharts'])
+  const FILE_CALLS = new Set(['readXlsWithConnections', 'readXlsxDrawings', 'readXlsxCharts'])
 
   for (const [entry, mod, table] of FUNCTIONS)
     it(`${entry}: each function by its parameters, refusing an options object past them`, async () => {

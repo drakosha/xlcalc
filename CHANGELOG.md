@@ -1,9 +1,10 @@
 # Changelog
 
-## Unreleased
+## 0.92.0 (2026-11-28)
 
-- `readXlsbWithPrint` from `xlcalc/xlsb/print` reads worksheet print settings and row defaults from XLSB.
-- Documented XLSM input for `readXlsx` and `readXlsxWithPrint`.
+- Breaking file API change. The normal Excel readers and writers now carry saved worksheet settings in `sheet.print` and row geometry in `sheet.rowDefaults`. The separate `WithPrint` functions and binary print subpaths are gone. The layout and drawing functions stay in `xlcalc/xlsx/print`.
+- Use `setLayout([{ sheet, print }])` to replace or clear a worksheet's print settings. Print areas and titles move with structural edits.
+- Documented XLSM input for `readXlsx`.
 
 ## 0.91.0 (2026-11-25)
 

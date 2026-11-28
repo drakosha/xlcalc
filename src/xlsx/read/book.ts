@@ -1,3 +1,5 @@
+import { printReader } from '../print/read.js'
+import type { PrintReadIssue } from '../print/types.js'
 import { bookGeometry, normalGeometry } from '../../column-width.js'
 /**
  * `readXlsx`: an xlsx file as a book. The workbook part is found through the package's relationships, its
@@ -79,7 +81,7 @@ function readNames(xml: string, decls: SheetDecl[], read: Set<string>, issues: I
     if (/^_xlfn\./i.test(name)) continue
     if (/^_xlnm\./i.test(name)) {
       // a filter's range is the sheet's AutoFilter, or an advanced filter's, reported with its sheet
-      if (!/^_xlnm\._FilterDatabase$/i.test(name)) issues.add('name', { key: 'builtInName' }, { name })
+      if (!/^_xlnm\.(?:_FilterDatabase|Print_Area|Print_Titles)$/i.test(name)) issues.add('name', { key: 'builtInName' }, { name })
       continue
     }
     const scope = a.localSheetId === undefined ? undefined : decls[Number(a.localSheetId)]?.name
@@ -176,13 +178,10 @@ export interface WorksheetPart {
   /** Zero-based position in <sheets>, including non-worksheets. */
   index: number
   xml: string
-  workbook: string
 }
 
-export type ReadWorksheetPart = (part: WorksheetPart) => void
-
 /** `readXlsx`, with the file's styles part and its cell formats as read (`xlsx/keep` adds to them). */
-export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOptions, visitWorksheet?: ReadWorksheetPart): Promise<{ read: XlsxRead; stylesXml: string | undefined; table: StyleTable }> {
+export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOptions): Promise<{ read: XlsxRead; stylesXml: string | undefined; table: StyleTable }> {
   const { bytes, language, limits } = workbookInput(data, opts)
   const archive = openArchive(bytes, limits)
   const root = await relsOf(archive, '')
@@ -192,11 +191,11 @@ export async function readStyled(data: Uint8Array | ArrayBuffer, opts?: ReadXlsx
       ? 'Откройте файл .xlsb через readXlsb из xlcalc/xlsb или сохраните его в формате .xlsx'
       : 'read an .xlsb file with readXlsb from xlcalc/xlsb, or save it as .xlsx')
   }
-  return readStyledArchive(archive, root, wbPath, language, visitWorksheet)
+  return readStyledArchive(archive, root, wbPath, language)
 }
 
 /** Reads SpreadsheetML from its package. The XLSB adapter serves XML for the binary parts at their original paths. */
-export async function readStyledArchive(archive: Archive, root: Rel[], wbPath: string, language: Locale | undefined, visitWorksheet?: ReadWorksheetPart): Promise<{ read: XlsxRead; stylesXml: string | undefined; table: StyleTable }> {
+export async function readStyledArchive(archive: Archive, root: Rel[], wbPath: string, language: Locale | undefined): Promise<{ read: XlsxRead; stylesXml: string | undefined; table: StyleTable }> {
   const issues = new Issues()
   const wb = await archive.text(wbPath)
   if (wb === undefined) throw new Error(`xlsx: the file has no workbook part (${wbPath})`)
@@ -218,7 +217,9 @@ export async function readStyledArchive(archive: Archive, root: Rel[], wbPath: s
   const read = table.font && { name: table.font.name || 'Calibri', size: table.font.size || 11 }
   const font = read && (read.name !== 'Calibri' || read.size !== 11) ? read : undefined
   if (font && !normalGeometry(font)) issues.add('defaultFont', { key: 'defaultFont', ...table.font })
-  const [columnDigit] = bookGeometry(font)
+  const [columnDigit, defaultRowHeight] = bookGeometry(font)
+  const printIssues: PrintReadIssue[] = []
+  const readPrint = printReader(wb, printIssues, defaultRowHeight)
   const iteration = calculation(wb, issues)
   workbookIssues(wb, rels, issues)
   const dateSystem = flag(attrsAt(wb, 'workbookPr').date1904) ? 1904 : 1900
@@ -262,7 +263,6 @@ export async function readStyledArchive(archive: Archive, root: Rel[], wbPath: s
       issues.add('part', { key: 'sheetPartMissing' }, { sheet: d.name })
       continue
     }
-    visitWorksheet?.({ name: d.name, fileName: d.fileName ?? d.name, index, xml, workbook: wb })
     const sheetRels = await relsOf(archive, d.part!)
     const tableParts = await Promise.all(sheetRels.filter((r) => r.kind === 'table' && !r.external).map((r) => archive.text(r.target)))
     // the VML drawing that shows the notes is the sheet's legacy drawing, searched from the tag before its name's first
@@ -284,6 +284,7 @@ export async function readStyledArchive(archive: Archive, root: Rel[], wbPath: s
       const a = attrsAt(t ?? '', 'table')
       if (a.id !== undefined) tableIds.set(a.id, { name: readText(a.displayName ?? a.name ?? ''), columns: new Map(within(t ?? '', 'tableColumns', 'tableColumn').map((e) => attributes(e.attrs)).map((c) => [c.id, readText(c.name ?? '')])) })
     }
+    readPrint({ name: d.name, fileName: d.fileName ?? d.name, index, xml }, read.sheet)
     await readSheetPivots(archive, read.sheet, sheetRels, pivotParts, drawn, pivots, issues)
     sheets.push(d.hidden ? { ...read.sheet, hidden: d.hidden } : read.sheet)
     cached.sheets.push({ name: d.name, cells: read.cached })
@@ -330,7 +331,7 @@ export async function readStyledArchive(archive: Archive, root: Rel[], wbPath: s
     if (e instanceof InputError) throw new Error(`xlsx: the file's workbook is not valid: ${e.message}`)
     throw e
   }
-  return { read: { book, cached, issues: issues.list(language) }, stylesXml, table }
+  return { read: { book, cached, issues: issues.list(language), ...(printIssues.length ? { printIssues } : {}) }, stylesXml, table }
 }
 
 /** The header cells of a sheet's tables, which the check of its tables reads. */

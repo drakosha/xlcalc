@@ -68,7 +68,6 @@ const LOST: [XlsxIssue['code'], XlsxMessage][] = [
   ['calculation', { key: 'iterationCount', count: '0' }],
   ['calculation', { key: 'iterationChange', change: '-1' }],
   ['protection', { key: 'workbookProtection' }],
-  ['name', { key: 'builtInName' }],
   ['richText', { key: 'richText' }],
   ['style', { key: 'styleLost', part: 'superscript' }],
   ['style', { key: 'styleLost', part: 'patternFill' }],
@@ -85,7 +84,6 @@ const LOST: [XlsxIssue['code'], XlsxMessage][] = [
   ['frozenPanes', { key: 'frozenScrolled' }],
   ['defaultWidth', { key: 'defaultWidth', width: -1 }],
   ['protection', { key: 'sheetPassword' }],
-  ['print', { key: 'printSettings' }],
   ['conditionalFormat', { key: 'condType', type: 'heatMap' }],
   ['dataValidation', { key: 'ruleType', type: 'regex' }],
   ['dataValidation', { key: 'ruleIme' }],
@@ -143,9 +141,9 @@ describe('the issues of a file read, in the language of opts.locale', () => {
       ['Заливка узором в стиле не поддерживается', ['B1']],
       ['Автоподбор ширины в стиле не поддерживается', ['B1']],
     ])
-    // the hidden name is read hidden, without an issue; the built-in one is left out
+    // the hidden name is read hidden, and the print area belongs to its worksheet.
     expect(ru.book.names).toEqual([{ name: 'ставка', ref: '0.1', hidden: true }])
-    expect(ru.issues.filter((i) => i.code === 'name').map((i) => [i.name, i.message])).toEqual([['_xlnm.Print_Area', 'Встроенное имя (область печати, печатаемые заголовки) не поддерживается']])
+    expect(ru.book.sheets[0].print?.areas).toEqual(['A1:B2'])
   })
 
   it('the files Excel saved that have issues: in ru-RU each message is Russian, with the same code, sheet, cells and name', async () => {

@@ -78,16 +78,19 @@ export function checkedFields(value: unknown, path: string, fields: Fields, othe
   return given
 }
 
-export function writeFields(fields: Fields, given: Record<string, unknown>, path: string): string {
-  let out = ''
+export function fieldText(value: unknown): string {
+  return typeof value === 'boolean' ? (value ? '1' : '0') : String(value)
+}
+
+export function checkPrintFields(fields: Fields, given: Record<string, unknown>, path: string): void {
   for (const [key, parse] of Object.entries(fields)) {
     const value = given[key]
-    if (value === undefined) continue
-    const text = typeof value === 'boolean' ? (value ? '1' : '0') : String(value)
-    if (parse(text) !== value) throw new InputError(`${path}.${key}`, 'invalid print setting')
-    out += ` ${key}="${escapeAttr(text)}"`
+    if (value !== undefined && parse(fieldText(value)) !== value) throw new InputError(`${path}.${key}`, 'invalid print setting')
   }
-  return out
+}
+
+export function writeFields(fields: Fields, given: Record<string, unknown>): string {
+  return Object.keys(fields).flatMap((key) => given[key] === undefined ? [] : [` ${key}="${escapeAttr(fieldText(given[key]))}"`]).join('')
 }
 
 export const leaf = (name: string, attrs: string): string => attrs ? `<${name}${attrs}/>` : ''

@@ -1,3 +1,4 @@
+import type { WorksheetPrintSettings } from './print.js'
 /** The edits of a session's book: cells set, replaced and patched, the layout changed, operations in a batch and their preview, what a call that changes the book answers and its subscribers get, undo and redo. */
 import type { CellRef, CellValue, Clock, JsonValue, RangeRef } from './values.js'
 import type { AutoFilter, CellInput, CellLink, CellNote, ColumnInput, FilterSort, FrozenPanes, NameInput, NumberFormat, OutlineSettings, RowInput, SheetProtection, TextRun } from './book.js'
@@ -239,6 +240,8 @@ export type LayoutEdit =
   | { sheet: string; frozen: FrozenPanes | null }
   /** The color of the sheet's tab (`SheetInput.tabColor`); null removes it. */
   | { sheet: string; tabColor: Color | null }
+  /** Replaces the worksheet print settings. Null clears them. */
+  | { sheet: string; print: WorksheetPrintSettings | null }
   /** All the conditional formats of the sheet (`SheetInput.conditionalFormats`), in priority order. */
   | { sheet: string; conditionalFormats: ConditionalFormat[] }
   /** All the data validation rules of the sheet (`SheetInput.validations`). */

@@ -1,3 +1,4 @@
+import { checkBookPrinting } from '../input/print.js'
 /**
  * `editStructure(book, op)`: one structure operation on a book, as a pure function. Input of the wrong
  * shape throws `InputError`; an operation Excel would refuse returns `{ ok: false, code, message }`.
@@ -100,6 +101,7 @@ const PASTE_OPERATIONS: readonly PasteOperation[] = ['add', 'subtract', 'multipl
  */
 export function editStructure(book: BookInput, op: StructureOp): StructureResult {
   book = checkBook(book)
+  checkBookPrinting(book)
   op = opTaken(op)
   const r = applyOp(book, op, lazyValues(book))
   if (!r.ok) return r

@@ -1,3 +1,4 @@
+import { worksheetPrintParts } from '../print/write.js'
 /**
  * `writeXlsx`: a book as an xlsx file, with formulas and their values or with values only. The package holds the
  * workbook, its sheets (hidden ones with their state, the first visible one active) with their tables, notes and
@@ -185,10 +186,6 @@ function pivotButtons(book: BookInput, i: number): ReadonlySet<number> | undefin
  * Writes a workbook as an xlsx file: its formulas with the values from `snapshot.result` that `opts.values` requests,
  * or only its values (`opts.mode: 'values'`).
  */
-export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions): Promise<XlsxWritten> {
-  return writeXlsxParts(snapshot, opts)
-}
-
 export interface WorksheetPrintParts {
   /** Inside <sheetPr>, following the outline properties. */
   properties: string
@@ -198,16 +195,12 @@ export interface WorksheetPrintParts {
   names: readonly string[]
 }
 
-/** The ordinary writer and the opt-in print writer share the same worksheet and ZIP assembly. */
-export async function writeXlsxParts(
-  snapshot: XlsxSnapshot,
-  opts: WriteXlsxOptions | undefined,
-  preparePrint?: (book: BookInput) => ReadonlyMap<string, WorksheetPrintParts>,
-): Promise<XlsxWritten> {
+/** Writes a workbook and its saved worksheet settings as XLSX. */
+export async function writeXlsx(snapshot: XlsxSnapshot, opts?: WriteXlsxOptions): Promise<XlsxWritten> {
   const { book: given, keys, cells, resultKeys, mode, unasked, locale } = writeArgs(snapshot, opts)
   const issues = new Issues()
   const book = fitPivots(given, issues)
-  const print = preparePrint?.(book)
+  const print = new Map(book.sheets.flatMap((sheet, i) => sheet.print ? [[sheet.name, worksheetPrintParts(sheet.print, sheet.name, i)] as const] : []))
   const styles = new StyleWriter(book.styles, book.font, issues)
   const strings = new Map<string, number>()
   let refs = 0
@@ -248,7 +241,7 @@ export async function writeXlsxParts(
       ...(filterTables[i] ? { filterTable: filterTables[i] } : {}),
       noteBlock,
       active: i === active,
-      pageSetupProperties: print?.get(s.name)?.properties,
+      pageSetupProperties: print.get(s.name)?.properties,
       buttons: bw.buttons(i),
     })
     if (w.notes) noteBlock = nextBlock(noteBlock, w.notes.count)
@@ -289,7 +282,7 @@ export async function writeXlsxParts(
       legacyDrawing: (drawing ? `<drawing r:id="${drawing}"/>` : '') + s.legacyDrawing,
       ext: s.ext + ext,
     } : s
-    const printSettings = print?.get(book.sheets[i].name)?.settings
+    const printSettings = print.get(book.sheets[i].name)?.settings
     files.push({ name: `xl/worksheets/sheet${i + 1}.xml`, text: sheetXml(worksheet, printSettings) })
     contentTypes.push([`/xl/worksheets/sheet${i + 1}.xml`, `${TYPE}.worksheet+xml`])
     wbRels.push([`${REL}/worksheet`, `worksheets/sheet${i + 1}.xml`])
@@ -347,7 +340,7 @@ export async function writeXlsxParts(
   // always there: without it Excel keeps the calculation settings it has from the books opened before (iteration on)
   const calc = `<calcPr${formulas ? ' fullCalcOnLoad="1"' : ''}${calcAttrs(book)}/>`
   const pr = book.dateSystem === 1904 ? '<workbookPr date1904="1"/>' : ''
-  const printNames = print ? [...print.values()].flatMap((sheet) => sheet.names) : []
+  const printNames = [...print.values()].flatMap((sheet) => sheet.names)
   files.push({ name: 'xl/workbook.xml', text: `${HEAD}<workbook xmlns="${MAIN}" xmlns:r="${REL}">${pr}<bookViews><workbookView${book.activeSheet !== undefined || active ? ` activeTab="${active}"` : ''}/></bookViews><sheets>${sheetList}</sheets>${linkRefs.length ? `<externalReferences>${linkRefs.join('')}</externalReferences>` : ''}${definedNames(book, issues, names, slicers.cacheNames, printNames)}${calc}${pivotCaches ? `<pivotCaches>${pivotCaches}</pivotCaches>` : ''}${wbExt ? `<extLst>${wbExt}</extLst>` : ''}</workbook>` })
   files.push({ name: 'xl/_rels/workbook.xml.rels', text: rels(wbRels) })
   const rootRels: [string, string][] = [[`${REL}/officeDocument`, 'xl/workbook.xml']]

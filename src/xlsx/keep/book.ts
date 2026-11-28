@@ -1,3 +1,4 @@
+import { replaceKeptPrint } from '../print/keep.js'
 /**
  * `writeKept`: a book written over the file it was read from. The parts the book did not change are the file's, byte
  * for byte; a sheet's part keeps what the model does not have (`sheet.ts`); styles are added to (`styles.ts`) and new
@@ -159,20 +160,17 @@ async function setup(src: Source, edits: Edit[], styles: KeptStyles): Promise<Se
 }
 
 /** What an edit of the written parts sees: the book, the source file and the parts as written so far. */
-export type KeptPartView = Pick<Kept, 'book' | 'src' | 'parts' | 'sheetParts' | 'id'>
-/** An edit of the parts after the book's own writing (print settings); true when it changed one. */
-export type EditKeptParts = (view: KeptPartView) => boolean
-
+export type KeptPartView = Pick<Kept, 'book' | 'book0' | 'src' | 'parts' | 'sheetParts' | 'id'>
 /**
  * Writes a book over the xlsx file it was read from (`openKept`): what the book changed is written, the rest is the
  * file's as it was, the parts the model does not have among it. Refuses (`KeptRefusal`, its message in the language of
  * `opts.locale`) a change that would leave references the model does not hold pointing at other cells.
  */
 export async function writeKept(
-  original: Uint8Array | ArrayBuffer, snapshot: XlsxSnapshot, opts?: WriteKeptOptions, editParts?: EditKeptParts,
+  original: Uint8Array | ArrayBuffer, snapshot: XlsxSnapshot, opts?: WriteKeptOptions,
 ): Promise<XlsxWritten> {
   try {
-    return await writeOver(original, snapshot, opts, editParts)
+    return await writeOver(original, snapshot, opts)
   } catch (e) {
     // a refusal comes once the options are checked: in the language of their locale
     throw e instanceof KeptRefusal ? refusalIn(e, opts?.locale) : e
@@ -181,7 +179,7 @@ export async function writeKept(
 
 /** `writeKept`'s writing, its refusals in English. */
 async function writeOver(
-  original: Uint8Array | ArrayBuffer, snapshot: XlsxSnapshot, opts: WriteKeptOptions | undefined, editParts?: EditKeptParts,
+  original: Uint8Array | ArrayBuffer, snapshot: XlsxSnapshot, opts: WriteKeptOptions | undefined,
 ): Promise<XlsxWritten> {
   const bytes = fileBytes(original)
   const o = opts === undefined ? {} : object(opts, 'opts', "options such as { values: 'preserve' }")
@@ -210,7 +208,7 @@ async function writeOver(
   const strict = src.wb.slice(root.start, root.open).includes(STRICT)
   try {
     k.write()
-    if (editParts?.(k)) k.changed = true
+    if (replaceKeptPrint(k)) k.changed = true
   } catch (e) {
     // a Strict file's sheets are in other namespaces than the model's elements
     throw strict ? new KeptRefusal({ key: 'keptStrict' }, 'file') : e

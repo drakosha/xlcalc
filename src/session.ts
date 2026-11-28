@@ -1,3 +1,4 @@
+import { checkBookPrinting } from './input/print.js'
 /**
  * A session over a book: edits are applied atomically with one recomputation of dependents. A live
  * session (`live`) takes a fresh clock and a new seed on every recomputation; its current clock
@@ -183,6 +184,7 @@ export function* openSteps(book: BookInput, opts?: SessionOptions, hooks: Sessio
   const o = checkSessionOptions(opts)
   const addresses = new Map<object, string[]>()
   book = checkBook(book, 'book', false, addresses)
+  checkBookPrinting(book)
   const live = o.live === true
   const fresh = hooks.clock ?? currentClock
   let clock: Clock = 'clock' in o && o.clock ? { ...o.clock } : fresh()

@@ -11,7 +11,7 @@ import type { Xml } from '../xlsb/xml.js'
 import { filterMarkup, type SheetFilters } from './filter.js'
 import { parsedFormula } from './formula.js'
 import { Hyperlinks } from './links.js'
-import { Printing, type PrintMarkup } from './printing.js'
+import type { PrintMarkup } from './printing.js'
 import { address, reference, CONTINUE, Continued, EOF, isBof, substream, substreamType, unicode, type RecordInfo } from './records.js'
 import { validation } from './rules.js'
 import { color, fullColor } from './styles.js'
@@ -207,7 +207,7 @@ function sheetProtection(actions: number, password: number): string {
 
 export function worksheet(
   book: Workbook, sheet: Sheet, xml: Xml, hasNotes: boolean,
-  relate: (id: string, kind: string, path: string, external?: boolean) => void, filters: SheetFilters, conditional?: Xml, print?: PrintMarkup,
+  relate: (id: string, kind: string, path: string, external?: boolean) => void, filters: SheetFilters, conditional: Xml | undefined, print: PrintMarkup,
 ): Set<string> {
   let height: number | undefined
   let baseWidth: number | undefined
@@ -227,7 +227,6 @@ export function worksheet(
   const tail = xml.fragment()
   const validations = xml.fragment()
   const links = new Hyperlinks()
-  const printing = new Printing()
   let zeroHeight = false
   let protectedSheet = false
   let objectsProtected = false
@@ -315,7 +314,6 @@ export function worksheet(
       case 0x0013: password = payload.u16(); break
       case 0x0081: {
         const flags = payload.u16()
-        printing.fit = Boolean(flags & 256)
         const attrs = (flags & 32 ? ' applyStyles="1"' : '') + (flags & 64 ? '' : ' summaryBelow="0"') + (flags & 128 ? '' : ' summaryRight="0"')
         if (attrs) outlines = `<outlinePr${attrs}/>`
         break
@@ -337,13 +335,12 @@ export function worksheet(
       case 0x01b8: case 0x0800:
         if (!links.take(type, payload)) book.losses.add('hyperlink', 'a hyperlink was left out', 'Гиперссылка пропущена', sheet.name)
         break
-      default: if (!print) printing.take(type, payload, book.encoding)
     }
   }
 
   xml.add(`<worksheet ${NS}>`)
-  if (filters.active || outlines || tab || print?.properties) {
-    xml.add(`<sheetPr${filters.active ? ' filterMode="1"' : ''}>${tab}${outlines}${print?.properties ?? ''}</sheetPr>`)
+  if (filters.active || outlines || tab || print.properties) {
+    xml.add(`<sheetPr${filters.active ? ' filterMode="1"' : ''}>${tab}${outlines}${print.properties ?? ''}</sheetPr>`)
   }
   if (details) {
     const attrs = (details.topLeft === 'A1' ? '' : ` topLeftCell="${details.topLeft}"`)
@@ -393,8 +390,7 @@ export function worksheet(
   }
   if (protectedRanges) xml.add('<protectedRanges/>')
   links.write(xml, relate)
-  const printSettings = print?.settings ?? printing.markers()
-  if (printSettings) xml.add(printSettings)
+  if (print.settings) xml.add(print.settings)
   if (drawing) xml.add('<drawing/>')
   if (hasNotes) xml.add('<legacyDrawing r:id="noteDrawing"/>')
   xml.add('</worksheet>')

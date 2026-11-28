@@ -1,3 +1,4 @@
+import { checkWorksheetPrint } from './input/print.js'
 /**
  * Checks of caller input at the API boundary. Wrong input (a value of the wrong type, a malformed cell
  * address, duplicate sheets, an unknown sheet in an edit) throws `InputError` naming the place and the
@@ -243,7 +244,7 @@ export function checkBook(v: unknown, path = 'book', looked = false, keys?: Map<
   array(book.sheets, `${path}.sheets`, 'an array of sheets').forEach((s, i) => {
     const p = `${path}.sheets[${i}]`
     const sheet = object(s, p, 'a sheet such as { name: "Sheet1", cells: {} }')
-    onlyKeys(sheet, p, ['name', 'cells', 'looks', 'defaultColumnWidth', 'columns', 'rows', 'merges', 'filtered', 'autoFilter', 'sort', 'tables', 'frozen', 'conditionalFormats', 'validations', 'outline', 'hidden', 'view', 'protection', 'tabColor', 'pivotTables', 'slicers', 'timelines'])
+    onlyKeys(sheet, p, ['name', 'cells', 'looks', 'defaultColumnWidth', 'rowDefaults', 'print', 'columns', 'rows', 'merges', 'filtered', 'autoFilter', 'sort', 'tables', 'frozen', 'conditionalFormats', 'validations', 'outline', 'hidden', 'view', 'protection', 'tabColor', 'pivotTables', 'slicers', 'timelines'])
     const name = checkString(sheet.name, `${p}.name`)
     const problem = sheetNameProblem(name)
     if (problem) throw new InputError(`${p}.name`, english(problem))
@@ -519,6 +520,7 @@ const SHEET_EDITS: Record<string, { check: (v: unknown, path: string) => void; n
   protection: { check: checkSheetProtection, nullable: true },
   frozen: { check: checkFrozen, nullable: true },
   tabColor: { check: checkColor, nullable: true },
+  print: { check: checkWorksheetPrint, nullable: true },
   conditionalFormats: { check: checkConditionalFormats },
   validations: { check: checkValidations },
   outline: { check: checkOutline, nullable: true },

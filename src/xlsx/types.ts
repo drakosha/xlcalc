@@ -1,3 +1,4 @@
+import type { PrintReadIssue } from './print/types.js'
 /** The types of the `./xlsx` subpath: reading an xlsx file into a book and writing a book with its values. */
 import type { Book, BookInput, CellResult, ComputeResult } from '../contract.js'
 import type { Locale } from '../locale/types.js'
@@ -133,6 +134,8 @@ export interface XlsxRead {
   /** The values the file stores for formulas and the cells their arrays spilled into, for comparison with the engine's result. */
   cached: XlsxCached
   issues: XlsxIssue[]
+  /** Saved print features that could not be imported, when present. */
+  printIssues?: PrintReadIssue[]
 }
 
 /**

@@ -7,10 +7,13 @@ import { WORKSHEET_CHILD_ORDER } from '../keep/sheet.js'
 import { attrsOf, childrenOf, closing, opening, rootOf, setAttrs, split, type Placed } from '../keep/xml.js'
 import { readText } from '../xml/text.js'
 import type { WorksheetPrintParts } from '../write/book.js'
-import { printParts } from './write.js'
+import { worksheetPrintParts } from './write.js'
+import type { WorksheetPrintSettings } from '../../contract.js'
+import { keyOf } from '../../style-table.js'
 import { PROPERTIES, SETUP } from './xml.js'
 
 const PRINT_CHILDREN = ['printOptions', 'pageMargins', 'pageSetup', 'headerFooter', 'rowBreaks', 'colBreaks'] as const
+const FIELDS = ['options', 'margins', 'setup', 'headerFooter', 'rowBreaks', 'columnBreaks'] as const
 const SHEET_PROPERTIES = ['tabColor', 'outlinePr', 'pageSetUpPr'] as const
 
 function qualifier(name: string): string {
@@ -65,13 +68,14 @@ function replaceAttributes(current: string, replacement: string, keys: string[])
   return Object.keys(attrsOf(self, rootOf(self)!)).length ? self : ''
 }
 
-function replacePrintWorksheet(xml: string, print: WorksheetPrintParts): string {
+function replacePrintWorksheet(xml: string, print: WorksheetPrintParts, before: WorksheetPrintSettings, after: WorksheetPrintSettings): string {
   const root = rootOf(xml)!
   const children = childrenOf(xml, root)
   const prefix = qualifier(root.qname)
   const currentProperties = children.find((node) => node.local === 'sheetPr')
   const updates = new Map<string, string>()
-  if (currentProperties) {
+  const setupChanged = keyOf(before.setup) !== keyOf(after.setup)
+  if (setupChanged && currentProperties) {
     const original = xml.slice(currentProperties.start, currentProperties.end)
     const properties = rootOf(original)!
     const oldPage = childrenOf(original, properties).find((node) => node.local === 'pageSetUpPr')
@@ -81,7 +85,7 @@ function replacePrintWorksheet(xml: string, print: WorksheetPrintParts): string 
       const patch = new Map([['pageSetUpPr', nextSetup]])
       updates.set('sheetPr', replaceChildren(original, properties, SHEET_PROPERTIES, patch))
     }
-  } else if (print.properties) {
+  } else if (setupChanged && print.properties) {
     const tag = prefix + 'sheetPr'
     updates.set('sheetPr', `<${tag}>${qualify(print.properties, prefix)}</${tag}>`)
   }
@@ -89,7 +93,9 @@ function replacePrintWorksheet(xml: string, print: WorksheetPrintParts): string 
   const parts = '<settings>' + print.settings + '</settings>'
   const generated = rootOf(parts)!
   const newChildren = childrenOf(parts, generated)
-  for (const key of PRINT_CHILDREN) {
+  for (const [index, key] of PRINT_CHILDREN.entries()) {
+    const field = FIELDS[index]
+    if (keyOf(before[field]) === keyOf(after[field])) continue
     const fresh = newChildren.find((part) => part.local === key)
     const replacement = fresh ? qualify(parts.slice(fresh.start, fresh.end), prefix) : ''
     const old = children.find((node) => node.local === key)
@@ -102,7 +108,7 @@ function replacePrintWorksheet(xml: string, print: WorksheetPrintParts): string 
 }
 
 function replacePrintNames(
-  xml: string, root: Placed, children: Placed[], names: string[], indices: ReadonlySet<number>,
+  xml: string, root: Placed, children: Placed[], names: string[], changedNames: ReadonlyMap<number, ReadonlySet<string>>,
 ): string {
   const current = children.find((node) => node.local === 'definedNames')
   const prefix = qualifier(current?.qname ?? root.qname)
@@ -122,7 +128,7 @@ function replacePrintNames(
   for (const name of childrenOf(original, node)) {
     if (name.local !== 'definedName') continue
     const attrs = attrsOf(original, name)
-    if (indices.has(Number(attrs.localSheetId)) && /^_xlnm\.(Print_Area|Print_Titles)$/i.test(readText(attrs.name ?? ''))) {
+    if (changedNames.get(Number(attrs.localSheetId))?.has(readText(attrs.name ?? '').toLowerCase())) {
       removed.push({ start: name.start, end: name.end, text: '' })
     }
   }
@@ -135,8 +141,9 @@ function replacePrintNames(
   }])
 }
 
-export function replaceKeptPrint(view: KeptPartView, print: unknown): boolean {
-  const { book, src: source, parts, sheetParts, id } = view
+export function replaceKeptPrint(view: KeptPartView): boolean {
+  const { book, book0, src: source, parts, sheetParts, id } = view
+  if (book.sheets.every((s) => s.print === undefined) && book0.sheets.every((s) => s.print === undefined)) return false
   const workbook = parts.text.get(source.wbPath.toLowerCase()) ?? source.wb
   const root = rootOf(workbook)!
   const children = childrenOf(workbook, root)
@@ -145,26 +152,36 @@ export function replaceKeptPrint(view: KeptPartView, print: unknown): boolean {
   childrenOf(workbook, declarations).filter((node) => node.local === 'sheet').forEach((node, i) => {
     place.set(sheetKey(readText(attrsOf(workbook, node).name ?? '')), i)
   })
-  const changes = printParts(book, print, place)
   let changed = false
-  const indices = new Set<number>()
+  const changedNames = new Map<number, Set<string>>()
   const names: string[] = []
   for (const [i, sheet] of book.sheets.entries()) {
-    const settings = changes.get(sheet.name)
-    if (!settings) continue
+    const oldIndex = id.source[i]
+    const old = oldIndex === undefined ? undefined : book0.sheets[oldIndex]
+    const before = old?.print ?? {}
+    const after = sheet.print ?? {}
+    const renamed = old !== undefined && old.name !== sheet.name
+    if (!renamed && keyOf(before) === keyOf(after)) continue
     const position = place.get(sheetKey(sheet.name))
-    if (position === undefined) throw new Error(`xlsx/print/keep: no workbook entry for ${JSON.stringify(sheet.name)}`)
-    indices.add(position)
-    names.push(...settings.names)
+    if (position === undefined) throw new Error(`xlsx: no workbook entry for ${JSON.stringify(sheet.name)}`)
+    const settings = worksheetPrintParts(after, sheet.name, position)
+    const types = new Set<string>()
+    if (keyOf(before.areas) !== keyOf(after.areas) || renamed && after.areas?.length) types.add('_xlnm.print_area')
+    if (keyOf(before.repeatRows) !== keyOf(after.repeatRows) || keyOf(before.repeatColumns) !== keyOf(after.repeatColumns)
+        || renamed && (after.repeatRows || after.repeatColumns)) types.add('_xlnm.print_titles')
+    if (types.size) {
+      changedNames.set(position, types)
+      names.push(...settings.names.filter((text) => [...types].some((type) => text.toLowerCase().startsWith(`<definedname name="${type}"`))))
+    }
     const part = sheetParts[i]
-    const original = parts.text.get(part.toLowerCase()) ?? source.sheets[id.source[i]!].xml
-    const xml = replacePrintWorksheet(original, settings)
+    const original = parts.text.get(part.toLowerCase()) ?? source.sheets[oldIndex!].xml
+    const xml = replacePrintWorksheet(original, settings, before, after)
     if (xml !== original) {
       parts.set(part, xml)
       changed = true
     }
   }
-  const nextWorkbook = replacePrintNames(workbook, root, children, names, indices)
+  const nextWorkbook = replacePrintNames(workbook, root, children, names, changedNames)
   if (nextWorkbook === workbook) return changed
   parts.set(source.wbPath, nextWorkbook)
   return true

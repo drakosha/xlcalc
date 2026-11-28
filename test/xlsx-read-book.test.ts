@@ -111,7 +111,6 @@ describe('xlsx reader: names', () => {
       { name: 'ext', ref: '[1]Data!$A$1' },
     ])
     expect(r.issues.map((i) => `${i.code} ${i.name}: ${i.message.split(':')[0]}`)).toEqual([
-      'name _xlnm.Print_Area: a built-in name (a print area, print titles) is not in the model',
       'externalLink ext: a reference to another workbook that is not one of the links the file holds, or that the engine does not parse',
     ])
   })
@@ -175,7 +174,7 @@ describe('xlsx reader: the workbook and the sheet around the cells', () => {
     f['xl/worksheets/_rels/sheet1.xml.rels'] = rels(`<Relationship Id="rId5" Type="${REL}/pivotTable" Target="../pivotTables/pivotTable1.xml"/>`)
     const r = await readXlsx(await pack(f))
     // conditional formats are read: a rule without its formula is left out; a PivotTable whose part is missing too
-    expect(r.issues.map((i) => i.code)).toEqual(['protection', 'drawing', 'sparkline', 'print', 'frozenPanes', 'conditionalFormat', 'pivotTable'])
+    expect(r.issues.map((i) => i.code)).toEqual(['protection', 'drawing', 'sparkline', 'frozenPanes', 'conditionalFormat', 'pivotTable'])
     expect(r.issues.at(-1)?.message).toBe("a PivotTable or a timeline whose pivot cache is not in the file is left out: the PivotTable's cells are read as stored")
     expect(r.book.sheets[0].filtered).toBeUndefined()
     expect(r.book.sheets[0].autoFilter).toEqual({ range: 'A1:A9' })

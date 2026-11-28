@@ -1,3 +1,4 @@
+import type { SheetRowDefaults, WorksheetPrintSettings } from './print.js'
 /** A book as the engine takes it: cells with their notes and links, sheets with their columns, rows, looks, frozen panes, outline settings, tables and view, the book's names and the workbooks it links to; a book without its cells. */
 import type { DateSystem } from '../dates.js'
 import type { CellValue, ErrorCode, JsonValue, Scalar } from './values.js'
@@ -164,6 +165,10 @@ export interface SheetInput {
   looks?: LookRange[]
   /** The default width of columns without a width of their own, in xlsx units of the Normal font like `ColumnInput.width`. */
   defaultColumnWidth?: number
+  /** Saved worksheet row geometry used when laying out printed pages. */
+  rowDefaults?: SheetRowDefaults
+  /** The saved print settings of this worksheet. Outside calculation and inputHash. */
+  print?: WorksheetPrintSettings
   /** Columns by letter, a single column (`C`) or a span (`B:D`) like xlsx `<col min max>`; spans do not overlap. */
   columns?: Record<string, ColumnInput>
   /** Rows by number, a single row (`5`) or a span (`5:9`); spans do not overlap. */

@@ -1,3 +1,4 @@
+import type { SheetInput } from '../../contract.js'
 import { MAX_ROW_HEIGHT } from '../../column-width.js'
 import { MAX_COLS, MAX_ROWS } from '../../model.js'
 import { areaText } from '../../structure/area.js'
@@ -5,12 +6,11 @@ import { sheetKey } from '../../syntax/print.js'
 import { areasOf } from '../keep/refs.js'
 import { attrsOf, childrenOf, rootOf, type Placed } from '../keep/xml.js'
 import type { WorksheetPart } from '../read/book.js'
-import type { XlsxRead } from '../types.js'
 import { attr, attributes, flag, within } from '../xml/scan.js'
 import { readText } from '../xml/text.js'
 import {
   MAX_PAGE_FIELD, type PrintBreak, type PrintHeaderFooter, type PrintMargins, type PrintOptions, type PrintReadIssue,
-  type PrintSetup, type PrintSheetDefaults, type PrintSpan, type SheetPrint,
+  type PrintSetup, type SheetRowDefaults, type PrintSpan, type WorksheetPrintSettings,
 } from './types.js'
 import { BREAK, HEADER_ATTRS, HEADER_TEXT, MARGINS, OPTIONS, PAGE_FIELD_WRAP, PROPERTIES, SETUP, readFields } from './xml.js'
 
@@ -36,7 +36,7 @@ function workbookPrintNames(xml: string): Map<number, Name[]> {
   return names
 }
 
-function readPrintName(settings: SheetPrint, fileName: string, { name, ref }: Name): boolean {
+function readPrintName(settings: WorksheetPrintSettings, fileName: string, { name, ref }: Name): boolean {
   const areas = areasOf(ref)
   if (!areas?.length || areas.some((area) => !('rect' in area) || sheetKey(area.sheet) !== sheetKey(fileName))) return false
   const rects = areas.flatMap((area) => 'rect' in area ? [area.rect] : [])
@@ -46,8 +46,8 @@ function readPrintName(settings: SheetPrint, fileName: string, { name, ref }: Na
     return true
   }
   if (settings.repeatRows || settings.repeatColumns) return false
-  let repeatRows: SheetPrint['repeatRows']
-  let repeatColumns: SheetPrint['repeatColumns']
+  let repeatRows: WorksheetPrintSettings['repeatRows']
+  let repeatColumns: WorksheetPrintSettings['repeatColumns']
   for (const rect of rects) {
     if (!repeatRows && rect.c1 === 0 && rect.c2 === MAX_COLS - 1) repeatRows = { first: rect.r1 + 1, last: rect.r2 + 1 }
     else if (!repeatColumns && rect.r1 === 0 && rect.r2 === MAX_ROWS - 1) repeatColumns = { first: rect.c1 + 1, last: rect.c2 + 1 }
@@ -110,45 +110,36 @@ function visibleRowSpans(xml: string, data: Placed | undefined, invalid: () => v
   return spans
 }
 
-function worksheetDefaults(xml: string, nodes: Placed[], sheet: string, invalid: () => void): PrintSheetDefaults | undefined {
+function worksheetDefaults(xml: string, nodes: Placed[], defaultHeight: number, invalid: () => void): SheetRowDefaults | undefined {
   const format = nodes.find((node) => node.local === 'sheetFormatPr')
   if (!format) return undefined
   const attrs = attrsOf(xml, format)
-  const defaults: PrintSheetDefaults = { sheet }
+  const defaults: SheetRowDefaults = {}
   if (attrs.defaultRowHeight !== undefined) {
     const height = Number(attrs.defaultRowHeight)
-    if (attrs.defaultRowHeight.trim() && Number.isFinite(height) && height >= 0 && height <= MAX_ROW_HEIGHT) defaults.defaultRowHeight = height
+    if (attrs.defaultRowHeight.trim() && Number.isFinite(height) && height >= 0 && height <= MAX_ROW_HEIGHT) {
+      if (height !== defaultHeight) defaults.defaultRowHeight = height
+    }
     else invalid()
   }
   if (flag(attrs.zeroHeight)) {
     const data = nodes.find((node) => node.local === 'sheetData')
     defaults.visibleRows = visibleRowSpans(xml, data, invalid)
   }
-  return defaults
+  return Object.keys(defaults).length ? defaults : undefined
 }
 
-/** A workbook read with its print settings, their issues and each sheet's row defaults. */
-export interface XlsxPrintRead extends XlsxRead {
-  print: SheetPrint[]
-  printIssues: PrintReadIssue[]
-  sheetDefaults: PrintSheetDefaults[]
-}
+export function printReader(workbook: string, issues: PrintReadIssue[], defaultHeight: number) {
+  const names = workbookPrintNames(workbook)
 
-export function printReader() {
-  const print: SheetPrint[] = []
-  const sheetDefaults: PrintSheetDefaults[] = []
-  const issues: PrintReadIssue[] = []
-  let names: ReturnType<typeof workbookPrintNames> | undefined
-
-  function readWorksheet(part: WorksheetPart) {
-    const settings: SheetPrint = { sheet: part.name }
+  return function readWorksheet(part: WorksheetPart, sheet: SheetInput): void {
+    const settings: WorksheetPrintSettings = {}
     const { xml } = part
     const report = (element: string, reason: PrintReadIssue['reason'] = 'invalid') => {
       if (!issues.some((issue) => issue.sheet === part.name && issue.part === element && issue.reason === reason)) {
         issues.push({ sheet: part.name, part: element, reason })
       }
     }
-    names ??= workbookPrintNames(part.workbook)
     for (const name of names.get(part.index) ?? []) {
       if (!readPrintName(settings, part.fileName, name)) report(name.name)
     }
@@ -156,8 +147,8 @@ export function printReader() {
     if (!root) return
     const setup: PrintSetup = {}
     const nodes = childrenOf(xml, root)
-    const defaults = worksheetDefaults(xml, nodes, part.name, () => report('sheetFormatPr'))
-    if (defaults) sheetDefaults.push(defaults)
+    const defaults = worksheetDefaults(xml, nodes, defaultHeight, () => report('sheetFormatPr'))
+    if (defaults) sheet.rowDefaults = defaults
     for (const node of nodes) {
       const invalid = () => report(node.local)
       switch (node.local) {
@@ -176,8 +167,8 @@ export function printReader() {
         }
         case 'pageMargins': {
           const margins = readFields<PrintMargins>(MARGINS, attrsOf(xml, node), invalid)
-          if (Object.keys(margins).length === Object.keys(MARGINS).length) settings.margins = margins
-          else invalid()
+          if (Object.keys(margins).length !== Object.keys(MARGINS).length) invalid()
+          else settings.margins = margins
           break
         }
         case 'printOptions': {
@@ -201,9 +192,6 @@ export function printReader() {
       }
     }
     if (Object.keys(setup).length) settings.setup = setup
-    if (Object.keys(settings).length > 1) print.push(settings)
+    if (Object.keys(settings).length) sheet.print = settings
   }
-
-  const result = (read: XlsxRead): XlsxPrintRead => ({ ...read, print, printIssues: issues, sheetDefaults })
-  return { readWorksheet, result }
 }

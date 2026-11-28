@@ -1,3 +1,4 @@
+import { printAfter } from './print.js'
 /**
  * Cut and paste. A reference inside the moved range follows it; one inside the overwritten cells is
  * `#REF!`. A range with one end among the moved or the overwritten cells is adjusted by rules fitted to
@@ -182,6 +183,7 @@ export function moveRange(book: BookInput, from: string, src: Rect, to: string, 
     const tables = rewriteTemplates(s.tables, s.name, (ti) => (k === fk && contains(src, parseRange(ti.range)!) ? to : s.name), t, names)
     return changed || tables !== s.tables ? { ...s, cells, ...(tables ? { tables } : {}) } : s
   })
+  for (const index of new Set([fi, ti])) printAfter(sheets[index], t)
   Object.assign(sheets[ti].cells, moved)
   // an AutoFilter the move takes whole follows its cells on its sheet, and goes with them to another; one it takes part
   // of or lands on stays (the keep sets `filter-move*`)

@@ -1,3 +1,4 @@
+import { workbookData } from './print-fixtures.js'
 import { readFile } from 'node:fs/promises'
 import { describe, expect, it } from 'vitest'
 import { FUNCTION_COUNTS } from '../src/function-words.js'
@@ -91,7 +92,7 @@ describe('XLSB archive', () => {
   ]
   it.each(pairs)('reads both of Excel’s %s saves identically', async (name) => {
     const [binary, xml] = await excelPair(name)
-    await expect(readXlsb(binary)).resolves.toStrictEqual(await readXlsx(xml))
+    await expect(readXlsb(binary).then(workbookData)).resolves.toStrictEqual(await readXlsx(xml).then(workbookData))
   })
 
   it.each([
@@ -99,8 +100,8 @@ describe('XLSB archive', () => {
     { fixture: 'let-name-case-spill', sheet: 0, address: 'B3', xlsx: 'LET(x,,x)', xlsb: 'LET(X,,X)', value: 0 },
   ])('uses the stored spelling for LET names in $fixture', async ({ fixture, sheet, address, xlsx, xlsb, value }) => {
     const [binary, xml] = await excelPair(fixture)
-    const expected = await readXlsx(xml)
-    const actual = await readXlsb(binary)
+    const expected = await readXlsx(xml).then(workbookData)
+    const actual = await readXlsb(binary).then(workbookData)
     const cell = expected.book.sheets[sheet].cells[address]
 
     expect(cell.formula).toBe(xlsx)
@@ -114,8 +115,8 @@ describe('XLSB archive', () => {
 
   it.each([100000, 165536])('keeps the result cached for an external name whose row %i Excel could not store in XLSB', async (row) => {
     const [binary, xml] = await excelPair(`external-name-${row}`)
-    const expected = await readXlsx(xml)
-    const actual = await readXlsb(binary)
+    const expected = await readXlsx(xml).then(workbookData)
+    const actual = await readXlsb(binary).then(workbookData)
     const name = expected.book.externalBooks![0].names![0]
     expect(name).toEqual({ name: 'FarName', ref: `'Source'!$A$${row}` })
     expect(compute(expected.book).sheets[0].cells.A2.value).toBe(9)
@@ -134,8 +135,8 @@ describe('XLSB archive', () => {
 
   it('reports the same cells when Excel expands shared formulas in XLSB', async () => {
     const [binary, xml] = await excelPair('shared-issue-order')
-    const expected = await readXlsx(xml)
-    const actual = await readXlsb(binary)
+    const expected = await readXlsx(xml).then(workbookData)
+    const actual = await readXlsb(binary).then(workbookData)
     // The XLSX reader reports the two masters first, then each shared group. XLSB stores eight separate formulas.
     expect(expected.issues[0].cells).toEqual(['E1', 'F1', 'E2', 'E3', 'E4', 'F2', 'F3', 'F4'])
     expected.issues[0].cells = ['E1', 'F1', 'E2', 'F2', 'E3', 'F3', 'E4', 'F4']

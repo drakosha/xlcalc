@@ -57,7 +57,7 @@ How each rule was checked: [Development](docs/development.md#how-the-rules-were-
 
 ESM with TypeScript types, no dependencies. From CommonJS use `await import('xlcalc')`, or `require()` on Node 20.19+ and 22.12+.
 
-A bundle includes only the entry points it imports. Sizes are for the browser, bundled with esbuild and minified (25.11.2026, 0.91.0 for the main entry points, xlsx and xls; the worker's as of 0.71.0), gzipped in brackets; `test/bundle-size.test.ts` keeps `compute` under 416 KB.
+A bundle includes only the entry points it imports. Sizes are for the browser, bundled with esbuild and minified (25.11.2026, 0.91.0 for the main entry points, xlsx and xls; the worker's as of 0.71.0), gzipped in brackets; `test/bundle-size.test.ts` keeps `compute` under 417 KB.
 
 | import | for | size |
 |---|---|---:|
@@ -67,16 +67,13 @@ A bundle includes only the entry points it imports. Sizes are for the browser, b
 | all of `xlcalc` | also `createInlineCalc`, `registerLocale`, `registerRegex`, `functionSignature` and `FUNCTION_CATEGORIES` for tooltips | 817 KB (305) |
 | `xlcalc/core` | the same API without five groups of rarely used functions, which `registerFunctions` loads from `xlcalc/functions` ([Groups of functions](docs/function-groups.md)) | `compute` 344 KB (130), all 741 KB (274) |
 | `xlcalc/functions` | the groups: `engineering`, `finance`, `lambda`, `statistics`, `xml`, `allFunctions` | 102 KB (41) |
-| `xlcalc/xlsx` | `readXlsx`, `writeXlsx`, `fromLegacy` | 351 KB (131) |
-| `xlcalc/xlsx/print` | read and write print settings and lay out worksheet pages and drawings ([Worksheet printing](docs/xlsx-print.md)) | 391 KB (147) |
+| `xlcalc/xlsx` | `readXlsx`, `writeXlsx`, `fromLegacy` | 362 KB (135) |
+| `xlcalc/xlsx/print` | lay out worksheet pages and drawings ([Worksheet printing](docs/xlsx-print.md)) | 56 KB (23) |
 | `xlcalc/xlsx/charts` | read chart data and resolve series against a session ([Chart data](docs/xlsx-print.md#chart-data)) | 47 KB (18) |
-| `xlcalc/xlsx/print/keep` | write print settings over the original file with its drawings and other parts ([Worksheet printing](docs/xlsx-print.md)) | 456 KB (169) |
-| `xlcalc/xlsx/keep` | `openKept`, `writeKept`, `inspectKept`: a workbook written over the file it was read from, keeping its charts, pictures and everything else the workbook does not hold ([Writing over the original file](docs/xlsx-keep.md)) | 445 KB (165) |
-| `xlcalc/xls` | `readXls` reads legacy Excel workbooks, saved values and issues ([Reading xls](docs/xlsx.md#reading-xls)) | 377 KB (139) |
-| `xlcalc/xls/connections` | `readXlsWithConnections` also reads saved connection and OLAP definitions ([Reading XLS connections](docs/xlsx.md#reading-xls-connections)) | 382 KB (142) |
-| `xlcalc/xls/print` | `readXlsWithPrint` also reads the print settings and row defaults ([Printing from XLS](docs/xlsx.md#printing-from-xls)) | 386 KB (143) |
-| `xlcalc/xlsb` | `readXlsb`: a binary Excel workbook, its saved values and issues ([Reading xlsb](docs/xlsx.md#reading-xlsb)) | 327 KB (120) |
-| `xlcalc/xlsb/print` | `readXlsbWithPrint` also reads the print settings and row defaults ([Printing from XLSB](docs/xlsx.md#printing-from-xlsb)) | 336 KB (124) |
+| `xlcalc/xlsx/keep` | `openKept`, `writeKept`, `inspectKept`: a workbook written over the file it was read from, keeping its charts, pictures and everything else the workbook does not hold ([Writing over the original file](docs/xlsx-keep.md)) | 458 KB (171) |
+| `xlcalc/xls` | `readXls` reads legacy Excel workbooks, saved values and issues ([Reading xls](docs/xlsx.md#reading-xls)) | 386 KB (144) |
+| `xlcalc/xls/connections` | `readXlsWithConnections` also reads saved connection and OLAP definitions ([Reading XLS connections](docs/xlsx.md#reading-xls-connections)) | 392 KB (147) |
+| `xlcalc/xlsb` | `readXlsb`: a binary Excel workbook, its saved values and issues ([Reading xlsb](docs/xlsx.md#reading-xlsb)) | 335 KB (124) |
 | `xlcalc/csv` | `readCsv`, `writeCsv`: a CSV file as Excel opens it, a sheet as Excel saves it ([Reading and writing CSV](docs/csv.md)) | 199 KB (74) |
 | `xlcalc/worker` | `createCalcPool`: worker threads | 35 KB (13), its worker 960 KB (330), 630 KB (238) loaded first where a bundler splits off the locales, regex levels, groups of functions, the PivotTable engine and the table styles it loads |
 | `xlcalc/a1` | A1 addresses, a sheet's outline commands | 16 KB (6) |
@@ -90,7 +87,6 @@ A bundle includes only the entry points it imports. Sizes are for the browser, b
 | `xlcalc/regex` | `pcreSyntax` and `pcreEngine`, Excel's syntax and match limit for match mode 3 ([Regular expressions](docs/regex.md)) | 35 KB (13) |
 | `xlcalc/contract` | types, and the formula limits `MAX_FORMULA_LENGTH` and `MAX_FORMULA_DEPTH` | |
 
-`xlcalc/xlsx`, `xlcalc/xlsx/print`, `xlcalc/xlsx/print/keep`, `xlcalc/xlsx/charts`, `xlcalc/xlsx/keep`, `xlcalc/xls`, `xlcalc/xls/connections`, `xlcalc/xls/print`, `xlcalc/xlsb`, `xlcalc/csv`, `xlcalc/a1`, `xlcalc/text`, `xlcalc/entry`, `xlcalc/function-text`, `xlcalc/locales` (`loadLocale`, a package locale by its tag) and `xlcalc/contract` do not load the engine.
 
 ## Recipes
 

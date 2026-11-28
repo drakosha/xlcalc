@@ -1,3 +1,4 @@
+import { writeXlsx } from '../../src/xlsx.js'
 /**
  * Excel for Windows as the print oracle. The PDF supplies page members and positions. COM supplies the nominal sheet
  * measurements and the print configuration. A run writes its synthetic XLSX inputs, PDFs and summary into the chosen
@@ -9,7 +10,7 @@ import { mkdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import type { BookInput, CellInput } from '../../src/contract.js'
 import { indexToCol } from '../../src/model.js'
-import { layoutPrintPages, layoutPrintWorkbook, printSheetGeometry, writeXlsxWithPrint, type PrintBreak, type PrintHeaderFooter, type PrintSpan, type SheetPrint } from '../../src/xlsx-print.js'
+import { layoutPrintPages, layoutPrintWorkbook, printSheetGeometry, type PrintBreak, type PrintHeaderFooter, type PrintSpan, type SheetPrint } from '../../src/xlsx-print.js'
 import { metaOf, runJob, withWindowsExcel } from './remote.js'
 
 interface Case {
@@ -277,7 +278,13 @@ mkdirSync(directory, { recursive: true })
 const entries = await Promise.all(selected.map(async (c) => {
   const data = make(c)
   const file = join(directory, c.name + '.xlsx')
-  const written = await writeXlsxWithPrint({ book: data.book }, data.print)
+  const sheets = data.book.sheets.map((sheet) => {
+    const entry = data.print.find((p) => p.sheet === sheet.name)
+    if (!entry) return sheet
+    const { sheet: _, ...print } = entry
+    return { ...sheet, print }
+  })
+  const written = await writeXlsx({ book: { ...data.book, sheets } })
   if (written.issues.length) throw new Error(`${c.name}: ${JSON.stringify(written.issues)}`)
   writeFileSync(file, written.data)
   return { c, ...data, job: { file, steps: [{ do: 'printPdf', sheet: data.settings.sheet, range: data.range, workbook: c.workbook !== undefined }] } }

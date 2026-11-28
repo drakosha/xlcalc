@@ -1,19 +1,12 @@
 import { InputError } from '../input-error.js'
-import { readStyledArchive, workbookInput, type ReadWorksheetPart } from '../xlsx/read/book.js'
+import { readStyledArchive, workbookInput } from '../xlsx/read/book.js'
 import { relsOf } from '../xlsx/read/package.js'
 import type { ReadXlsxOptions, XlsxIssue, XlsxRead } from '../xlsx/types.js'
 import { openArchive } from '../xlsx/zip/read.js'
 import { convertingArchive } from './archive.js'
-import type { Part } from './parts.js'
 
 /** Reads an XLSB workbook's cells, saved values and issues using the SpreadsheetML reader. */
 export async function readXlsb(data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOptions): Promise<XlsxRead> {
-  return readBinaryWorkbook(data, opts)
-}
-
-export async function readBinaryWorkbook(
-  data: Uint8Array | ArrayBuffer, opts?: ReadXlsxOptions, visitWorksheet?: ReadWorksheetPart, convertWorksheet?: (part: Part) => void,
-): Promise<XlsxRead> {
   const { bytes, language, limits } = workbookInput(data, opts)
   const budget = { spent: 0 }
   const source = openArchive(bytes, limits, budget)
@@ -27,8 +20,8 @@ export async function readBinaryWorkbook(
       ? `Бинарная часть ${part} хранит недействительную ссылку в определении внешнего имени`
       : `the binary part ${part} stores an invalid reference for this external name`
     linkIssues.push({ code: 'externalLink', name, message })
-  }, convertWorksheet)
-  const { read } = await readStyledArchive(archive, root, path, language, visitWorksheet)
+  })
+  const { read } = await readStyledArchive(archive, root, path, language)
   for (const issue of linkIssues) read.issues.push(issue)
   for (const part of unfinished) {
     const message = language?.tag === 'ru-RU' ? `Бинарная часть ${part} прочитана не полностью` : `some of the binary part ${part} was left out`

@@ -86,7 +86,7 @@ Pass the locale the user reading the messages has chosen. A file does not record
 - `cached` holds the values the file stores for formulas and for the cells their arrays spilled into, by sheet in the workbook's order, in the shape of a result: `cached.sheets[0].cells.B1.value` like `compute(book).sheets[0].cells.B1.value`. A formula whose array spilled has `spill`, its range, and each other cell of the range has `spillOf`, the formula's address, as in a result. These are what Excel calculated when it saved the file, so you can compare them with the engine's result cell by cell, or write the file again with them (`writeXlsx({ book, result: cached })`). A workbook with a circular reference opens with them as Excel opens the file, with `compute(book, { cached })` or `createSession(book, { cached })`: the formulas the cycle stops keep the stored values ([cycles.md](cycles.md)).
 - `issues` lists what the workbook cannot represent of a file's cells, formulas, names and looks, with the sheet and the cells or the name it concerns; [What is not reported](#what-is-not-reported) names the rest. Each issue has a code for programs and a message for users, in English or in the language of `opts.locale` ([The language of the messages](#the-language-of-the-messages)).
 
-`readXlsx` and `readXlsxWithPrint` also take `.xlsm` bytes. They read worksheet data and saved values through the same SpreadsheetML readers. VBA projects appear as `macros` in `issues` and are never executed.
+`readXlsx` also takes `.xlsm` bytes. It reads worksheet data and saved values through the same SpreadsheetML reader. VBA projects appear as `macros` in `issues` and are never executed.
 
 Use [`readXls`](#reading-xls) for `.xls` and [`readXlsb`](#reading-xlsb) for `.xlsb`. A password-protected workbook causes an `InputError`. Any other file that is not a zip archive, a damaged archive (an entry cut short, two entries of one name, bytes that do not match their CRC-32), a part that is not valid XML because a character reference in it is past U+10FFFF, an encrypted file, a ZIP64 archive and a file without a workbook part cause errors. Data that is not bytes, such as the file's path, causes an `InputError` that says to pass the bytes.
 
@@ -347,7 +347,7 @@ An explicit `sheetFormatPr.defaultColWidth` becomes `SheetInput.defaultColumnWid
 
 ### What is not reported
 
-These parts of a file are left out without an issue, because nearly every file has them or they change no cell: gridlines and other view settings outside `SheetView`; page margins, print options and a page setup that was not actually made (a landscape page or fit to width is reported as `print`); phonetic settings; marks of ignored errors; custom and named sheet views; scenarios, data consolidation and watched cells. `writeXlsx` does not write them; `writeKept` keeps them, as it keeps everything it does not change.
+These parts of a file are left out without an issue, because nearly every file has them or they change no cell: gridlines and other view settings outside `SheetView`; phonetic settings; marks of ignored errors; custom and named sheet views; scenarios, data consolidation and watched cells. `writeXlsx` does not write them; `writeKept` keeps them, as it keeps everything it does not change.
 
 ### The language of the messages
 
@@ -378,23 +378,13 @@ BIFF8 includes cells, formulas and their saved results, names, styles, sheet vie
 
 Earlier worksheets use the saved code page for byte strings, including DOS code pages 437, 850, 852 and 866. The reader loads their cells, styles, formulas, names and notes, including BIFF5 rich text and the BIFF5 link tables that hold external references, names and cached cell values. A standalone worksheet has no stored sheet name, so the reader calls it `Sheet1`.
 
-An in-place advanced filter is read with its saved filter mode and hidden rows. Its criteria, connection and query definitions, linked-table metadata, and print settings are outside the model. The reader reports data connections in `issues` and uses the records the workbook saved. OLAP PivotTables have additional structures outside this coverage. Encrypted workbooks and BIFF3/4 workspace files are refused. A formula the reader cannot translate is reported and its saved result is used.
+An in-place advanced filter is read with its saved filter mode and hidden rows. Its criteria, connection and query definitions, and linked-table metadata are outside the model. The reader reports data connections in `issues` and uses the records the workbook saved. OLAP PivotTables have additional structures outside this coverage. Encrypted workbooks and BIFF3/4 workspace files are refused. A formula the reader cannot translate is reported and its saved result is used.
 
 `opts.locale` gives the language of the issues. `opts.limits` bounds each binary stream and generated XML part and their total. The inflation ratio applies to compressed parts embedded in the workbook, such as a custom theme. To save the resulting workbook as XLSX, use `writeXlsx({ book, result: cached })`.
 
 ### Printing from XLS
 
-`readXlsWithPrint` from `xlcalc/xls/print` also returns the worksheet print settings, their issues and the saved default row heights. On BIFF8 it reads print areas and repeating titles, page setup and margins, print flags, header and footer variants, and manual page breaks. Device-specific printer records and pictures in headers or footers appear in `printIssues`.
-
-```js
-import { readXlsWithPrint } from 'xlcalc/xls/print'
-import { writeXlsxWithPrint } from 'xlcalc/xlsx/print'
-
-const { book, cached, print } = await readXlsWithPrint(await file.arrayBuffer())
-const { data } = await writeXlsxWithPrint({ book, result: cached }, print, { values: 'preserve' })
-```
-
-The same settings and `sheetDefaults` can be passed to the worksheet geometry and pagination functions in [Worksheet printing](xlsx-print.md).
+The reader puts print areas and titles, page setup and margins, print flags, headers and footers, and manual page breaks into `sheet.print` when BIFF8 stores them. Device-specific printer records and header or footer drawings appear in `printIssues`. `writeXlsx({ book, result: cached })` carries the settings into XLSX. See [Worksheet printing](xlsx-print.md) for editing and layout.
 
 ### Reading XLS connections
 
@@ -420,11 +410,11 @@ The tests compare paired files that Excel for Windows saved as xlsx and xlsb fro
 
 ### Printing from XLSB
 
-`readXlsbWithPrint` from `xlcalc/xlsb/print` reads print areas and repeating titles, page setup and margins, print flags, header and footer variants, and page breaks. It returns `print`, `printIssues` and `sheetDefaults` in the same shape as `readXlsxWithPrint`. Device-specific printer settings and pictures in headers or footers appear in `printIssues`. Pass `print` to `writeXlsxWithPrint` to include the settings in a new XLSX, or use it with the layout functions in [Worksheet printing](xlsx-print.md).
+The reader puts worksheet print settings in `sheet.print`. Device-specific printer settings and pictures in headers or footers appear in `printIssues`. `writeXlsx` includes the settings in a new XLSX. See [Worksheet printing](xlsx-print.md) for editing and layout.
 
 ## Writing
 
-`writeXlsx(snapshot, opts)` resolves to `{ data, issues }`: the file's bytes and what the file cannot represent. It writes the file anew from the workbook; to keep what the workbook cannot hold (charts, pictures, the page setup), write over the original file with `xlcalc/xlsx/keep` ([Writing over the original file](xlsx-keep.md)). The same workbook and result produce the same bytes. The snapshot is `{ book, result }`: the workbook, and the values of its formulas and of the cells their arrays spilled into, from `compute`, from a session (`session.getSnapshot()` returns both in one call, so no edit comes between them) or from the `cached` of a file that was read.
+`writeXlsx(snapshot, opts)` resolves to `{ data, issues }`: the file's bytes and what the file cannot represent. It writes the file anew from the workbook; to keep what the workbook cannot hold (charts, pictures, printer-specific files), write over the original file with `xlcalc/xlsx/keep` ([Writing over the original file](xlsx-keep.md)). The same workbook and result produce the same bytes. The snapshot is `{ book, result }`: the workbook, and the values of its formulas and of the cells their arrays spilled into, from `compute`, from a session (`session.getSnapshot()` returns both in one call, so no edit comes between them) or from the `cached` of a file that was read.
 
 | option | |
 |---|---|

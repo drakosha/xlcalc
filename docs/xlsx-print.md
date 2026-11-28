@@ -1,37 +1,19 @@
 # Worksheet printing
 
-`xlcalc/xlsx/print` reads and writes XLSX print settings and calculates the page regions a host can preview or render.
-The entry point works with workbook snapshots and sheet geometry. A host can import it when the user opens print preview
-or exports a printed report.
+The Excel readers put saved print settings in `book.sheets[i].print`. The optional `xlcalc/xlsx/print` entry lays out pages and reads drawing anchors for a host renderer.
 
-## Read and write settings
+## Read, change and save settings
 
-`readXlsxWithPrint(bytes, options?)` returns the usual workbook, cached values and reader issues, plus `print`,
-`printIssues` and `sheetDefaults`. `print` contains the print settings by worksheet name. It includes areas and titles, setup,
-margins, print flags, headers and footers, and horizontal and vertical breaks. A `printIssues` entry identifies malformed
-print settings or a device-specific printer part or header/footer drawing that requires separate handling.
+`readXlsx` reads XLSX and XLSM, `readXls` reads XLS and `readXlsb` reads XLSB. The worksheet model holds print areas and titles, page setup, margins, print flags, headers and footers, and page breaks. It holds the saved default row geometry in `sheet.rowDefaults`. The reader reports malformed print settings, printer-specific parts and header or footer drawings in `printIssues` when present.
 
-For `.xlsm`, use `readXlsxWithPrint` with the file's bytes. For binary workbooks, use [`readXlsWithPrint`](xlsx.md#printing-from-xls) or [`readXlsbWithPrint`](xlsx.md#printing-from-xlsb) for the same result fields.
+Set or replace the settings with a session's `setLayout([{ sheet, print }])`. Pass `null` to clear the worksheet's settings. Print areas use sheet-local A1 references. Title and break lines are one-based, and margins are in inches.
 
-`writeXlsxWithPrint(snapshot, print, options?)` takes the same snapshot and writer options as `writeXlsx`. Print settings
-are worksheet metadata, passed separately from the calculation model. The entry writes a new workbook in one pass.
-Use `xlcalc/xlsx/print/keep` to edit settings in an existing file while preserving its drawings and other source parts.
-`openKeptWithPrint` reads the settings and adds the workbook carriers used by `writeKept`.
-`writeKeptWithPrint(original, snapshot, print, options?)` replaces the modeled settings for each listed worksheet.
-Start from the corresponding entry returned by the reader to retain fields you want to keep. A sheet can be cleared
-by passing only its name. The opaque printer relationship on an existing sheet stays in the package. The new names
-for areas and titles are scoped to the worksheet's position in the written file, which can include chart sheets.
-
-Print area references use sheet-local A1 notation. Row and column numbers in titles and breaks are one-based. Margins
-are in inches, as in SpreadsheetML. Paper and printer settings remain available to the host when it chooses the print
-target.
+`writeXlsx` writes the worksheet settings in the snapshot. Use `openKept` and `writeKept` to edit an XLSX over its original package. The printer relationship stays in the package. Areas and titles are scoped by worksheet position, including any intervening chart sheets.
 
 ## Layout
 
 `printSheetGeometry(sheet, { font, usedRange, ...defaults })` converts workbook row and column spans into point
-coordinates, including zero-size hidden lines and the sheet's default column width. The optional defaults are the
-matching entry of `readXlsxWithPrint`'s `sheetDefaults`. They give the row height and the visible spans on a sheet that
-hides empty rows by default. Pass the printable used range from the session or the report builder. For areas spanning whole columns or rows it supplies the last used line on the open
+coordinates, including zero-size hidden lines and the sheet's default column width. It uses the saved row height and visible spans in `sheet.rowDefaults`, with optional overrides from the host. Pass the printable used range from the session or the report builder. For areas spanning whole columns or rows it supplies the last used line on the open
 axis. A host that has more precise font or row metrics can pass its own `PrintSheetGeometry` to the layout function.
 
 `layoutPrintPages(settings, geometry, target)` returns pages in print order. The host supplies the effective, oriented
@@ -98,7 +80,7 @@ explicit start on a later sheet advances the automatic numbering by the number o
 
 When `setup.cellComments` is `'atEnd'`, pass `{ cells: sheet.cells, font: book.font }` as the fourth argument to
 `layoutPrintPages` or as the worksheet's `notes` in `layoutPrintWorkbook`. The cells can come directly from
-`readXlsxWithPrint`. The layout appends pages with `area: 0` and `noteLines` after the sheet's grid. These pages take part in
+`readXlsx`. The layout appends pages with `area: 0` and `noteLines` after the sheet's grid. These pages take part in
 page numbers, header/footer variants, page selection and job limits. Fit-to-page applies to the grid. The note pages
 use that scale and can add pages beyond the fit count.
 
