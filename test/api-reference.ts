@@ -27,6 +27,7 @@ export const ENTRIES: readonly [string, string][] = [
   ['xlcalc/xls/connections', 'src/xls-connections.ts'],
   ['xlcalc/xls/print', 'src/xls-print.ts'],
   ['xlcalc/xlsb', 'src/xlsb.ts'],
+  ['xlcalc/xlsb/print', 'src/xlsb-print.ts'],
   ['xlcalc/csv', 'src/csv.ts'],
   ['xlcalc/worker', 'src/worker/index.ts'],
   ['xlcalc/function-text', 'src/function-text/index.ts'],

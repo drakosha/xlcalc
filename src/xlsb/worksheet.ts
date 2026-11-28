@@ -33,7 +33,9 @@ interface ArrayFormula {
   flags: number
 }
 
-export function worksheet(part: Part): void {
+export type ReadPrintRecord = (type: number, payload: Payload) => boolean
+
+export function worksheet(part: Part, readPrint?: ReadPrintRecord): void {
   const { bytes, path, xml, context, pending } = part
   xml.add(`<worksheet ${NS}>`)
   const filters = new Filters(xml)
@@ -86,7 +88,7 @@ export function worksheet(part: Part): void {
       case 152:
         xml.add(selection(payload, hasPane))
         break
-      case 147: xml.add(sheetProperties(payload)); break
+      case 147: xml.add(sheetProperties(payload, readPrint !== undefined)); break
       case 148: xml.add(`<dimension ref="${range(payload)}"/>`); payload.done(); break
       case 485: {
         const format = sheetFormat(payload)
@@ -190,10 +192,15 @@ export function worksheet(part: Part): void {
         xml.add(`<${tag}${id ? ` r:id="${escapeAttr(id)}"` : ''}/>`)
         break
       }
-      case 392: xml.add('<rowBreaks/>'); break
-      case 394: xml.add('<colBreaks/>'); break
-      case 479: xml.add('<headerFooter/>'); break
-      case 478: xml.add(pageSetup(payload)); break
+      case 392: case 394:
+        if (!readPrint?.(type, payload)) xml.add(type === 392 ? '<rowBreaks/>' : '<colBreaks/>')
+        break
+      case 479:
+        if (!readPrint?.(type, payload)) xml.add('<headerFooter/>')
+        break
+      case 478:
+        if (!readPrint?.(type, payload)) xml.add(pageSetup(payload))
+        break
       case 562: xml.add('<picture/>'); break
       case 638: xml.add('<oleObjects/>'); break
       case 643: xml.add('<controls/>'); break
@@ -208,7 +215,7 @@ export function worksheet(part: Part): void {
         xml.add('<sparklineGroups/>')
         break
       default:
-        if (!filters.take(type, payload) && !conditional.take(type, payload)) {
+        if (!readPrint?.(type, payload) && !filters.take(type, payload) && !conditional.take(type, payload)) {
           validation(part, type, payload, extensions, validationList)
           if (type === 64) validationList = false
         }
@@ -234,7 +241,7 @@ export function worksheet(part: Part): void {
   xml.add('</worksheet>')
 }
 
-function sheetProperties(payload: Payload): string {
+function sheetProperties(payload: Payload, withPrint: boolean): string {
   const flags = payload.u16()
   const extendedFlags = payload.u8()
   const color = colorAttrs(payload)
@@ -248,7 +255,10 @@ function sheetProperties(payload: Payload): string {
   const filter = extendedFlags & 1 ? ' filterMode="1"' : ''
   const tab = color === 'auto="1"' || color === 'indexed="64"' ? '' : `<tabColor ${color}/>`
   const code = codeName ? ` codeName="${escapeAttr(codeName)}"` : ''
-  return `<sheetPr${filter}${code}>${tab}${outline}</sheetPr>`
+  const autoBreaks = flags & 1 ? '' : ' autoPageBreaks="0"'
+  const fit = flags & 0x100 ? ' fitToPage="1"' : ''
+  const page = withPrint && (autoBreaks || fit) ? `<pageSetUpPr${autoBreaks}${fit}/>` : ''
+  return `<sheetPr${filter}${code}>${tab}${outline}${page}</sheetPr>`
 }
 
 function sheetView(payload: Payload): string {
@@ -305,7 +315,8 @@ function sheetFormat(payload: Payload): { height: number; xml: string } {
   const colOutline = payload.u8()
   payload.done()
   const colWidth = width === 0xffffffff ? ` baseColWidth="${base}"` : ` defaultColWidth="${width / 256}"`
-  const xml = `<sheetFormatPr${colWidth} defaultRowHeight="${height / 20}" customHeight="${flags & 1}" outlineLevelRow="${rowOutline}" outlineLevelCol="${colOutline}"/>`
+  const zeroHeight = flags & 2 ? ' zeroHeight="1"' : ''
+  const xml = `<sheetFormatPr${colWidth} defaultRowHeight="${height / 20}" customHeight="${flags & 1}"${zeroHeight} outlineLevelRow="${rowOutline}" outlineLevelCol="${colOutline}"/>`
   return { height, xml }
 }
 

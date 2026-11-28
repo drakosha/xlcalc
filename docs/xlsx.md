@@ -86,6 +86,8 @@ Pass the locale the user reading the messages has chosen. A file does not record
 - `cached` holds the values the file stores for formulas and for the cells their arrays spilled into, by sheet in the workbook's order, in the shape of a result: `cached.sheets[0].cells.B1.value` like `compute(book).sheets[0].cells.B1.value`. A formula whose array spilled has `spill`, its range, and each other cell of the range has `spillOf`, the formula's address, as in a result. These are what Excel calculated when it saved the file, so you can compare them with the engine's result cell by cell, or write the file again with them (`writeXlsx({ book, result: cached })`). A workbook with a circular reference opens with them as Excel opens the file, with `compute(book, { cached })` or `createSession(book, { cached })`: the formulas the cycle stops keep the stored values ([cycles.md](cycles.md)).
 - `issues` lists what the workbook cannot represent of a file's cells, formulas, names and looks, with the sheet and the cells or the name it concerns; [What is not reported](#what-is-not-reported) names the rest. Each issue has a code for programs and a message for users, in English or in the language of `opts.locale` ([The language of the messages](#the-language-of-the-messages)).
 
+`readXlsx` and `readXlsxWithPrint` also take `.xlsm` bytes. They read worksheet data and saved values through the same SpreadsheetML readers. VBA projects appear as `macros` in `issues` and are never executed.
+
 Use [`readXls`](#reading-xls) for `.xls` and [`readXlsb`](#reading-xlsb) for `.xlsb`. A password-protected workbook causes an `InputError`. Any other file that is not a zip archive, a damaged archive (an entry cut short, two entries of one name, bytes that do not match their CRC-32), a part that is not valid XML because a character reference in it is past U+10FFFF, an encrypted file, a ZIP64 archive and a file without a workbook part cause errors. Data that is not bytes, such as the file's path, causes an `InputError` that says to pass the bytes.
 
 `opts.limits` bounds how large the file's parts may be once inflated: `entryBytes` for one part, 512 MiB by default; `totalBytes` for all parts read together, 1 GiB by default; and `ratio`, how many times its compressed size a part larger than 16 MiB may inflate to, not bounded unless given. A file beyond these limits causes an error, as a damaged file does. A host that reads files uploaded by users passes lower limits, and a ratio if it wants a small file refused before it inflates:
@@ -415,6 +417,10 @@ XLSB stores errors in external names as codes. The reader gives them their invar
 The `sparkline` issue reports sparkline groups stored in the file. In a paired test, Excel for Windows kept these groups in the XLSX save and left them out of the XLSB save.
 
 The tests compare paired files that Excel for Windows saved as xlsx and xlsb from the same open workbook. The binary extension has its own import so applications can include the converter when they read xlsb.
+
+### Printing from XLSB
+
+`readXlsbWithPrint` from `xlcalc/xlsb/print` reads print areas and repeating titles, page setup and margins, print flags, header and footer variants, and page breaks. It returns `print`, `printIssues` and `sheetDefaults` in the same shape as `readXlsxWithPrint`. Device-specific printer settings and pictures in headers or footers appear in `printIssues`. Pass `print` to `writeXlsxWithPrint` to include the settings in a new XLSX, or use it with the layout functions in [Worksheet printing](xlsx-print.md).
 
 ## Writing
 

@@ -1,6 +1,6 @@
 {
   "name": "xlcalc",
-  "version": "0.91.0",
+  "version": "0.92.0",
   "description": "Excel-style formula engine for workbooks: compiles a book's formulas to JavaScript, recalculates incrementally, hashes values deterministically, and checks its function whitelist against Excel semantics",
   "keywords": [
     "formula",
@@ -109,6 +109,10 @@
     "./xlsb": {
       "types": "./dist/xlsb.d.ts",
       "default": "./dist/xlsb.js"
+    },
+    "./xlsb/print": {
+      "types": "./dist/xlsb-print.d.ts",
+      "default": "./dist/xlsb-print.js"
     },
     "./csv": {
       "types": "./dist/csv.d.ts",

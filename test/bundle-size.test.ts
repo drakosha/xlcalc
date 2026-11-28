@@ -82,6 +82,11 @@ describe('bundle size', () => {
     // 331,153 bytes of dist with sheet default widths in the shared reader; the room over it lets the xlsx reader grow by
     // a release or two before the converter is made smaller.
     expect(xlsb.bytes).toBeLessThan(336 * 1024)
+    expect(xlsb.used.filter((file) => /\/xlsb\/print-markup\./.test(file))).toEqual([])
+    const print = await minified(`export * from ${lib('xlsb-print.js')}`)
+    expect(print.used).toEqual(expect.arrayContaining([
+      expect.stringMatching(/\/xlsb\/print-markup\./), expect.stringMatching(/\/xlsx\/print\/read\./),
+    ]))
     for (const entry of ['index.js', 'xlsx.js', 'xlsx-keep.js']) {
       const { used } = await minified(`export * from ${lib(entry)}`)
       expect(used.filter((file) => /\/xlsb(?:\/|\.(?:js|ts)$)/.test(file))).toEqual([])

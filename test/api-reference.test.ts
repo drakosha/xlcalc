@@ -27,7 +27,7 @@ describe('docs/api.md', () => {
 // The file subpaths keep their own types (`ReadXlsxOptions`, `ReadCsvOptions` and the rest) outside the contract.
 describe('xlcalc/contract', () => {
   const root = resolve(import.meta.dirname, '..')
-  const fileEntries = new Set(['xlcalc/xlsx', 'xlcalc/xlsx/keep', 'xlcalc/xlsx/print', 'xlcalc/xlsx/print/keep', 'xlcalc/xlsx/charts', 'xlcalc/xls', 'xlcalc/xls/connections', 'xlcalc/xls/print', 'xlcalc/xlsb', 'xlcalc/csv'])
+  const fileEntries = new Set(['xlcalc/xlsx', 'xlcalc/xlsx/keep', 'xlcalc/xlsx/print', 'xlcalc/xlsx/print/keep', 'xlcalc/xlsx/charts', 'xlcalc/xls', 'xlcalc/xls/connections', 'xlcalc/xls/print', 'xlcalc/xlsb', 'xlcalc/xlsb/print', 'xlcalc/csv'])
   const files = ENTRIES.filter(([entry]) => !fileEntries.has(entry)).map(([, f]) => join(root, f))
   const program = ts.createProgram(files, { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.NodeNext, moduleResolution: ts.ModuleResolutionKind.NodeNext, strict: true, skipLibCheck: true })
   const checker = program.getTypeChecker()

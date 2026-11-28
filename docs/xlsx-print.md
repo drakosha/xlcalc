@@ -11,6 +11,8 @@ or exports a printed report.
 margins, print flags, headers and footers, and horizontal and vertical breaks. A `printIssues` entry identifies malformed
 print settings or a device-specific printer part or header/footer drawing that requires separate handling.
 
+For `.xlsm`, use `readXlsxWithPrint` with the file's bytes. For binary workbooks, use [`readXlsWithPrint`](xlsx.md#printing-from-xls) or [`readXlsbWithPrint`](xlsx.md#printing-from-xlsb) for the same result fields.
+
 `writeXlsxWithPrint(snapshot, print, options?)` takes the same snapshot and writer options as `writeXlsx`. Print settings
 are worksheet metadata, passed separately from the calculation model. The entry writes a new workbook in one pass.
 Use `xlcalc/xlsx/print/keep` to edit settings in an existing file while preserving its drawings and other source parts.

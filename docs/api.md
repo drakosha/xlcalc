@@ -19,6 +19,7 @@ examples are the [README](../README.md) and the other files of `docs/`. This fil
 - [`xlcalc/xls/connections`](#xlcalcxlsconnections)
 - [`xlcalc/xls/print`](#xlcalcxlsprint)
 - [`xlcalc/xlsb`](#xlcalcxlsb)
+- [`xlcalc/xlsb/print`](#xlcalcxlsbprint)
 - [`xlcalc/csv`](#xlcalccsv)
 - [`xlcalc/worker`](#xlcalcworker)
 - [`xlcalc/function-text`](#xlcalcfunction-text)
@@ -1313,6 +1314,16 @@ function readXlsb(data: ArrayBuffer | Uint8Array<ArrayBufferLike>, opts?: ReadXl
 ```
 
 Reads an XLSB workbook's cells, saved values and issues using the SpreadsheetML reader.
+
+## xlcalc/xlsb/print
+
+### <a id="xlcalcxlsbprint-readxlsbwithprint"></a>`readXlsbWithPrint`
+
+```ts
+function readXlsbWithPrint(data: ArrayBuffer | Uint8Array<ArrayBufferLike>, opts?: ReadXlsxOptions): Promise<XlsxPrintRead>
+```
+
+Reads an XLSB workbook with its print settings by sheet, print issues and row defaults for print geometry.
 
 ## xlcalc/csv
 

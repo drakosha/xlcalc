@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- `readXlsbWithPrint` from `xlcalc/xlsb/print` reads worksheet print settings and row defaults from XLSB.
+- Documented XLSM input for `readXlsx` and `readXlsxWithPrint`.
+
 ## 0.91.0 (2026-11-25)
 
 Added:

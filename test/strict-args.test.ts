@@ -16,6 +16,7 @@ import * as xls from '../src/xls.js'
 import * as xlsConnections from '../src/xls-connections.js'
 import * as xlsPrint from '../src/xls-print.js'
 import * as xlsb from '../src/xlsb.js'
+import * as xlsbPrint from '../src/xlsb-print.js'
 import * as xlsxPrint from '../src/xlsx-print.js'
 import * as xlsxPrintKeep from '../src/xlsx-print-keep.js'
 import * as xlsxCharts from '../src/xlsx-charts.js'
@@ -149,6 +150,7 @@ describe('the functions of the package take no options they do not', () => {
     ['xlcalc/xls/connections', xlsConnections, { readXlsWithConnections: 2 }],
     ['xlcalc/xls/print', xlsPrint, { readXlsWithPrint: 2 }],
     ['xlcalc/xlsb', xlsb, { readXlsb: 2 }],
+    ['xlcalc/xlsb/print', xlsbPrint, { readXlsbWithPrint: 2 }],
     ['xlcalc/xlsx/print', xlsxPrint, {
       readXlsxWithPrint: 2, writeXlsxWithPrint: 3, readXlsxDrawings: 2, printSheetGeometry: 2, layoutPrintPages: 4, layoutPrintWorkbook: 2,
       printPaperSize: 2, formatPrintHeaderFooter: 2, projectPrintRect: 4, printDrawingBounds: 2, projectPrintDrawings: 4,
@@ -167,7 +169,7 @@ describe('the functions of the package take no options they do not', () => {
   ]
 
   /** The functions of the print and chart entries that read or write a file, and refuse by a rejected promise. */
-  const FILE_CALLS = new Set(['readXlsWithConnections', 'readXlsWithPrint', 'readXlsxWithPrint', 'writeXlsxWithPrint', 'readXlsxDrawings', 'openKeptWithPrint', 'writeKeptWithPrint', 'readXlsxCharts'])
+  const FILE_CALLS = new Set(['readXlsWithConnections', 'readXlsWithPrint', 'readXlsbWithPrint', 'readXlsxWithPrint', 'writeXlsxWithPrint', 'readXlsxDrawings', 'openKeptWithPrint', 'writeKeptWithPrint', 'readXlsxCharts'])
 
   for (const [entry, mod, table] of FUNCTIONS)
     it(`${entry}: each function by its parameters, refusing an options object past them`, async () => {

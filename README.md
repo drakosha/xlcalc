@@ -76,6 +76,7 @@ A bundle includes only the entry points it imports. Sizes are for the browser, b
 | `xlcalc/xls/connections` | `readXlsWithConnections` also reads saved connection and OLAP definitions ([Reading XLS connections](docs/xlsx.md#reading-xls-connections)) | 382 KB (142) |
 | `xlcalc/xls/print` | `readXlsWithPrint` also reads the print settings and row defaults ([Printing from XLS](docs/xlsx.md#printing-from-xls)) | 386 KB (143) |
 | `xlcalc/xlsb` | `readXlsb`: a binary Excel workbook, its saved values and issues ([Reading xlsb](docs/xlsx.md#reading-xlsb)) | 327 KB (120) |
+| `xlcalc/xlsb/print` | `readXlsbWithPrint` also reads the print settings and row defaults ([Printing from XLSB](docs/xlsx.md#printing-from-xlsb)) | 336 KB (124) |
 | `xlcalc/csv` | `readCsv`, `writeCsv`: a CSV file as Excel opens it, a sheet as Excel saves it ([Reading and writing CSV](docs/csv.md)) | 199 KB (74) |
 | `xlcalc/worker` | `createCalcPool`: worker threads | 35 KB (13), its worker 960 KB (330), 630 KB (238) loaded first where a bundler splits off the locales, regex levels, groups of functions, the PivotTable engine and the table styles it loads |
 | `xlcalc/a1` | A1 addresses, a sheet's outline commands | 16 KB (6) |
